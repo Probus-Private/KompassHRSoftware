@@ -1,0 +1,2897 @@
+﻿@model KompassHR.Areas.Module.Models.Module_Employee.Module_Employee_BulkInsert
+
+@{
+    ViewBag.Title = "Module_Employee_BulkInsert";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Required library for validation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+
+<style>
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+
+    /*table Style End*/
+    label.error, .Error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+
+    /*.tblInnerAddData td:nth-child(1) {
+        display: none;
+    }*/
+    .dataTables_scrollBody::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+        margin-top: 20px;
+    }
+
+    .dataTables_scrollBody::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .dataTables_scrollBody::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+        height: 10px;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Bulk Insert
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_Contractor_Menu", "ESS_Contractor_Menu",  new { id = 27,ScreenId=307, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">Bulk Insert<b></b> </h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        It enables HR personnel to efficiently input essential details for each new hire in a structured format, ensuring accuracy and consistency across all entries.
+
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("Module_Employee_BulkInsert", "Module_Employee_BulkInsert", new { area = "Module" })' id="SaveBulkInsert" method="post" enctype="multipart/form-data" }>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">
+                                                Company Name
+                                                <span class="important"></span>
+                                            </label>
+                                            <div class="col-md-7">
+                                                @Html.DropDownListFor(model => model.CmpID, new SelectList(ViewBag.ComapnyProfile, "Id", "Name"), "--Select--", new { @class = "form-select", name = "CmpId", id = "ddlCmpId" })
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button" class="btn btn-primary" id="btnApplyCompanyName">Apply</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">
+                                                Business Unit
+                                                <span class="important"></span>
+                                            </label>
+                                            <div class="col-md-7">
+                                                @Html.DropDownListFor(model => model.EmployeeBranchId, new SelectList(""), "--Select--", new { @class = "form-select", type = "text", name = "BusinessUnit", id = "ddlBusinessUnit" })
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button" class="btn btn-primary" id="btnApplyBusinessUnit">Apply</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr />
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">
+                                                Contractor Name
+                                                <span class="important"></span>
+                                            </label>
+                                            <div class="col-md-7">
+                                                @Html.DropDownListFor(model => model.ContractorID, new SelectList(ViewBag.ContractorNameList, "Id", "Name"), "--Select--", new { @class = "form-select", type = "text", name = "ContractorName", id = "ddlContractorName" })
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button" class="btn btn-primary" id="btnApplyContractorName">Apply</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">
+                                                Qualification
+                                                <span class="important"></span>
+                                            </label>
+                                            <div class="col-md-7">
+                                                @Html.DropDownListFor(model => model.EmployeeQualificationID, new SelectList(ViewBag.QualificationName, "Id", "Name"), "--Select--", new { id = "ddlEmployeeQualificationID", name = "EmployeeQualificationID", @class = "form-select", autocomplete = "off" })
+                                                <span id="ErrortxtGetUserPolicyName" class="Error"></span>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button" class="btn btn-primary" id="btnApplyHighestQualification">Apply</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">
+                                                Manpower Category
+
+                                            </label>
+                                            <div class="col-md-7">
+                                                @Html.DropDownListFor(model => model.EmployeeAllocationCategoryId, new SelectList(ViewBag.EmployeeAllocationCategory, "Id", "Name"), "--Select--", new { id = "ddlEmployeeAllocationCategoryId", name = "EmployeeAllocationCategoryId", @class = "form-select", autocomplete = "off" })
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button" class="btn btn-primary" id="btnApplyEmployeeAllocationCategoryId">Apply</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">
+                                                Designation
+                                                <span class="important"></span>
+                                            </label>
+                                            <div class="col-md-7">
+                                                @Html.DropDownListFor(model => model.EmployeeDesignationID, new SelectList(ViewBag.DesignationList, "Id", "Name"), "--Select--", new { @class = "form-select", type = "text", name = "Designation", id = "ddlDesignation" })
+                                                <span id="ErrortxtGetUserPolicyName" class="Error"></span>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button" class="btn btn-primary" id="btnApplyDesignation">Apply</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">
+                                                Department
+                                                <span class="important"></span>
+                                            </label>
+                                            <div class="col-md-7">
+                                                @Html.DropDownListFor(model => model.EmployeeDepartmentID, new SelectList(ViewBag.DepartmentList, "Id", "Name"), "--Select--", new { @class = "form-select", type = "text", name = "Department", id = "ddlDepartment" })
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button" class="btn btn-primary" id="btnApplyDepartment">Apply</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">
+                                                Sub Department
+                                                <span class="important"></span>
+                                            </label>
+                                            <div class="col-md-7">
+                                                @Html.DropDownListFor(model => model.EmployeeSubDepartmentName, new SelectList(ViewBag.SubDepartmentList, "Id", "Name"), "--Select--", new { @class = "form-select", type = "text", name = "SubDepartment", id = "ddlSubDepartment" })
+                                                <span id="ErrortxtGetUserPolicyName" class="Error"></span>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button" class="btn btn-primary" id="btnApplySubDepartment">Apply</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">
+                                                Grade
+                                                <span class="important"></span>
+                                            </label>
+                                            <div class="col-md-7">
+                                                @Html.DropDownListFor(model => model.EmployeeGradeID, new SelectList(ViewBag.GradeList, "Id", "Name"), "--Select--", new { @class = "form-select", type = "text", name = "Grade", id = "ddlGrade" })
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button" class="btn btn-primary" id="btnApplyGrade">Apply</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">
+                                                Line Master
+                                                <span class="important"></span>
+                                            </label>
+                                            <div class="col-md-7">
+                                                @Html.DropDownListFor(model => model.EmployeeLineID, new SelectList(""), "--Select--", new { @class = "form-select", type = "text", name = "LineName", id = "ddlLineName" })
+                                                <span id="ErrortxtGetUserPolicyName" class="Error"></span>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button" class="btn btn-primary" id="btnApplyLineName">Apply</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">
+                                                Shift Group
+                                                <span class="important"></span>
+                                            </label>
+                                            <div class="col-md-7">
+                                                @Html.DropDownListFor(model => model.EM_Atten_ShiftGroupId, new SelectList(""), "--Select--", new { @class = "form-select", type = "text", name = "ShiftGroupName", id = "ddlShiftGroupName" })
+                                                <span id="ErrortxtGetUserPolicyName" class="Error"></span>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button" class="btn btn-primary" id="btnApplyShiftGroupName">Apply</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">
+                                                Shift Rule
+                                                <span class="important"></span>
+                                            </label>
+                                            <div class="col-md-7">
+                                                @Html.DropDownListFor(model => model.EM_Atten_ShiftRuleId, new SelectList(""), "--Select--", new { @class = "form-select", type = "text", name = " ShiftRuleName", id = "ddlShiftRuleName" })
+                                                <span id="ErrortxtGetUserPolicyName" class="Error"></span>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button" class="btn btn-primary" id="btnApplyShiftRuleName">Apply</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">
+                                                Sub Unit
+                                                <span class="important"></span>
+                                            </label>
+                                            <div class="col-md-7">
+                                                @Html.DropDownListFor(model => model.EmployeeUnitID, new SelectList(""), "--Select--", new { @class = "form-select", type = "text", name = "Unit", id = "ddlUnit" })
+                                                <span id="ErrortxtGetUserPolicyName" class="Error"></span>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button" class="btn btn-primary" id="btnApplyUnit">Apply</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">
+                                                Assessment Level
+                                                <span class="important"></span>
+                                            </label>
+                                            <div class="col-md-7">
+                                                @Html.DropDownListFor(model => model.EmployeeLevelID, new SelectList(ViewBag.EmployeeLevel, "Id", "Name"), "--Select--", new { id = "ddlEmployeeLevelID", name = "EmployeeLevelID", @class = "form-select", autocomplete = "off" })
+                                                <span id="ErrortxtGetUserPolicyName" class="Error"></span>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button" class="btn btn-primary" id="btnApplyEmployeeLevelID">Apply</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">
+                                                Critical Stage Category
+                                                <span class="important"></span>
+                                            </label>
+                                            <div class="col-md-7">
+                                                @Html.DropDownListFor(model => model.EmployeeCriticalStageID, new SelectList(ViewBag.CriticalStageName, "Id", "Name"), "--Select--", new { id = "ddlEmployeeCriticalStageID", name = "EmployeeCriticalStageID", @class = "form-control" })
+                                                <span id="ErrortxtGetUserPolicyName" class="Error"></span>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button" class="btn btn-primary" id="btnApplyEmployeeCriticalStageID">Apply</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">
+                                                Employee History
+                                                <br>
+                                                (Aadhar No)
+                                                <span class="important"></span>
+                                            </label>
+                                            <div class="col-md-7">
+                                                @Html.TextBoxFor(model => model.DuplicateAddharNo, new { @class = "form-control", name = "DuplicateAddharNo", type = "text", id = "txtDuplicateAddharNo", autocomplete = "Off", Maxlength = 12, onkeypress = " return numbervalidate(event)" })
+                                                @Html.ValidationMessageFor(model => model.DuplicateAddharNo, "", new { @class = "help-block", @id = "ErrorDuplicateAddharNo", @style = "color:red" })
+
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button" class="btn btn-success" id="btnDuplicateAddharNo">Show</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">
+                                                Choose File
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-7">
+                                                <input type="file" name="AttachFile" class="form-control" id="txtAttachFile" onchange="ResetFile()" />
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button" class="btn btn-warning" id="btnChooseFile">Import</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <hr />
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="panel panel-inverse" data-sortable-id="index-1">
+                                            <div style="overflow-y:auto; overflow-x:auto">
+                                                <div class="panel-body">
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            @*<a href="~/assets/BulkUpload/Bulk_Insert_Template.xlsx">~/assets/BulkUpload/Bulk_Insert_Template.xlsx</a>*@
+                                                            <a href="@Url.Content("~/assets/BulkUpload/Bulk_Insert_Template.xlsx")">
+                                                                <button type="button" class="btn btn-primary btn-sm  mb-10px">
+                                                                    <i class="fa-solid fa-file-excel"></i> &nbsp; Export To Excel
+                                                                </button>
+                                                            </a>
+                                                            <!-- BEGIN table-responsive -->
+                                                            <div class="table-scroll div1">
+                                                                <div class="table-wrap">
+                                                                    <table class="table table-bordered table-hover mb-0 text-dark align-middle tblAddData TabledataBulkClass" id="Tabledata">
+                                                                        <thead class="table-active " style="background-color: rgba(233, 236, 239, 1) !important;">
+                                                                            <tr>
+                                                                                @if (ViewBag.count != null)
+                                                                                {
+                                                                                    <th class="fixed-side">Action</th>
+                                                                                    <th class="fixed-side1">SrNo.</th>
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <th>SrNo.</th>
+                                                                                }
+                                                                                <th class="fixed-side2">Company Name</th>
+                                                                                <th class="fixed-side3">Business Unit</th>
+                                                                                <th class="fixed-side4">Contractor Name</th>
+                                                                                <th class="fixed-side5">Salutation</th>
+                                                                                <th class="fixed-side6">Employee Name</th>
+                                                                                <th class="fixed-side7">Employe No</th>
+                                                                                <th class="fixed-side8">Employee CardNo</th>
+
+                                                                                <th class="fixed-side15">Department</th>
+                                                                                <th class="fixed-side16">Sub Department</th>
+                                                                                <th class="fixed-side16">Manpower Category</th>
+                                                                                <th class="fixed-side17">Designation</th>
+                                                                                <th class="fixed-side18">Grade</th>
+                                                                                <th class="fixed-side19">Critical Stage Applicable</th>
+                                                                                <th class="fixed-side20">Critical Stage Category</th>
+                                                                                <th class="fixed-side21">Line Master </th>
+                                                                                <th class="fixed-side22">Assessment Level </th>
+                                                                                <th class="fixed-side23">Sub Unit</th>
+                                                                                <th class="fixed-side9">Aadhar No</th>
+                                                                                <th class="fixed-side9">Name As Per Aadhar</th>
+                                                                                <th class="fixed-side10">Mobile No (Optional)</th>
+                                                                                <th class="fixed-side11">Gender</th>
+                                                                                <th class="fixed-side12">Birth Date</th>
+                                                                                <th class="fixed-side13">Marital Status</th>
+                                                                                <th class="fixed-side14">Highest Qualification</th>
+                                                                                <th class="fixed-side24">Joining Date</th>
+                                                                                <th class="fixed-side25">I Weekly off</th>
+                                                                                <th class="fixed-side26">Shift Group </th>
+                                                                                <th class="fixed-side27">Shift Rule </th>
+                                                                                <th class="fixed-side30">PF No (Optional)</th>
+                                                                                <th class="fixed-side28">Father/Mother/Spouse Relation</th>
+                                                                                <th class="fixed-side29">Father/Mother/Spouse Name</th>
+                                                                                <th class="fixed-side30">UAN No</th>
+                                                                                <th class="fixed-side29">ESIC No (Optional)</th>
+                                                                                <th class="fixed-side30">Relation/Nominee1 (Optional)</th>
+                                                                                <th class="fixed-side30">Relation/Nominee Name (Optional)</th>
+                                                                                <th class="fixed-side28">Pincode (Optional)</th>
+                                                                                <th class="fixed-side29">State Name (Optional)</th>
+                                                                                <th class="fixed-side30-">District Name (Optional)</th>
+                                                                                <th class="fixed-side31">Taluka Name (Optional)</th>
+                                                                                <th class="fixed-side32">P/O Name (Optional)</th>
+                                                                                <th class="fixed-side33">City Name (Optional)</th>
+                                                                                <th class="fixed-side34">Postel Address (Optional)</th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody id="tblTableBodyBulkInsert">
+                                                                            @if (ViewBag.GetExceldata != null)
+                                                                            {
+                                                                                foreach (var d in ViewBag.GetExceldata)
+                                                                                {
+                                                                                    <tr>
+                                                                                        <td>
+                                                                                            <button type="button" class="btn btn-danger btnRemoveRow">Remove</button>
+                                                                                        </td>
+
+                                                                                        <td class="fixed-side">
+                                                                                            @Html.TextBoxFor(Model => Model.SrNo, new { @class = "form-control", @Value = d.SrNo, @id = "SrNo" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.CmpID, new { @class = "form-control", @Value = d.CmpID, id = "CmpID", name = "CmpID", @style = "width:220px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.EmployeeBranchId, new { @class = "form-control", @Value = d.EmployeeBranchId, id = "BusinessUnit", name = "BusinessUnit", @style = "width:150px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.ContractorID, new { @class = "form-control", @Value = d.ContractorID, id = "ContractorNameId", name = "ContractorNameId", @style = "width:200px" })
+                                                                                        </td>
+
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.Salutation, new { @class = "form-control", @Value = d.Salutation, id = "Solutation", name = "Solutation" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.EmployeeName, new { @class = "form-control", @Value = d.EmployeeName, id = "EmployeeName", name = "datafieldName", @style = "width:220px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.EmployeeNo, new { @class = "form-control", @Value = d.EmployeeNo, id = "EmployeNo", name = "EmployeNo", Maxlength = 10, type = "text", @style = "width:120px", oninput = "this.value = this.value.toUpperCase()" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.EmployeeCardNo, new { @class = "form-control", @Value = d.EmployeeCardNo, id = "EmployeeCardNo", name = "EmployeeCardNo", Maxlength = 10, type = "text", @style = "width:120px", oninput = "this.value = this.value.toUpperCase()" })
+                                                                                        </td>
+
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.EmployeeDepartmentID, new { @class = "form-control", @Value = d.EmployeeDepartmentID, id = "DepartmentId", name = "DepartmentId", @style = "width:220px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.EmployeeSubDepartmentName, new { @class = "form-control", @Value = d.EmployeeSubDepartmentName, id = "SubDepartmentId", name = "SubDepartmentId", @style = "width:220px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.EmployeeAllocationCategoryId, new { @class = "form-control", @Value = d.EmployeeAllocationCategoryId, id = "EmployeeAllocationCategoryId", name = "EmployeeAllocationCategoryId", @style = "width:220px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.EmployeeDesignationID, new { @class = "form-control", @Value = d.EmployeeDesignationID, id = "DesignationId", name = "DesignationId", @style = "width:220px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.EmployeeGradeID, new { @class = "form-control", @Value = d.EmployeeGradeID, id = "GradeId", name = "GradeId", @style = "width:150px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.IsCriticalStageApplicable, new { @class = "form-control", @Value = d.IsCriticalStageApplicable, id = "IsCriticalStageApplicable", name = "IsCriticalStageApplicable", @style = "width:120px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.EmployeeCriticalStageID, new { @class = "form-control", @Value = d.EmployeeCriticalStageID, id = "EmployeeCriticalStageID", name = "EmployeeCriticalStageID", @style = "width:120px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.EmployeeLineID, new { @class = "form-control", @Value = d.EmployeeLineID, id = "LineNameId", name = "LineNameId", @style = "width:120px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.EmployeeLevelID, new { @class = "form-control", @Value = d.EmployeeLevelID, id = "EmployeeLevelID", name = "EmployeeLevelID", @style = "width:120px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.EmployeeUnitID, new { @class = "form-control", @Value = d.EmployeeUnitID, id = "EmployeeUnitID", name = "EmployeeUnitID", @style = "width:120px" })
+                                                                                        </td>
+
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.AadhaarNo, new { @class = "form-control", @Value = d.AadhaarNo, id = "AadharNo", name = "AadharNo", @style = "width:120px", MaxLength = 12, onkeypress = " return numbervalidate(event)" })
+                                                                                            <span id='validationMessage_' style='color: red;'></span>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.NameAsPerAadhaar, new { @class = "form-control", @Value = d.NameAsPerAadhaar, id = "NameAsPerAadhaar", name = "NameAsPerAadhaar", @style = "width:120px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.PrimaryMobile, new { @class = "form-control", @Value = d.PrimaryMobile, id = "PrimaryMobileNo", name = "PrimaryMobileNo", @style = "width:120px", MaxLength = 10, onkeypress = " return numbervalidate(event)" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.Gender, new { @class = "form-control", @Value = d.Gender, id = "Gender", name = "Gender", @style = "width:120px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.BirthdayDate, new { @class = "form-control", @Value = d.BirthdayDate, id = "BirthDate", name = "BirthDate", @style = "width:120px", type = "date" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.MaritalStatus, new { @class = "form-control", @Value = d.MaritalStatus, id = "MaritalStatus", name = "MaritalStatus", @style = "width:120px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.EmployeeQualificationID, new { @class = "form-control", @Value = d.EmployeeQualificationID, id = "tblEmployeeQualificationID", name = "EmployeeQualificationID", @style = "width:120px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.JoiningDate, new { @class = "form-control", @Value = d.JoiningDate, id = "JoiningDate", name = "JoiningDate", @style = "width:120px", type = "date" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.EM_Atten_WOFF1, new { @class = "form-control", @Value = d.EM_Atten_WOFF1, id = "EM_Atten_WOFF1", name = "EM_Atten_WOFF1", @style = "width:120px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.EM_Atten_ShiftGroupId, new { @class = "form-control", @Value = d.EM_Atten_ShiftGroupId, id = "ShiftGroup", name = "ShiftGroup", @style = "width:120px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.EM_Atten_ShiftRuleId, new { @class = "form-control", @Value = d.EM_Atten_ShiftRuleId, id = "ShiftRule", name = "ShiftRule", @style = "width:120px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.PF_NO, new { @class = "form-control", @Value = d.PF_NO, id = "PF_NO", name = "PF_NO", @style = "width:120px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.PF_FSType, new { @class = "form-control", @Value = d.PF_FSType, id = "PF_FSType", name = "PF_FSType", @style = "width:200px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.PF_FS_Name, new { @class = "form-control", @Value = d.PF_FS_Name, id = "PF_FS_Name", name = "PF_FS_Name", @style = "width:150px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.PF_UAN, new { @class = "form-control", @Value = d.PF_UAN, id = "PF_UAN", name = "PF_UAN", @style = "width:120px", MaxLength = 12, onkeypress = " return numbervalidate(event)" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.ESIC_NO, new { @class = "form-control", @Value = d.ESIC_NO, id = "ESIC_NO", name = "ESIC_NO", @style = "width:120px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.PF_Reletion1, new { @class = "form-control", @Value = d.PF_Reletion1, id = "PF_Reletion1", name = "PF_Reletion1", @style = "width:200px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.PF_Nominee1, new { @class = "form-control", @Value = d.PF_Nominee1, id = "PF_Nominee1", name = "PF_Nominee1", @style = "width:200px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.PresentPin, new { @class = "form-control", @Value = d.PresentPin, id = "PresentPin", name = "PresentPin", @style = "width:200px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.PresentState, new { @class = "form-control", @Value = d.PresentState, id = "PresentState", name = "PresentState", @style = "width:200px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.PresentDistrict, new { @class = "form-control", @Value = d.PresentDistrict, id = "PresentDistrict", name = "PresentDistrict", @style = "width:200px" })
+                                                                                        </td>
+
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.PresentTaluka, new { @class = "form-control", @Value = d.PresentTaluka, id = "PresentTaluka", name = "PresentTaluka", @style = "width:200px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.PresentPO, new { @class = "form-control", @Value = d.PresentPO, id = "PresentPO", name = "PresentPO", @style = "width:200px" })
+                                                                                        </td>
+
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.PresentCity, new { @class = "form-control", @Value = d.PresentCity, id = "PresentCity", name = "PresentCity", @style = "width:200px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.PresentPostelAddress, new { @class = "form-control", @Value = d.PresentPostelAddress, id = "PresentPostelAddress", name = "PresentDistrict", @style = "width:200px" })
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                }
+                                                                            }
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- END table-responsive -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    @*<button type="button" id="btnSave"
+                                                        class="btn btn-primary btn-sm">
+                                                        <i class="fa-solid fa-floppy-disk"></i> Validate
+                                                        </button>*@
+                                                    <button type="button" id="btnEmployeeSubmit"
+                                                            class="btn btn-primary btn-sm">
+                                                        <i class="fa-solid fa-floppy-disk"></i>  Submit
+                                                    </button>
+                                                    <button type="button" id="btnDuplicateAadhaarNo"
+                                                            class="btn btn-success btn-sm">
+                                                        <i class="fa-solid fa-floppy-disk"></i>  Duplicate Aadhaar No
+                                                    </button>
+                                                    <a href="@Url.Action("ESS_Contractor_Menu", "ESS_Contractor_Menu", new { area = "ESS" })">
+                                                        <button type="button" class="btn btn-danger btn-sm">
+                                                            <i class="fa-solid fa-share-from-square"></i> Back
+                                                        </button>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+<!-- #Start modal-dialog  myEmployeeNoModal-->
+<div class="modal fade" id="myEmployeeNoModal" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-black text-white">
+                <h4 class="modal-title">Duplicate Employee No</h4>
+
+            </div>
+            <div style="height:400px; overflow-y:auto">
+                <div class="modal-body">
+                    <!-- BEGIN panel -->
+                    <div class="modal-body-content">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered tblInnerAddData TabledataClass" id="tblHeadEmployeeNo" style="width: 100%">
+                                        <caption hidden>Duplicate Employee No</caption>
+                                        <thead style="background-color: rgba(233, 236, 239, 1) !important;">
+                                            <tr>
+                                                <th class="text-nowrap">Company Name </th>
+                                                <th class="text-nowrap">Business Unit </th>
+                                                <th class="text-nowrap">Employee Name</th>
+                                                <th class="text-nowrap">Department Name</th>
+                                                <th class="text-nowrap">Employee No</th>
+                                                <th class="text-nowrap">Employee Card No </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tblEmployeeNo"></tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END panel -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                @*<input type="button" onclick="tableToExcel('testTable', 'WorkBook Name')" value="Export to Excel">*@
+                @*<button type="button" class="btn btn-primary btn-sm" onclick="exportToExcel('EmployeeNo')" value="Export to Excel">
+                    <i class="fa-solid fa-share-from-square"></i> Export to Excel
+                    </button>*@
+                <button type="button" class="btn btn-primary btn-sm" onclick="tableToExcelEmployeeNo('testTable', 'EmployeeNo')" value="Export to Excel">
+                    <i class="fa-solid fa-share-from-square"></i> Export to Excel
+                </button>
+                <button type="button" class="btn btn-danger btnpress CloseModel" id="CloseModel" data-bs-dismiss="modal" aria-hidden="true">
+                    <i class="fa-solid fa-share-from-square"></i> Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #End modal-dialog -->
+<!-- #Start modal-dialog myEmployeeCardNoModal -->
+<div class="modal fade" id="myEmployeeNoCardModal" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-black text-white">
+                <h4 class="modal-title">Duplicate Employee Card No</h4>
+
+            </div>
+            <div style="height:400px; overflow-y:auto">
+                <div class="modal-body">
+                    <!-- BEGIN panel -->
+                    <div class="modal-body-content">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered tblInnerAddData TabledataClass" id="tblHeadEmployeeCardNo" style="width: 100%">
+                                        <caption hidden>Duplicate Employee Card No</caption>
+                                        <thead style="background-color: rgba(233, 236, 239, 1) !important;">
+                                            <tr>
+                                                <th class="text-nowrap">Company Name </th>
+                                                <th class="text-nowrap">Business Unit </th>
+                                                <th class="text-nowrap">Employee Name</th>
+                                                <th class="text-nowrap">Department Name</th>
+                                                <th class="text-nowrap">Employee No</th>
+                                                <th class="text-nowrap">Employee Card No </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tblEmployeeCardNo"></tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END panel -->
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                @*<button type="button" class="btn btn-primary btn-sm" onclick="exportToExcel('CardNo')" value="Export to Excel">
+                    <i class="fa-solid fa-share-from-square"></i> Export to Excel
+                    </button>*@
+                <button type="button" class="btn btn-primary btn-sm" onclick="tableToExcelEmployeeCardNo('testTable', 'Employee Card No')" value="Export to Excel">
+                    <i class="fa-solid fa-share-from-square"></i> Export to Excel
+                </button>
+                <button type="button" class="btn btn-danger btnpress CloseModel" id="CloseModel" data-bs-dismiss="modal" aria-hidden="true">
+                    <i class="fa-solid fa-share-from-square"></i> Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #End modal-dialog -->
+<!-- #Start modal-dialog myEmployeeCardNoModal -->
+<div class="modal fade" id="myAadharNoModal" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-black text-white">
+                <h4 class="modal-title">Duplicate Aadhar No</h4>
+
+            </div>
+            <div style="height:400px; overflow-y:auto">
+                <div class="modal-body">
+                    <!-- BEGIN panel -->
+                    <div class="modal-body-content">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered tblInnerAddData TabledataClass" id="tblHeadAadharNo" style="width: 100%">
+                                        <caption hidden>Duplicate Aadhar No</caption>
+                                        <thead style="background-color: rgba(233, 236, 239, 1) !important;">
+                                            <tr>
+                                                <th class="text-nowrap">Company Name </th>
+                                                <th class="text-nowrap">Business Unit </th>
+                                                <th class="text-nowrap">Employee Name</th>
+                                                <th class="text-nowrap">Department Name</th>
+                                                <th class="text-nowrap">Employee No</th>
+                                                <th class="text-nowrap">Employee Card No </th>
+                                                <th class="text-nowrap">Aadhar No </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tblEmployeeAadharNo"></tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END panel -->
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm" onclick="DeactivateEmployee('DeactivateEmployee')" value="DeactivateEmployee">
+                    <i class="fa-solid fa-share-from-square"></i> Deactivate Employee
+                </button>
+                <button type="button" class="btn btn-primary btn-sm" onclick="tableToExcelAadhar('testTable', 'AadharNo')" value="Export to Excel">
+                    <i class="fa-solid fa-share-from-square"></i> Export to Excel
+                </button>
+                @*<input type="button" onclick="tableToExcel('testTable', 'WorkBook Name')" value="Export to Excel">*@
+
+                <button type="button" class="btn btn-danger btnpress CloseModel" id="CloseModel" data-bs-dismiss="modal" aria-hidden="true">
+                    <i class="fa-solid fa-share-from-square"></i> Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #End modal-dialog -->
+<!-- #Start modal-dialog myEmployeeCardNoModal -->
+<div class="modal fade" id="myEmployeeHistoryNoModal" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-black text-white">
+                <h4 class="modal-title">Duplicate AadhaarNo</h4>
+            </div>
+            <div style="height:400px;">
+                <div class="modal-body">
+                    <!-- BEGIN panel -->
+                    <div class="modal-body-content">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="table-scroll div1">
+                                    <div class="row">
+
+                                        <table class="table table-bordered tblInnerAddData TabledataClass" id="tblHeadEmployeeHistory" style="width: 100%">
+
+                                            <thead style="background-color: rgba(233, 236, 239, 1) !important;">
+                                                <tr>
+                                                    <th class="text-nowrap">Company  </th>
+                                                    <th class="text-nowrap">Business Unit </th>
+                                                    <th class="text-nowrap">Employee Name</th>
+                                                    <th class="text-nowrap">Employee No</th>
+                                                    <th class="text-nowrap">Employee Card No</th>
+                                                    <th class="text-nowrap">Status </th>
+                                                    <th class="text-nowrap">Contractor </th>
+                                                    <th class="text-nowrap">Department </th>
+                                                    <th class="text-nowrap">Designation </th>
+                                                    <th class="text-nowrap">Grade </th>
+                                                    <th class="text-nowrap">Aadhar No </th>
+                                                    <th class="text-nowrap">Joining Date </th>
+                                                    <th class="text-nowrap">Leaving Date </th>
+                                                    <th class="text-nowrap">Duration Date </th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tblEmployeeHistory"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END panel -->
+            </div>
+            <div class="modal-footer">
+                @*<button type="button" class="btn btn-primary btn-sm" onclick="tableToExcelDuplicateEmployee(' ', 'DuplicateEmployee')" value="Export to Excel">
+                        <i class="fa-solid fa-share-from-square"></i> Export to Excel
+                    </button>*@
+                <button type="button" class="btn btn-danger btnpress CloseModel" id="CloseModel" data-bs-dismiss="modal" aria-hidden="true">
+                    <i class="fa-solid fa-share-from-square"></i> Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #End modal-dialog -->
+
+
+<script>
+    $(document).ready(function () {
+        debugger;
+        $('title').html("Bulk Insert");
+        var tableBody = document.getElementById('tblTableBodyBulkInsert');
+        var rowCount = tableBody.rows.length;
+        if (rowCount>0)
+        {
+            $("#btnDuplicateAadhaarNo").show();
+        }
+        else{
+            $("#btnDuplicateAadhaarNo").hide();
+        }
+        //Remove Paging from table and Display Excel Button code start
+        //$('.TabledataClass').DataTable({
+
+        //    dom: '<"row"<"col-sm-12"B>>t',
+        //    buttons: [
+        //        {
+        //            extend: 'excel',
+        //            className: 'btn-sm',
+        //            text: 'Export To Excel'
+        //        }
+        //    ],
+        //    scrollY: 300,
+        //    scrollCollapse: true,
+        //    paging: false,
+        //    //scrollY: true,
+        //    scrollX: true,
+        //    //fixedColumns:true
+        //    //fixedColumns: {
+        //    //    leftColumns: 2 // Fix the first column
+        //    //}
+        //});
+
+        //$('.TabledataClass').DataTable({
+        //    scrollY: 300,
+        //    scrollCollapse: true,
+        //    paging: false,
+        //    scrollX: true,
+        //    searching: true, // Enable searching
+        //});
+
+        $('.TabledataBulkClass').DataTable({
+            scrollY: 300,
+            scrollCollapse: true,
+            paging: false,
+            scrollX: true,
+            searching: false, // Enable searching
+        });
+        //Remove Paging from table and Display Excel Button code End
+
+
+        ////Remove Row From Table
+        $(document).on("click", ".btnRemoveRow", function () {
+            const Approved = Swal.mixin({
+                customClass: {
+                    cancelButton: ' btnpress',
+                    confirmButton: ' btnpress'
+                },
+                buttonsStyling: true
+            })
+            Approved.fire({
+                title: 'Are you sure you want to remove this row?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                showCancelButton: true,
+                confirmButtonText: 'Yes submit!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: false,
+
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup()
+                    popup.classList.remove('swal2-show')
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                    })
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                    }, 500)
+                    return false
+                }
+
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    debugger;
+                    $(this).closest("tr").remove();
+
+                } else if (
+                    /* Read more about handling dismissals below */
+                        result.dismiss === Swal.DismissReason.cancel
+                        ) {
+                }
+            })
+        });
+
+        //ddlCmpId
+        $("#btnApplyCompanyName").click(function(){
+            debugger;
+            var Company= $("#ddlCmpId option:selected").text();
+            if(Company=="--Select--")
+            {
+                var Message ="Select Company ! ";
+                var Icon = "error";
+            }
+            else
+            {
+                var num= localStorage.getItem('Rowno');
+                if(num=="undefined" || num==null)
+                {
+                    num=1;
+                }
+                var rowNumber = num;
+                var $row = $('#Tabledata tbody tr:eq(' + (rowNumber - 1) + ')');
+                $row.find("#CmpID").val(Company);
+
+                var Message ="Changes applied On Company Successfully ! at SrNo "+rowNumber;
+                var Icon = "success";
+            }
+            if(num!="undefined" )
+            {
+                debugger;
+                if (Message != null) {
+                    if (Icon != null) {
+                        Swal.fire({
+                            icon: Icon,
+                            text: Message,
+                            allowOutsideClick: () => {
+                                const popup = Swal.getPopup()
+                                popup.classList.remove('swal2-show')
+                                setTimeout(() => {
+                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                })
+                                setTimeout(() => {
+                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                }, 500)
+                                // return false
+                            }
+                        });
+                    }
+                }
+            }
+        });
+        //btnApplyEmployeeAllocationCategoryId
+        $("#btnApplyEmployeeAllocationCategoryId").click(function(){
+            debugger;
+            var AllocationCategoryId= $("#ddlEmployeeAllocationCategoryId option:selected").text();
+            if(AllocationCategoryId=="--Select--")
+            {
+                var Message ="Select Manpower Category ! ";
+                var Icon = "error";
+            }
+            else
+            {
+                var num= localStorage.getItem('Rowno');
+                if(num=="undefined" || num==null)
+                {
+                    num=1;
+                }
+                var rowNumber = num;
+                var $row = $('#Tabledata tbody tr:eq(' + (rowNumber - 1) + ')');
+                $row.find("#EmployeeAllocationCategoryId").val(AllocationCategoryId);
+
+                var Message ="Changes applied On Manpower Category Successfully ! at SrNo "+rowNumber;
+                var Icon = "success";
+            }
+            if(num!="undefined" )
+            {
+                debugger;
+                if (Message != null) {
+                    if (Icon != null) {
+                        Swal.fire({
+                            icon: Icon,
+                            text: Message,
+                            allowOutsideClick: () => {
+                                const popup = Swal.getPopup()
+                                popup.classList.remove('swal2-show')
+                                setTimeout(() => {
+                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                })
+                                setTimeout(() => {
+                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                }, 500)
+                                // return false
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
+        //Apply Level
+        $("#btnApplyEmployeeLevelID").click(function(){
+            debugger;
+            var EmployeeLevelID= $("#ddlEmployeeLevelID option:selected").text();
+            if(EmployeeLevelID=="--Select--")
+            {
+                var Message ="Select Assessment Level ! ";
+                var Icon = "error";
+            }
+            else
+            {
+                var num= localStorage.getItem('Rowno');
+                if(num=="undefined" || num==null)
+                {
+                    num=1;
+                }
+                var rowNumber = num;
+                var $row = $('#Tabledata tbody tr:eq(' + (rowNumber - 1) + ')');
+                $row.find("#EmployeeLevelID").val(EmployeeLevelID);
+
+                var Message ="Changes applied on assessment level successfully ! at SrNo "+rowNumber;
+                var Icon = "success";
+            }
+            if(num!="undefined" )
+            {
+                debugger;
+                if (Message != null) {
+                    if (Icon != null) {
+                        Swal.fire({
+                            icon: Icon,
+                            text: Message,
+                            allowOutsideClick: () => {
+                                const popup = Swal.getPopup()
+                                popup.classList.remove('swal2-show')
+                                setTimeout(() => {
+                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                })
+                                setTimeout(() => {
+                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                }, 500)
+                                // return false
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
+        //Highest Qualification
+        $("#btnApplyHighestQualification").click(function(){
+            debugger;
+            var EmployeeQualificationID= $("#ddlEmployeeQualificationID option:selected").text();
+            if(EmployeeQualificationID=="--Select--")
+            {
+                var Message ="Select Highest Qualification ! ";
+                var Icon = "error";
+            }
+            else
+            {
+                var num= localStorage.getItem('Rowno');
+                if(num=="undefined" || num==null)
+                {
+                    num=1;
+                }
+                var rowNumber = num;
+                var $row = $('#Tabledata tbody tr:eq(' + (rowNumber - 1) + ')');
+                $row.find("#tblEmployeeQualificationID").val(EmployeeQualificationID);
+
+                var Message ="Changes applied on highest qualification successfully ! at SrNo "+rowNumber;
+                var Icon = "success";
+            }
+            if(num!="undefined" )
+            {
+                debugger;
+                if (Message != null) {
+                    if (Icon != null) {
+                        Swal.fire({
+                            icon: Icon,
+                            text: Message,
+                            allowOutsideClick: () => {
+                                const popup = Swal.getPopup()
+                                popup.classList.remove('swal2-show')
+                                setTimeout(() => {
+                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                })
+                                setTimeout(() => {
+                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                }, 500)
+                                // return false
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
+        //Critical Category
+        $("#btnApplyEmployeeCriticalStageID").click(function(){
+            debugger;
+            var EmployeeCriticalStageID= $("#ddlEmployeeCriticalStageID option:selected").text();
+            if(EmployeeCriticalStageID=="--Select--")
+            {
+                var Message ="Select Critical Stage Category ! ";
+                var Icon = "error";
+            }
+            else
+            {
+                var num= localStorage.getItem('Rowno');
+                if(num=="undefined" || num==null)
+                {
+                    num=1;
+                }
+                var rowNumber = num;
+                var $row = $('#Tabledata tbody tr:eq(' + (rowNumber - 1) + ')');
+                $row.find("#EmployeeCriticalStageID").val(EmployeeCriticalStageID);
+
+                var Message ="Changes applied on critical stage category successfully ! at SrNo "+rowNumber;
+                var Icon = "success";
+            }
+            if(num!="undefined" )
+            {
+                debugger;
+                if (Message != null) {
+                    if (Icon != null) {
+                        Swal.fire({
+                            icon: Icon,
+                            text: Message,
+                            allowOutsideClick: () => {
+                                const popup = Swal.getPopup()
+                                popup.classList.remove('swal2-show')
+                                setTimeout(() => {
+                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                })
+                                setTimeout(() => {
+                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                }, 500)
+                                // return false
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
+        $("#btnApplyBusinessUnit").click(function(){
+            debugger;
+            var BusinessUnit= $("#ddlBusinessUnit option:selected").text();
+            if(BusinessUnit=="--Select--")
+            {
+                var Message ="Select Business Unit ! ";
+                var Icon = "error";
+            }
+            else
+            {
+                var num= localStorage.getItem('Rowno');
+                if(num=="undefined" || num==null)
+                {
+                    num=1;
+                }
+                var rowNumber = num;
+                var $row = $('#Tabledata tbody tr:eq(' + (rowNumber - 1) + ')');
+                $row.find("#BusinessUnit").val(BusinessUnit);
+                var Message ="Changes applied On Business Unit Successfully ! at SrNo "+rowNumber;
+                var Icon = "success";
+            }
+
+            if(num!="undefined")
+            {
+                debugger;
+                if (Message != null) {
+                    if (Icon != null) {
+                        Swal.fire({
+                            icon: Icon,
+                            text: Message,
+                            allowOutsideClick: () => {
+                                const popup = Swal.getPopup()
+                                popup.classList.remove('swal2-show')
+                                setTimeout(() => {
+                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                })
+                                setTimeout(() => {
+                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                }, 500)
+                                // return false
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
+
+
+        $("#btnApplyDesignation").click(function(){
+            debugger;
+            var Designation= $("#ddlDesignation option:selected").text();
+            if(Designation=="--Select--")
+            {
+                var Message ="Select Designation ! ";
+                var Icon = "error";
+            }
+            else
+            {
+                var num= localStorage.getItem('Rowno');
+                if(num=="undefined" || num==null)
+                {
+                    num=1;
+                }
+                var rowNumber = num;
+                var $row = $('#Tabledata tbody tr:eq(' + (rowNumber - 1) + ')');
+                $row.find("#DesignationId").val(Designation);
+                var Message ="Changes applied On Designation Successfully ! at SrNo "+rowNumber;
+                var Icon = "success";
+            }
+
+            if(num!="undefined")
+            {
+                debugger;
+                if (Message != null) {
+                    if (Icon != null) {
+                        Swal.fire({
+                            icon: Icon,
+                            text: Message,
+                            allowOutsideClick: () => {
+                                const popup = Swal.getPopup()
+                                popup.classList.remove('swal2-show')
+                                setTimeout(() => {
+                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                })
+                                setTimeout(() => {
+                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                }, 500)
+                                // return false
+                            }
+                        });
+                    }
+                }
+            }
+
+        });
+
+        $("#btnApplyContractorName").click( function(){
+            debugger;
+
+            var ddlContractorName= $("#ddlContractorName option:selected").text();
+            if(ddlContractorName=="--Select--")
+            {
+                var Message ="Select Contractor Name ! ";
+                var Icon = "error";
+            }
+            else
+            {
+                var num= localStorage.getItem('Rowno');
+                if(num=="undefined" || num==null)
+                {
+                    num=1;
+                }
+                var rowNumber = num;
+                var $row = $('#Tabledata tbody tr:eq(' + (rowNumber - 1) + ')');
+                //var selectedValue = ddlContractorName;
+                $row.find("#ContractorNameId").val(ddlContractorName);
+                var Message ="Changes applied On Contractor Name Successfully ! at SrNo "+rowNumber;
+                var Icon = "success";
+            }
+            if(num!="undefined")
+            {
+                debugger;
+                if (Message != null) {
+                    if (Icon != null) {
+                        Swal.fire({
+                            icon: Icon,
+                            text: Message,
+                            allowOutsideClick: () => {
+                                const popup = Swal.getPopup()
+                                popup.classList.remove('swal2-show')
+                                setTimeout(() => {
+                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                })
+                                setTimeout(() => {
+                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                }, 500)
+                                // return false
+                            }
+                        });
+                    }
+                }
+            }
+
+        });
+
+        //on Grade chanhe
+        $("#btnApplyGrade").click(function(){
+            debugger;
+
+            var ddlGrade= $("#ddlGrade option:selected").text();
+            if(ddlGrade=="--Select--")
+            {
+                var Message ="Select Grade ! ";
+                var Icon = "error";
+            }
+            else
+            {
+                var num= localStorage.getItem('Rowno');
+                if(num=="undefined" || num==null)
+                {
+                    num=1;
+                }
+                var rowNumber = num;
+                var $row = $('#Tabledata tbody tr:eq(' + (rowNumber - 1) + ')');
+                $row.find("#GradeId").val(ddlGrade);
+                var Message ="Changes applied On Grade Successfully ! at SrNo "+rowNumber;
+                var Icon = "success";
+            }
+            if(num!="undefined")
+            {
+                debugger;
+                if (Message != null) {
+                    if (Icon != null) {
+                        Swal.fire({
+                            icon: Icon,
+                            text: Message,
+                            allowOutsideClick: () => {
+                                const popup = Swal.getPopup()
+                                popup.classList.remove('swal2-show')
+                                setTimeout(() => {
+                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                })
+                                setTimeout(() => {
+                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                }, 500)
+                                // return false
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
+        //on LineName chanhe
+        $("#btnApplyLineName").click(function(){
+            debugger;
+
+            var ddlLineName= $("#ddlLineName option:selected").text();
+            if(ddlLineName=="--Select--")
+            {
+                var Message ="Select Line Name ! ";
+                var Icon = "error";
+            }
+            else
+            {
+                var num= localStorage.getItem('Rowno');
+                if(num=="undefined" || num==null)
+                {
+                    num=1;
+                }
+                var rowNumber = num;
+                var $row = $('#Tabledata tbody tr:eq(' + (rowNumber - 1) + ')');
+                $row.find("#LineNameId").val(ddlLineName);
+                var Message ="Changes applied On Line Name Successfully ! at SrNo "+rowNumber;
+                var Icon = "success";
+            }
+            if(num!="undefined")
+            {
+                debugger;
+                if (Message != null) {
+                    if (Icon != null) {
+                        Swal.fire({
+                            icon: Icon,
+                            text: Message,
+                            allowOutsideClick: () => {
+                                const popup = Swal.getPopup()
+                                popup.classList.remove('swal2-show')
+                                setTimeout(() => {
+                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                })
+                                setTimeout(() => {
+                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                }, 500)
+                                // return false
+                            }
+                        });
+                    }
+                }
+            }
+
+        });
+        //SubDepartment On click
+        $("#btnApplySubDepartment").click(function (){
+            debugger;
+            var ddlSubDepartment= $("#ddlSubDepartment option:selected").text();
+            if(ddlSubDepartment=="--Select--")
+            {
+                var Message ="Select Sub Department ! ";
+                var Icon = "error";
+            }
+            else
+            {
+                var num= localStorage.getItem('Rowno');
+                if(num=="undefined" || num==null)
+                {
+                    num=1;
+                }
+                var rowNumber = num;
+                var $row = $('#Tabledata tbody tr:eq(' + (rowNumber - 1) + ')');
+                $row.find("#SubDepartmentId").val(ddlSubDepartment);
+                var Message ="Changes applied On Sub Department Successfully ! at SrNo "+rowNumber;
+                var Icon = "success";
+            }
+            if(num!="undefined")
+            {
+                debugger;
+
+                if (Message != null) {
+                    if (Icon != null) {
+                        Swal.fire({
+                            icon: Icon,
+                            text: Message,
+                            allowOutsideClick: () => {
+                                const popup = Swal.getPopup()
+                                popup.classList.remove('swal2-show')
+                                setTimeout(() => {
+                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                })
+                                setTimeout(() => {
+                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                }, 500)
+                                // return false
+                            }
+                        });
+                    }
+                }
+            }
+        });
+        //Department On click
+        $("#btnApplyDepartment").click( function () {
+            debugger;
+            var ddlDepartment= $("#ddlDepartment option:selected").text();
+            if(ddlDepartment=="--Select--")
+            {
+                var Message ="Select  Department ! ";
+                var Icon = "error";
+            }
+            else
+            {
+                var num= localStorage.getItem('Rowno');
+                if(num=="undefined" || num==null)
+                {
+                    num=1;
+                }
+                var rowNumber = num;
+                var $row = $('#Tabledata tbody tr:eq(' + (rowNumber - 1) + ')');
+                $row.find("#DepartmentId").val(ddlDepartment);
+                var Message ="Changes applied On Department Successfully ! at SrNo "+rowNumber;
+                var Icon = "success";
+            }
+
+            if(num!="undefined")
+            {
+                debugger;
+
+                if (Message != null) {
+                    if (Icon != null) {
+                        Swal.fire({
+                            icon: Icon,
+                            text: Message,
+                            allowOutsideClick: () => {
+                                const popup = Swal.getPopup()
+                                popup.classList.remove('swal2-show')
+                                setTimeout(() => {
+                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                })
+                                setTimeout(() => {
+                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                }, 500)
+                                // return false
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
+        //unit on click
+        $("#btnApplyUnit").click(function(){
+            debugger;
+            var ddlUnit= $("#ddlUnit option:selected").text();
+            if(ddlUnit=="--Select-- " || ddlUnit=="--Select--")
+            {
+                var Message ="Select  Unit ! ";
+                var Icon = "error";
+            }
+            else
+            {
+                var num= localStorage.getItem('Rowno');
+                if(num=="undefined" || num==null)
+                {
+                    num=1;
+                }
+                var rowNumber = num;
+                var $row = $('#Tabledata tbody tr:eq(' + (rowNumber - 1) + ')');
+                $row.find("#EmployeeUnitID").val(ddlUnit);
+                var Message ="Changes applied On Unit Successfully ! at SrNo "+rowNumber;
+                var Icon = "success";
+            }
+            if(num!="undefined")
+            {
+                debugger;
+                if (Message != null) {
+                    if (Icon != null) {
+                        Swal.fire({
+                            icon: Icon,
+                            text: Message,
+                            allowOutsideClick: () => {
+                                const popup = Swal.getPopup()
+                                popup.classList.remove('swal2-show')
+                                setTimeout(() => {
+                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                })
+                                setTimeout(() => {
+                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                }, 500)
+                                // return false
+                            }
+                        });
+                    }
+                }
+            }
+        });
+        //ShiftRule on click
+        $("#btnApplyShiftRuleName").click(function(){
+            debugger;
+            var ddlShiftRuleName= $("#ddlShiftRuleName option:selected").text();
+            if(ddlShiftRuleName=="--Select-- " || ddlShiftRuleName=="--Select--")
+            {
+                var Message ="Select  Shift Rule ! ";
+                var Icon = "error";
+            }
+            else
+            {
+                var num= localStorage.getItem('Rowno');
+                if(num=="undefined" || num==null)
+                {
+                    num=1;
+                }
+                var rowNumber = num;
+                var $row = $('#Tabledata tbody tr:eq(' + (rowNumber - 1) + ')');
+                $row.find("#ShiftRule").val(ddlShiftRuleName);
+                var Message ="Changes applied On Shift Rule Name Successfully ! at SrNo "+rowNumber;
+                var Icon = "success";
+            }
+            if(num!="undefined")
+            {
+                debugger;
+                if (Message != null) {
+                    if (Icon != null) {
+                        Swal.fire({
+                            icon: Icon,
+                            text: Message,
+                            allowOutsideClick: () => {
+                                const popup = Swal.getPopup()
+                                popup.classList.remove('swal2-show')
+                                setTimeout(() => {
+                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                })
+                                setTimeout(() => {
+                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                }, 500)
+                                // return false
+                            }
+                        });
+                    }
+                }
+            }
+        });
+        //Shift Group on click
+        $("#btnApplyShiftGroupName").click(function(){
+            debugger;
+            var ddlShiftGroupName= $("#ddlShiftGroupName option:selected").text();
+            if(ddlShiftGroupName=="--Select-- " || ddlShiftGroupName=="--Select--")
+            {
+                var Message ="Select  Shift Group Name ! ";
+                var Icon = "error";
+            }
+            else
+            {
+                var num= localStorage.getItem('Rowno');
+                if(num=="undefined" || num==null)
+                {
+                    num=1;
+                }
+                var rowNumber = num;
+                var $row = $('#Tabledata tbody tr:eq(' + (rowNumber - 1) + ')');
+                $row.find("#ShiftGroup").val(ddlShiftGroupName);
+                var Message ="Changes applied On Shift Group Name Successfully ! at SrNo "+rowNumber;
+                var Icon = "success";
+            }
+            if(num!="undefined")
+            {
+                debugger;
+                if (Message != null) {
+                    if (Icon != null) {
+                        Swal.fire({
+                            icon: Icon,
+                            text: Message,
+                            allowOutsideClick: () => {
+                                const popup = Swal.getPopup()
+                                popup.classList.remove('swal2-show')
+                                setTimeout(() => {
+                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                })
+                                setTimeout(() => {
+                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                }, 500)
+                                // return false
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
+
+
+
+        $("#ddlCmpId").on("change", function () {
+            debugger;
+            $("#ddlBusinessUnit").find("option").remove();
+            var CmpId = $("#ddlCmpId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetBusinessUnit", "Module_Employee_BulkInsert")',
+               // url: 'GetBusinessUnit',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    if (data != null) {
+                        $("#ddlBusinessUnit").append("<option value=0>--Select--</option>");
+                        $.each(data, function (i, p) {
+                            $("#ddlBusinessUnit").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        });
+        //on Business Unit change
+        $("#ddlBusinessUnit").on("change", function () {
+            debugger;
+
+            $("#ddlUnit").find("option").remove();
+            $("#ddlShiftRuleName").find("option").remove();
+            $("#ddlShiftGroupName").find("option").remove();
+            $("#ddlLineName").find("option").remove();
+            $("#ddlContractorName").find("option").remove();
+          //  $("#ddlEmployeeAllocationCategoryId").find("option").remove();
+
+            var BusinessUnit = $("#ddlBusinessUnit").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetUnit", "Module_Employee_BulkInsert")',
+               // url: 'GetUnit',
+                data: { BusinessUnit: BusinessUnit },
+                success: function (data) {
+                    debugger;
+                    if(data==false)
+                    {
+
+                        $("#ddlShiftRuleName").find("option").remove();
+                        $("#ddlShiftRuleName").append("<option value=''>--Select--</option>");
+                        $("#ddlUnit").find("option").remove();
+                        $("#ddlUnit").append("<option value=''>--Select--</option>");
+                        $("#ddlShiftGroupName").find("option").remove();
+                        $("#ddlShiftGroupName").append("<option value=''>--Select--</option>");
+                        $("#ddlContractorName").find("option").remove();
+                        $("#ddlContractorName").append("<option value=''>--Select--</option>");
+                       // $("#ddlEmployeeAllocationCategoryId").find("option").remove();
+                       // $("#ddlEmployeeAllocationCategoryId").append("<option value=''>--Select--</option>");
+                    }
+                    else{
+                        var ShiftRuleName = data.ShiftRuleName;
+                        var ShiftGroupName=data.ShiftGroupName;
+                        var UnitName = data.UnitName;
+                        var LineName=data.LineName;
+
+                        var GetContractorDropdown=data.GetContractorDropdown;
+                        var EmployeeAllocationCategory=data.EmployeeAllocationCategory;
+                        if (ShiftRuleName != null) {
+                            $("#ddlShiftRuleName").append("<option value=''>--Select--</option>");
+                            $.each(ShiftRuleName, function (i, p) {
+                                $("#ddlShiftRuleName").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+                        }
+                        debugger;
+                        if (UnitName != null) {
+                            $("#ddlUnit").append("<option value=''>--Select--</option>");
+                            $.each(UnitName, function (i, p) {
+                                $("#ddlUnit").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+                        }
+                        debugger;
+                        if(ShiftGroupName!=null)
+                        {
+                            $("#ddlShiftGroupName").append("<option value=''>--Select--</option>");
+                            $.each(ShiftGroupName, function (i, p) {
+                                $("#ddlShiftGroupName").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+                        }
+                        if(LineName!=null)
+                        {
+                            $("#ddlLineName").append("<option value=''>--Select--</option>");
+                            $.each(LineName, function (i, p) {
+                                $("#ddlLineName").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+                        }
+
+                        if (GetContractorDropdown != null) {
+                            $("#ddlContractorName").append("<option value=''>--Select-- </option>");
+                            $.each(GetContractorDropdown, function (i, p) {
+                                $("#ddlContractorName").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+                            //$("#ddlContractorID").val(1).select2();
+                        }
+                        
+                    }
+
+                    //else {
+                    //    $('#ErrorESSPassword').html(" ");
+                    //}
+                }
+            })
+
+        });
+
+        @*$("#ddlEmployeeAllocationCategoryId").on("change", function () {
+            debugger;
+            $("#ddlDesignation").find("option").remove();
+            var AllocationCategoryId = $("#ddlEmployeeAllocationCategoryId").val();
+            $("#ddlDesignation").find("option").remove();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetDesignationDropDown", "Module_Employee_AddWorkers")',
+                data: { AllocationCategoryId: AllocationCategoryId },
+                success: function (data) {
+                    debugger;
+                    if (data !=null) {
+                        //$("#txtEmployeeDesignationID").append("<option value=''>--Select-- </option>");
+                        $.each(data, function(i, p) {
+                            $("#ddlDesignation").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                        });
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        });*@
+
+
+        //on Department Change
+        $("#ddlDepartment").on("change", function () {
+            debugger;
+            var DepartmentId = $("#ddlDepartment").val();
+            $("#ddlSubDepartment").find("option").remove();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetSubDepartment", "Module_Employee_BulkInsert")',
+               // url: 'GetSubDepartment',
+                data: { DepartmentId: DepartmentId },
+                success: function (data) {
+                    if (data != null) {
+                        $("#ddlSubDepartment").append("<option value=0>--Select--</option>");
+                        $.each(data, function (i, p) {
+                            $("#ddlSubDepartment").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        });
+        //on Department Change end
+
+        $("#ddlBusinessUnit").select2();
+        $("#ddlCmpId").select2();
+        $("#ddlDepartment").select2();
+        $("#ddlSubDepartment").select2();
+        $("#ddlDesignation").select2();
+        $("#ddlGrade").select2();
+        $("#ddlLineName").select2();
+        $("#ddlUnit").select2();
+        $("#ddlContractorName").select2();
+        $("#ddlShiftGroupName").select2();
+        $("#ddlShiftRuleName").select2();
+        $("#ddlEmployeeQualificationID").select2();
+        $("#ddlEmployeeCriticalStageID").select2();
+        $("#ddlEmployeeLevelID").select2();
+        $("#ddlEmployeeAllocationCategoryId").select2();
+
+
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        var Title= @Html.Raw(Json.Encode(TempData["Title"]));
+        debugger;
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    title:Title,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        // return false
+                    }
+                });
+            }
+        }
+
+        //$("#btnEmployeeSubmit").hide();
+        //$("#btnSave").show();
+    });//ready function
+
+</script>
+<script>
+
+    //use for add regex function
+    jQuery.validator.addMethod(
+    "regex",
+     function(value, element, regexp) {
+         if (regexp.constructor != RegExp)
+             regexp = new RegExp(regexp);
+         else if (regexp.global)
+             regexp.lastIndex = 0;
+         return this.optional(element) || regexp.test(value);
+     },"erreur expression reguliere"
+  );
+
+    $('#SaveBulkInsert').validate({
+        rules: {
+            AttachFile: {
+                required: true,
+
+            },
+
+        },
+        messages: {
+            AttachFile: {
+                required:"Choose Excel File",
+            },
+
+        },
+
+    });
+    var form = $( "#SaveBulkInsert" );
+    form.validate();
+    $("#btnChooseFile").click(function(){
+        debugger;
+        form.valid();
+        if(form.valid()==false)
+        {
+            return false;
+        }
+        $(".Userloaderbg").css("display","flex");
+        //$('#tblTableBodyBulkInsert').DataTable().clear().destroy();
+        $('#tblTableBodyBulkInsert').not(function(){return!!$(this).has('th').length;}).remove();
+
+        $("#SaveBulkInsert").submit();
+    })
+
+
+    //Submit Button ---------------------------------------------------------------------------------------------------------------------
+    $("#btnEmployeeSubmit").click(function () {
+        debugger;
+        $(".Userloaderbg").css("display","flex");
+        var tbldata = [];
+        var countEmployee=0;
+        $("#Tabledata tbody tr").each(function () {
+
+            var row = $(this);
+            var tblRowData = {};
+            countEmployee=0;
+            tblRowData.SrNo = row.find("td").eq(1).find("input").val();
+            var SrNo= row.find("td").eq(1).find("input").val();
+            tblRowData.CmpID = row.find("td").eq(2).find("input").val();
+            tblRowData.EmployeeBranchId = row.find("td").eq(3).find("input").val();
+            tblRowData.ContractorID = row.find("td").eq(4).find("input").val();
+            tblRowData.Salutation = row.find("td").eq(5).find("input").val();
+            tblRowData.EmployeeName = row.find("td").eq(6).find("input").val();
+            tblRowData.EmployeeNo = row.find("td").eq(7).find("input").val();
+            var EmployeeNo = row.find("td").eq(7).find("input").val();
+            if (EmployeeNo=="") {
+                countEmployee=1;
+                $(".Userloaderbg").css("display","none");
+                var Message="Employee no is compulsory in Sr.No. "+SrNo+"";
+                var Icon="error";
+                if (Message != null) {
+                    if (Icon != null) {
+                        Swal.fire({
+                            icon: Icon,
+                            text: Message,
+                            allowOutsideClick: false
+                        })
+                        return false;
+                    }
+                }
+                return false;
+            }
+
+            var EmployeeCardNo = row.find("td").eq(8).find("input").val();
+
+            if (EmployeeCardNo=="") {
+                countEmployee=1;
+                $(".Userloaderbg").css("display","none");
+                var Message="Employee card no is compulsory in Sr.No. "+SrNo+"";
+                var Icon="error";
+                if (Message != null) {
+                    if (Icon != null) {
+                        Swal.fire({
+                            icon: Icon,
+                            text: Message,
+                            allowOutsideClick: false
+                        })
+                        return false;
+                    }
+                }
+                return false;
+            }
+
+            tblRowData.EmployeeCardNo = row.find("td").eq(8).find("input").val();
+            tblRowData.EmployeeDepartmentID = row.find("td").eq(9).find("input").val();
+            tblRowData.EmployeeSubDepartmentName = row.find("td").eq(10).find("input").val();
+            tblRowData.EmployeeAllocationCategoryId = row.find("td").eq(11).find("input").val();
+            tblRowData.EmployeeDesignationID = row.find("td").eq(12).find("input").val();
+            tblRowData.EmployeeGradeID = row.find("td").eq(13).find("input").val();
+            tblRowData.IsCriticalStageApplicable = row.find("td").eq(14).find("input").val();
+            tblRowData.EmployeeCriticalStageID = row.find("td").eq(15).find("input").val();
+            tblRowData.EmployeeLineID = row.find("td").eq(16).find("input").val();
+            tblRowData.EmployeeLevelID = row.find("td").eq(17).find("input").val();
+            tblRowData.EmployeeUnitID = row.find("td").eq(18).find("input").val();
+             var AadhaarNo = row.find("td").eq(19).find("input").val();
+
+           if (AadhaarNo== "") {
+                countEmployee=1;
+                $(".Userloaderbg").css("display","none");
+                var Message="Aadhaar No is compulsory in Sr.No. "+SrNo+"";
+                var Icon="error";
+                if (Message != null) {
+                    if (Icon != null) {
+                        Swal.fire({
+                            icon: Icon,
+                            text: Message,
+                            allowOutsideClick: false
+                        })
+                        return false;
+                    }
+                }
+                return false;
+            }
+            tblRowData.AadhaarNo = row.find("td").eq(19).find("input").val();
+            tblRowData.NameAsPerAadhaar = row.find("td").eq(20).find("input").val();
+            tblRowData.PrimaryMobile = row.find("td").eq(21).find("input").val();
+            tblRowData.Gender = row.find("td").eq(22).find("input").val();
+            tblRowData.BirthdayDate = row.find("td").eq(23).find("input").val();
+            var BirthdayDate= row.find("td").eq(23).find("input").val();
+            var b= formatDate(BirthdayDate);
+
+            var birthdate = new Date(b);
+            var today = new Date();
+            var minDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
+            var maxDate = new Date(today.getFullYear() - 58, today.getMonth(), today.getDate());
+            if (birthdate >= minDate) {
+                countEmployee=1;
+                $(".Userloaderbg").css("display","none");
+                var Message="Employee must be 18 year old of Sr.No. "+SrNo+"";
+                var Icon="error";
+                if (Message != null) {
+                    if (Icon != null) {
+                        Swal.fire({
+                            icon: Icon,
+                            text: Message,
+                            allowOutsideClick: false
+                        })
+                        return false;
+                    }
+                }
+                return false;
+            }
+
+
+            if (birthdate <= maxDate) {
+                countEmployee=1;
+                $(".Userloaderbg").css("display","none");
+                var Message="Employee should not greater than 58 year of Sr.No. "+SrNo+"";
+                var Icon="error";
+                if (Message != null) {
+                    if (Icon != null) {
+                        Swal.fire({
+                            icon: Icon,
+                            text: Message,
+                            allowOutsideClick: false
+                        })
+                        return false;
+                    }
+                }
+                return false;
+            }
+
+            tblRowData.MaritalStatus = row.find("td").eq(24).find("input").val();
+            tblRowData.EmployeeQualificationID = row.find("td").eq(25).find("input").val();
+            tblRowData.JoiningDate = row.find("td").eq(26).find("input").val();
+            var JoiningDate = row.find("td").eq(26).find("input").val();
+
+            // Ensure the format is correct (assuming input format is DD/MM/YYYY)
+            var parts = JoiningDate.split("/");
+            if (parts.length === 3) {
+                JoiningDate = `${parts[2]}-${parts[1]}-${parts[0]}`; // Convert to YYYY-MM-DD format
+            }
+
+            var GetJoiningDate = new Date(JoiningDate);
+            var today = new Date();
+
+            // Compare only the date part (ignore time)
+            today.setHours(0, 0, 0, 0);
+            GetJoiningDate.setHours(0, 0, 0, 0);
+
+            if (GetJoiningDate > today) {
+                countEmployee = 1;
+                $(".Userloaderbg").css("display", "none");
+                var Message = "Joining date should not be greater than the current date of Sr.No. " + SrNo;
+                var Icon = "error";
+
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: false
+                });
+
+                return false;
+            }
+
+            tblRowData.EM_Atten_WOFF1 = row.find("td").eq(27).find("input").val();
+            tblRowData.EM_Atten_ShiftGroupId = row.find("td").eq(28).find("input").val();
+            tblRowData.EM_Atten_ShiftRuleId = row.find("td").eq(29).find("input").val();
+            tblRowData.PF_NO = row.find("td").eq(30).find("input").val();
+            tblRowData.PF_FSType = row.find("td").eq(31).find("input").val();
+            tblRowData.PF_FS_Name = row.find("td").eq(32).find("input").val();
+            tblRowData.PF_UAN = row.find("td").eq(33).find("input").val();
+            tblRowData.ESIC_NO = row.find("td").eq(34).find("input").val();
+            tblRowData.PF_Reletion1 = row.find("td").eq(35).find("input").val();
+            tblRowData.PF_Nominee1 = row.find("td").eq(36).find("input").val();
+            tblRowData.PresentPin = row.find("td").eq(37).find("input").val();
+            tblRowData.PresentState = row.find("td").eq(38).find("input").val();
+            tblRowData.PresentDistrict = row.find("td").eq(39).find("input").val();
+            tblRowData.PresentTaluka = row.find("td").eq(40).find("input").val();
+            tblRowData.PresentPO = row.find("td").eq(41).find("input").val();
+            tblRowData.PresentCity = row.find("td").eq(42).find("input").val();
+            tblRowData.PresentPostelAddress = row.find("td").eq(43).find("input").val();
+
+            tbldata.push(tblRowData);
+        });
+
+        if (countEmployee==1)
+        {
+            return false;
+        }
+        if(tbldata.length==0)
+        {
+            $(".Userloaderbg").css("display","none");
+            var Message="Import a file";
+            var Icon="error";
+            if (Message != null) {
+                if (Icon != null) {
+                    Swal.fire({
+                        icon: Icon,
+                        text: Message,
+                        allowOutsideClick:false
+                    })
+                    return false;
+                }
+            }
+            return false;
+        }
+
+
+        $.ajax({
+            url: '@Url.Action("SaveUpdate", "Module_Employee_BulkInsert")',
+           // url:"SaveUpdate",
+            method:"post",
+            contentType: 'application/json',
+            data: JSON.stringify(tbldata),
+            success:function(response){
+                debugger;
+                $(".Userloaderbg").css("display","none");
+                var ListEmployeeNo= response.GetListEmployeeNo;
+                if(ListEmployeeNo!=undefined)
+                {
+                    if (ListEmployeeNo.length>0) {
+                        $('#myEmployeeNoModal').modal('show');
+                    }
+                    else
+                    {
+                        $('#myEmployeeNoModal').modal('hide');
+                    }
+                    $('#tblEmployeeNo tr').not(function(){ return !!$(this).has('th').length; }).remove();
+                    if (ListEmployeeNo != null) {
+                        for (var i = 0; i <= ListEmployeeNo.length; i++) {
+                            var table = document.getElementById("tblEmployeeNo");
+                            var rowCount = table.rows.length;
+                            var row = table.insertRow(rowCount);
+                            var count = $('#tblEmployeeNo tr').length;
+                            var Pin=ListEmployeeNo[i];
+                            for (var j = 0; j <= Pin.length; j++) {
+
+                                if (j >= Pin.length) { continue; }
+                                var PinKey=Pin[j].Key;
+                                var PinValue=Pin[j].Value;
+
+                                if(PinKey=="Company")
+                                {
+                                    row.insertCell(0).innerHTML = "" + PinValue + "";
+                                }
+                                else
+                                {
+                                    //row.insertCell(1).innerHTML="";
+                                }
+                                if(PinKey=="BU")
+                                {
+                                    row.insertCell(1).innerHTML = "" +PinValue + "";
+                                }
+                                else
+                                {
+                                    //row.insertCell(2).innerHTML="";
+                                }
+                                if(PinKey=="Employee")
+                                {
+                                    row.insertCell(2).innerHTML = "" + PinValue + "";
+                                }
+                                else
+                                {
+                                    //row.insertCell(3).innerHTML="";
+                                }
+                                if(PinKey=="DepartmentName")
+                                {
+                                    row.insertCell(3).innerHTML = "" + PinValue + "";
+                                }
+                                else
+                                {
+                                    //row.insertCell(4).innerHTML="";
+                                }
+                                if(PinKey=="EmployeeNo")
+                                {
+                                    row.insertCell(4).innerHTML = "" + PinValue + "";
+                                }
+                                else
+                                {
+                                    //row.insertCell(5).innerHTML="";
+                                }
+                                if(PinKey=="EmployeeCardNo")
+                                {
+                                    row.insertCell(5).innerHTML = "" + PinValue + "";
+                                }
+                                else
+                                {
+                                    //row.insertCell(5).innerHTML="";
+                                }
+                            }
+
+                        }
+                    }
+                }
+                var ListEmployeeCardNo= response.GetListEmployeeCardNo;
+                if(ListEmployeeCardNo!=undefined)
+                {
+                    if (ListEmployeeCardNo.length>0) {
+                        $('#myEmployeeNoCardModal').modal('show');
+                    }
+                    else
+                    {
+                        $('#myEmployeeNoCardModal').modal('hide');
+                    }
+                    $('#tblEmployeeCardNo tr').not(function(){ return !!$(this).has('th').length; }).remove();
+                    if (ListEmployeeCardNo != null) {
+                        for (var i = 0; i <= ListEmployeeCardNo.length; i++) {
+                            var table = document.getElementById("tblEmployeeCardNo");
+                            var rowCount = table.rows.length;
+                            var row = table.insertRow(rowCount);
+                            var count = $('#tblEmployeeCardNo tr').length;
+                            var Pin=ListEmployeeCardNo[i];
+                            for (var j = 0; j <= Pin.length; j++) {
+
+                                if (j >= Pin.length) { continue; }
+                                var PinKey=Pin[j].Key;
+                                var PinValue=Pin[j].Value;
+
+                                if(PinKey=="Company")
+                                {
+                                    row.insertCell(0).innerHTML = "" + PinValue + "";
+                                }
+                                else
+                                {
+                                    //row.insertCell(1).innerHTML="";
+                                }
+                                if(PinKey=="BU")
+                                {
+                                    row.insertCell(1).innerHTML = "" +PinValue + "";
+                                }
+                                else
+                                {
+                                    //row.insertCell(2).innerHTML="";
+                                }
+                                if(PinKey=="Employee")
+                                {
+                                    row.insertCell(2).innerHTML = "" + PinValue + "";
+                                }
+                                else
+                                {
+                                    //row.insertCell(3).innerHTML="";
+                                }
+                                if(PinKey=="DepartmentName")
+                                {
+                                    row.insertCell(3).innerHTML = "" + PinValue + "";
+                                }
+                                else
+                                {
+                                    //row.insertCell(4).innerHTML="";
+                                }
+                                if(PinKey=="EmployeeNo")
+                                {
+                                    row.insertCell(4).innerHTML = "" + PinValue + "";
+                                }
+                                else
+                                {
+                                    //row.insertCell(5).innerHTML="";
+                                }
+                                if(PinKey=="EmployeeCardNo")
+                                {
+                                    row.insertCell(5).innerHTML = "" + PinValue + "";
+                                }
+                                else
+                                {
+                                    //row.insertCell(5).innerHTML="";
+                                }
+                            }
+
+                        }
+                    }
+                }
+
+                var ListEmployeeAadharNo= response.GetListEmployeeAadharNo;
+                if(ListEmployeeAadharNo!=undefined)
+                {
+                    if (ListEmployeeAadharNo.length>0) {
+                        $('#myAadharNoModal').modal('show');
+                    }
+                    else
+                    {
+                        $('#myAadharNoModal').modal('hide');
+                    }
+                    $('#tblEmployeeAadharNo tr').not(function(){ return !!$(this).has('th').length; }).remove();
+                    if (ListEmployeeAadharNo != null) {
+                        for (var i = 0; i <= ListEmployeeAadharNo.length; i++) {
+                            var table = document.getElementById("tblEmployeeAadharNo");
+                            var rowCount = table.rows.length;
+                            var row = table.insertRow(rowCount);
+                            var count = $('#tblEmployeeAadharNo tr').length;
+                            var Pin=ListEmployeeAadharNo[i];
+                            for (var j = 0; j <= Pin.length; j++) {
+
+                                if (j >= Pin.length) { continue; }
+                                var PinKey=Pin[j].Key;
+                                var PinValue=Pin[j].Value;
+
+                                if(PinKey=="Company")
+                                {
+                                    row.insertCell(0).innerHTML = "" + PinValue + "";
+                                }
+                                else
+                                {
+                                    //row.insertCell(1).innerHTML="";
+                                }
+                                if(PinKey=="BU")
+                                {
+                                    row.insertCell(1).innerHTML = "" +PinValue + "";
+                                }
+                                else
+                                {
+                                    //row.insertCell(2).innerHTML="";
+                                }
+                                if(PinKey=="Employee")
+                                {
+                                    row.insertCell(2).innerHTML = "" + PinValue + "";
+                                }
+                                else
+                                {
+                                    //row.insertCell(3).innerHTML="";
+                                }
+                                if(PinKey=="DepartmentName")
+                                {
+                                    row.insertCell(3).innerHTML = "" + PinValue + "";
+                                }
+                                else
+                                {
+                                    //row.insertCell(4).innerHTML="";
+                                }
+                                if(PinKey=="EmployeeNo")
+                                {
+                                    row.insertCell(4).innerHTML = "" + PinValue + "";
+                                }
+                                else
+                                {
+                                    //row.insertCell(5).innerHTML="";
+                                }
+                                if(PinKey=="EmployeeCardNo")
+                                {
+                                    row.insertCell(5).innerHTML = "" + PinValue + "";
+                                }
+                                else
+                                {
+                                    //row.insertCell(5).innerHTML="";
+                                }
+                                if(PinKey=="AadhaarNo")
+                                {
+                                    row.insertCell(6).innerHTML = "" + PinValue + "";
+                                }
+                                else
+                                {
+                                    //row.insertCell(5).innerHTML="";
+                                }
+                            }
+
+                        }
+                    }
+                }
+
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if(Icon1!="success")
+                {
+                    var rownumber=response.rowno;
+                    localStorage.setItem('Rowno',rownumber)
+                }
+                else{
+                    var rownumber=0;
+                    localStorage.setItem('Rowno',rownumber)
+                }
+                //var Message1 = response.Message;
+                // var Icon1 = response.Icon;
+                if(Icon1=='error')
+                {
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: false
+                            });@*.then((result) => {
+                                if (result.isConfirmed) {
+                                    $('#tblTableBodyBulkInsert').not(function(){return!!$(this).has('th').length;}).remove();
+                                    window.location.href = '@Url.Action("Module_Employee_BulkInsert", "Module_Employee_BulkInsert")';
+
+                                } else if (
+                                    result.dismiss === Swal.DismissReason.cancel
+                                ) {
+
+                                }
+                            })*@
+                        }
+                    }
+                }
+                else{
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: false
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    $('#tblTableBodyBulkInsert').not(function(){return!!$(this).has('th').length;}).remove();
+                                    window.location.href = '@Url.Action("Module_Employee_BulkInsert", "Module_Employee_BulkInsert")';
+
+                                } else if (
+                                    result.dismiss === Swal.DismissReason.cancel
+                                ) {
+
+                                }
+                            })
+                        }
+                    }
+                }
+            }
+        });
+
+    });
+
+    //Submit Button end---------------------------------------------------------------------------------------------------------------------
+
+    $("#btnDuplicateAddharNo").on("click", function () {
+        debugger;
+        var AadharNo = $("#txtDuplicateAddharNo").val();
+        if(AadharNo=="")
+        {$('#ErrorDuplicateAddharNo').html("Please Enter Aadhar No");  return false;}
+        else{$('#ErrorDuplicateAddharNo').html("");}
+        $(".Userloaderbg").css("display","flex");
+        $.ajax({
+            type: 'GET',
+            dataType: 'JSON',
+            contentType: "application/json; charset=utf-8",
+            url: '@Url.Action("GetEmployeeHistory", "Module_Employee_BulkInsert")',
+            //url: 'GetEmployeeHistory',
+            data: { AadharNo: AadharNo },
+            success: function (data) {
+                debugger;
+                $(".Userloaderbg").css("display","none");
+                //var data=response[0];
+                if (data && data.length > 0) {
+                    // Check if the DataTable is already initialized and destroy it
+                    if ($.fn.DataTable.isDataTable('#tblHeadEmployeeHistory')) {
+                        $('#tblHeadEmployeeHistory').DataTable().clear().destroy();
+                    }
+
+                    // Initialize the DataTable
+                    $('#tblHeadEmployeeHistory').DataTable({
+                        data: data,
+                        scrollY: 300,
+                        scrollX: true,
+                        searching: true, // Enable searching
+                        info: true,
+                        paging: false,
+                        buttons: [
+                            'excel' // Add Excel export button
+                        ],
+                        columns: [
+                            { data: 'Company' },
+                            { data: 'BU' },
+                            { data: 'Employee' },
+                            { data: 'EmployeeNo' },
+                            { data: 'EmployeeCardNo' },
+                            { data: 'Status' },
+                            { data: 'ContractorName' },
+                            { data: 'DepartmentName' },
+                            { data: 'DesignationName' },
+                            { data: 'GradeName' },
+                            { data: 'AadhaarNo' },
+                            { data: 'JoiningDate' },
+                            { data: 'LeavingDate' },
+                            { data: 'Duration' }
+                        ],
+                        dom: '<"row"<"col-sm-6"B><"col-sm-6"f>>' + // Add buttons to the left and search box to the right
+                             '<"row"<"col-sm-12"tr>>' +
+                             '<"row"<"col-sm-6"i><"col-sm-6"p>>', // Show info and pagination
+                        initComplete: function() {
+                            var tableInfo = this.api().page.info();
+                            $('#tblHeadEmployeeHistory_info').append(` (Total rows: ${tableInfo.recordsTotal})`);
+                        }
+                    });
+
+                    $('#myEmployeeHistoryNoModal').modal('show');
+                } else {
+                    $('#myEmployeeHistoryNoModal').modal('hide');
+                }
+                //if (data == null) {
+                //    var Message="Record not found.";
+                //    var Icon="error";
+                //    if (Message != null) {
+                //        if (Icon != null) {
+                //            Swal.fire({
+                //                icon: Icon,
+                //                text: Message,
+                //                allowOutsideClick: () => {
+                //                    const popup = Swal.getPopup()
+                //                    popup.classList.remove('swal2-show')
+                //                    setTimeout(() => {
+                //                        popup.classList.add('animate__animated', 'animate__headShake')
+                //                    })
+                //                    setTimeout(() => {
+                //                        popup.classList.remove('animate__animated', 'animate__headShake')
+                //                    }, 500)
+                //                    // return false
+                //                }
+                //            });
+                //        }
+                //    }
+                //}
+                //else {
+                //    if (data != null) {
+                //        if(data!=undefined)
+                //        {
+                //            if (data.length>0) {
+                //                $('#myEmployeeHistoryNoModal').modal('show');
+                //            }
+                //            else
+                //            {
+                //                $('#myEmployeeHistoryNoModal').modal('hide');
+                //            }
+                //            $('#tblEmployeeHistory tr').not(function(){ return !!$(this).has('th').length; }).remove();
+                //            if (data != null) {
+                //                for (var i = 0; i <= data.length; i++) {
+                //                    var table = document.getElementById("tblEmployeeHistory");
+                //                    var rowCount = table.rows.length;
+                //                    var row = table.insertRow(rowCount);
+                //                    var count = $('#tblEmployeeHistory tr').length;
+                //                    var Pin=data[i];
+                //                    for (var j = 0; j <= Pin.length; j++) {
+
+                //                        if (j >= Pin.length) { continue; }
+                //                        var PinKey=Pin[j].Key;
+                //                        var PinValue=Pin[j].Value;
+
+                //                        if(PinKey=="CompanyName")
+                //                        {
+                //                            row.insertCell(0).innerHTML = "" + PinValue + "";
+                //                        }
+                //                        else
+                //                        {
+                //                            //row.insertCell(1).innerHTML="";
+                //                        }
+                //                        if(PinKey=="BranchName")
+                //                        {
+                //                            row.insertCell(1).innerHTML = "" +PinValue + "";
+                //                        }
+                //                        else
+                //                        {
+                //                            //row.insertCell(2).innerHTML="";
+                //                        }
+                //                        if(PinKey=="EmployeeName")
+                //                        {
+                //                            row.insertCell(2).innerHTML = "" + PinValue + "";
+                //                        }
+                //                        else
+                //                        {
+                //                            //row.insertCell(3).innerHTML="";
+                //                        }
+                //                        if(PinKey=="EmployeeNo")
+                //                        {
+                //                            row.insertCell(3).innerHTML = "" + PinValue + "";
+                //                        }
+                //                        else
+                //                        {
+                //                            //row.insertCell(4).innerHTML="";
+                //                        }
+                //                        if(PinKey=="EmployeeCardNo")
+                //                        {
+                //                            row.insertCell(4).innerHTML = "" + PinValue + "";
+                //                        }
+                //                        else
+                //                        {
+                //                            //row.insertCell(5).innerHTML="";
+                //                        }
+                //                        if(PinKey=="ContractorName")
+                //                        {
+                //                            row.insertCell(5).innerHTML = "" + PinValue + "";
+                //                        }
+                //                        else
+                //                        {
+                //                            //row.insertCell(5).innerHTML="";
+                //                        }
+                //                        if(PinKey=="DepartmentName")
+                //                        {
+                //                            row.insertCell(6).innerHTML = "" + PinValue + "";
+                //                        }
+                //                        else
+                //                        {
+                //                            //row.insertCell(5).innerHTML="";
+                //                        }
+                //                        if(PinKey=="DesignationName")
+                //                        {
+                //                            row.insertCell(7).innerHTML = "" + PinValue + "";
+                //                        }
+                //                        else
+                //                        {
+                //                            //row.insertCell(5).innerHTML="";
+                //                        }
+                //                        if(PinKey=="GradeName")
+                //                        {
+                //                            row.insertCell(8).innerHTML = "" + PinValue + "";
+                //                        }
+                //                        else
+                //                        {
+                //                            //row.insertCell(5).innerHTML="";
+                //                        }
+                //                        if(PinKey=="JoiningDate")
+                //                        {
+                //                            row.insertCell(9).innerHTML = "" + PinValue + "";
+                //                        }
+                //                        else
+                //                        {
+                //                            //row.insertCell(5).innerHTML="";
+                //                        }
+                //                        if(PinKey=="AadhaarNo")
+                //                        {
+                //                            row.insertCell(10).innerHTML = "" + PinValue + "";
+                //                        }
+                //                        else
+                //                        {
+                //                            //row.insertCell(5).innerHTML="";
+                //                        }
+                //                    }
+
+                //                }
+                //            }
+                //        }
+                //    }
+                //}
+            }
+        })
+    });
+
+    $("#btnDuplicateAadhaarNo").on("click", function () {
+        $(".Userloaderbg").css("display","flex");
+        var tblAadhaardata = [];
+        $("#Tabledata tbody tr").each(function () {
+
+            var row = $(this);
+            var tblRowAadhaarData = {};
+            tblRowAadhaarData.AadhaarNo = row.find("td").eq(19).find("input").val();
+            tblAadhaardata.push(tblRowAadhaarData);
+        });
+        $.ajax({
+            url: '@Url.Action("GetAadhaarDuplicate", "Module_Employee_BulkInsert")',
+            method: "post",
+            contentType: 'application/json',
+            data: JSON.stringify(tblAadhaardata),
+            success: function(data) {
+                $(".Userloaderbg").css("display", "none");
+                debugger;
+                //var data=response[0];
+                if (data && data.length > 0) {
+                    // Check if the DataTable is already initialized and destroy it
+                    if ($.fn.DataTable.isDataTable('#tblHeadEmployeeHistory')) {
+                        $('#tblHeadEmployeeHistory').DataTable().clear().destroy();
+                    }
+
+                    // Initialize the DataTable
+                    $('#tblHeadEmployeeHistory').DataTable({
+                        data: data,
+                        scrollY: 300,
+                        scrollX: true,
+                        searching: true, // Enable searching
+                        info: true,
+                        paging: false,
+                        buttons: [
+                            'excel' // Add Excel export button
+                        ],
+                        columns: [
+                            { data: 'Company' },
+                            { data: 'BU' },
+                            { data: 'Employee' },
+                            { data: 'EmployeeNo' },
+                            { data: 'EmployeeCardNo' },
+                            { data: 'Status' },
+                            { data: 'ContractorName' },
+                            { data: 'DepartmentName' },
+                            { data: 'DesignationName' },
+                            { data: 'GradeName' },
+                            { data: 'AadhaarNo' },
+                            { data: 'JoiningDate' },
+                            { data: 'LeavingDate' },
+                            { data: 'Duration' }
+                        ],
+                        dom: '<"row"<"col-sm-6"B><"col-sm-6"f>>' + // Add buttons to the left and search box to the right
+                             '<"row"<"col-sm-12"tr>>' +
+                             '<"row"<"col-sm-6"i><"col-sm-6"p>>', // Show info and pagination
+                        initComplete: function() {
+                            var tableInfo = this.api().page.info();
+                            $('#tblHeadEmployeeHistory_info').append(` (Total rows: ${tableInfo.recordsTotal})`);
+                        }
+                    });
+
+                    $('#myEmployeeHistoryNoModal').modal('show');
+                } else {
+                    $('#myEmployeeHistoryNoModal').modal('hide');
+                }
+            }
+        });
+
+    });
+</script>
+
+
+
+@*<script>
+        function exportToExcel(Name,type, fn, dl) {
+            debugger;
+            if(Name=="Aadhar")
+            {
+                var elt = document.getElementById('tblHeadAadharNo');
+                var wb = XLSX.utils.table_to_book(elt, { sheet: "AadharNo" });
+                return dl ?
+                    XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }) :
+                    XLSX.writeFile(wb, fn || ('Duplicate Aadhar No.' + (type || 'xlsx')));
+            }
+            else if (Name=="CardNo")
+            {
+                var elt = document.getElementById('tblHeadEmployeeCardNo');
+                var wb = XLSX.utils.table_to_book(elt, { sheet: "EmployeeCardNo" });
+                return dl ?
+                    XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }) :
+                    XLSX.writeFile(wb, fn || ('Duplicate Employee Card No.' + (type || 'xlsx')));
+            }
+            else if (Name=="EmployeeNo")
+            {
+                var elt = document.getElementById('tblHeadEmployeeNo');
+                var wb = XLSX.utils.table_to_book(elt, { sheet: "EmployeeNo" });
+                return dl ?
+                    XLSX.write(wb, { bookType: type, bookSST: true, type: 'base64' }) :
+                    XLSX.writeFile(wb, fn || ('Duplicate Employee No.' + (type || 'xlsx')));
+            }
+        }
+    </script>*@
+
+<script type="text/javascript">
+    var tableToExcelAadhar = (function() {
+        debugger;
+        var uri = 'data:application/vnd.ms-excel;base64,'
+          , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="#"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
+          , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
+          , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
+        return function(table, name) {
+            if (!table.nodeType) table = document.getElementById('tblHeadAadharNo')
+            var ctx = {worksheet: name || 'Worksheet', table: table.innerHTML}
+            window.location.href = uri + base64(format(template, ctx))
+        }
+    })()
+
+    var tableToExcelEmployeeNo = (function() {
+        debugger;
+        var uri = 'data:application/vnd.ms-excel;base64,'
+          , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="#"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
+          , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
+          , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
+        return function(table, name) {
+            if (!table.nodeType) table = document.getElementById('tblHeadEmployeeNo')
+            var ctx = {worksheet: name || 'Worksheet', table: table.innerHTML}
+            window.location.href = uri + base64(format(template, ctx))
+        }
+    })()
+
+    var tableToExcelEmployeeCardNo = (function() {
+        debugger;
+        var uri = 'data:application/vnd.ms-excel;base64,'
+          , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="#"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
+          , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
+          , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
+        return function(table, name) {
+            if (!table.nodeType) table = document.getElementById('tblHeadEmployeeCardNo')
+            var ctx = {worksheet: name || 'Worksheet', table: table.innerHTML}
+            window.location.href = uri + base64(format(template, ctx))
+        }
+    })()
+
+    var tableToExcelDuplicateEmployee = (function() {
+        debugger;
+        var uri = 'data:application/vnd.ms-excel;base64,'
+          , template = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="#"><head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>{worksheet}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table>{table}</table></body></html>'
+          , base64 = function(s) { return window.btoa(unescape(encodeURIComponent(s))) }
+          , format = function(s, c) { return s.replace(/{(\w+)}/g, function(m, p) { return c[p]; }) }
+        return function(table, name) {
+            if (!table.nodeType) table = document.getElementById('tblHeadEmployeeHistory')
+            var ctx = {worksheet: name || 'Worksheet', table: table.innerHTML}
+            window.location.href = uri + base64(format(template, ctx))
+        }
+    })()
+
+
+    function numbervalidate(key) {
+        var presskeys = (key.which) ? key.which : key.presskeys;
+        if (!(presskeys == 8 || presskeys == 46) && (presskeys < 48 || presskeys > 57)  &&  (presskeys===191) ) {
+            return false;
+        }
+    }
+    //function numbervalidate(key) {
+    //    var presskeys = key.which || key.keyCode; // Determine the key code of the pressed key
+    //    // Disallow forward slash (47) and backward slash (220)
+    //    if (presskeys === 47 || presskeys === 220) {
+    //        return false;
+    //    }
+    //    // Allow only numeric keys (48-57), Backspace (8), and Delete (46)
+    //    if (!(presskeys === 8 || presskeys === 46 || (presskeys >= 48 && presskeys <= 57))) {
+    //        return false;
+    //    }
+    //    return true;
+    //}
+
+
+
+    function formatDate(dateString) {
+        // Parse the input date string into a Date object
+        var date = new Date(dateString);
+
+        // Check if the date is valid
+        if (isNaN(date.getTime())) {
+            return 'Invalid Date';
+        }
+
+        // Extract day, month, and year components
+        var dd = String(date.getDate()).padStart(2, '0');
+        var mm = String(date.getMonth() + 1).padStart(2, '0'); // January is 0!
+        var yyyy = date.getFullYear();
+
+        // Return formatted date in yyyy-MM-dd format
+        return yyyy + '-' + dd + '-' + mm;
+    }
+</script>

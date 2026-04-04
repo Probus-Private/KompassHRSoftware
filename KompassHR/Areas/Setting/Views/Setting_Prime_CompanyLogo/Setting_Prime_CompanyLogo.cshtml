@@ -1,0 +1,294 @@
+﻿@model KompassHR.Areas.Setting.Models.Setting_Prime.Mas_CompanyProfile
+@{
+    ViewBag.Title = "Setting_Prime_CompanyLogo";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+
+<style>
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 13px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    .Error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 13px;
+    }
+
+    .Required {
+        text-align: left;
+        font-weight: 700;
+        color: darkgreen;
+        font-size: 13px;
+    }
+
+    .page-header {
+        font-size: 18px !important;
+        font-family: roboto;
+        transform: translateY(4px);
+    }
+
+    .breadcrumb-item + .breadcrumb-item::before {
+        float: left;
+        content: "";
+    }
+
+    .img-fluid {
+        max-width: 100%;
+        height: auto;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Company Logo
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("ESS_AdminDashboard_Dashboard", "ESS_AdminDashboard_Dashboard", new { id = 32, ScreenId = 121, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Setting_Prime_Menu", "Setting_Prime_Menu", new { id = 31, ScreenId = 1, area = "Setting" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Settings">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Company Logo - Add </h4>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Add company logo here.
+                    </p>
+                </div>
+                <div class="panel-body" data-scrollbar="false">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("UploadLogo", "Setting_Prime_CompanyLogo", new { area = "Setting" })' id="FormCompanyLogo" method="post" enctype="multipart/form-data">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Company Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-10">
+                                                @Html.DropDownListFor(model => model.CompanyId, new SelectList(ViewBag.GetCompanyNameList, "CompanyId", "CompanyName"), "--Select--", new { id = "ddlCompanyName", @class = "form-select" })
+                                                <span id="ErrorddlCompanyName" class="Error"></span>
+                                                @Html.HiddenFor(model => model.CompanyId)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-15px">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="ImgBx" style="height: 200px;">
+                                                    <img id="fileData" style="border: 1px solid red; height:220px; width: 200px;" src="" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br /><br />
+                                <div class="row mb-15px">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Choose Logo
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-6">
+                                                <input type="file" name="Image" value="" onchange="return ShowImagePreview(this)" class="form-control" id="fileupload" />
+                                                <span id="Errorfileupload" class="Error"></span><br />
+                                                <span class="Required">File Format( .jpg / .jpeg / .png ) </span><br>
+                                                <span class="Required">File Size Between(150KB to 3MB)</span>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button"class="btn btn-sm btn-primary" id="btnDownloadPhoto" title="Company Logo">
+                                                    <i class="fas fa-download"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="col-md-12">
+                                    <div class="BtnBx">
+                                        <div>
+                                            <button type="button" id="btnSubmit" class="btn btn-primary btn-sm">
+                                                <i class="fa-solid fa-floppy-disk"></i> Submit
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+<script>
+    function ShowImagePreview(input) {
+        debugger;
+        if (input.files && input.files[0]) {
+            var fname = input.files[0].name;
+            var re = /(\.jpg|\.jpeg|\.png)$/i;
+            if (!re.exec(fname)) {
+                Swal.fire({
+                    icon: "error",
+                    text: "This file format not suported",
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                });
+
+                $("#fileupload").val("");
+                return false;
+            }
+            else {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#fileData').prop('src', e.target.result);
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    }
+
+
+    $(document).ready(function () {
+        $("#ddlCompanyName").select2();
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        // return false
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+
+        $("#ddlCompanyName").change(function () {
+            var CompanyId = $('option:selected').val();
+            $.ajax({
+                url: '@Url.Action("Images", "Setting_Prime_CompanyLogo")',
+                method:"get",
+                data:{CompanyId:CompanyId},
+                success:function(data){
+                    debugger;
+                    var Base64Image = data.data;
+                    document.getElementById("fileData").src = Base64Image;
+                }
+
+            });
+
+        });
+
+    });//ready Function
+
+    $("#btnSubmit").click(function () {
+        debugger;
+        var ddlCmpName = $("#ddlCompanyName :selected").val();
+        if(ddlCmpName=="")
+        {
+            $("#ErrorddlCompanyName").html("Please select company name");
+            return false;
+        }
+        else{
+            $("#ErrorddlCompanyName").html("");
+        }
+
+
+        if ($('#fileupload').get(0).files.length === 0)
+        {
+            $("#Errorfileupload").html("Please upload file");
+            return false;
+        }
+        else{
+            $("#Errorfileupload").html("");
+        }
+        $("#FormCompanyLogo").submit();
+    })
+</script>
+
+<script>
+    $("#btnDownloadPhoto").click(function () {
+        var img = document.getElementById("fileData");
+        var imageSrc = img.src;
+        // Check if it's a base64 image
+        if (imageSrc.startsWith("data:image")) {
+            var link = document.createElement("a");
+            link.href = imageSrc;
+            link.download = "DownloadedImage.png"; // Set desired file name
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } else {
+            Swal.fire({
+                icon: "info",
+                text: "Image not attch",
+                allowOutsideClick: false
+            });
+        }
+    });
+
+</script>

@@ -1,0 +1,815 @@
+﻿@{
+    ViewBag.Title = "ESS_Marketplace_MarketplaceGallery";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- ================== BEGIN core-css ================== -->
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+
+<link href="~/assets/plugins/lightbox2_ReEdit/dist/css/lightbox.css" rel="stylesheet" />
+<script src="~/assets/plugins/lightbox2_ReEdit/dist/js/lightbox.js"></script>
+<script src="~/assets/plugins/lightbox2_ReEdit/dist/js/lightbox-plus-jquery.min.js"></script>
+<!-- ================== END core-css ================== -->
+
+<style>
+    .card {
+        background-color: #fff;
+        border: 1px solid lightgray;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+        .card .imgbox {
+            display: flex;
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+            overflow: hidden;
+            min-height: 310px;
+            border-radius: 12px 12px 0 0;
+            padding: 0px;
+        }
+
+            .card .imgbox img {
+                max-width: 100%;
+                max-height: 310px;
+                object-fit: contain;
+            }
+
+        .card .productDetails {
+            padding: 15px;
+        }
+
+            .card .productDetails .p-title {
+                font-size: 18px;
+                font-weight: bold;
+                margin-bottom: 10px;
+                line-height: 1.5rem;
+                min-height: 3rem;
+            }
+
+    .productDetails .p-info-title {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    .card .productDetails .p-info {
+        font-size: 12px;
+        color: #555;
+        text-align: justify;
+        padding-bottom: 10px;
+        border-bottom: 1px dashed #666;
+        min-height: 190px;
+    }
+
+    .productDetails .productDates {
+        margin-top: 10px;
+        font-size: 12px;
+        justify-content: space-between;
+        margin-bottom: 10px;
+        font-weight: 600;
+    }
+
+    .callbx .userName {
+        font-size: 10px;
+        font-weight: 600;
+        text-align: left;
+        margin-top: 5px;
+    }
+
+    .callbx .callBtn {
+        background-color: #5F92F2;
+        padding: 8px;
+        border-radius: 40px;
+        font-weight: 600;
+        color: #fff;
+        font-size: 16px;
+    }
+
+    .callBtn .icon {
+        background-color: #fff;
+        font-size: 12px;
+        padding: 8px 10px;
+        border-radius: 50%;
+        color: #5F92F2;
+    }
+
+    .pricebx {
+        text-align: end;
+    }
+
+        .pricebx .price-title {
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .pricebx .price-amt {
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+    /*Remove*/
+    .p-3 {
+        padding: .5000rem !important;
+    }
+    /* Base styling */
+    body {
+        font-family: 'Montserrat', sans-serif;
+        background-color: #f8f9fa; /* Light grey background for the page */
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Card styling */
+    .card {
+        border-radius: 12px;
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        background-color: #ffffff; /* White background for cards */
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        overflow: hidden;
+        width: 100%; /* Ensure full width within the column */
+    }
+
+        /* Hover effect for cards */
+        .card:hover {
+            transform: translateY(-8px); /* Slight hover effect */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+        }
+
+    .blue-section {
+        background-color: #3c91e6;
+        color: white;
+    }
+
+    .category-separator {
+        border: 0;
+        height: 1px;
+        background-color: rgba(255, 255, 255, 0.6);
+        margin: 0;
+    }
+
+    .description-limit {
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* limit to 2 lines */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-bottom: 1rem; /* space after description */
+    }
+
+    .read-more-link {
+        color: #5F92F2;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 12px;
+    }
+
+        .read-more-link:hover {
+            text-decoration: underline;
+        }
+
+    .full-desc {
+        display: none;
+    }
+
+    .for-contact {
+        /* Ensures consistent font size and spacing */
+        font-size: 0.9rem;
+        line-height: 1.3;
+    }
+
+        /* Optional: add some spacing between description label and text */
+        .for-contact + .description-limit {
+            margin-top: 0.25rem;
+        }
+
+    /* Add some spacing between 'For Contact' and the contact details */
+    .card-footer .for-contact {
+        margin-bottom: 0.5rem;
+    }
+
+
+    /* Image styling */
+    .image .image-inner {
+        width: 100%;
+        height: 180px;
+        overflow: hidden;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    .image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease-in-out;
+    }
+
+    .image .image-inner:hover img {
+        transform: scale(1.1);
+    }
+
+
+    /* Icon styling for clickable images */
+    .image span {
+        font-size: 24px;
+        color: #ffffff;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+
+        .image span:hover {
+            color: #ffcc00; /* Gold color for hover effect */
+        }
+
+    /* Media Queries for responsiveness */
+    @@media (max-width: 1200px) {
+        .col-xl-3 {
+            flex: 0 0 48%;
+            max-width: 48%;
+        }
+    }
+
+    @@media (max-width: 992px) {
+        .col-lg-4 {
+            flex: 0 0 48%;
+            max-width: 48%;
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .col-md-6 {
+            flex: 0 0 100%;
+            max-width: 100%;
+        }
+    }
+
+    @@media (max-width: 576px) {
+        .card-body {
+            padding: 15px;
+        }
+
+        .card-title {
+            font-size: 16px;
+        }
+
+        .card-text {
+            font-size: 12px;
+        }
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Market Place Gallery
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_MarketPlace_Menu", "ESS_MarketPlace_Menu", new {id =14, ScreenId=202, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Market Place Gallery</h4>
+
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Add your products details and connect with potential buyer's here!
+                    </p>
+                </div>
+
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="row mb-15px">
+                                <label class="form-label col-form-label col-md-2">Category <span class="important">*</span></label>
+                                <div class="col-md-6">
+                                    @Html.DropDownList("MarketPlaceCategoryID", new SelectList(ViewBag.GetMarketCategory, "MarketPlaceCategoryID", "MarketPlaceCategory"), "All", new { id = "MarketPlaceCategoryID", name = "MarketPlaceCategoryID", @class = "form-control form-select" })
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-primary" onclick="Filter()">Show</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="marketplacePostsContainer" class="row">
+                        @if (ViewBag.MarketplaceGallery != null)
+                        {
+                            foreach (var d in ViewBag.MarketplaceGallery)
+                            {
+
+                                <div class="col-xl-4 col-lg-4 col-md-6 col-12 mb-4">
+                                    <div class="card">
+                                        <input type="hidden" id="hiddenPhoto1_@d.MarketPlacePostID" value="@d.Photo1Path" />
+                                        <input type="hidden" id="hiddenPhoto2_@d.MarketPlacePostID" value="@d.Photo2Path" />
+                                        <input type="hidden" id="hiddenPhoto3_@d.MarketPlacePostID" value="@d.Photo3Path" />
+
+                                        <div class="imgbox">
+                                            <div id="carousel_@d.MarketPlacePostID" class="carousel carousel-dark slide" data-bs-ride="carousel">
+                                                <div class="carousel-indicators">
+                                                    <button type="button" data-bs-target="#carousel_@d.MarketPlacePostID" data-bs-slide-to="0"
+                                                            class="active" aria-current="true" aria-label="Slide 1"></button>
+                                                    @if (d.Photo2Path != "")
+                                                    {
+                                                        <button type="button" data-bs-target="#carousel_@d.MarketPlacePostID" data-bs-slide-to="1"
+                                                                aria-label="Slide 2"></button>
+                                                    }
+                                                    @if (d.Photo3Path != "")
+                                                    {
+                                                        <button type="button" data-bs-target="#carousel_@d.MarketPlacePostID" data-bs-slide-to="2"
+                                                                aria-label="Slide 3"></button>
+                                                    }
+                                                </div>
+                                                <div class="carousel-inner">
+                                                    <div class="carousel-item active">
+                                                        <img id="photo1_@d.MarketPlacePostID" src="" class="d-block w-100" onclick="GetBase64Imgage('@d.MarketPlacePostID', '1')" />
+                                                    </div>
+                                                    @if (d.Photo2Path != "")
+                                                    {
+                                                        <div class="carousel-item">
+                                                            <img id="photo2_@d.MarketPlacePostID" src="" class="d-block w-100" onclick="GetBase64Imgage('@d.MarketPlacePostID', '2')" />
+                                                        </div>
+                                                    }
+                                                    @if (d.Photo3Path != "")
+                                                    {
+                                                        <div class="carousel-item">
+                                                            <img id="photo3_@d.MarketPlacePostID" src="" class="d-block w-100" onclick="GetBase64Imgage('@d.MarketPlacePostID', '3')" />
+                                                        </div>
+                                                    }
+                                                </div>
+
+                                                <button class="carousel-control-prev" type="button" data-bs-target="#carousel_@d.MarketPlacePostID" data-bs-slide="prev">
+                                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                    <span class="visually-hidden">Previous</span>
+                                                </button>
+                                                <button class="carousel-control-next" type="button" data-bs-target="#carousel_@d.MarketPlacePostID" data-bs-slide="next">
+                                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                    <span class="visually-hidden">Next</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="productDetails">
+                                            <div class="p-title">
+                                                @d.MarketPlacePostTitle
+                                            </div>
+                                            <div class="p-info">
+                                                <div class="p-info-title">Description</div>
+                                                @{
+                                                    string fullText = d.MarketPlacePostDesciption ?? "";
+                                                    string[] words = fullText.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                                                    if (words.Length > 50)
+                                                    {
+                                                        string truncated = string.Join(" ", words.Take(50));
+                                                        <span class="short-desc" id="shortDesc_@d.MarketPlacePostID">@truncated... <span class="read-more-link" onclick="toggleReadMore('@d.MarketPlacePostID')">Read more</span></span>
+                                                        <span class="full-desc" id="fullDesc_@d.MarketPlacePostID">@fullText <span class="read-more-link" onclick="toggleReadMore('@d.MarketPlacePostID')">Read less</span></span>
+                                                    }
+                                                    else
+                                                    {
+                                                        @fullText
+                                                    }
+                                                }
+                                            </div>
+
+
+                                            <div class="row productDates">
+                                                <div class="col-4">
+                                                    <div class="text">
+                                                        Posted Date
+                                                        <br>
+                                                        @d.PostedDate
+                                                    </div>
+                                                </div>
+                                                <div class="col-4">
+                                                    <div class="text text-end">
+                                                        Experied Date
+                                                        <br>
+                                                        @d.Experied
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row justify-content-between align-items-center">
+                                                <div class="col-7">
+                                                    <div class="callbx">
+
+                                                        <div class="callBtn">
+                                                            <span class="icon"><i class="fa-solid fa-phone"></i></span>
+                                                            @d.ContactNo
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-5">
+                                                    <div class="pricebx">
+                                                        <div class="price-title">Price</div>
+                                                        <div class="price-amt">
+                                                            <i class="fa-solid fa-indian-rupee-sign"></i>@d.MarketPlacePostPrice
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="callbx">
+                                                        <div class="userName">Contact-@d.EmployeeName</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @*<div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-4">
+                                        <div class="card">
+                                            <div class="card-body p-0">
+                                                <div class="blue-section p-3 rounded-top text-white">
+                                                    <!-- Category -->
+                                                    <div class="card-subtitle fw-bold mb-1">#@d.MarketPlaceCategory</div>
+                                                    <hr class="category-separator" />
+                                                    <!-- Title -->
+                                                    <h4 class="card-title mt-2 mb-2">@d.MarketPlacePostTitle</h4>
+                                                    <!-- Price -->
+                                                    <h5 class="mb-3">
+                                                        <i class="fa-solid fa-indian-rupee-sign me-2"></i>@d.MarketPlacePostPrice
+                                                    </h5>
+                                                    <!-- Image preview icons -->
+                                                    <div class="row text-center mb-0">
+                                                        <div class="col-4">
+                                                            <span onclick="GetBase64Imgage('@d.MarketPlacePostID', '1')">
+                                                                <i class="fa-solid fa-image fa-2xl"></i>
+                                                            </span>
+                                                        </div>
+                                                        <div class="col-4">
+                                                            @if (d.Photo2Path != "")
+                                                            {
+                                                                <span onclick="GetBase64Imgage('@d.MarketPlacePostID', '2')">
+                                                                    <i class="fa-solid fa-image fa-2xl"></i>
+                                                                </span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <i class="fa-solid fa-image fa-2xl disabled"></i>
+                                                            }
+                                                        </div>
+                                                        <div class="col-4">
+                                                            @if (d.Photo3Path != "")
+                                                            {
+                                                                <span onclick="GetBase64Imgage('@d.MarketPlacePostID', '3')">
+                                                                    <i class="fa-solid fa-image fa-2xl"></i>
+                                                                </span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <i class="fa-solid fa-image fa-2xl disabled"></i>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="p-3">
+                                                    <div class="for-contact text-muted fw-semibold">
+                                                        Description
+                                                    </div>
+                                                    <!-- Description, limited to 2 lines with ellipsis -->
+                                                    <p class="description-limit">
+                                                        <strong>@d.MarketPlacePostDesciption</strong>
+                                                    </p>
+
+                                                    <!-- For Contact line -->
+
+                                                </div>
+
+                                            </div>
+
+                                            <!-- Footer with contact and dates -->
+                                            <div class="card-footer p-3">
+                                                <div class="for-contact text-muted fw-semibold">
+                                                    For Contact
+                                                </div>
+                                                <h6>
+                                                    <i class="fa-solid fa-phone-square me-2"></i> @d.ContactNo
+                                                </h6>
+                                                <h6>
+                                                    <i class="fa-solid fa-user me-2"></i> @d.EmployeeName
+                                                </h6>
+                                                <hr />
+                                                <div class="d-flex justify-content-between">
+                                                    <div>
+                                                        <div>Posted Date</div>
+                                                        <i class="fa-regular fa-calendar-check"></i> @d.PostedDate
+                                                    </div>
+                                                    <div class="text-end">
+                                                        <div>Expired Date</div>
+                                                        <i class="fa-regular fa-calendar-xmark"></i> @d.Experied
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>*@
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <div class="col-12 text-center mt-3">
+                                                            <p>No items found in the marketplace gallery.</p>
+                                                        </div>
+                                                    }
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="ImageModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <img id="ImagesSrc1" src="" class="img-fluid" style="display: none;" />
+                <p id="ImageNotAvailableMsg" class="text-danger" style="display: none;">Image not available</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+    function Filter() {
+        debugger
+        var categoryId = $("#MarketPlaceCategoryID").val();
+        if (!categoryId || categoryId == " ") {
+            categoryId = 0;
+        }
+        $.ajax({
+            url: '/ESS/ESS_Marketplace_MarketplaceGallery/GetMarketplacePostsByCategory',
+            type: 'GET',
+            data: { categoryId: categoryId },
+            success: function (response) {
+                // Check if response has posts or a message
+                if (response.message) {
+                    $('#marketplacePostsContainer').html(`<div class='col-12 text-center mt-3'><p>${response.message}</p></div>`);
+                } else {
+                    let htmlContent = "";
+
+                    response.posts.forEach(function (dRaw) {
+                        // Transform raw data into a key-value object
+                        const d = dRaw.reduce((acc, item) => {
+                            acc[item.Key] = item.Value;
+                            return acc;
+                        }, {});
+
+                        // Build carousel indicators
+                        let indicators = `<button type="button" data-bs-target="#carousel_${d.MarketPlacePostID}" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>`;
+                        if (d.Photo2Path) indicators += `<button type="button" data-bs-target="#carousel_${d.MarketPlacePostID}" data-bs-slide-to="1" aria-label="Slide 2"></button>`;
+                        if (d.Photo3Path) indicators += `<button type="button" data-bs-target="#carousel_${d.MarketPlacePostID}" data-bs-slide-to="2" aria-label="Slide 3"></button>`;
+
+                        // Build carousel slides
+                        let slides = `<div class="carousel-item active"><img id="photo1_${d.MarketPlacePostID}" src="" class="d-block w-100" /></div>`;
+                        if (d.Photo2Path) slides += `<div class="carousel-item"><img id="photo2_${d.MarketPlacePostID}" src="" class="d-block w-100" /></div>`;
+                        if (d.Photo3Path) slides += `<div class="carousel-item"><img id="photo3_${d.MarketPlacePostID}" src="" class="d-block w-100" /></div>`;
+
+                        // Build description with Read more
+                        let descHtml = '';
+                        const fullDesc = d.MarketPlacePostDesciption || '';
+                        const descWords = fullDesc.split(/\s+/).filter(w => w.length > 0);
+                        if (descWords.length > 50) {
+                            const truncated = descWords.slice(0, 50).join(' ');
+                            descHtml = `<span class="short-desc" id="shortDesc_${d.MarketPlacePostID}">${truncated}... <span class="read-more-link" onclick="toggleReadMore('${d.MarketPlacePostID}')">Read more</span></span>` +
+                                       `<span class="full-desc" id="fullDesc_${d.MarketPlacePostID}">${fullDesc} <span class="read-more-link" onclick="toggleReadMore('${d.MarketPlacePostID}')">Read less</span></span>`;
+                        } else {
+                            descHtml = fullDesc;
+                        }
+
+                        // Update HTML content for the marketplace cards
+                        htmlContent += `
+    <div class="col-xl-4 col-lg-4 col-md-6 col-12 mb-4">
+        <div class="card">
+            <input type="hidden" id="hiddenPhoto1_${d.MarketPlacePostID}" value="${d.Photo1Path}" />
+            <input type="hidden" id="hiddenPhoto2_${d.MarketPlacePostID}" value="${d.Photo2Path}" />
+            <input type="hidden" id="hiddenPhoto3_${d.MarketPlacePostID}" value="${d.Photo3Path}" />
+
+            <div class="imgbox">
+                <div id="carousel_${d.MarketPlacePostID}" class="carousel carousel-dark slide" data-bs-ride="carousel">
+                    <div class="carousel-indicators">
+                        ${indicators}
+                    </div>
+                    <div class="carousel-inner">
+                        ${slides}
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carousel_${d.MarketPlacePostID}" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carousel_${d.MarketPlacePostID}" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+            <div class="productDetails">
+                <div class="p-title">${d.MarketPlacePostTitle}</div>
+                <div class="p-info">
+                    <div class="p-info-title">Description</div>
+                    ${descHtml}
+                </div>
+
+                <div class="row productDates">
+                    <div class="col-4">
+                        <div class="text">
+                            Posted Date<br>${d.PostedDate}
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div class="text text-end">
+                            Experied Date<br>${d.Experied}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row justify-content-between align-items-center">
+                    <div class="col-7">
+                        <div class="callbx">
+
+                            <div class="callBtn">
+                                <span class="icon"><i class="fa-solid fa-phone"></i></span>
+                                ${d.ContactNo}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-5">
+                        <div class="pricebx">
+                            <div class="price-title">Price</div>
+                            <div class="price-amt">
+                                <i class="fa-solid fa-indian-rupee-sign"></i>${d.MarketPlacePostPrice}
+                            </div>
+                        </div>
+                    </div>
+                     <div class ="col-12">
+                                                   <div class ="callbx">
+                                                            <div class ="userName">Contact-${d.EmployeeName}</div>
+                                                    </div>
+                                                </div>
+                </div>
+            </div>
+        </div>
+    </div>`;
+                    });
+
+                    // Update the marketplace posts container with the generated content
+                    $('#marketplacePostsContainer').html(htmlContent);
+
+                    // Load images for the newly rendered cards
+                    $("#marketplacePostsContainer [id^=hiddenPhoto1_]").each(function () {
+                        const postId = this.id.split("_")[1];
+                        LoadBase64ImageOnLoad(postId, 1);
+                        LoadBase64ImageOnLoad(postId, 2);
+                        LoadBase64ImageOnLoad(postId, 3);
+                    });
+
+                    // Initialize carousels for the newly rendered cards
+                    $('#marketplacePostsContainer .carousel').each(function () {
+                        new bootstrap.Carousel(this, {
+                            interval: 3000,
+                            touch: true
+                        });
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error fetching posts:", error);
+                $('#marketplacePostsContainer').html('<div class="col-12 text-center mt-3"><p>Something went wrong. Please try again.</p></div>');
+            }
+        });
+    }
+
+    //function GetBase64Imgage(postId, photoNum) {
+    //    debugger
+    //    // Get the hidden photo path
+    //    var photoPath = $("#hiddenPhoto" + photoNum + "_" + postId).val();
+
+    //    // Log for debugging
+    //    console.log("Photo Path:", photoPath);
+
+    //    if (!photoPath) {
+    //        $("#ImagesSrc1").hide();
+    //        $("#ImageNotAvailableMsg").text("Image path is empty").show();
+    //        $("#ImageModal").modal('show');
+    //        return;
+    //    }
+
+    //    // Fetch the Base64 image
+    //    $.ajax({
+    //        url: '/ESS/ESS_Marketplace_MarketplaceGallery/GetBase64Image',
+    //        type: 'GET',
+    //        data: { photoPath: photoPath },
+    //        success: function (response) {
+    //            if (response.success) {
+    //                $("#ImagesSrc1").attr("src", response.base64Image).show();
+    //                $("#ImageNotAvailableMsg").hide();
+    //            } else {
+    //                $("#ImagesSrc1").hide();
+    //                $("#ImageNotAvailableMsg").text(response.message).show();
+    //            }
+    //            $("#ImageModal").modal('show');
+    //        },
+    //        error: function (xhr, status, error) {
+    //            console.error("Error fetching image:", error);
+    //            $("#ImagesSrc1").hide();
+    //            $("#ImageNotAvailableMsg").text("Error loading image").show();
+    //            $("#ImageModal").modal('show');
+    //        }
+    //    });
+    //}
+</script>
+
+<script>
+    $(document).ready(function () {
+        // Loop through all items
+        $("[id^=hiddenPhoto1_]").each(function () {
+            debugger
+            const postId = this.id.split("_")[1];
+
+            // Load all photos for the post (1, 2, 3)
+            LoadBase64ImageOnLoad(postId, 1);
+            LoadBase64ImageOnLoad(postId, 2);
+            LoadBase64ImageOnLoad(postId, 3);
+        });
+    });
+
+    function LoadBase64ImageOnLoad(postId, photoNum) {
+        debugger
+        const photoPath = $("#hiddenPhoto" + photoNum + "_" + postId).val();
+        const targetImg = $("#photo" + photoNum + "_" + postId);
+
+        if (!photoPath || photoPath === "") {
+            targetImg.hide();
+            return;
+        }
+
+        $.ajax({
+            url: '/ESS/ESS_Marketplace_MarketplaceGallery/GetBase64Image',
+            type: 'GET',
+            data: { photoPath: photoPath },
+            success: function (response) {
+                if (response.success) {
+                    targetImg.attr("src", response.base64Image).show();
+                } else {
+                    targetImg.hide();
+                }
+            },
+            error: function () {
+                targetImg.hide();
+            }
+        });
+    }
+</script>
+
+<script>
+    document.querySelectorAll('.carousel').forEach(function (carouselEl) {
+        new bootstrap.Carousel(carouselEl, {
+            interval: 3000,
+            touch: true
+        });
+    });
+</script>
+
+<script>
+    function toggleReadMore(postId) {
+        var shortDesc = document.getElementById('shortDesc_' + postId);
+        var fullDesc = document.getElementById('fullDesc_' + postId);
+        if (shortDesc.style.display === 'none') {
+            shortDesc.style.display = 'inline';
+            fullDesc.style.display = 'none';
+        } else {
+            shortDesc.style.display = 'none';
+            fullDesc.style.display = 'inline';
+        }
+    }
+</script>

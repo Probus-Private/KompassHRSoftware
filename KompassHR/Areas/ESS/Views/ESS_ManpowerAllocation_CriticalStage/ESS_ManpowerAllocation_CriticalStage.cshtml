@@ -1,0 +1,548 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_ManpowerAllocation.KPI_CriticalStage
+@{
+    ViewBag.Title = "ESS_ManpowerAllocation_CriticalStage";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+
+
+<style>
+    .Col-md-2 {
+        margin: 10px 0;
+    }
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    .tblAddData td:nth-child(2) {
+        display: none;
+    }
+
+    .tblAddData td:nth-child(3) {
+        display: none;
+    }
+
+    .tblAddData td:nth-child(4) {
+        display: none;
+    }
+</style>
+<div id="content" class="app-content">
+    <ol class="breadcrumb float-xl-end">
+        <li class="breadcrumb-item"><a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">Dashboard</a></li>
+        <li class="breadcrumb-item active"><a href="@Url.Action("ESS_ManpowerAllocation_Menu", "ESS_ManpowerAllocation_Menu", new { id = 35, area = "ESS" })">Manpower Menu</a></li>
+    </ol>
+    <h1 class="page-header"> Critical Stage </h1>
+    <div class="row">
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="panel panel-inverse" data-sortable-id="index-1">
+                    <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                        <h4 class="panel-title">@*@i.SET_MODULES.FormName*@ Critical Stage </h4>
+                        <div class="panel-heading-btn">
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                        </div>
+                    </div>
+                    <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                        <p class="pb-0">
+
+                        </p>
+                    </div>
+                    <div class="panel-body" style="max-height: fit-content;">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <form role="form" action='@Url.Action("ESS_ManpowerAllocation_CriticalStage", "ESS_ManpowerAllocation_CriticalStage", new { area = "ESS" })' id="SaveCriticalStage" method="post">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Company Name
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.CmpID, new SelectList(ViewBag.GetCompanyName, "Id", "Name"), "--Select--", new { @class = "form-select", id = "txtCmpId", type = "text", name = "CmpId" })
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Business Unit
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.KPICriticalStageBranchId, new SelectList(ViewBag.GetBranchName, "Id", "Name"), "--Select--", new { @class = "form-select", id = "txtKPICriticalStageBranchId", type = "text", name = "KPICriticalStageBranchId" })
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    From date
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.CriticalStageFromDate, new { @class = "form-control", id = "txtCriticalStageFromDate", type = "date", name = "CriticalStageFromDate" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    To Date
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.CriticalStageToDate, new { @class = "form-control", id = "txtCriticalStageToDate", type = "date", name = "CriticalStageToDate" })
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Grade
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.CriticalStageGradeId, new SelectList(ViewBag.GetGradeList, "Id", "Name"), "--Select--", new { @class = "form-select", id = "txtCriticalStageGradeId", type = "text", name = "CriticalStageGradeId" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Department Name
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.CriticalStageDepartmentId, new SelectList(ViewBag.GetDepatmentList, "Id", "Name"), "--Select--", new { @class = "form-select", id = "txtCriticalStageDepartmentId", type = "text", name = "CriticalStageDepartmentId" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="row mb-15px">
+                                                <div class="col-md-4">
+                                                    <button type="button" class="btn btn-primary btn-sm" id="btnShow" onclick="LoadEmployee()">
+                                                        @*<i class="fa-solid fa-share-from-square"></i>*@ Show
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Category Name
+
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.CriticalStageCategoryId, new SelectList(ViewBag.GetCriticalCategoryList, "Id", "Name"), "--Select--", new { @class = "form-select", id = "txtCriticalStageCategoryId", type = "text", name = "CriticalStageCategoryId" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="row mb-15px">
+                                                <div class="col-md-4">
+                                                    <button type="button" class="btn btn-primary btn-sm" id="btnApply">
+                                                        @*<i class="fa-solid fa-share-from-square"></i>*@Apply
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="table-scroll div1">
+                                            <div class="table-wrap">
+                                                <table class="table table-bordered table-hover mb-0 text-dark align-middle TablePage tblAddData" id="tblCriticalStage" style="width: 100%;">
+                                                    <thead>
+                                                        <tr class="trheading">
+                                                            <th class="text-nowrap text-center">Select</th>
+                                                            <th hidden class="text-nowrap text-center">Employee Id</th>
+                                                            <th hidden class="text-nowrap text-center">ShiftGroupId</th>
+                                                            <th hidden class="text-nowrap text-center">ShiftRuleId</th>
+                                                            <th class="text-nowrap text-center">Employee Card No </th>
+                                                            <th class="text-nowrap text-center">Employee Name </th>
+                                                            <th class="text-nowrap text-center">Designation Name</th>
+                                                            <th class="text-nowrap text-center">Contractor Name</th>
+                                                            <th class="text-nowrap text-center">Line Name</th>
+                                                            <th class="text-nowrap text-center">Shift Group Name</th>
+                                                            <th class="text-nowrap text-center">Shift Rule Name</th>
+                                                            @*<th class="text-nowrap text-center">Employee SubDepartment Name</th>*@
+                                                            <th class="text-nowrap text-center">Joining Date</th>
+                                                            <th class="text-nowrap text-center">Critical Stage Category</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="tblGetCriticalStage">
+                                                        @foreach (var d in ViewBag.GetEmployeeList)
+                                                        {
+                                                            <tr>
+                                                                <td class="text-center">
+                                                                    <input type="checkbox" class="form-check-input" data-checked="email-checkbox" />
+                                                                </td>
+                                                                <td class="text-nowrap">@d.EmployeeId</td>
+                                                                <td class="text-nowrap">@d.ShiftGroupId</td>
+                                                                <td class="text-nowrap">@d.ShiftRuleId</td>
+                                                                <td class="text-nowrap">@d.EmployeeCardNo</td>
+                                                                <td class="text-nowrap">@d.EmployeeName</td>
+                                                                @*<td class="text-nowrap">@d.DepartmentName</td>*@
+                                                                <td class="text-nowrap">@d.DesignationName</td>
+                                                                <td class="text-nowrap">@d.BusinessArea</td>
+                                                                <td class="text-nowrap">@d.LineName</td>
+                                                                <td class="text-nowrap">@d.ShiftGroupSName</td>
+                                                                <td class="text-nowrap">@d.ShiftRuleSName</td>
+                                                                @*<td class="text-nowrap">@d.EmployeeSubDepartmentName</td>*@
+                                                                <td class="text-nowrap">@d.joininggdate</td>
+                                                                <td>
+                                                                    <input type="text" class="form-control TotalCriticalStageCategory" id="TbltextCriticalStageCategory" style="width:230px" disabled="disabled" />
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="LastShortLeaveBx">
+                                            <div class="row">
+
+                                                <div class="col-md-12">
+                                                    <div class="BtnBx">
+                                                        <div>
+                                                            <button type="button" id="btnSubmit"
+                                                                    class="btn btn-primary btn-sm">
+                                                                <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                            </button>
+                                                            <a href="@Url.Action("GetList", "ESS_ManpowerAllocation_CriticalStage", new { area = "ESS" })">
+                                                                <button type="button" id="btnGetList"
+                                                                        class="btn btn-danger btn-sm">
+                                                                    <i class="fa-solid fa-share-from-square"></i>
+                                                                    List
+                                                                </button>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        debugger;
+        $("#txtKPICriticalStageBranchId").select2();
+        $("#txtCmpId").select2();
+        $("#txtCriticalStageGradeId").select2();
+        $("#txtCriticalStageDepartmentId").select2();
+        $("#txtCriticalStageCategoryId").select2();
+        $("#txtCmpId").on("change", function () {
+            debugger;
+            $("#txtKPICriticalStageBranchId").find("option").remove();
+            var CmpId = $("#txtCmpId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetBusinessUnit", "ESS_ManpowerAllocation_CriticalStage")',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    if (data != null) {
+                        $("#txtKPICriticalStageBranchId").append("<option value=0>--Select-- </option>");
+                        $.each(data, function (i, p) {
+                            $("#txtKPICriticalStageBranchId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        });
+
+        @*var NullGetEmployeeList = @Html.Raw(Json.Encode(ViewBag.GetEmployeeList));
+        if(NullGetEmployeeList.length=="")
+        {
+            var Message="Record Not Found";
+            var Icon="error";
+            if (Message != null) {
+                if (Icon != null) {
+                    Swal.fire({
+                        icon: Icon,
+                        text: Message,
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup()
+                            popup.classList.remove('swal2-show')
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake')
+                            })
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake')
+                            }, 500)
+                            // return false
+                        }
+                    }).then(function () {
+                        window.location.reload();
+                    });
+                }
+            }
+        }
+        else{
+
+        }*@
+
+    })
+
+
+
+    //use for add regex function
+    jQuery.validator.addMethod(
+    "regex",
+     function (value, element, regexp) {
+         if (regexp.constructor != RegExp)
+             regexp = new RegExp(regexp);
+         else if (regexp.global)
+             regexp.lastIndex = 0;
+         return this.optional(element) || regexp.test(value);
+     }, "erreur expression reguliere"
+  );
+
+    $('#SaveCriticalStage').validate({
+        rules: {
+            CmpID: {
+                required: true,
+            },
+            KPICriticalStageBranchId: {
+                required: true,
+            },
+            CriticalStageFromDate: {
+                required: true,
+            },
+            CriticalStageToDate: {
+                required: true,
+            },
+            CriticalStageGradeId: {
+                required: true,
+            },
+            CriticalStageDepartmentId: {
+                required: true,
+            },
+
+
+        },
+        messages: {
+            CmpID: {
+                required: "Company name is required",
+            },
+            KPICriticalStageBranchId: {
+                required: "Business unit is required",
+            },
+            CriticalStageFromDate: {
+                required: "From date is required",
+            },
+            CriticalStageToDate: {
+                required: "To date is required",
+            },
+            CriticalStageGradeId: {
+                required: "Grade is required",
+            },
+            CriticalStageDepartmentId: {
+                required: "Department name is required",
+            },
+
+
+        },
+    });
+
+    var form = $("#SaveCriticalStage");
+    form.validate();
+    function LoadEmployee() {
+        debugger;
+        form.valid();
+        if (form.valid() == false) {
+            $("#txtCriticalStageFromDate").removeClass("error");
+            $("#txtCriticalStageToDate").removeClass("error");
+            return false;
+        }
+        $("#SaveCriticalStage").submit();
+    }
+    $("#btnApply").click(function () {
+        var CategoryName = $('#txtCriticalStageCategoryId option:selected').html()
+        $(".TotalCriticalStageCategory").val(CategoryName);
+    })
+</script>
+
+<script>
+    $("#btnSubmit").click(function () {
+        debugger;
+        var CmpId = $("#txtCmpId").val();
+        var KPICriticalStageBranchId = $("#txtKPICriticalStageBranchId").val();
+        var CriticalStageFromDate = $("#txtCriticalStageFromDate").val();
+        var CriticalStageToDate = $("#txtCriticalStageToDate").val();
+        var CriticalStageGradeId = $("#txtCriticalStageGradeId").val();
+        var CriticalStageDepartmentId = $("#txtCriticalStageDepartmentId").val();
+        var CriticalStageCategoryId = $("#txtCriticalStageCategoryId").val();
+
+        var TaskKPI = new Array();
+        $(':checkbox:checked').each(function (i) {
+            debugger;
+            var data1 = {};
+            var currentRow = $(this).closest("tr");
+            data1.CriticalStageEmployeeId = currentRow[i].children[1].innerHTML;
+            data1.CriticalStageShiftGroupId = currentRow[i].children[2].innerHTML;
+            data1.CriticalStageShiftRuleId = currentRow[i].children[3].innerHTML;
+            TaskKPI.push(data1);
+
+        });
+
+        if (TaskKPI.length == 0) {
+            debugger;
+            Swal.fire({
+                icon: "error",
+                text: "Select atleast one record",
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup()
+                    popup.classList.remove('swal2-show')
+                    return false;
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                    })
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                    }, 500)
+                    window.location.reload();
+                    return false
+                }
+            });
+            return false;
+        }
+        else {
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetBusinessUnit", "ESS_ManpowerAllocation_CriticalStage")',
+                data: JSON.stringify({ TaskKPI: TaskKPI, CmpId: CmpId, KPICriticalStageBranchId: KPICriticalStageBranchId, CriticalStageFromDate: CriticalStageFromDate, CriticalStageToDate: CriticalStageToDate, CriticalStageGradeId: CriticalStageGradeId, CriticalStageDepartmentId: CriticalStageDepartmentId, CriticalStageCategoryId: CriticalStageCategoryId }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "text",
+                success: function (response) {
+                    debugger;
+                    var DATA = JSON.parse(response);
+                    var Message1 = DATA.Message;
+                    var Icon1 = DATA.Icon;
+                    if (Icon1 == "success") {
+                        if (Message1 != null) {
+                            if (Message1 != null) {
+                                Swal.fire({
+                                    icon: Icon1,
+                                    text: Message1,
+                                    allowOutsideClick: () => {
+                                        const popup = Swal.getPopup()
+                                        popup.classList.remove('swal2-show')
+                                        setTimeout(() => {
+                                            popup.classList.add('animate__animated', 'animate__headShake')
+                                        })
+                                        setTimeout(() => {
+                                            popup.classList.remove('animate__animated', 'animate__headShake')
+                                        }, 500)
+                                        return false
+                                    }
+                                })
+                               .then(function () {
+                                   window.location.reload();
+                                   $("#txtCmpId").val("").select2();
+                                   $("#txtKPICriticalStageBranchId").val("");
+                                   $("#txtCriticalStageFromDate").val("");
+                                   $("#txtCriticalStageToDate").val("");
+                                   $("#txtCriticalStageGradeId").val("");
+                                   $("#txtCriticalStageDepartmentId").val("");
+
+                               });
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        //var table = document.getElementById("tblGetCriticalStage");
+        //var rowCount = table.rows.length;
+        //var TaskKPI =[];
+        //debugger;
+        //var data1 = {};
+        //for (i = 0; i <= rowCount-1; i++) {
+        //    debugger;
+        //    var data1 = {};
+        //    data1.CriticalStageEmployeeId = table.rows[i].cells[1].textContent;
+        //    data1.CriticalStageShiftGroupId = table.rows[i].cells[2].textContent;
+        //    data1.CriticalStageShiftRuleId = table.rows[i].cells[3].textContent;
+        //    TaskKPI.push(data1);
+        //}
+
+
+    });
+</script>

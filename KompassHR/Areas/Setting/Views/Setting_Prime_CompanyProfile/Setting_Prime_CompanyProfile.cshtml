@@ -1,0 +1,493 @@
+﻿@model KompassHR.Areas.Setting.Models.Setting_Prime.Mas_CompanyProfile
+@{
+    ViewBag.Title = "Setting_Prime_CompanyProfile";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+<style>
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+</style>
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Company Profile
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("ESS_AdminDashboard_Dashboard", "ESS_AdminDashboard_Dashboard", new { id = 32, ScreenId = 121, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Setting_Prime_Menu", "Setting_Prime_Menu", new { id = 31, ScreenId = 1, area = "Setting" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Settings">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Company Profile - <Span>@ViewBag.AddUpdateTitle</Span></h4>
+
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Add company details here.
+                    </p>
+                </div>
+
+                <div class="panel-body" data-scrollbar="false">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "Setting_Prime_CompanyProfile", new { area = "Setting" })' id="ComapnyProfile" method="post">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Company Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-10">
+                                                @Html.TextBoxFor(model => model.CompanyName, new { @class = "form-control", name = "CompanyName", @id = "txtCompanyName", autocomplete = "Off" })
+                                                @Html.HiddenFor(model => model.CompanyId_Encrypted, new { @class = "form-control", id = "CompanyIdEncrypted" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Short Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.ShortName, new { @class = "form-control", type = "text", name = "ShortName", id = "txtShortName", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Address
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-10">
+                                                @Html.TextAreaFor(model => model.Address, new { @class = "form-control", type = "text", name = "Address", id = "txtAddress", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Phone No.
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.PhoneNo, new { @class = "form-control", type = "number", name = "PhoneNo", id = "txtPhoneNo", autocomplete = "Off", @maxlength = 10 })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Email Id
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.EmailId, new { @class = "form-control", name = "EmailId", id = "txtEmail", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Website
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.WebSite, new { @class = "form-control", type = "text", name = "Website", id = "txtWebsite", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Owner Name
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.ManagerName, new { @class = "form-control", type = "text", name = "ManagerName", id = "txtManagerName", autocomplete = "Off" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Industry Type
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.IndustryType, new { @class = "form-control", type = "text", name = "IndustryType", id = "txtIndustryType", autocomplete = "Off" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                GST No.
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.GST, new { @class = "form-control", type = "text", name = "GST", id = "txtGST", autocomplete = "Off", oninput = "this.value = this.value.toUpperCase()" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                PAN
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.PAN, new { @class = "form-control", type = "text", name = "PAN", id = "txtPAN", autocomplete = "Off", oninput = "this.value = this.value.toUpperCase()" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2">
+                                                CIN
+                                            </label>
+                                            <div class="col-md-10">
+                                                @Html.TextBoxFor(model => model.CIN, new { @class = "form-control", type = "text", name = "CIN", id = "txtCIN", autocomplete = "Off", oninput = "this.value = this.value.toUpperCase()" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Established Date
+                                                @*<span class="important">*</span>*@
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.EstablishedDate, new { @class = "form-control", name = "EstablishedDate", type = "date", id = "txtEstablishedDate", autocomplete = "Off" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Reminder anniversary is in days.
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.NotificationDays, new { @class = "form-control", type = "number", onkeypress = "return event.charCode >=48", name = "tNotificationDays", id = "txtNotificationDays", autocomplete = "Off" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="button" id="btnsubmit"
+                                                                class="btn btn-primary btn-sm">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                        <a href="@Url.Action("GetList", "Setting_Prime_CompanyProfile", new { area = "Setting" })">
+                                                            <button type="button" class="btn btn-danger btn-sm" id="btnCompanyProfile">
+                                                                <i class="fa-solid fa-share-from-square"></i> List
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#formReset").click(function () {
+            $("#ComapnyProfile")[0].reset();
+        });
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        // return false
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+
+        var dt = @Html.Raw(Json.Encode(TempData["EstablishedDate"]));
+        if(dt == null || dt == "")
+        {
+
+        }
+        else
+        {
+            var EstablishedDateDatedt =  convertDate(dt);
+            $("#txtEstablishedDate").val(EstablishedDateDatedt);
+        }
+
+    });// Ready end
+
+    $("#btnCompanyProfile").click(function () {
+        debugger;
+        var url = '@Url.Action("GetList", "Setting_Prime_CompanyProfile")';
+        window.location.href = url;
+    });
+</script>
+
+<script>
+    function millisecTodate(milliDate) {
+        var date = new Date(milliDate);
+        var mnth = ("0" + (date.getMonth() + 1)).slice(-2);
+        var day = ("0" + date.getDate()).slice(-2);
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        hours = hours < 10 ? '0'+hours : hours;
+        minutes = minutes < 10 ? '0'+minutes : minutes;
+        var ddmmyyyy = [date.getFullYear(), mnth,day].join("-");
+        return ddmmyyyy;
+    }
+
+    function convertDate(data) {
+        var getdate = parseInt(data.replace("/Date(", "").replace(")/", ""));
+        var date = millisecTodate(getdate);
+        return date;
+    }
+</script>
+<script>
+    //use for add regex function
+    jQuery.validator.addMethod(
+    "regex",
+     function(value, element, regexp) {
+         if (regexp.constructor != RegExp)
+             regexp = new RegExp(regexp);
+         else if (regexp.global)
+             regexp.lastIndex = 0;
+         return this.optional(element) || regexp.test(value);
+     },"erreur expression reguliere"
+  );
+
+    $('#ComapnyProfile').validate({
+        rules: {
+            CompanyName: {
+                required: true,
+            },
+            ShortName: {
+                required: true,
+            },
+            Address: {
+                required:true,
+            },
+            PhoneNo: {
+                required:true,
+                number:true,
+                //minlength:10,
+                //maxlength:10
+            },
+            EmailId:{
+                required:true,
+                email:true,
+            },
+            //Website: {
+
+            //},
+            GST: {
+                regex:/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$/
+            },
+            PAN: {
+                regex:/^([A-Z]){5}([0-9]){4}([A-Z]){1}$/
+            },
+            CIN: {
+                minlength:21,
+                maxlength:21,
+                regex:/^([LUu]{1})([0-9]{5})([A-Za-z]{2})([0-9]{4})([A-Za-z]{3})([0-9]{6})$/
+
+
+            },
+            //EstablishedDate: {
+            //    required:true,
+            //},
+        },
+        messages: {
+            CompanyName: {
+                required:"Company name is required",
+            },
+            ShortName: {
+                required:"Short name is required",
+            },
+            Address: {
+                required:"Address is required",
+            },
+            PhoneNo: {
+                number: "Please enter at least 10 digits",
+                required:"Phone number is required",
+                minlength: "Please enter 10 digits mobile no",
+                maxlength: "Please enter 10 digits mobile no",
+            },
+            EmailId: {
+                required:"Email Id is required",
+                email:"Please enter valid EmailId"
+            },
+            //Website: {
+
+            //},
+            GST: {
+                regex:"Please enter valid GST number"
+            },
+            PAN: {
+                required:"PAN is required",
+                regex:"Please enter valid PAN number"
+            },
+            CIN: {
+                minlength:"Please enter 21 CIN digit number",
+                maxlength:"Please enter 21 CIN digit number",
+                regex:"Please enter valid CIN number"
+
+            },
+            //EstablishedDate: {
+            //    required:"Established date is required"
+            //},
+
+        },
+    });
+
+    var form = $("#ComapnyProfile");
+    form.validate();
+    $("#btnsubmit").click(function () {
+        debugger;
+
+        form.valid();
+        if(form.valid()==false)
+        {
+            $("#txtEstablishedDate").removeClass("error");
+            return false;
+        }
+        var ComapnyName=$("#txtCompanyName").val();
+        var CompanyIdEncrypted =$("#CompanyIdEncrypted").val();
+        var ShortName=$("#txtShortName").val();
+        $.ajax({
+            url:"IsCompanyProfileExists",
+            method:"get",
+            data:{ComapnyName:ComapnyName,ShortName:ShortName,CompanyIdEncrypted:CompanyIdEncrypted},
+            success:function(response){
+                debugger;
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon=="error") {
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                        }
+                    }
+                }
+                else{
+                    $("#ComapnyProfile").submit();
+                }
+            }
+        });
+
+    });
+</script>
+

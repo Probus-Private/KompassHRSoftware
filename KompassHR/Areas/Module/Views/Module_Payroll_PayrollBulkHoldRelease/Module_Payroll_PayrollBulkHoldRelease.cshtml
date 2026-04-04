@@ -1,0 +1,903 @@
+﻿@model KompassHR.Areas.Module.Models.Module_Payroll.Payroll_SalaryHold_Bulk
+@{
+    ViewBag.Title = "Module_Payroll_PayrollBulkHoldRelease";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+<style>
+    .Col-md-2 {
+        margin: 10px 0;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    label.error, .Error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    th:nth-child(1) {
+        width: 100px; /* Set the width for the first column */
+    }
+
+    .dataTables_scrollBody::-webkit-scrollbar {
+        width: 10px !important;
+        background-color: #F5F5F5;
+    }
+
+    .dataTables_scrollBody::-webkit-scrollbar {
+        height: 60px;
+    }
+
+    .table {
+        --bs-table-striped-bg: rgba(0, 0, 255, 0.02);
+    }
+
+    .text-nowrap {
+        font-size: 12px;
+    }
+
+    tbody tr td {
+        font-size: 12px;
+        padding: 4px !important;
+    }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+    }
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Employee Payroll Hold/Release
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Module_Payroll_Menu", "Module_Payroll_Menu", new {id = 6, ScreenId=159, area = "Module" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="panel panel-inverse" data-sortable-id="index-1">
+                    <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                        <h4 class="panel-title">Employee Payroll Hold/Release </h4>
+                        <div class="panel-heading-btn">
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                        </div>
+                    </div>
+                    <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                        <p class="pb-0">
+                            Define employee payroll hold/release here!
+                        </p>
+                    </div>
+                    <div class="panel-body" style="max-height: fit-content;">
+                        <div class="row justify-content-center">
+                            <div class="row justify-content-center">
+                                <form role="form" action='@Url.Action("Module_Payroll_PayrollBulkHoldRelease", "Module_Payroll_PayrollBulkHoldRelease", new { area = "Module" })' id="SavePayrollHold" method="post" enctype="multipart/form-data" }">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Company Name
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.CmpId, new SelectList(ViewBag.GetCompanyName, "Id", "Name"), "--Select--", new { @class = "form-select", id = "ddlCmpId", type = "text", name = "CmpId", autocomplete = "Off" })
+                                                    @Html.HiddenFor(model => model.PayrollHoldId_Encrypted, new { id = "PayrollHoldId_Encrypted" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Business Unit
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.BranchId, new SelectList(ViewBag.GetBranchName, "Id", "Name"), "-All--", new { @class = "form-select", id = "ddlBranchId", type = "text", name = "BranchId", autocomplete = "Off" })
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Salary Month/Year
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.Payroll_SalaryMonth, new { @class = "form-control", name = "Payroll_SalaryMonth", type = "month", id = "datePayroll_SalaryMonth" })
+                                                    @Html.ValidationMessageFor(model => model.Payroll_SalaryMonth, "", new { @class = "help-block", @id = "ErrorPayroll_SalaryMonth", @style = "color:red" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Type
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-6">
+                                                    @Html.DropDownListFor(model => model.Type, new List<SelectListItem> {
+                                                    new SelectListItem { Text = "Hold", Value = "Hold"},
+                                                    new SelectListItem { Text = "Release", Value = "Release"},
+                                                }, "--Select--", new { id = "ddlType", @class = "form-select", autocomplete = "off", name = "EM_Atten_OTMultiplyBy" })
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <button type="button" id="" onclick="GetPayrollHold('Normal')"
+                                                            class="btn btn-primary btn-sm">
+                                                        Show
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4"> Import File </label>
+                                                <div class="col-md-8">
+                                                    <input type="file" name="AttachFile" class="form-control" id="AttachFile" onchange="ResetFile()" />
+                                                    <span id='validationMessage_' style='color: red;'></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="row mb-15px">
+                                                <div class="col-md-12">
+                                                    <button type="button" id="" onclick="GetPayrollHold('Excel')"
+                                                            class="btn btn-primary btn-sm">
+                                                        <i class="fa-solid fa-floppy-disk"></i> Import
+                                                    </button>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4 text-end" style="margin-top: -6px;">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-12">
+                                                    <a href="~/assets/BulkUpload/BulkEmployeePayrollHoldRelease.xlsx" type="button" class="btn btn-success btn-sm">
+                                                        <i class="fa-solid fa-download"></i>
+                                                    </a>
+                                                    Download Excel Format
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <!-- BEGIN table-responsive -->
+                                        <div class="table-scroll div1">
+                                            <div class="table-wrap">
+                                                <table class="table table-bordered align-middle tblAddData TablePageDeduction" id="tblOtherEarningHead" style="width: 100%;">
+                                                    <thead style="background-color: rgba(233, 236, 239, 1) !important;">
+                                                        <tr class="text-center">
+                                                            <th class="text-center"><input type="checkbox" class="form-check-input" data-checked="all-checkbox" id="SelectAll" onchange="checkAll(this)" /> &nbsp; All</th>
+                                                            <th class="text-nowrap"> Employee No</th>
+                                                            <th class="text-nowrap"> Employee Name </th>
+                                                            @*<th class="text-nowrap"> Salary Amount </th>*@
+                                                            <th class="text-nowrap"> Remarks</th>
+                                                            <td class="text-nowrap" hidden>BranchId</td>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="tblEmployeeHold">
+                                                        @foreach (var d in ViewBag.GetPayrollHold)
+                                                        {
+                                                            <tr>
+                                                                <td class="text-nowrap text-center"><input type="checkbox" class="form-check-input" /></td>
+                                                                <td class="text-nowrap">@d.EmployeeNo</td>
+                                                                <td class="text-nowrap">@d.EmployeeName</td>
+                                                                @*<td class="text-nowrap">@d.SalaryAmount</td>*@
+                                                                @if (d.Remark != null)
+                                                                {
+                                                                    <td class="text-nowrap"><input type="text" id='txttableRemark' style="height:23px;" maxlength="150" class='form-control Remarktxt' value="@d.Remark"></td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-nowrap"><input type="text" id='txttableRemark' style="height:23px;" maxlength="150" class='form-control Remarktxt'></td>
+                                                                }
+                                                                <td class="text-nowrap" hidden>@d.SalaryBranchId</td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row align-items-center">
+                                    <div class="col-md-8">
+                                        <div class="row mb-15px align-items-center">
+                                            <label class="form-label col-form-label col-md-2">Remark</label>
+                                            <div class="col-md-7">
+                                                @Html.TextAreaFor(model => model.ReleaseRemark, new { @class = "form-control", type = "text", id = "txtReleaseRemark", autocomplete = "Off", Name = "Remarks" })
+                                            </div>
+                                            <div class="col-md-3">
+                                                <button type="button" id="btnApply" class="btn btn-primary btn-sm">
+                                                    <i class="fa-solid fa-floppy-disk"></i> Apply
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 text-end" style="margin-top: -6px;">
+                                        <button type="button" class="btn btn-success" id="btlExportToExcel" onclick="downloadExcelFile()">
+                                            <i class="fa-regular fa-file-excel fa-xl"></i> Export To Excel
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <button type="button" id="btnEmployeeSubmit" onclick="SavePayrollHold(event)"
+                                                            class="btn btn-primary btn-sm">
+                                                        <i class="fa-solid fa-floppy-disk"></i>  Submit
+                                                    </button>
+                                                    <a href="@Url.Action("GetList", "Module_Payroll_PayrollBulkHoldRelease", new { area = "Module" })">
+                                                        <button type="button" class="btn btn-danger btn-sm">
+                                                            <i class="fa-solid fa-share-from-square"></i> List
+                                                        </button>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        $(document).ready(function () {
+
+            $("#ddlPayroll_SalaryEmployeeId").select2();
+            $("#ddlCmpId").select2();
+            $("#ddlBranchId").select2();
+            var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+            var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+
+            $('.TablePageDeduction').DataTable({
+                scrollY: 400,
+                scrollCollapse: true,
+                paging: false,
+                scrollX: true,
+                searching: true, // Enable searching
+            });
+
+            debugger;
+            if (Message != null) {
+                if (Message != null) {
+                    Swal.fire({
+                        icon: Icon,
+                        text: Message,
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup()
+                            popup.classList.remove('swal2-show')
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake')
+                            })
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake')
+                            }, 500)
+
+                            return false
+                        }
+                    });
+                }
+            }
+
+
+            $("#ddlCmpId").on("change", function () {
+                $("#ddlBranchId").find("option").remove();
+                $("#ddlOtherEarningEarningDeductionID").find("option").remove();
+                var CmpId = $("#ddlCmpId").val();
+                $.ajax({
+                    type: 'GET',
+                    dataType: 'JSON',
+                    contentType: "application/json; charset=utf-8",
+                    url: '@Url.Action("GetBusinessUnit", "Module_Payroll_PayrollHold")',
+                    data: { CmpId: CmpId },
+                    success: function (data) {
+                        if (data !=null) {
+                            $("#ddlBranchId").append("<option value=''>--All-- </option>");
+                            $.each(data, function(i, p) {
+                                $("#ddlBranchId").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                            });
+                        }
+
+                        if (data.GetVeriableHead !=null) {
+                            $("#ddlOtherEarningEarningDeductionID").append("<option value=''>--Select-- </option>");
+                            $.each(data.GetVeriableHead, function(i, p) {
+                                $("#ddlOtherEarningEarningDeductionID").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                            });
+                        }
+                        else {
+                            $('#ErrorESSPassword').html(" ");
+                        }
+                    }
+                })
+            })
+
+
+            $("#ddlBranchId").on("change", function () {
+                debugger
+                $("#ddlPayroll_SalaryEmployeeId").find("option").remove();
+                var BranchId = $("#ddlBranchId").val();
+                $.ajax({
+                    type: 'GET',
+                    dataType: 'JSON',
+                    contentType: "application/json; charset=utf-8",
+                    url:'@Url.Action("GetEmployeeName", "Module_Payroll_PayrollHold")',
+                    data: { BranchId: BranchId },
+                    success: function (data) {
+                        if (data !=null) {
+                            $("#ddlPayroll_SalaryEmployeeId").append("<option value=''>--Select--</option>");
+                            $.each(data, function(i, p) {
+                                $("#ddlPayroll_SalaryEmployeeId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+                        }
+                        else {
+                            $('#ErrorESSPassword').html(" ");
+                        }
+                    }
+                })
+            });
+
+            $("#ddlPayroll_SalaryEmployeeId").on("change", function () {
+                debugger
+                $("#txtPayroll_SalaryAmount").val("");
+                var EmployeeId = $("#ddlPayroll_SalaryEmployeeId").val();
+                var SalaryMonth = $("#datePayroll_SalaryMonth").val();
+                if (SalaryMonth=="")
+                {
+                    $("#ErrorPayroll_SalaryMonth").html("Salary Month/Year is required");return false;
+                }
+                else{
+                    $("#ErrorPayroll_SalaryMonth").html("");
+                }
+                $.ajax({
+                    type: 'GET',
+                    dataType: 'JSON',
+                    contentType: "application/json; charset=utf-8",
+                    url:'@Url.Action("GetEmployeeSalaryAmount", "Module_Payroll_PayrollHold")',
+                    data: { SalaryMonth: SalaryMonth,EmployeeId:EmployeeId },
+                    success: function (data) {
+                        debugger;
+                        if (data !=null) {
+                            if (data.Icon=="error")
+                            {
+                                debugger;
+                                if (data.Message != null) {
+                                    if (data.Icon != null) {
+                                        Swal.fire({
+                                            icon: data.Icon,
+                                            text: data.Message,
+                                            allowOutsideClick: () => {
+                                                const popup = Swal.getPopup()
+                                                popup.classList.remove('swal2-show')
+                                                setTimeout(() => {
+                                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                                })
+                                                setTimeout(() => {
+                                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                                }, 500)
+
+                                                return false
+                                            }
+                                        });
+                                    }
+                                }
+                            }
+                            else{
+                                $("#txtPayroll_SalaryAmount").val(data[0].Value);
+                            }
+
+                        }
+                    }
+                })
+            });
+
+            var today = new Date();
+            // Format the date as YYYY-MM (year-month)
+            var yyyy = today.getFullYear();
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+            var defaultMonth = yyyy + '-' + mm;
+            // Set the value of the input element to the default month
+            var CheckEmptyDate = document.getElementById('datePayroll_SalaryMonth').value;
+            if (CheckEmptyDate == "") {
+                document.getElementById('datePayroll_SalaryMonth').value = defaultMonth;
+            }
+
+            var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+            var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+            debugger;
+            if (Message != null) {
+                if (Icon != null) {
+                    Swal.fire({
+                        icon: Icon,
+                        text: Message,
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup()
+                            popup.classList.remove('swal2-show')
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake')
+                            })
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake')
+                            }, 500)
+                            // return false
+                        }
+                    }).then(function() {
+                        window.location.reload();
+                    });
+                }
+            }
+        });//Ready Funcation
+
+
+        function checkAll(ele) {
+            var checkboxes = document.getElementsByTagName('input');
+            if (ele.checked) {
+                for (var i = 0; i < checkboxes.length; i++) {
+                    if (checkboxes[i].type == 'checkbox') {
+                        checkboxes[i].checked = true;
+                    }
+                }
+            } else {
+                for (var i = 0; i < checkboxes.length; i++) {
+                    console.log(i)
+                    if (checkboxes[i].type == 'checkbox') {
+                        checkboxes[i].checked = false;
+                    }
+                }
+                $(".Remarktxt").val("");
+            }
+        }
+
+        $("#btnApply").click(function () {
+            debugger;
+            var tableRemark = $("#txtReleaseRemark").val();
+
+            if (tableRemark !== "") {
+                $('#tblEmployeeHold :checkbox:checked').each(function () {
+                    $(this).closest('tr').find('.Remarktxt').val(tableRemark); // Set the value of Remarktxt in the same row
+                });
+
+                $("#txtReleaseRemark").val("");
+            } else {
+                $(".Remarktxt").val("");
+            }
+        });
+
+        $("#tblEmployeeHold").on("change", ":checkbox", function () {
+            if (!$(this).is(":checked")) {
+                $(this).closest('tr').find('.Remarktxt').val(""); // Clear Remarktxt if checkbox is unchecked
+            }
+        });
+
+    </script>
+
+    <script>
+        //use for add regex function
+        jQuery.validator.addMethod(
+        "regex",
+         function (value, element, regexp) {
+             if (regexp.constructor != RegExp)
+                 regexp = new RegExp(regexp);
+             else if (regexp.global)
+                 regexp.lastIndex = 0;
+             return this.optional(element) || regexp.test(value);
+         }, "erreur expression reguliere"
+      );
+
+        $('#SavePayrollHold').validate({
+            rules: {
+                CmpId: {
+                    required: true,
+                },
+                //BranchId: {
+                //    required: true,
+                //},
+
+                Payroll_SalaryMonth: {
+                    required: true,
+                },
+                Type: {
+                    required: true,
+                },
+            },
+            messages: {
+                CmpId: {
+                    required: "Company name is required",
+                },
+                //BranchId: {
+                //    required: "Business unit is required",
+                //},
+                Payroll_SalaryMonth: {
+                    required: "Earning Month /Year is required",
+                },
+                Type: {
+                    required: "Type is required",
+                },
+            },
+        });
+
+        var form = $("#SavePayrollHold");
+        form.validate();
+        function GetPayrollHold(Process) {
+            debugger;
+            if(Process=="Excel")
+            {
+                var fileInput = document.getElementById('AttachFile');
+                var files = fileInput.files;
+
+                // Check if a file is selected
+                if (files.length > 0) {
+                    var fileName = files[0].name;
+                    $("#validationMessage_").html("");
+                } else {
+                    $("#validationMessage_").html("Choose a file");
+                    return false;
+                }
+            }
+            else{
+                form.valid();
+                if (form.valid() == false) {
+                    $("#datePayroll_SalaryMonth").removeClass("error");
+                    return false;
+                }
+            }
+
+            $('#tblEmployeeHold tr').not(function(){ return !!$(this).has('th').length; }).remove();
+            $(".Userloaderbg").css("display", "flex");
+            $("#SavePayrollHold").submit();
+        }
+
+        var form = $("#SavePayrollHold");
+        form.validate();
+
+        function SavePayrollHold(event) {debugger
+            event.preventDefault(); // Add this to prevent form submission
+            debugger;
+
+            form.valid();
+            if (form.valid() == false) {
+                $("#datePayroll_SalaryMonth").removeClass("error");
+                return false;
+            }
+
+            $("#SelectAll").prop("checked", false);
+            var CmpId= $("#ddlCmpId").val();
+            var BranchId=  $("#ddlBranchId").val();
+            if (BranchId ==''){BranchId=0;}
+            var MonthYear=$("#datePayroll_SalaryMonth").val();
+            var Type=$("#ddlType").val();
+            var ObjHoldRelease = [];
+
+            //var ObjHoldRelease = [];
+
+            //$('#tblEmployeeHold :checkbox:checked').each(function () {
+            //    var row = $(this).closest('tr');
+            //    var data = {
+            //        EmployeeNo: row.find('td').eq(1).text().trim(),      // EmployeeNo (index 1)
+            //        Remark: row.find('td').eq(3).find('input').val().trim(), // Remark input (index 3)
+            //        SalaryBranchId: row.find('td').eq(4).text().trim()   // Hidden BranchId (index 4)
+            //    };
+            //    ObjHoldRelease.push(data);
+
+            //    // For debugging:
+            //    console.log("Collected data:", data);
+            //});
+
+            var ObjHoldRelease = [];
+
+            $('#tblEmployeeHold :checkbox:checked').each(function () {
+                var row = $(this).closest('tr');
+                var data = {
+                    EmployeeNo: row.find('td').eq(1).text().trim(),      // EmployeeNo (2nd column)
+                    Remark: row.find('.Remarktxt').val().trim(),         // Better selector for remark
+                    SalaryBranchId: row.find('td').eq(4).text().trim()   // Hidden BranchId (5th column)
+                };
+                ObjHoldRelease.push(data);
+
+                console.log("Processed row:", data); // Debugging
+            });
+
+            if (ObjHoldRelease.length==0)
+            {
+                var Message="Select atleast one employee";
+                var Icon="error";
+                if (Message != null) {
+                    if (Message != null) {
+                        Swal.fire({
+                            icon: Icon,
+                            text: Message,
+                            allowOutsideClick: () => {
+                                const popup = Swal.getPopup()
+                                popup.classList.remove('swal2-show')
+                                setTimeout(() => {
+                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                })
+                                setTimeout(() => {
+                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                }, 500)
+
+                                return false
+                            }
+                        })
+                        return false;
+                    }
+                }
+            }
+            $(".Userloaderbg").css("display", "flex");
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("SaveUpdate", "Module_Payroll_PayrollBulkHoldRelease")',
+                data: JSON.stringify({ ObjHoldRelease: ObjHoldRelease, CmpId: CmpId, BranchId: BranchId,MonthYear:MonthYear,Type:Type}),
+                contentType: "application/json; charset=utf-8",
+                dataType: "text",
+                success: function (response) {
+                    debugger;
+                    var data = JSON.parse(response);
+                    var Message1 = data.Message;
+                    var Icon1 = data.Icon;
+                    if (data != null) {
+                        if (Icon1=="error")
+                        {
+                            $(".Userloaderbg").css("display", "none");
+                            if (Message1 != null) {
+                                Swal.fire({
+                                    icon: Icon1,
+                                    text: Message1,
+                                    allowOutsideClick: () => {
+                                        const popup = Swal.getPopup()
+                                        popup.classList.remove('swal2-show')
+                                        setTimeout(() => {
+                                            popup.classList.add('animate__animated', 'animate__headShake')
+                                        })
+                                        setTimeout(() => {
+                                            popup.classList.remove('animate__animated', 'animate__headShake')
+                                        }, 500)
+                                        return false
+                                    }
+                                });
+                            }
+                        }
+                        else{
+                            if (Message1 != null) {
+                                Swal.fire({
+                                    icon: Icon1,
+                                    text: Message1,
+                                    allowOutsideClick: () => {
+                                        const popup = Swal.getPopup()
+                                        popup.classList.remove('swal2-show')
+                                        setTimeout(() => {
+                                            popup.classList.add('animate__animated', 'animate__headShake')
+                                        })
+                                        setTimeout(() => {
+                                            popup.classList.remove('animate__animated', 'animate__headShake')
+                                        }, 500)
+                                        return false
+                                    }
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        window.location.href = '@Url.Action("Module_Payroll_PayrollBulkHoldRelease", "Module_Payroll_PayrollBulkHoldRelease")';
+                                    } else if (
+                                        /* Read more about handling dismissals below */
+                                        result.dismiss === Swal.DismissReason.cancel
+                                    ) {
+
+                                    }
+                                })
+                            }
+                        }
+
+                        // location.reload();
+                    }
+                }
+            });
+        }
+    </script>
+    <script>
+        //function downloadExcelFile() {
+        //    // Get the table
+        //    const table = document.getElementById("tblOtherEarningHead");
+
+        //    // Clone the table to avoid modifying the original
+        //    const tableClone = table.cloneNode(true);
+
+        //    // Remove the checkbox column (first column)
+        //    const rows = tableClone.querySelectorAll('tr');
+        //    rows.forEach(row => {
+        //        if (row.cells.length > 0) {
+        //            row.deleteCell(0); // Remove checkbox column
+        //        }
+        //    });
+
+        //    // Replace input fields in the Remarks column with their current values
+        //    const remarkInputs = tableClone.querySelectorAll('.Remarktxt');
+        //    remarkInputs.forEach(input => {
+        //        const value = input.value;
+        //        const td = input.closest('td');
+        //        td.innerHTML = value; // Replace input with its value
+        //    });
+
+        //    // Add a title row at the top
+        //    const thead = tableClone.querySelector('thead');
+        //    const titleRow = document.createElement('tr');
+        //    const titleCell = document.createElement('th');
+        //    titleCell.colSpan = 3; // Span across all columns (Employee No, Name, Remarks)
+        //    titleCell.textContent = "Bulk Hold/Release of Payroll for Employees";
+        //    titleCell.style.textAlign = "center";
+        //    titleCell.style.fontWeight = "bold";
+        //    titleRow.appendChild(titleCell);
+        //    thead.insertBefore(titleRow, thead.firstChild);
+
+        //    // Convert the modified table to workbook
+        //    const workbook = XLSX.utils.table_to_book(tableClone, {
+        //        sheet: "Employee Hold Data",
+        //        raw: true // Preserve raw values
+        //    });
+
+        //    // Generate Excel file
+        //    XLSX.writeFile(workbook, "BulkEmployeePayrollHoldRelease.xlsx", {
+        //        bookType: 'xlsx',
+        //        type: 'array'
+        //    });
+        //}
+        function downloadExcelFile() {
+            // Get the table
+            const table = document.getElementById("tblOtherEarningHead");
+    
+            // Clone the table to avoid modifying the original
+            const tableClone = table.cloneNode(true);
+
+            // Remove the checkbox column (first column)
+            const rows = tableClone.querySelectorAll('tr');
+            rows.forEach(row => {
+                if (row.cells.length > 0) {
+                    row.deleteCell(0); // Remove checkbox column
+                }
+            });
+
+            // Replace input fields in the Remarks column with their current values
+            const remarkInputs = tableClone.querySelectorAll('.Remarktxt');
+            remarkInputs.forEach(input => {
+                const value = input.value;
+                const td = input.closest('td');
+                td.innerHTML = value; // Replace input with its value
+            });
+
+            // Add a title row at the top
+            const thead = tableClone.querySelector('thead');
+            const titleRow = document.createElement('tr');
+            const titleCell = document.createElement('th');
+            titleCell.colSpan = 4; // Updated to span 4 columns (Employee No, Name, Remarks, BranchId)
+            titleCell.textContent = "Bulk Hold/Release of Payroll for Employees";
+            titleCell.style.textAlign = "center";
+            titleCell.style.fontWeight = "bold";
+            titleRow.appendChild(titleCell);
+            thead.insertBefore(titleRow, thead.firstChild);
+
+            // Convert the modified table to workbook
+            const workbook = XLSX.utils.table_to_book(tableClone, {
+                sheet: "Employee Hold Data",
+                raw: true // Preserve raw values
+            });
+
+            // Get the worksheet
+            const worksheet = workbook.Sheets["Employee Hold Data"];
+    
+            // Hide the BranchId column (column D) in Excel
+            if (!worksheet['!cols']) worksheet['!cols'] = [];
+            worksheet['!cols'][3] = { hidden: true }; // 0-based index (3 = column D)
+
+            // Generate Excel file
+            XLSX.writeFile(workbook, "BulkEmployeePayrollHoldRelease.xlsx", {
+                bookType: 'xlsx',
+                type: 'array'
+            });
+        }
+    </script>
+

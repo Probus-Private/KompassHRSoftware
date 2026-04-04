@@ -1,0 +1,415 @@
+﻿@model KompassHR.Areas.Setting.Models.Setting_Preboarding.Preboarding_ModuleSetting
+@{
+    ViewBag.Title = "Setting_Preboarding_ModuleSetting";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<!-- Required library for validation -->
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+<style>
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    .card-row-title {
+        color: #e63c3c;
+        font-size: 18px;
+        font-weight: 600;
+        text-transform: capitalize;
+        border-bottom: #009ce7 1px solid;
+    }
+</style>
+
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Preboarding Module Setting
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("ESS_AdminDashboard_Dashboard", "ESS_AdminDashboard_Dashboard", new { id = 32, ScreenId = 121, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Setting_Preboarding_Menu", "Setting_Preboarding_Menu", new { id = 2, ScreenId = 39, area = "Setting" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Settings">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">Preboarding Module Setting- @ViewBag.AddUpdateTitle</h4>
+
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Define mandatory fields in organization here!
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "Setting_Preboarding_ModuleSetting", new { area = "Setting" })' id="ModuleSettings" method="post">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Compulsory Module
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-10">
+                                                @Html.TextBoxFor(model => model.CompulsoryModule, new { @class = "form-control", type = "text", name = "CompulsoryModule", id = "txtCompulsoryModule", autocomplete = "Off", placeholder = "e.g. For Fresher" })
+                                                @Html.HiddenFor(model => model.ModuleSettingID_Encrypted, new { id = "ModuleSettingID_Encrypted" })
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @*<div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-2">
+                                                    Company Name
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-10">
+                                                    @Html.DropDownListFor(model => model.CmpId, new SelectList(ViewBag.GetCompanyname, "Id", "Name"), "--Select--", new { id = "ddlCmpID", @class = "form-select", autocomplete = "off", name = "CmpName" })
+                                                    @Html.HiddenFor(model => model.ModuleSettingID_Encrypted, new { id = "ModuleSettingID_Encrypted" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>*@
+
+                                <div class="row">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <div class="col-md-6">
+                                                    @Html.CheckBoxFor(model => model.Personal, new { id = "Personal", @class = "module-checkbox" })
+                                                    <label class="form-check-label form-label">
+                                                        Personal
+                                                    </label>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    @Html.CheckBoxFor(model => model.Address, new { id = "Address", @class = "module-checkbox" })
+                                                    <label class="form-check-label form-label">
+                                                        Address
+                                                    </label>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <div class="col-md-6">
+                                                    @Html.CheckBoxFor(model => model.Reference, new { id = "Reference", @class = "module-checkbox" })
+                                                    <label class="form-check-label form-label">
+                                                        Reference
+                                                    </label>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    @Html.CheckBoxFor(model => model.Bank, new { id = "Bank", @class = "module-checkbox" })
+                                                    <label class="form-check-label form-label">
+                                                        Bank
+                                                    </label>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <div class="col-md-6 mt-12px">
+                                                    @Html.CheckBoxFor(model => model.Statutory, new { id = "Statutory", @class = "module-checkbox" })
+                                                    <label class="form-check-label form-label">
+                                                        Statutory
+                                                    </label>
+                                                </div>
+                                                <div class="col-md-6 mt-12px">
+                                                    @Html.CheckBoxFor(model => model.Family, new { id = "Family", @class = "module-checkbox" })
+                                                    <label class="form-check-label form-label">
+                                                        Family
+                                                    </label>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <div class="col-md-6 mt-12px">
+                                                    @Html.CheckBoxFor(model => model.Qualification, new { id = "Qualification", @class = "module-checkbox" })
+                                                    <label class="form-check-label form-label">
+                                                        Qualification
+                                                    </label>
+                                                </div>
+                                                <div class="col-md-6 mt-12px">
+                                                    @Html.CheckBoxFor(model => model.UploadDocument, new { id = "UploadDocument", @class = "module-checkbox" })
+                                                    <label class="form-check-label form-label">
+                                                        UploadDocument
+                                                    </label>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <div class="col-md-6 mt-12px">
+                                                    @Html.CheckBoxFor(model => model.Photo, new { id = "Photo", @class = "module-checkbox" })
+                                                    <label class="form-check-label form-label">
+                                                        Photo
+                                                    </label>
+                                                </div>
+                                                <div class="col-md-6 mt-12px">
+                                                    @Html.CheckBoxFor(model => model.Signature, new { id = "Signature", @class = "module-checkbox" })
+                                                    <label class="form-check-label form-label">
+                                                        Signature
+                                                    </label>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <div class="col-md-6 mt-12px">
+                                                    @Html.CheckBoxFor(model => model.PreEmployer, new { id = "PreEmployer", @class = "module-checkbox" })
+                                                    <label class="form-check-label form-label">
+                                                        PreEmployer
+                                                    </label>
+                                                </div>
+                                                <div class="col-md-6 mt-12px">
+                                                    @Html.CheckBoxFor(model => model.Skill, new { id = "Skill", @class = "module-checkbox" })
+                                                    <label class="form-check-label form-label">
+                                                        Skill
+                                                    </label>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <div class="col-md-6 mt-12px">
+                                                    @Html.CheckBoxFor(model => model.Language, new { id = "Language", @class = "module-checkbox" })
+                                                    <label class="form-check-label form-label">
+                                                        Language
+                                                    </label>
+                                                </div>
+                                                <div class="col-md-6 mt-12px">
+                                                    @Html.CheckBoxFor(model => model.Other, new { id = "Other", @class = "module-checkbox" })
+                                                    <label class="form-check-label form-label">
+                                                        Other
+                                                    </label>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="button" id="btnSubmit"
+                                                                class="btn btn-primary btn-sm">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                        <a href="@Url.Action("GetList", "Setting_Preboarding_ModuleSetting", new { area = "Setting" })">
+                                                            <button type="button" class="btn btn-danger btn-sm" id="btnGetList">
+                                                                <i class="fa-solid fa-share-from-square"></i> List
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#ddlCmpID").select2();
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        // return false
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+        $("#formReset").click(function () {
+            $("#ModuleSettings")[0].reset();
+        })
+    });//Ready Funcation
+
+
+</script>
+
+<script>
+    //use for add regex function
+    jQuery.validator.addMethod(
+        "regex",
+         function(value, element, regexp) {
+             if (regexp.constructor != RegExp)
+                 regexp = new RegExp(regexp);
+             else if (regexp.global)
+                 regexp.lastIndex = 0;
+             return this.optional(element) || regexp.test(value);
+         },"erreur expression reguliere"
+      );
+    $("#ModuleSettings").validate({
+        rules: {
+
+            CompulsoryModule:{
+                required:true,
+            },
+        },
+        messages: {
+
+            CompulsoryModule:{
+                required:"Compulsory Module is required",
+            },
+        },
+    });
+
+    var form = $("#ModuleSettings");
+    form.validate();
+    $("#btnSubmit").click(function () {
+        debugger;
+        form.valid();
+        if(form.valid()==false)
+        {
+            return false;
+        }
+
+        var isChecked = $('.module-checkbox:checked').length > 0;
+        if (!isChecked) {
+            Swal.fire({
+                icon: "error",
+                text: "Please select at least one module.",
+                allowOutsideClick: false
+            });
+            e.preventDefault(); // stop form submission
+        } 
+
+        //var Personal=$("#Personal").val();
+        //var Address=$("#Address").val();
+        //var Reference=$("#Reference").val();
+        //var Bank=$("#Bank").val();
+        //var Statutory=$("#Statutory").val();
+        //var Family=$("#Family").val();
+        //var Qualification=$("#Qualification").val();
+        //var UploadDocument=$("#UploadDocument").val();
+        //var Photo=$("#Photo").val();
+        //var Signature=$("#Signature").val();
+        //var PreEmployer=$("#PreEmployer").val();
+        //var Skill=$("#Skill").val();
+        //var Language=$("#Language").val();
+        //var Other=$("#Other").val();
+        var ModuleSettingID_Encrypted=$("#ModuleSettingID_Encrypted").val();
+     //   var CmpId=$("#ddlCmpID").val();
+        var CompulsoryModule=$("#txtCompulsoryModule").val();
+        $.ajax({
+            url: "IsModuleSettingExists",
+            method:"get",
+            //data :{ModuleSettingID_Encrypted:ModuleSettingID_Encrypted,CmpId:CmpId},
+            //success:function(response){
+            data :{ModuleSettingID_Encrypted:ModuleSettingID_Encrypted,CompulsoryModule:CompulsoryModule},
+            success:function(response){
+                debugger;
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon=="error") {
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                        }
+                    }
+                }
+                else{
+                    $("#ModuleSettings").submit();
+                }
+            }
+        });
+    });
+</script>
+

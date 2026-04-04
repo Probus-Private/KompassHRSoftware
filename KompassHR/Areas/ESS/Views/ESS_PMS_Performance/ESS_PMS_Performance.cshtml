@@ -1,0 +1,1405 @@
+﻿@{
+    ViewBag.Title = "ESS_PMS_Performance";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var list = ViewBag.OwnObjectiveInfo as List<dynamic>;
+
+}
+
+<style>
+    .attachment-box {
+    background: #f9fafb;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px dashed #d1d5db;
+}
+
+#attachmentPreview {
+    font-size: 13px;
+    color: #374151;
+}
+    .checkin-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-left: 4px solid #3b82f6;
+    border-radius: 6px;
+    padding: 10px 12px;
+    margin-bottom: 12px;   /* ⭐ SPACE BETWEEN ROWS */
+}
+
+.checkin-header {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 6px;
+}
+
+.checkin-body {
+    font-size: 13px;
+    color: #374151;
+}
+
+.checkin-body span {
+    color: #6b7280;
+    font-size: 12px;
+}
+
+.checkin-comment {
+    margin-top: 4px;
+}
+
+
+.edit-kra-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: 1px solid #d0d0d0;
+    background: #ffffff;
+    color: #4a4a4a;
+    font-size: 14px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.edit-kra-btn:hover {
+    background: #f2f6ff;
+    border-color: #5a8dee;
+    color: #2b6ded;
+}
+
+.readonly-slider {
+    pointer-events: none !important; 
+    opacity: 1 !important;          
+    cursor: not-allowed !important;
+}
+
+.readonly-slider::-webkit-slider-thumb {
+    pointer-events: none !important;
+}
+.kra-row td {
+    padding: 12px 10px !important;
+    vertical-align: top;
+}
+
+.kra-row td:first-child {
+    border-left: 4px solid #3B82F6;
+    padding-left: 12px !important;
+}
+
+.kra-row td b,
+.kra-row td:first-child {
+    font-size: 14px;
+    color: #1f2937;
+}
+
+/* Origin tag */
+.kra-origin-tag {
+    background: #e8f0ff;
+    color: #1e40af;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    display: inline-block;
+    margin-top: 4px;
+}
+
+/* Date line */
+.kra-date-text {
+    font-size: 12px;
+    color: #6b7280;
+    display: block;
+    margin-top: 2px;
+}
+
+    .okr-section {
+        background: #ffffff;
+        border-radius: 10px;
+        border: 1px solid #e6ebf3;
+        margin-bottom: 22px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    .okr-header {
+        background: linear-gradient(90deg, #f5f9ff, #e9f1ff);
+        padding: 10px 16px;
+        color: #344560;
+        font-size: 14px;
+        font-weight: 600;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+    }
+
+        .okr-header i {
+            margin-right: 6px;
+            color: #3a6fd8;
+        }
+
+    .okr-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .okr-table th {
+            background: #f8f9fc;
+            padding: 10px;
+            font-size: 12px;
+            color: #555;
+            font-weight: 600;
+            border-bottom: 1px solid #e0e4eb;
+        }
+
+        .okr-table td {
+            padding: 10px;
+            font-size: 13px;
+            border-bottom: 1px solid #f1f1f1;
+        }
+
+    .owner-circle {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: #e7f0ff;
+        color: #0d6efd;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: 600;
+    }
+
+    .okr-origin {
+        background: #eef4ff;
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #0d6efd;
+        border: 1px solid #d4e3ff;
+    }
+
+    .progress {
+        height: 6px !important;
+        background: #e1e1e1 !important;
+        border-radius: 6px;
+    }
+
+    .progress-bar {
+        background: #0d6efd !important;
+        border-radius: 6px;
+    }
+
+    .okr-view-btn {
+        padding: 4px 12px;
+        font-size: 12px;
+        border-radius: 6px;
+        background: #0d6efd;
+        color: white;
+        border: none;
+    }
+
+        .okr-view-btn:hover {
+            background: #0a58ca;
+        }
+
+    .kra-container {
+        padding: 15px;
+        display: none;
+        background: #fafcff;
+        border-top: 1px solid #e6ebf3;
+    }
+
+    .kra-row {
+        padding: 8px 0;
+        border-bottom: 1px solid #eaeaea;
+    }
+
+    /* Sidebar */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        right: -600px;
+        width: 600px;
+        height: 100vh;
+        background: #fff;
+        box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2);
+        transition: right 0.3s ease-in-out;
+        z-index: 1050;
+        overflow-y: auto;
+        padding: 20px;
+    }
+
+        .sidebar.show {
+            right: 0 !important;
+        }
+
+    .sidebar-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.4);
+        display: none;
+        z-index: 1040;
+    }
+
+    .slider-input[type="range"]::-webkit-slider-thumb {
+        background: red !important;
+    }
+</style>
+
+<style>
+    .objective-block {
+        padding-bottom: 6px;
+    }
+
+    .objective-title {
+        font-size: 17px;
+        font-weight: 700;
+        color: #1e293b;
+    }
+
+    .kra-title {
+        font-size: 14px;
+        color: #6b7280;
+        margin-top: 2px;
+    }
+
+    .detail-grid {
+        display: grid;
+        grid-template-columns: 130px auto;
+        row-gap: 10px;
+        column-gap: 8px;
+    }
+
+        .detail-grid .label {
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .detail-grid .value {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+    .live-progress {
+        margin-top: 8px;
+        font-size: 14px;
+        color: #374151;
+    }
+
+    .action-buttons {
+        text-align: right;
+        margin-top: 15px;
+    }
+
+    .small-title {
+        font-size: 12px;
+        color: #6b7280;
+    }
+
+    .title-value {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    .percent-box {
+        background: #f8fafc;
+        border: 1px solid #dce2e9;
+        padding: 8px 12px;
+        border-radius: 6px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .detail-grid {
+        display: grid;
+        grid-template-columns: 120px auto;
+        row-gap: 10px;
+        column-gap: 8px;
+    }
+
+        .detail-grid .label {
+            font-size: 13px;
+            font-weight: 500;
+            color: #6b7280;
+        }
+
+        .detail-grid .value {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1e293b;
+            word-break: break-word;
+        }
+
+    /* Sidebar Layout */
+    .sidebar-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #1f2d3d;
+        margin: 0;
+    }
+
+    .section-box {
+        background: #ffffff;
+        border: 1px solid #e4e7ec;
+        border-radius: 8px;
+        padding: 15px 18px;
+        margin-bottom: 15px;
+    }
+
+    .highlight-box {
+        background: #f0f7ff;
+        border-left: 4px solid #007bff;
+    }
+
+    .section-header {
+        font-size: 14px;
+        font-weight: 600;
+        color: #334155;
+        margin-bottom: 12px;
+    }
+
+    .kr-title {
+        font-size: 15px;
+        font-weight: 600;
+        color: #1e293b;
+    }
+
+    /* Detail rows */
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+    }
+
+    .detail-label {
+        color: #6b7280;
+        font-size: 13px;
+        width: 40%;
+    }
+
+    .detail-value {
+        font-size: 13px;
+        font-weight: 600;
+        color: #1e293b;
+        width: 60%;
+    }
+
+    /* Input rows */
+    .input-row {
+        display: flex;
+        gap: 15px;
+    }
+
+    .input-group label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #374151;
+    }
+
+    /* Buttons */
+    .action-row {
+        text-align: right;
+        margin-top: 10px;
+    }
+
+    .history-box {
+        max-height: 200px;
+        overflow-y: auto;
+        background: #fafafa;
+        border: 1px solid #ddd;
+        padding: 10px;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row mb-3">
+        <div class="col-md-12 d-flex justify-content-between align-items-center">
+
+            <!-- Page Title -->
+            <h1 style="font-size:20px; font-weight:600; margin:0;">
+                My OKRs
+            </h1>
+
+            <!-- Home & Back Buttons -->
+            <nav aria-label="breadcrumb">
+                <ol style="list-style:none; padding:0; margin:0; display:flex; align-items:center;">
+                    <li style="margin-right:10px;">
+                        <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })"
+                           aria-label="Home" title="Home">
+                            <img src="~/assets/MenuImages/Home.png"
+                                 style="width:24px; height:auto;" alt="Home">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("ESS_PMS_Menu", "ESS_PMS_Menu",
+                                new { id = 11, ScreenId = 594, area = "ESS" })"
+                           aria-label="Back" title="Back">
+                            <img src="~/assets/MenuImages/Back.png"
+                                 style="width:24px; height:auto;" alt="Back">
+                        </a>
+                    </li>
+                </ol>
+            </nav>
+
+        </div>
+    </div>
+    <div class="okr-section" style="border:1px solid #dfe4ee; background:#fff; border-radius:6px; margin-bottom:25px;">
+
+        <div class="okr-header toggle-team"
+             style="padding:10px 14px; background:#f6f8fc; cursor:pointer; display:flex; align-items:center; gap:8px; border-bottom:1px solid #e5e9f2;">
+            <i class="fa fa-users" style="color:#264478;"></i>
+            <span style="font-weight:600; color:#2b3d6b;">Team</span>
+            <i class="fa fa-chevron-down" style="margin-left:auto; color:#264478;"></i>
+        </div>
+        <div class="team-objectives" style="display:none; padding:10px 15px;">
+@foreach (var obj in list.Where(x => x.DisplaySection == "Team"))
+{
+                <div class="okr-objective" style="padding:10px 0; border-bottom:1px solid #ececec;">
+
+                    <div class="objective-toggle toggle-kra"
+                         data-id="@obj.ObjectiveId"
+                         style="display:flex; align-items:center; gap:12px; cursor:pointer; padding:6px 0;">
+
+                        <i class="fa fa-caret-right"
+                           id="caret-team-@obj.ObjectiveId"
+                           style="font-size:14px; color:#54647e; margin-right:4px; transition:0.2s;"></i>
+
+                        <span style="font-size:14px; color:#1f2e54; font-weight:600; flex:1;">
+                            @obj.ObjectiveTitle
+                        </span>
+
+                        <span style="font-size:13px; color:#98a2b3; margin-right:10px;">
+                            @obj.Timeline
+                        </span>
+
+                        <div style="width:140px;">
+                            <div style="height:6px; background:#e6e6e6; border-radius:4px;">
+                                <div style="height:6px; width:@obj.ProgressPercentage%; background:#2b6ded; border-radius:4px;"></div>
+                            </div>
+                            <div style="font-size:12px; text-align:right; color:#5f6b7b;">
+                                @obj.ProgressPercentage%
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="kra-container"
+                         id="team-kra-@obj.ObjectiveId"
+                         style="padding-left:26px; display:none; margin-top:10px;">
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    </div>
+
+    <div class="okr-section" style="border:1px solid #dfe4ee; background:#fff; border-radius:6px; margin-bottom:25px;">
+
+        <div class="okr-header toggle-individual"
+             style="padding:10px 14px; background:#f6f8fc; cursor:pointer; display:flex; align-items:center; gap:8px; border-bottom:1px solid #e5e9f2;">
+            <i class="fa fa-user" style="color:#264478;"></i>
+            <span style="font-weight:600; color:#2b3d6b;">Individual</span>
+            <i class="fa fa-chevron-down" style="margin-left:auto; color:#264478;"></i>
+        </div>
+        <div class="individual-objectives" style="display:none; padding:10px 15px;">
+
+@foreach (var obj in list.Where(x => x.DisplaySection == "Individual"))
+{
+                <div class="okr-objective" style="padding:10px 0; border-bottom:1px solid #ececec;">
+
+                    <!-- Objective header row (tree node) -->
+                    <div class="objective-toggle toggle-kra"
+                         data-id="@obj.ObjectiveId"
+                         style="display:flex; align-items:center; gap:12px; cursor:pointer; padding:6px 0;">
+
+                        <i class="fa fa-caret-right"
+                           id="caret-ind-@obj.ObjectiveId"
+                           style="font-size:14px; color:#54647e; margin-right:4px; transition:0.2s;"></i>
+
+                        <span style="font-size:14px; color:#1f2e54; font-weight:600; flex:1;">
+                            @obj.ObjectiveTitle
+                        </span>
+
+                        <span style="font-size:13px; color:#98a2b3; margin-right:10px;">
+                            @obj.Timeline
+                        </span>
+
+                        <div style="width:140px;">
+                            <div style="height:6px; background:#e6e6e6; border-radius:4px;">
+                                <div style="height:6px; width:@obj.ProgressPercentage%; background:#2b6ded; border-radius:4px;"></div>
+                            </div>
+                            <div style="font-size:12px; text-align:right; color:#5f6b7b;">
+                                @obj.ProgressPercentage%
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- KRA container (tree child) -->
+                    <div class="kra-container"
+                         id="ind-kra-@obj.ObjectiveId"
+                         style="padding-left:26px; display:none; margin-top:10px;">
+                    </div>
+
+                </div>
+            }
+
+        </div>
+    </div>
+
+</div>
+
+<div id="sidebarBackdrop" class="sidebar-backdrop"></div>
+
+<div class="sidebar" id="performanceFormSidebar">
+
+    <div class="sidebar-header d-flex justify-content-between align-items-center">
+        <h4 class="sidebar-title">Check-In</h4>
+        <button type="button" class="btn-close" id="closePerformanceSidebar"></button>
+    </div>
+
+    <div class="sidebar-body">
+        <form id="PerformanceUpdateForm" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" id="PerformanceObjectiveId">
+            <input type="hidden" id="HiddenObjectiveId">
+            <input type="hidden" id="ciTargetRaw">
+            <input type="hidden" id="ciUOMType">
+            <div class="objective-block">
+                <div class="objective-title" id="ciObjective">Objective Title Here</div>
+                <div class="kra-title" id="keyResultName">KRA Title Here</div>
+            </div>
+            <hr>
+            <div class="detail-grid">
+                <div class="label">UOM</div>           <div class="value" id="ciUOM"></div>
+                <div class="label">Target</div>        <div class="value" id="ciTarget"></div>
+                <div class="label">Smart</div>         <div class="value" id="ciSmart"></div>
+                <div class="label">KPI Category</div>  <div class="value" id="ciKPICategory"></div>
+                <div class="label">KPI</div>           <div class="value" id="ciKPI"></div>
+                <div class="label">Visibility</div>    <div class="value" id="ciVisibility"></div>
+                <div class="label">Start → End</div>   <div class="value" id="ciDates"></div>
+                <div class="label">Description</div>   <div class="value" id="ciDescription"></div>
+            </div>
+            <hr>
+            <div class="form-section">
+                <label class="form-label">Actual Value Done</label>
+                <input type="number" id="txtActualValue" class="form-control">
+
+                <div class="live-progress">
+                    Progress: <b id="progressValue">0%</b>
+                </div>
+
+                <label class="form-label mt-3">Status</label>
+                <select id="Status" class="form-select">
+                    <option value="Not Started">⚪ Not Started</option>
+                    <option value="On Track">🟢 On Track</option>
+                    <option value="At Risk">🟡 At Risk</option>
+                    <option value="In Trouble">🔴 In Trouble</option>
+                    <option value="Completed">🔵 Completed</option>
+                </select>
+
+
+                <label class="form-label mt-3">Period</label>
+                <select id="ddlPeriod" class="form-select"></select>
+                <input type="hidden" id="ObjectivePeriodId">
+
+                <label class="form-label mt-3">Check-In Date</label>
+                <input type="date" id="checkInDate" class="form-control">
+
+                <label class="form-label mt-3">Comment</label>
+                <textarea id="Comment" class="form-control" rows="3"></textarea>
+            </div>
+            <label class="form-label mt-3">
+                Attachment
+                <small class="text-muted">(optional)</small>
+            </label>
+
+            <div class="attachment-box">
+                <input type="file"
+                       id="CheckInAttachment"
+                       class="form-control"
+                       accept=".pdf,.jpg,.jpeg,.png" />
+
+                <small class="text-muted d-block mt-1">
+                    Allowed: PDF, JPG, JPEG, PNG(Max 5 MB)
+                </small>
+
+                <div id="attachmentPreview" class="mt-2" style="display:none;">
+                    <i class="fa fa-paperclip"></i>
+                    <span id="attachmentName"></span>
+                    <a href="javascript:void(0)" class="text-danger ms-2" id="removeAttachment">
+                        Remove
+                    </a>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button type="button" class="btn btn-light" id="cancelBtn">Cancel</button>
+                <button type="button" class="btn btn-primary" id="updateBtn">Update</button>
+            </div>
+            <div class="action-buttons">
+                <button type="button" class="btn btn-success" id="btnFinalSubmit">Final Submit</button>
+            </div>
+
+            <div id="kraHistoryBox" style="display:none; margin-top:20px;">
+                <h5 style="font-size:14px; font-weight:600; color:#374151; margin-bottom:8px;">
+                    Previous Check-Ins
+                </h5>
+
+                <div id="kraHistoryList" style="max-height:180px;
+                     overflow-y:auto;
+                     border:1px solid #ddd;
+                     background:#fafafa;
+                     padding:10px;
+                     border-radius:6px;
+                     ">
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<!-- Attachment Viewer Modal -->
+<div class="modal fade" id="attachmentModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Attachment Preview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body" style="height:80vh;">
+                <iframe id="attachmentFrame"
+                        src=""
+                        style="width:100%; height:100%; border:none;"></iframe>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+
+
+     
+            var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+            var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+            debugger;
+            if (Message != null) {
+                if (Message != null) {
+                    Swal.fire({
+                        icon: Icon,
+                        text: Message,
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup()
+                            popup.classList.remove('swal2-show')
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake')
+                            })
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake')
+                            }, 500)
+                            return false
+                        }
+                    });
+                }
+            }
+
+
+        let today = new Date().toISOString().split("T")[0];
+        $("#checkInDate").val(today);
+        $("#txtActualValue").on("input", function () {
+
+            let value = parseFloat($(this).val());
+            let target = parseFloat($("#ciTargetRaw").val());
+            let uom = $("#ciUOMType").val().trim();
+            let percent = 0;
+
+            if (isNaN(value) || isNaN(target) || target <= 0) {
+                $("#progressValue").text("0%");
+                return;
+            }
+
+            switch (uom) {
+
+                // 🔒 Percentage-based KPI
+                case "Percentage (%)":
+                    percent = (value / target) * 100;
+
+                    // optional cap (if you don't want >100%)
+                    if (percent > 100) percent = 100;
+
+                    break;
+
+                    // 🚀 Over-achievement allowed
+                case "Number":
+                case "Count":
+                case "Units":
+                case "Hours":
+                case "Days":
+                case "Amount (? / $)":
+                case "Quality Score":
+                case "Rating":
+                default:
+                    percent = (value / target) * 100;
+                    break;
+            }
+
+            // 🎨 UX: Highlight over-achievement
+            if (percent > 100) {
+                $("#progressValue").css("color", "#16a34a"); // green
+            } else {
+                $("#progressValue").css("color", "#2563eb"); // normal
+            }
+
+            $("#progressValue").text(percent.toFixed(2) + "%");
+        });
+    });
+
+    $("#CheckInAttachment").on("change", function () {
+
+        if (this.files.length === 0) return;
+
+        const file = this.files[0];
+        const allowedTypes = [
+            "application/pdf",
+            "image/jpeg",
+            "image/png"
+        ];
+
+        if (!allowedTypes.includes(file.type)) {
+            swal("Only PDF, JPG, JPEG, PNG files are allowed", "", "warning");
+            $(this).val('');
+            $("#attachmentPreview").hide();
+            return;
+        }
+
+        if (file.size > 5 * 1024 * 1024) {
+            swal("File size must be under 5 MB", "", "warning");
+            $(this).val('');
+            $("#attachmentPreview").hide();
+            return;
+        }
+
+        // ✅ Preview
+        $("#attachmentName").text(file.name);
+        $("#attachmentPreview").show();
+    });
+
+
+
+$(document).on("click", ".objective-toggle", function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    let id = $(this).data("id");
+    let $section   = $(this).closest(".team-objectives, .individual-objectives");
+    let $container = $(this).closest(".okr-objective").find(".kra-container");
+    let $caret     = $(this).find(".fa-caret-right");
+    if ($container.is(":visible")) {
+        $container.slideUp(150);
+        $caret.css("transform", "rotate(0deg)");
+        return;
+    }
+    $section.find(".kra-container")
+        .not($container)
+        .slideUp(0);
+    $section.find(".fa-caret-right")
+        .not($caret)
+        .css("transform", "rotate(0deg)");
+    $caret.css("transform", "rotate(90deg)");
+    $.ajax({
+        url: '@Url.Action("ObjectiveWise", "ESS_PMS_Performance")',
+        type: "GET",
+        data: { ObjectiveId: id },
+        success: function (data) {
+
+            let isTeam = $section.hasClass("team-objectives");
+
+            let filteredData = data.filter(itemArr => {
+                let KRA = Array.isArray(itemArr)
+                    ? Object.fromEntries(itemArr.map(x =>[x.Key, x.Value]))
+                    : itemArr;
+
+                return isTeam
+                    ? KRA.SourceTable === "Team"
+                    : KRA.SourceTable === "Own";
+            });
+            if (filteredData.length === 0) {
+                $container.html("<div style='padding:10px;color:#777;'>No KRA found.</div>");
+                $container.slideDown();
+                return;
+            }
+            let html = `
+                <table class="okr-table">
+                    <tr><th>KRA</th><th>Progress</th></tr>`;
+            filteredData.forEach(itemArr => {
+                let KRA = Array.isArray(itemArr)
+                    ? Object.fromEntries(itemArr.map(x => [x.Key, x.Value]))
+                    : itemArr;
+                html += `
+<tr class="kra-row">
+    <td>
+        <div style="border-left:3px solid #3b82f6; padding-left:12px;">
+            <b>${KRA.KRA}</b>
+            <span class="kra-origin-tag">${KRA.SourceTable}</span>
+            <div class="kra-date-text">${convertDate(KRA.StartDate)} → ${convertDate(KRA.EndDate)}</div>
+        </div>
+    </td>
+    <td>
+  <div style="display:flex; align-items:center; gap:12px;">
+  <input type="range" min="0" max="100"
+   value="${KRA.ProgressPercentage}"
+   class="kra-slider"
+
+       data-id="${KRA.OwnObjectiveCreationId}"
+       data-objectiveid="${KRA.ObjectiveId}"
+       data-kra="${KRA.KRA}"
+       data-progress="${KRA.ProgressPercentage}"
+       data-objective="${KRA.ObjectiveTitle}"
+       data-actualvalue="${KRA.ActualValue}"
+       data-smart="${KRA.SmartPrinciple}"
+       data-uom="${KRA.UOM}"
+       data-target="${KRA.Target}"
+       data-progressstatus="${KRA.ProgressStatus}"
+       data-start="${convertDate(KRA.StartDate)}"
+       data-end="${convertDate(KRA.EndDate)}"
+       data-visibility="${KRA.Visibility}"
+       data-kpicategory="${KRA.KPICategory}"
+       data-kpi="${KRA.KPIName}"
+       data-description="${(KRA.Description || '').replace(/"/g, '&quot;')}">
+ <span class ="kra-percent">
+    ${(KRA.ProgressPercentage != null
+        ? parseFloat(KRA.ProgressPercentage).toFixed(2)
+        : "0.00")}%
+</span>
+
+<button class="edit-kra-btn"
+    data-id="${KRA.OwnObjectiveCreationId}"
+    data-objectiveid="${KRA.ObjectiveId}"
+    data-kra="${KRA.KRA}"
+    data-progress="${KRA.ProgressPercentage}"
+    data-objective="${KRA.ObjectiveTitle}"
+    data-actualvalue="${KRA.ActualValue}"
+    data-smart="${KRA.SmartPrinciple}"
+    data-uom="${KRA.UOM}"
+    data-progressstatus="${KRA.ProgressStatus}"
+    data-target="${KRA.Target}"
+    data-start="${convertDate(KRA.StartDate)}"
+    data-end="${convertDate(KRA.EndDate)}"
+    data-visibility="${KRA.Visibility}"
+    data-kpicategory="${KRA.KPICategory}"
+    data-kpi="${KRA.KPIName}"
+    data-description="${(KRA.Description || '').replace(/"/g, '&quot;')}">
+    <i class="fa fa-edit"></i>
+</button>
+
+</div>
+    </td>
+</tr>`;});
+            html += `</table>`;
+            $container.html(html).slideDown();
+        }
+    });
+});
+
+    function fillKraDetails(d) {
+        $("#ciObjective").text(d.objective);
+        $("#ciSmart").text(d.smart);
+        $("#ciUOM").text(d.uom);
+        $("#ciTarget").text(d.target);
+        $("#ciDates").text(d.start + " → " + d.end);
+        $("#ciVisibility").text(d.visibility);
+        $("#ciKPICategory").text(d.kpicategory);
+        $("#ciKPI").text(d.kpi);
+        $("#ciDescription").html(d.description);
+    }
+
+    function formatDate(dateStr) {
+        if (!dateStr) return "";
+        let d = new Date(dateStr);
+        return d.toLocaleDateString("en-GB", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+        });
+    }
+
+@*$("#updateBtn").click(function () {
+    debugger
+    $("#dateError").hide();
+    if (!$("#checkInDate").val()) {
+        $("#dateError").show();
+        return;
+    }
+
+    let kraId = $("#PerformanceObjectiveId").val();
+    let objectiveId = $("#HiddenObjectiveId").val();
+    let formData = {
+        OwnObjectiveCreationId: kraId,
+        PercentageValue: $("#progressValue").text().replace("%", "").trim(),
+        Status: $("#Status").val(),
+        Comment: $("#Comment").val(),
+        KraUpdatedDate: $("#checkInDate").val(),
+        ActualValue: $("#txtActualValue").val()
+    };
+
+    $.ajax({
+        url: '@Url.Action("SaveUpdate", "ESS_PMS_Performance")',
+        type: "POST",
+        data: formData,
+        success: function (res) {
+            $("#performanceFormSidebar").removeClass("show");
+            $("#sidebarBackdrop").hide();
+            RefreshObjectiveProgress(objectiveId);
+            setTimeout(function () {
+                location.reload();
+            }, 300);
+        }
+    });
+});*@
+
+
+function RefreshObjectiveProgress(objectiveId) {
+    $.ajax({
+        url: '@Url.Action("GetObjectiveProgress", "ESS_PMS_Performance")',
+        type: "GET",
+        data: { ObjectiveId: objectiveId },
+        success: function (avg) {
+            let value = 0;
+            if (Array.isArray(avg) && avg.length > 0) {
+                value = parseFloat(avg[0].Value || Object.values(avg[0])[0]) || 0;
+            } else if (typeof avg === "object") {
+                value = parseFloat(Object.values(avg)[0]) || 0;
+            } else {
+                value = parseFloat(avg) || 0;
+            }
+            console.log("REFRESHED AVG:", value);
+            let row = $(`button.add-kra-btn[data-id='${objectiveId}']`).closest("tr");
+            if (row.length === 0) {
+                console.warn("Row not found for objective:", objectiveId);
+                return;
+            }
+            let bar = row.find(".progress-bar");
+            let text = row.find("small");
+            bar.css("width", value + "%");
+            text.text(value.toFixed(0) + "%");
+        }
+    });
+}
+
+    $(document).on("input", ".kra-slider", function () {
+        debugger
+        let val = $(this).val();
+        let kraId = $(this).data("id");
+        let objectiveId = $(this).data("objectiveid");
+        loadPeriods(kraId);
+        $(this).next(".kra-percent").text(val + "%");
+        let d = $(this).data();
+        fillKraDetails(d);
+        $("#PerformanceObjectiveId").val(kraId);
+        $("#HiddenObjectiveId").val(objectiveId);
+
+      //  $("#progressValue").text(val + "%");
+     //   $("#progressValue").text(d.progress + "%");
+        let progress = parseFloat(d.progress);
+        $("#progressValue").text(
+            isNaN(progress) ? "0.00%" : progress.toFixed(2) + "%"
+        );
+
+        $("#txtActualValue").val(d.actualvalue);
+        $("#ciTargetRaw").val(d.target);
+        $("#ciUOMType").val(d.uom);
+        $("#Status").val(d.progressstatus);
+        $("#ObjectiveTitleAddKRA").text($(this).data("objective"));
+        $("#keyResultName").text($(this).data("kra"));
+
+        $("#performanceFormSidebar").addClass("show");
+        $("#sidebarBackdrop").show();
+        loadKraHistory(kraId);
+    });
+    $(document).on("click", ".edit-kra-btn", function () {
+        debugger
+        let d = $(this).data();
+        loadPeriods(d.id);
+        fillKraDetails(d);
+
+        $("#PerformanceObjectiveId").val(d.id);
+        $("#HiddenObjectiveId").val(d.objectiveid);
+
+        // ⭐ ORIGINAL values
+        $("#progressValue").text(d.progress + "%");
+        let progress = parseFloat(d.progress);
+        $("#progressValue").text(
+            isNaN(progress) ? "0.00%" : progress.toFixed(2) + "%"
+        );
+
+        $("#txtActualValue").val(d.actualvalue);
+
+        $("#ciTargetRaw").val(d.target);
+        $("#ciUOMType").val(d.uom);
+        $("#Status").val(d.progressstatus);
+
+        $("#keyResultName").text(d.kra);
+
+        $("#performanceFormSidebar").addClass("show");
+        $("#sidebarBackdrop").show();
+
+        loadKraHistory(d.id);
+    });
+
+$("#closePerformanceSidebar, #cancelBtn, #sidebarBackdrop").click(function () {
+    $("#performanceFormSidebar").removeClass("show");
+    $("#sidebarBackdrop").hide();
+    $("#kraHistoryBox").hide();
+});
+
+function convertDate(data) {
+    var getdate = parseInt(data.replace("/Date(", "").replace(")/", ""));
+    var date = millisecTodate(getdate);
+    return date;
+}
+
+function loadPeriods(ownObjectiveCreationId) {
+    debugger;
+    $.get('@Url.Action("GetObjectivePeriods")',
+        { ownObjectiveCreationId: ownObjectiveCreationId },
+        function (res) {
+            debugger
+            let ddl = $("#ddlPeriod");
+            ddl.empty();
+
+            if (!res || res.length === 0) {
+                ddl.append(`<option>No Periods</option>`);
+                return;
+            }
+
+            let rows = [];
+
+            // 🔹 Handle both response shapes
+            if (Array.isArray(res[0]) && Array.isArray(res[0][0])) {
+                rows = res[0];          // nested
+            } else if (Array.isArray(res[0])) {
+                rows = res;             // flat
+            }
+
+            let firstAvailableId = null;
+
+            rows.forEach(function (rowArr) {
+
+                // ✅ Convert [{Key,Value}] → object
+                let row = {};
+                rowArr.forEach(function (x) {
+                    row[x.Key.trim()] = (x.Value || "").toString().trim();
+                });
+
+                let isSubmitted = row.IsFinalSubmit === "Yes";
+                let disabled = isSubmitted ? "disabled" : "";
+                let status = isSubmitted ? " (Submitted)" : "";
+
+                ddl.append(`
+                    <option value="${row.ObjectivePeriodId}" ${disabled}>
+                        ${row.PeriodLabel}${status}
+                    </option>
+                `);
+
+                if (!isSubmitted && firstAvailableId === null) {
+                    firstAvailableId = row.ObjectivePeriodId;
+                }
+            });
+
+            // ✅ Auto-select first open period
+            if (firstAvailableId) {
+                ddl.val(firstAvailableId);
+                $("#ObjectivePeriodId").val(firstAvailableId);
+            }
+        }
+    );
+}
+
+
+
+</script>
+
+<script>
+
+    $("#updateBtn").click(function () {
+        debugger
+
+        // 🔴 Period mandatory validation
+        let periodId = $("#ddlPeriod").val();
+
+        if (!periodId || periodId === "" || periodId === "0") {
+            Swal.fire({
+                icon: "warning",
+                title: "Period Required",
+                text: "Please select a Period before final submit."
+            });
+            $("#ddlPeriod").focus();
+            return;
+        }
+
+        let data = {
+            OwnObjectiveCreationId: $("#PerformanceObjectiveId").val(),
+            PercentageValue: $("#progressValue").text().replace("%", ""),
+            ActualValue: $("#txtActualValue").val(),
+            Status: $("#Status").val(),
+            Comment: $("#Comment").val(),
+            KraUpdatedDate: $("#checkInDate").val(),
+            ObjectivePeriodId: $("#ddlPeriod").val(),
+            ProcessType: "Save"   // ⭐ VERY IMPORTANT
+        };
+
+        SavePerformance(data);
+    });
+
+
+    $("#btnFinalSubmit").click(function () {
+        debugger
+        // 🔴 Period mandatory validation
+        let periodId = $("#ddlPeriod").val();
+
+        if (!periodId || periodId === "" || periodId === "0") {
+            Swal.fire({
+                icon: "warning",
+                title: "Period Required",
+                text: "Please select a Period before final submit."
+            });
+            $("#ddlPeriod").focus();
+            return;
+        }
+
+        Swal.fire({
+            title: "Submit For Approval?",
+            text: "After final submit you cannot update this KRA.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, Submit"
+        }).then(result => {
+
+            if (!result.isConfirmed) return;
+
+            let data = {
+                OwnObjectiveCreationId: $("#PerformanceObjectiveId").val(),
+                PercentageValue: $("#progressValue").text().replace("%", ""),
+                ActualValue: $("#txtActualValue").val(),
+                ObjectivePeriodId: periodId,   // ✅ guaranteed value
+                Status: $("#Status").val(),
+                Comment: $("#Comment").val(),
+                KraUpdatedDate: $("#checkInDate").val(),
+                ProcessType: "FinalSubmit"
+            };
+
+            SavePerformance(data);
+        });
+    });
+
+
+    $(document).on("click", ".toggle-team", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        let box = $(".team-objectives");
+        if (box.data("open") === 1) {
+            box.slideUp(180);
+            box.data("open", 0);
+        } else {
+            box.slideDown(180);
+            box.data("open", 1);
+        }
+    });
+
+    $(document).on("click", ".toggle-individual", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        let box = $(".individual-objectives");
+        if (box.data("open") === 1) {
+            box.slideUp(180);
+            box.data("open", 0);
+        } else {
+            box.slideDown(180);
+            box.data("open", 1);
+        }
+    });
+
+   function SavePerformance(data) {
+    debugger;
+
+    let formData = new FormData();
+
+    // 🔹 Append model fields
+    formData.append("OwnObjectiveCreationId", data.OwnObjectiveCreationId);
+    formData.append("PercentageValue", data.PercentageValue);
+    formData.append("ActualValue", data.ActualValue);
+    formData.append("Status", data.Status);
+    formData.append("Comment", data.Comment);
+    formData.append("KraUpdatedDate", data.KraUpdatedDate);
+    formData.append("ObjectivePeriodId", data.ObjectivePeriodId);
+    formData.append("ProcessType", data.ProcessType);
+
+    // 🔹 Append file
+    let fileInput = document.getElementById("CheckInAttachment");
+    if (fileInput && fileInput.files.length > 0) {
+        formData.append("file", fileInput.files[0]); // name MUST be "file"
+    }
+
+    $.ajax({
+        url: '@Url.Action("SaveUpdate", "ESS_PMS_Performance")',
+        type: "POST",
+        data: formData,
+        contentType: false,   
+        processData: false,   
+        success: function (res) {
+            $("#performanceFormSidebar").removeClass("show");
+            $("#sidebarBackdrop").hide();
+            location.reload();
+        },
+        error: function () {
+            Swal.fire("Error", "Upload failed", "error");
+        }
+    });
+}
+
+
+
+    @*function loadPeriods(ownObjectiveCreationId) {
+        debugger
+        $.get('@Url.Action("GetObjectivePeriods")',
+            { ownObjectiveCreationId: ownObjectiveCreationId },
+            function (res) {
+                debugger
+                let ddl = $("#ddlPeriod");
+                ddl.empty();
+
+                if (!res || res.length === 0) {
+                    ddl.append(`<option>No Periods</option>`);
+                    return;
+                }
+
+                res.forEach(p => {
+                    let disabled = p.IsFinalSubmit === "Yes" ? "disabled" : "";
+                    let status = p.IsFinalSubmit === "Yes" ? " (Submitted)" : "";
+
+                    ddl.append(`
+                <option value="${p.ObjectivePeriodId}" ${disabled}>
+                    ${p.PeriodLabel}${status}
+                </option>
+            `);
+                });
+
+                // Select first available period
+                let first = res.find(x => x.IsFinalSubmit !== "Yes");
+                if (first) {
+                    ddl.val(first.ObjectivePeriodId);
+                    $("#ObjectivePeriodId").val(first.ObjectivePeriodId);
+                }
+            });
+    }*@
+ function loadKraHistory(ownObjectiveId) {
+
+    $.get('@Url.Action("GetKRAHistory", "ESS_PMS_Performance")',
+        { OwnObjectiveId: ownObjectiveId },
+        function (res) {
+
+            let box = $("#kraHistoryBox");
+            let list = $("#kraHistoryList");
+            list.empty();
+
+            if (!res || res.length === 0 || res.error) {
+                list.html(`
+                    <div style="font-size:12px;color:#777;">
+                        No previous check-ins found.
+                    </div>
+                `);
+                box.show();
+                return;
+            }
+
+            res.forEach(function (rowArr) {
+                debugger
+                // 🔹 Convert [{Key,Value}] → object
+                let row = {};
+                rowArr.forEach(x => row[x.Key] = x.Value);
+
+                // 🔹 Attachment block (only if file exists)
+                let attachmentHtml = "";
+
+                if (row.AttachmentPath && row.AttachmentPath.trim() !== "") {
+                    debugger
+                    let fileName = row.AttachmentPath.split('/').pop();   // only file name
+                    let docId = row.P_Id || row.PerformanceId;            // adjust if needed
+
+                    attachmentHtml = `
+        <div class="checkin-attachment" style="margin-top:6px;">
+            <a href="javascript:void(0)"
+               class="view-attachment"
+               data-file="${fileName}"
+               data-docid="${docId}">
+                <i class="fa fa-paperclip"></i> View Attachment
+            </a>
+        </div>
+    `;
+                }
+
+
+
+                list.append(`
+                    <div class="checkin-card">
+                        <div class="checkin-header">
+                            ${convertDate(row.KraUpdatedDate)} • ${row.PercentageValue}%
+                        </div>
+
+                        <div class="checkin-body">
+                            <div>
+                                <span>Actual Value:</span>
+                                <b>${row.ActualValue}</b>
+                                <small>(${row.Status})</small>
+                            </div>
+
+                            <div class="checkin-comment">
+                                <span>Comment:</span>
+                                ${row.Comment || "-"}
+                            </div>
+
+                            ${attachmentHtml}
+                        </div>
+                    </div>
+                `);
+            });
+
+            box.show();
+        }
+    );
+}
+
+
+    $(document).on("click", ".view-attachment", function () {
+
+        let fileName = $(this).data("file");
+        let docId = $(this).data("docid");
+
+        let url = '@Url.Action("ViewAttachment", "ESS_PMS_Performance")'
+                    + '?docId=' + encodeURIComponent(docId)
+                    + '&fileName=' + encodeURIComponent(fileName);
+
+        $("#attachmentFrame").attr("src", url);
+        $("#attachmentModal").modal("show");
+    });
+
+
+</script>
+
+
+
+
+
+ 

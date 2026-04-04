@@ -1,0 +1,212 @@
+﻿@{
+    ViewBag.Title = "App_PunchLog";
+    //Layout = "~/Views/Shared/_MobileLayout.cshtml";
+    Layout = null;
+    var currentDate = DateTime.Now.ToString("yyyy-MM-dd");
+
+}
+<style>
+    label.error, .Error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+</style>
+
+<meta charset="UTF-8">
+@*<script src="https://cdn.tailwindcss.com"></script>*@
+<link href="~/assets/MyCSS/Tailwindcss.css" rel="stylesheet" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+
+<title>Employee Punch Log</title>
+
+<div class="max-w-3xl p-1 mx-auto bg-white-100">
+    @*<h2 class="text-2xl font-bold mb-4 text-center text-gray-800">🕒 Employee Punch Log</h2>*@
+    <!-- Date Filters with Show Button -->
+    @*<form role="form" action="@Url.Action("App_PunchLog", "App_PunchLog", new { area = "App" })"  id="SaveLeave" method="post" enctype="multipart/form-data"></form>*@
+    @*@using (Html.BeginForm("App_PunchLog", "App_PunchLog", new { area = "App" , id = "fromMain" }, FormMethod.Get, null))*@
+    @using (Html.BeginForm("App_PunchLog", "App_PunchLog", new { area = "App" }, FormMethod.Get, new { id = "fromMain" }))
+
+    {
+        <div class="fixed top-0 left-1/2 transform -translate-x-1/2 z-20 bg-white px-1 py-1 w-full max-w-3xl shadow-md">
+            <div class="flex flex-row flex-nowrap gap-2 items-end mt-0">
+                <!-- From Date -->
+                <div class="w-[40%] min-w-0">
+                    <input type="date" id="fromDate" name="fromDate" value="@ViewBag.FromDate"
+                           class="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400" />
+                </div>
+
+                <!-- To Date -->
+                <div class="w-[40%] min-w-0">
+                    <input type="date" id="toDate" name="toDate" value="@ViewBag.ToDate"
+                           class="w-full px-3 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400" />
+                </div>
+
+                <!-- Show Button -->
+                <div class="w-[20%] min-w-0">
+                    <button type="button" id="btnSubmit"
+                            class="w-full bg-blue-600 text-white px-4 py-2 text-sm rounded-md font-medium hover:bg-blue-700 transition">
+                        Show
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Punch Cards (Example, you can bind these from your model based on selected date range) -->
+    <div class="space-y-2 mt-14">
+        @if (ViewBag.GetPunchLog != null)
+        {
+            foreach (var item in ViewBag.GetPunchLog)
+            {
+                bool isPunchIn = item.Direction == "IN"; // or check for your column value
+                string cardColor = isPunchIn ? "text-green-600" : "text-red-600";
+                string iconClass = isPunchIn ? "fa-sign-in-alt" : "fa-sign-out-alt";
+
+                //string LogDateTime = item.LogDateTime;
+                string LogDate = item.LogDate != null ? Convert.ToDateTime(item.LogDate).ToString("yyyy-MM-dd") : "";
+                string LogTime = item.LogTime ?? "";
+                string Direction = item.Direction ?? "";
+                string CheckInOutLatitude = item.CheckInOutLatitude ?? "";
+                string CheckInOutLongitude = item.CheckInOutLongitude ?? "";
+                string LocationName = item.LocationName ?? "";
+                string Remarks = item.Remarks ?? "";
+                string Origin = item.Origin ?? "";
+                string SelfiePath = item.SelfiePath ?? "";
+                string borderClass = isPunchIn ? "border-l-4 border-green-400" : "border-l-4 border-red-400";
+
+                bool hasLocation = !string.IsNullOrWhiteSpace(CheckInOutLatitude) && !string.IsNullOrWhiteSpace(CheckInOutLongitude);
+
+        <div class="bg-white @borderClass rounded-2xl shadow-lg p-4 flex flex-col relative mb-1">
+            <div class="flex items-center @cardColor mb-3">
+                <i class="fas @iconClass text-xl mr-2"></i>
+                <span class="text-sm font-bold">PUNCH @Direction</span>
+            </div>
+            <div class="text-gray-700 space-y-2 text-sm break-words">
+                <p class="flex flex-wrap items-center">
+                    <i class="fas fa-calendar-alt text-blue-500 mr-2 w-5"></i>
+                    <span>@LogDate</span>
+                    <i class="fas fa-clock text-green-500 ml-4 mr-2 w-5"></i>
+                    <span>@LogTime</span>
+                </p>
+                <p class="flex items-start">
+                    <i class="fas fa-map-marker-alt text-purple-500 mr-2 w-5"></i>
+                    <span>Location:</span> <span class="ml-1">@LocationName</span>
+                </p>
+                <p class="flex items-start">
+                    <i class="fas fa-comment-dots text-amber-500 mr-2 w-5 mt-0.5"></i>
+                    <span>Remark:</span>
+                    <span class="ml-1 break-words">@Remarks</span>
+                </p>
+                <p class="flex items-start">
+                    <i class="fas fa-globe text-teal-500 mr-2 w-5"></i>
+                    <span>Origin:</span> <span class="ml-1">@Origin</span>
+                </p>
+            </div>
+            <div class="absolute bottom-4 right-4">
+                @if (hasLocation)
+                        {
+                        <form method="post" action="@Url.Action("App_ShowMap", "App_PunchLog", new { area = "App" })" style="display:inline;">
+                            @Html.Hidden("Lat", CheckInOutLatitude)
+                            @Html.Hidden("Long", CheckInOutLongitude)
+                            @Html.Hidden("LogDate", LogDate)
+                            @Html.Hidden("LogTime", LogTime)
+                            @Html.Hidden("Direction", Direction)
+                            @Html.Hidden("Remarks", Remarks)
+                            @Html.Hidden("Origin", Origin)
+                            @Html.Hidden("SelfiePath", SelfiePath)
+                            @Html.Hidden("LocationName", LocationName)
+
+                            <button type="submit"
+                                    class="bg-blue-600 text-white px-4 py-1.5 rounded-full text-xs font-semibold flex items-center text-white shadow-sm hover:bg-blue-800 transition">
+                                <i class="fas fa-map-marker-alt mr-2"></i> Location
+                            </button>
+                        </form>
+                        }
+                        else
+                        {
+                        <button disabled
+                                class="bg-gray-200 px-4 py-1.5 rounded-full text-xs font-semibold flex items-center text-white-500 cursor-not-allowed">
+                            <i class="fas fa-map-marker-alt mr-2"></i> Location
+                        </button>
+                        }
+                @*<button onclick="showMap(CheckInOutLatitude, CheckInOutLongitude)" class="bg-blue-100 px-4 py-1.5 rounded-full text-xs font-semibold flex items-center shadow-sm hover:bg-blue-200 transition">
+                        <i class="fas fa-map-marker-alt mr-2"></i> Location
+                    </button>*@
+            </div>
+        </div>
+            }
+        }
+    </div>
+</div>
+
+
+<script>
+    jQuery.validator.addMethod(
+ "regex",
+     function (value, element, regexp) {
+         if (regexp.constructor != RegExp)
+             regexp = new RegExp(regexp);
+         else if (regexp.global)
+             regexp.lastIndex = 0;
+         return this.optional(element) || regexp.test(value);
+     }, "erreur expression reguliere"
+  );
+
+     // Custom method to compare fromDate and toDate
+    jQuery.validator.addMethod("dateRange", function (value, element) {
+        var fromDate = $('#fromDate').val();
+        var toDate = $('#toDate').val();
+
+        if (!fromDate || !toDate) return true; // skip if either is empty
+
+        return new Date(fromDate) <= new Date(toDate);
+    }, "Invalid date range.");
+
+    $('#fromMain').validate({
+        rules: {
+            fromDate: {
+                required: true,
+                date: true,
+                dateRange: true // custom rule applied to toDate
+            },
+            toDate: {
+                required: true,
+                date: true,
+                dateRange: true // custom rule applied to toDate
+            }
+
+        },
+        messages: {
+            fromDate: {
+                required: "From date is required",
+                dateRange: "Invalid date range."
+            },
+            toDate: {
+                required: "To date is required",
+                dateRange: "Invalid date range."
+            }
+
+        },
+    });
+
+    var form = $("#fromMain");
+    form.validate();
+    $("#btnSubmit").click(function () {
+        debugger;
+        form.valid();
+        if (form.valid() == false) {
+            $("#fromDate").removeClass('error');
+            $("#toDate").removeClass('error');
+            return false;
+        }
+        $("#fromMain").submit();
+    });
+</script>

@@ -1,0 +1,320 @@
+﻿@model KompassHR.Areas.Setting.Models.Setting_IncomeTax.IncomeTax_Help
+@{
+    ViewBag.Title = "Setting_IncomeTax_TaxHelp";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+
+<link href="~/assets/plugins/summernote/dist/summernote-lite.css" rel="stylesheet" />
+<script src="~/assets/plugins/summernote/dist/summernote-lite.min.js"></script>
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+<style>
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    .formBx {
+        border: 1px solid #ced4da;
+        padding: 0.5rem 0.5rem;
+        margin-bottom: 15px;
+        padding-top: 15px;
+    }
+
+    h6 {
+        margin-top: -20px;
+        padding: 0 10px;
+    }
+
+    mark {
+        background-color: #fff;
+        font-size: 15px;
+        padding: 0 5px;
+    }
+
+
+    .table {
+        --bs-table-striped-bg: rgba(0, 0, 255, 0.02);
+    }
+
+    .text-nowrap {
+        font-size: 12px;
+    }
+
+    tbody tr td {
+        font-size: 12px;
+        padding: 4px !important;
+    }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Tax Help
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("ESS_AdminDashboard_Dashboard", "ESS_AdminDashboard_Dashboard", new { id = 32, ScreenId = 121, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Setting_IncomeTax_Menu", "Setting_IncomeTax_Menu", new { id = 9, ScreenId =74, area = "Setting" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Settings">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                 <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Tax Help  - @ViewBag.AddUpdateTitle</h4>
+                  
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Define year wise Tax help here!
+
+                    </p>
+                </div>
+                <div class="panel-body" style="height: 100% !important;">
+                    <form role="form" action='@Url.Action("SaveUpdate", "Setting_IncomeTax_TaxHelp", new { area = "Setting" })' id="SaveTaxHelp" method="post" data-parsley-validate="">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row mb-15px">
+                                    <label class="form-label col-form-label col-md-2">
+                                        Financial Year
+                                        <span class="important">*</span>
+                                    </label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.IncomeTaxHelp_FyearId, new SelectList(ViewBag.GetFinancialYear, "TaxFyearId", "TaxYear"), "--Select--", new { id = "ddlIncomeTaxHelpFyearId", @class = "form-control", autocomplete = "off", name = "IncomeTaxHelp_FyearId" })
+                                        @Html.HiddenFor(model => model.HelpId_Encrypted, new { id = "HelpId_Encrypted" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                       
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row mb-15px">
+                                    <label class="form-label col-form-label col-md-2">
+                                        Type
+                                        <span class="important">*</span>
+                                    </label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.TypeId, new SelectList(ViewBag.TypeList, "TypeId", "Type"), "--Select--", new { id = "ddlTypeId", @class = "form-control", autocomplete = "off", name = "TypeId" })                                   
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row mb-15px">
+                                    <label class="form-label col-form-label col-md-2">
+                                        Description
+                                        <span class="important">*</span>
+                                    </label>
+                                    <div class="col-md-8">
+                                        @Html.TextAreaFor(model => model.Help_Description,  new { @class = "summernote", style = "border: 1px solid #000;", id = "txtHelp_Description",  autocomplete = "off", name = "Help_Description" , contenteditable = "true" })
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="LastShortLeaveBx">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="BtnBx">
+                                            <div>
+                                                <button type="button" id="btnSubmit"
+                                                        class="btn btn-primary btn-sm">
+                                                    <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                </button>
+                                                <a href="@Url.Action("GetList", "Setting_IncomeTax_TaxHelp", new { area = "Setting" })">
+                                                    <button type="button" id="btnGetTaxRuleList" class="btn btn-danger btn-sm">
+                                                        <i class="fa-solid fa-share-from-square"></i> List
+                                                    </button>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- END panel -->
+    </div>
+</div>
+
+
+<script>
+    $(".summernote").summernote({
+        placeholder: '',
+        height: "300"
+    });
+</script>
+
+
+<script>
+    var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+    var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+    if (Message != null) {
+        if (Icon != null) {
+            Swal.fire({
+                icon: Icon,
+                text: Message,
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup()
+                    popup.classList.remove('swal2-show')
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                    })
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                    }, 500)
+                    // return false
+                }
+            }).then(function() {
+                window.location.reload();
+            });
+        }
+    }
+
+</script>
+
+<script>
+    // Helper function to format a Date object as 'YYYY-MM-DD'
+    function formatToYYYYMMDD(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // 0-based index
+        const day = String(date.getDate()).padStart(2, '0'); // Always '01' here
+        return `${year}-${month}-${day}`;
+    }
+</script>
+
+<script>
+    //use for add regex function
+    jQuery.validator.addMethod(
+  "regex",
+   function(value, element, regexp) {
+       if (regexp.constructor != RegExp)
+           regexp = new RegExp(regexp);
+       else if (regexp.global)
+           regexp.lastIndex = 0;
+       return this.optional(element) || regexp.test(value);
+   },"erreur expression reguliere"
+);
+
+    $("#SaveTaxHelp").validate({
+        rules: {
+            IncomeTaxHelp_FyearId: {
+                required: true,
+            },
+            TypeId: {
+                required: true,
+            },
+            Help_Description: {
+                required: true,
+            },
+        },
+        messages: {
+            IncomeTaxHelp_FyearId: {
+                required: "Please select financial year",
+            },
+            TypeId: {
+                required: "Please select type",
+            },
+            Help_Description: {
+                required: "Please enter description ",
+            },
+        },
+
+    });
+    //IsValidation Check
+    var form = $("#SaveTaxHelp");
+    form.validate();
+    $("#btnSubmit").click(function () {
+
+        debugger;
+        form.valid();
+        if(form.valid()==false)
+        {
+            //$("#dateToDate").removeClass('error');
+            return false;
+        }
+        var ddlIncomeTaxHelpFyearId = $("#ddlIncomeTaxHelpFyearId").val();
+        var HelpId_Encrypted = $("#HelpId_Encrypted").val();
+        $.ajax({
+            url: "@Url.Action("IsTaxHelpExists", "Setting_IncomeTax_TaxHelp")",
+            method:"get",
+            data: { ddlIncomeTaxHelpFyearId: ddlIncomeTaxHelpFyearId, HelpId_Encrypted: HelpId_Encrypted },
+            success:function(response){
+                debugger;
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon=="error") {
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                        }
+                    }
+                }
+                else{
+                    $("#SaveTaxHelp").submit();
+                }
+            }
+        });
+
+    });
+</script>
+
+

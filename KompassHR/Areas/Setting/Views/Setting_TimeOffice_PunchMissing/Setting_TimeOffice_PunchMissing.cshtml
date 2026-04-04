@@ -1,0 +1,541 @@
+﻿@model KompassHR.Areas.Setting.Models.Setting_TimeOffice.Atten_PunchMissingSetting
+@{
+    ViewBag.Title = "Setting_TimeOffice_PunchMissing";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+<style>
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 13px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Punch Missing
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("ESS_AdminDashboard_Dashboard", "ESS_AdminDashboard_Dashboard", new { id = 32, ScreenId = 121, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Setting_TimeOffice_Menu", "Setting_TimeOffice_Menu", new { id = 5, ScreenId =51, area = "Setting" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Settings">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                 <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Punch Missing - <Span>@ViewBag.AddUpdateTitle</Span></h4>
+                  
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Define punch missing manual here!
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "Setting_TimeOffice_PunchMissing", new { area = "Setting" })' id="SaveSettingPunchMissing" method="post" data-parsley-validate="true">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Company Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.CmpId, new SelectList(ViewBag.CompanyName, "Id", "Name"), "--Select--", new { id = "ddlCompanyName", @class = "form-select", autocomplete = "off", @required = "required" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Business Unit
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.PunchMissingSettingBranchId, new SelectList(ViewBag.Location, "Id", "Name"), "--Select--", new { @class = "form-control", @id = "ddlBusinessUnit" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Punch Missing Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.PunchMissingSettingName, new { @class = "form-control", type = "text", id = "txtPunchMissingSettingName", autocomplete = "Off", @required = "required" })
+                                                @Html.HiddenFor(model => model.PunchMissingSettingId_Encrypted, new { id = "PunchMissingSettingId_Encrypted" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Back Date Days
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.BackDateDays, new { @class = "form-control", id = "txtBackDateDays", autocomplete = "Off", name = "BackDateDays", onKeypress = "return onlyNumbers(event);" })
+                                                @Html.ValidationMessageFor(model => model.BackDateDays, "", new { @class = "help-block", @id = "ErrorBackDateDays", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Monthly Limit Type
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.MonthlyLimitType, new List<SelectListItem> {
+                                                    new SelectListItem { Text = "In - Out", Value = "In - Out"},
+                                                    new SelectListItem { Text ="Both",Value="Both"}
+                                                }, "--Select--", new { id = "ddlMonthlyLimitType", @class = "form-select", autocomplete = "off", name = "MonthlyLimitType" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Auto Approval (in Days)
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.AutoApprovalDays, new { @class = "form-control", id = "txtAutoApprovalDays", autocomplete = "Off", name = "AutoApprovalDays", onKeypress = "return onlyNumbers(event);" })
+                                                @Html.ValidationMessageFor(model => model.AutoApprovalDays, "", new { @class = "help-block", @id = "ErrorAutoApprovalDays", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="row" id="divMonthlyLimitForInOut">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Limit For In
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.MonthlyLimitForIn, new { @class = "form-control", id = "txtLimitForIn", autocomplete = "Off", name = "MonthlyLimitForIn", onKeypress = "return onlyNumbers(event);" })
+                                                @Html.ValidationMessageFor(model => model.MonthlyLimitForIn, "", new { @class = "help-block", @id = "ErrorMonthlyLimitForIn", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Limit For Out
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.MonthlyLimitForOut, new { @class = "form-control", id = "txtLimitForOut", autocomplete = "Off", name = "MonthlyLimitForOut", onKeypress = "return onlyNumbers(event);" })
+                                                @Html.ValidationMessageFor(model => model.MonthlyLimitForOut, "", new { @class = "help-block", @id = "ErrorMonthlyLimitForOut", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row" id="divMonthlyRequestLimit">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Monthly Request Limit
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.MonthlyRequestLimit, new { @class = "form-control", id = "txtMonthlyRequestLimit", autocomplete = "Off", name = "MonthlyRequestLimit", onKeypress = "return onlyNumbers(event);" })
+                                                @Html.ValidationMessageFor(model => model.MonthlyRequestLimit, "", new { @class = "help-block", @id = "ErrorMonthlyRequestLimit", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-2">
+                                        </label>
+                                        <label class="form-label col-form-label col-md-10">
+                                            @Html.CheckBoxFor(model => model.AllowForAfterShiftEndTime, new { id = "chkAllowForAfterShiftEndTime", @class = "chkIsDefault" })
+                                            &nbsp;   Employee Can Apply After Shift EndTime.
+                                        </label>
+                                    </div>
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-2">
+                                        </label>
+                                        <label class="form-label col-form-label col-md-10">
+                                            @Html.CheckBoxFor(model => model.AllowForBeforeShiftStartTime, new { id = "chkAllowForAfterShiftEndTime", @class = "chkIsDefault" })
+                                            &nbsp;    Employee Can Apply Before Shift StartTime.
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-2">
+                                        </label>
+                                        <label class="form-label col-form-label col-md-10">
+                                            @Html.CheckBoxFor(model => model.InOutApplySameDay, new { id = "chkInOutApplySameDay", @class = "chkIsDefault" })
+                                            &nbsp; Both In and Out Apply in a Single Day.
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-2">
+                                        </label>
+                                        <label class="form-label col-form-label col-md-10">
+                                            @Html.CheckBoxFor(model => model.IsDefault, new { id = "chkIsDefault", @class = "chkIsDefault" })
+                                            &nbsp;   This Setting Is Applied By Default For Contractor Employees During Bulk Insert.
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="button" id="btnSubmit" class="btn btn-primary btn-sm">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                        <a href="@Url.Action("GetList", "Setting_TimeOffice_PunchMissing", new { area = "Setting" })">
+                                                            <button type="button" class="btn btn-danger btn-sm" id="btnPunchMissingList">
+                                                                <i class="fa-solid fa-share-from-square"></i> List
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- END panel -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        debugger;
+        $("#ddlCompanyName").select2();
+        $("#ddlBusinessUnit").select2();
+        $("#divMonthlyLimitForInOut").hide();
+        $("#divMonthlyRequestLimit").hide();
+
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        var TempMonthlyLimitType = @Html.Raw(Json.Encode(TempData["MonthlyLimitType"]));
+        if(TempMonthlyLimitType=="Both" )
+        {
+            $("#divMonthlyLimitForInOut").hide();
+            $("#divMonthlyRequestLimit").show();
+        }
+        else if(TempMonthlyLimitType=="In - Out"){
+            $("#divMonthlyLimitForInOut").show();
+            $("#divMonthlyRequestLimit").hide();
+        }
+        else{
+            $("#divMonthlyLimitForInOut").hide();
+            $("#divMonthlyRequestLimit").hide();
+        }
+
+        var MonthlyLimitVal = $('select#ddlMonthlyLimitType option:selected').val();
+        if(MonthlyLimitVal=="Both")
+        {
+            $("#divMonthlyRequestLimit").show();
+        }
+        else
+        {
+            $("#divMonthlyRequestLimit").hide();
+        }
+
+
+        debugger;
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        // return false
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+
+
+        $("#ddlCompanyName").on("change", function () {
+            $("#ddlBusinessUnit").find("option").remove();
+            var CmpId = $("#ddlCompanyName").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetBusinessUnit", "Setting_TimeOffice_PunchMissing")',
+              //  url: 'GetBusinessUnit',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    if (data !=null) {
+                        $("#ddlBusinessUnit").append("<option value=0>--Select--</option>");
+                        $.each(data, function(i, p) {
+                            $("#ddlBusinessUnit").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                        });
+                    }
+                }
+            })
+        });
+
+        $("#ddlMonthlyLimitType").change(function(){
+            var MonthlyLimitType =$("#ddlMonthlyLimitType").val();
+            if(MonthlyLimitType=="Both")
+            {
+                $("#divMonthlyLimitForInOut").hide();
+                $("#divMonthlyRequestLimit").show();
+            }
+            else{
+                $("#divMonthlyLimitForInOut").show();
+                $("#divMonthlyRequestLimit").hide();
+            }
+        })
+    });//ready function
+</script>
+
+
+
+
+<script>
+    //use for add regex function
+    jQuery.validator.addMethod(
+        "regex",
+         function(value, element, regexp) {
+             if (regexp.constructor != RegExp)
+                 regexp = new RegExp(regexp);
+             else if (regexp.global)
+                 regexp.lastIndex = 0;
+             return this.optional(element) || regexp.test(value);
+         },"erreur expression reguliere"
+      );
+    $("#SaveSettingPunchMissing").validate({
+        rules: {
+            CmpId:{
+                required: true,
+            },
+            PunchMissingSettingBranchId:{
+                required: true,
+            },
+            PunchMissingSettingName: {
+                required: true,
+            },
+            AutoApprovalDays: {
+                required: true,
+            },
+            BackDateDays: {
+                required: true,
+            },
+            MonthlyLimitType: {
+                required: true,
+            },
+        },
+        messages: {
+            CmpId:{
+                required: "Company is required",
+            },
+            PunchMissingSettingBranchId:{
+                required: "Business unit is required",
+            },
+            PunchMissingSettingName: {
+                required: "Punch missing name is required",
+            },
+            AutoApprovalDays: {
+                required: "Auto approval days is required",
+            },
+            BackDateDays: {
+                required: "Back date days is required",
+            },
+            MonthlyLimitType: {
+                required: "Monthly limit type is required",
+            },
+
+        }
+    });
+
+    var form = $("#SaveSettingPunchMissing");
+    form.validate();
+    $("#btnSubmit").click(function () {
+        debugger;
+        var MonthlyLimitType =$("#ddlMonthlyLimitType").val();
+        var LimitForIn =$("#txtLimitForIn").val();
+        var LimitForOut =$("#txtLimitForOut").val();
+        var MonthlyRequestLimit =$("#txtMonthlyRequestLimit").val();
+        if(MonthlyLimitType!="")
+        {
+
+
+            if(MonthlyLimitType=="Both")
+            {
+                if(MonthlyRequestLimit=="")
+                {
+                    $('#ErrorMonthlyRequestLimit').html("Monthly request limit is required");$("#txtMonthlyRequestLimit").focus(); return false;
+                }
+                else{$('#ErrorMonthlyRequestLimit').html("");}
+
+            }
+            else{
+                if(LimitForIn=="")
+                {
+                    $('#ErrorMonthlyLimitForIn').html("Limit for in is required");$("#txtLimitForIn").focus() ; return false;
+
+                }
+                else{$('#ErrorMonthlyLimitForIn').html("");
+
+                }
+                if(LimitForOut=="")
+                {
+                    $('#ErrorMonthlyLimitForOut').html("Limit for out is required");$("#txtLimitForOut").focus(); return false;
+                }
+                else{
+                    $('#ErrorMonthlyLimitForOut').html("");
+                }
+            }
+        }
+        else
+        {
+            $('#ErrorMonthlyLimitForOut').html("");
+            $('#ErrorMonthlyRequestLimit').html("");
+            $('#ErrorMonthlyLimitForIn').html("");
+        }
+
+
+        form.valid();
+        if(form.valid()==false)
+        {
+            return false;
+        }
+        var PunchMissingSettingName=$("#txtPunchMissingSettingName").val();
+        var CmpId=$("#ddlCompanyName").val();
+        var BusinessUnit=$("#ddlBusinessUnit").val();
+        var PunchMissingSettingId_Encrypted=$("#PunchMissingSettingId_Encrypted").val();
+        $.ajax({
+            url: '@Url.Action("IsPunchMissingExists", "Setting_TimeOffice_PunchMissing")',
+           // url: "IsPunchMissingExists",
+            method:"get",
+            data :{PunchMissingSettingName:PunchMissingSettingName,PunchMissingSettingId_Encrypted:PunchMissingSettingId_Encrypted,CmpId:CmpId,BusinessUnit:BusinessUnit},
+            success:function(response){
+                debugger;
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon=="error") {
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                        }
+                    }
+                }
+                else{
+                    $("#SaveSettingPunchMissing").submit();
+                }
+            }
+        });
+
+    });
+</script>
+
+<script>
+
+    $("#txtLimitForIn").on("keyup change", function(e) {
+        var LimitForIn =$("#txtLimitForIn").val();
+        if(LimitForIn > 31)
+        {$('#ErrorMonthlyLimitForIn').html("Please enter the value less than 31");$("#txtLimitForIn").focus();   return false;}
+        else{ $('#ErrorMonthlyLimitForIn').html("");}
+    })
+
+    $("#txtLimitForOut").on("keyup change", function(e) {
+        var LimitForOut =$("#txtLimitForOut").val();
+        if(LimitForOut > 31)
+        {$('#ErrorMonthlyLimitForOut').html("Please enter the value less than 31");$("#txtLimitForOut").focus();   return false;}
+        else{ $('#ErrorMonthlyLimitForOut').html("");}
+    })
+
+    $("#txtBackDateDays").on("keyup change", function(e) {
+        var BackDateDays =$("#txtBackDateDays").val();
+        if(BackDateDays > 31)
+        {$('#ErrorBackDateDays').html("Please enter the value less than 31");$("#txtBackDateDays").focus();   return false;}
+        else{ $('#ErrorBackDateDays').html("");}
+    })
+
+    function onlyNumbers(evt) {
+        evt = (evt) ? evt : window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
+        return true;
+    }
+</script>

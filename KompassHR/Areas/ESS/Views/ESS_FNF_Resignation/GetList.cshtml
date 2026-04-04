@@ -1,0 +1,972 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_FNF.FNF_EmployeeResignation
+
+@{
+    // var action = (ViewBag.AddRevoke.Add_Revoke as string)?.Trim();
+
+    ViewBag.Title = "GetList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    // var action = (ViewBag.AddRevoke as string)?.Trim();
+}
+
+<style>
+    /* Improved Typography */
+    body {
+        font-family: 'Segoe UI', 'Roboto', sans-serif;
+        color: #333;
+        line-height: 1.5;
+    }
+
+    /* Timeline Container */
+    .timeline-container {
+        max-width: 800px;
+        margin: 0 auto;
+        position: relative;
+        padding-left: 67px;
+    }
+
+        .timeline-container::before {
+            content: '';
+            position: absolute;
+            left: 30px;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+            background: black;
+        }
+
+    /* Timeline Items */
+    .timeline-item {
+        position: relative;
+        margin-bottom: 30px;
+    }
+
+    .timeline-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .timeline-badge {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        position: absolute;
+        left: -60px;
+        font-size: 20px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .timeline-title {
+        font-weight: 600;
+        font-size: 1.2rem;
+        color: #4b8dc9;
+        margin-left: 9px;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .timeline-content {
+        background: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        border: 1px solid rgba(0, 0, 0, 0.125);
+    }
+
+    /* Detail Rows */
+    .detail-row {
+        display: flex;
+        margin-bottom: 12px;
+        align-items: baseline;
+    }
+
+    .detail-label {
+        font-weight: 600;
+        color: #555;
+        min-width: 160px;
+        font-size: 0.95rem;
+        width: 250px;
+    }
+
+    .detail-value {
+        color: #333;
+        font-size: 0.95rem;
+        font-weight: 500;
+    }
+
+    /* Status Badges */
+    .status-badge {
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+        .status-badge.Approved {
+            background: #e6f7ed;
+            color: #0a5c36;
+            border: 1px solid #b1e6cb;
+        }
+
+        .status-badge.Pending {
+            background: #fff8e6;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+
+        .status-badge.Rejected {
+            background: #fde8e8;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+    /* History Button */
+    .history-btn {
+        background: #ffc107;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        color: #333;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.2s;
+        font-weight: 600;
+        font-size: 0.95rem;
+    }
+
+        .history-btn:hover {
+            background: #e0a800;
+            transform: translateY(-1px);
+        }
+
+        .history-btn i {
+            font-size: 1.1rem;
+        }
+
+    /* Color Classes */
+    .bg-danger {
+        background: #dc3545;
+    }
+
+    .bg-info {
+        background: #17a2b8;
+    }
+
+    .bg-warning {
+        background: #ffc107;
+        color: #333;
+    }
+
+    /* Modal Styling */
+    #RequestInfoModal .modal-content {
+        border-radius: 10px;
+    }
+
+    #RequestInfoModal .modal-body {
+        padding: 25px;
+    }
+
+    /* Timeline in Modal */
+    #timelineMainDiv .timeline-item {
+        margin-bottom: 20px;
+        display: flex;
+        align-items: flex-start;
+    }
+
+    #timelineMainDiv .iconGreen,
+    #timelineMainDiv .iconRed,
+    #timelineMainDiv .iconBlue,
+    #timelineMainDiv .iconYellow {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+        flex-shrink: 0;
+        font-size: 16px;
+    }
+
+    #timelineMainDiv .iconGreen {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    #timelineMainDiv .iconRed {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    #timelineMainDiv .iconBlue {
+        background-color: #cce5ff;
+        color: #004085;
+    }
+
+    #timelineMainDiv .iconYellow {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+
+    #timelineMainDiv .text {
+        flex-grow: 1;
+    }
+
+    #timelineMainDiv .timelineRemark {
+        margin-bottom: 5px;
+        font-weight: 500;
+        font-size: 0.95rem;
+    }
+
+    #timelineMainDiv small {
+        color: #6c757d;
+        font-size: 0.85rem;
+        display: block;
+        margin-bottom: 3px;
+    }
+
+    .text-red {
+        color: red;
+    }
+
+    .text-green {
+        color: green;
+    }
+</style>
+
+<!-- Add this to your head section -->
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    .div1 td:nth-child(1) {
+        /*position: sticky;*/
+        left: 0;
+    }
+
+    .div1 td:nth-child(2) {
+        /*position: sticky;*/
+        left: 63px;
+    }
+
+    .fixed-side {
+        /*position: sticky;*/
+        left: 0;
+    }
+
+    .fixed-side1 {
+        /*position: sticky;*/
+        left: 63px;
+    }
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px; /* rounded corners */
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.status-approved-bg {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status-pending-bg {
+    background-color: #fff3cd; /* light yellow */
+    color: #856404;           /* dark yellow */
+}
+
+.status-reject-bg {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+</style>
+
+
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Resignation
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_FNF_Menu", "ESS_FNF_Menu",  new { id = 7,ScreenId=168, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Resignation Status</h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default"
+                           data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        View resignation status here!
+                    </p>
+                </div>
+                <div class="panel-body" data-scrollbar="false">
+                    <div class="row">
+                        <div class="col-md-6">
+                            @if (ViewBag.AddRevoke == "Add")
+                            {
+                                <a class="btn btn-primary btn-sm mb-10px" href="@Url.Action("ESS_FNF_Resignation", "ESS_FNF_Resignation", new { area = "ESS" })">
+                                    <i class="fa-solid fa-plus"></i> &nbsp; Add
+                                </a>
+                            }
+                           @if (ViewBag.AddRevoke == "Revoke" && !(ViewBag.ResignationDetails?.LatestStatus?.Contains("Approved") ?? false))
+                           {
+                            <a class="btn btn-danger btn-sm mb-10px" href="@Url.Action("Delete", "ESS_FNF_Resignation", new { area = "ESS" })">
+                                <i class="fa-solid fa-trash-alt fa-lg" style="color:white"></i> &nbsp; Revoke
+                            </a>
+                           }
+
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <button type="button" class="btn btn-info btn-sm mb-10px" onclick="ShowResignationHistory(@(ViewBag.ResignationApprovalList?.EmployeeId ?? "0"))">
+                                <i class="fas fa-sitemap"></i> &nbsp; History
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+
+                @*THIS CODE FOR TIMELINE*@
+
+                <div class="profile-content" style="padding:1px;">
+                    <div class="tab-content p-0">
+                        <div class="tab-pane fade show active" id="profile-post">
+
+                            <div class="timeline-container">
+                                <!-- Resignation Section -->
+                                <div class="timeline-item">
+                                    <div class="timeline-header">
+                                        <div class="timeline-badge bg-danger">
+                                            <i class="fas fa-file-signature"></i>
+                                        </div>
+                                        <div class="timeline-title">Resignation Details</div>
+                                    </div>
+                                    <div class="timeline-content">
+                                        <div class="detail-row">
+                                            <span class="detail-label">Resignation No:</span>
+                                            <span class="detail-value">@(ViewBag.ResignationDetails?.DocNo)</span>
+                                        </div>
+                                        <div class="detail-row">
+                                            <span class="detail-label">Resignation Date:</span>
+                                            <span class="detail-value">@(ViewBag.ResignationDetails?.ResignationDate)</span>
+                                        </div>
+
+                                        <div class="detail-row">
+                                            <span class="detail-label">Actual Last Working Date:</span>
+                                            <span class="detail-value">@(ViewBag.ResignationDetails?.LastWorkingDate)</span>
+                                        </div>
+                                        <div class="detail-row">
+                                            <span class="detail-label">Notice Period End Date :</span>
+                                            <span class="detail-value">@(ViewBag.ResignationDetails?.NoticePeriodEndDate)</span>
+                                        </div>
+                                        <div class="detail-row">
+                                            <span class="detail-label">Relieving Date:</span>
+                                            <span class="detail-value">@(ViewBag.ResignationDetails?.RelievingDate)</span>
+                                        </div>
+                                        <div class="detail-row">
+                                            <span class="detail-label">Reason:</span>
+                                            <span class="detail-value">@(ViewBag.ResignationDetails?.Reason)</span>
+                                        </div>
+                                        <div class="detail-row">
+                                            <span class="detail-label">Status:</span>
+                                            <span class="detail-value">@(ViewBag.ResignationDetails?.LatestStatus)</span>
+                                        </div>
+                                        <div class="detail-row">
+                                            <span class="detail-label">Approve/Reject Date:</span>
+                                            <span class="detail-value">@(ViewBag.ResignationDetails?.LatestStatusDate)</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Acknowledgement Section -->
+                                <div class="timeline-item">
+                                    <div class="timeline-header">
+                                        <div class="timeline-badge bg-info">
+                                            <i class="fas fa-handshake"></i>
+                                        </div>
+                                        <div class="timeline-title">Acknowledgement</div>
+                                    </div>
+                                    <div class="timeline-content">
+                                        <table class="table table-bordered align-middle" id="TablePage"
+                                               style="width: 100%;">
+                                            <thead class="text-center">
+                                                <tr>
+                                                    <th class="text-nowrap">Status </th>
+                                                    <th class="text-nowrap">Acknowledged By Name</th>
+                                                    <th class="text-nowrap">Acknowledgement Date</th>
+                                                    <th class="text-nowrap">Acknowledgement Time</th>
+                                                    <th class="text-nowrap">Remark</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var d in ViewBag.AcknowledgementDetails)
+                                                {
+                                                    <tr>
+                                                        <td class="text-center">
+                                                            <span class="status-badge
+                                                                @(d.AckStatus == "Approved" ? "status-approved-bg" :
+                                                                  d.AckStatus == "Pending"  ? "status-pending-bg"  :
+                                                                       "status-reject-bg")">
+                                                                                    @d.AckStatus
+                                                            </span>
+                                                        </td>
+
+                                                        <td>@d.AcknowledgedByName</td>
+                                                        <td>@d.AckDate</td>
+                                                        <td>@d.AckTime</td>
+                                                        @if (!string.IsNullOrEmpty(d.Remark))
+                                                        {
+                                                            <td class="text-start text-center">
+                                                                <input type="hidden" id="hiddenRemark_@d.AcknowledgedByName" value="@d.Remark" />
+                                                                <i class="fa-solid fa-receipt fa-lg" onclick="AcknowledgedRemark(encodeURIComponent(document.getElementById('hiddenRemark_@d.AcknowledgedByName').value))" style="cursor:pointer; color: #ff5b57;"></i>
+                                                            </td>
+
+                                                        }
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <!-- Resignation Status -->
+                                <div class="timeline-item">
+                                    <div class="timeline-header">
+                                        <div class="timeline-badge bg-green-500">
+                                            <i class="fas fa-check-double"></i>
+                                        </div>
+                                        <div class="timeline-title">Resignation Approval Status</div>
+                                    </div>
+                                    <div class="timeline-content">
+                                        <table class="table table-bordered align-middle" id="TablePage"
+                                               style="width: 100%;">
+                                            <thead class="text-center">
+                                                <tr>
+                                                    <th class="text-nowrap">Level </th>
+                                                    <th class="text-nowrap">Status</th>
+                                                    <th class="text-nowrap">Approval Name</th>
+                                                    <th class="text-nowrap">Approval Date</th>
+                                                    <th class="text-nowrap">Remark</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var d in ViewBag.ApprovalDetail)
+                                                {
+                                                    <tr>
+                                                        <td class="text-nowrap" style="text-align:center">@d.ApprovalLevel</td>
+                                                        <td class="text-center">
+                                                            <span class="status-badge
+                                                                @(d.ApprovalStatus == "Approved" ? "status-approved-bg" :
+                                                                  d.ApprovalStatus == "Pending"  ? "status-pending-bg"  :
+                                                                       "status-reject-bg")">
+                                                                @d.ApprovalStatus
+                                                            </span>
+                                                        </td>
+                                                        <td>@d.EmployeeName</td>
+                                                        <td>@d.ApprovalDate</td>
+                                                        <td class="text-start text-center">
+                                                            @if (!string.IsNullOrEmpty(d.ApprovalRemark))
+                                                            {
+                                                                <input type="hidden" id="hiddenRemark_@d.ApprovalLevel" value="@d.ApprovalRemark" />
+                                                                <i class="fa-solid fa-receipt fa-lg" onclick="ApprovalRemark(encodeURIComponent(document.getElementById('hiddenRemark_@d.ApprovalLevel').value))" style="cursor:pointer; color: #ff5b57;"></i>
+                                                            }
+                                                        </td>
+
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <!-- No Dues Status -->
+                                <div class="timeline-item" hidden>
+                                    <div class="timeline-header">
+                                        <div class="timeline-badge bg-purple-700">
+                                            <i class="fas fa-clipboard-check"></i>
+                                        </div>
+                                        <div class="timeline-title">No Dues Status</div>
+                                    </div>
+                                    <div class="timeline-content">
+                                        <table class="table table-bordered align-middle" id="TablePage"
+                                               style="width: 100%;">
+                                            <thead class="text-center">
+                                                <tr>
+                                                    <th class="text-nowrap">Status</th>
+                                                    <th class="text-nowrap">Dues Type</th>
+                                                    <th class="text-nowrap">Approval Name</th>
+                                                    <th class="text-nowrap">Approval Date</th>
+                                                    <th class="text-nowrap">Remark</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var d in ViewBag.DuesDetails)
+                                                {
+                                                    <tr>
+                                                        <td class="text-center">
+                                                            <span class="status-badge
+                                                                @(d.DuesStatus == "Approved" ? "status-approved-bg" :
+                                                                  d.DuesStatus == "Pending"  ? "status-pending-bg"  :
+                                                                       "status-reject-bg")">
+                                                                @d.DuesStatus
+                                                            </span>
+                                                        </td>
+                                                        <td class="text-nowrap">@d.DuesType</td>
+                                                        <td>@d.EmployeeName</td>
+                                                        <td>@d.ApprovalDate</td>
+                                                        <td class="text-start text-center">
+                                                            @if (!string.IsNullOrEmpty(d.ApprovalRemark))
+                                                            {
+
+                                                                <input type="hidden" id="hiddenRemark_@d.EmployeeName" value="@d.ApprovalRemark" />
+                                                                <i class="fa-solid fa-receipt fa-lg" onclick="ApprovalRemark(encodeURIComponent(document.getElementById('hiddenRemark_@d.EmployeeName').value))" style="cursor:pointer; color: #ff5b57;"></i>
+                                                            }
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <!-- FNF Calculation -->
+                                <div class="timeline-item">
+                                    <div class="timeline-header">
+                                        <div class="timeline-badge bg-black">
+                                            <i class="fas fa-calculator"></i>
+                                        </div>
+                                        <div class="timeline-title">FNF Calculation</div>
+                                    </div>
+                                    <div class="timeline-content">
+                                        <table class="table table-bordered align-middle" id="TablePage"
+                                               style="width: 100%;">
+                                            <thead class="text-center">
+                                                <tr>
+                                                    <th class="text-nowrap">Status</th>
+                                                    <th class="text-nowrap">Type</th>
+                                                    <th class="text-nowrap">Employee Name</th>
+                                                    <th class="text-nowrap">FNF Date</th>
+                                                    <th class="text-nowrap">Remark</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var d in ViewBag.FNFDetails)
+                                                {
+                                                    <tr>
+                                                        <td class="text-center">
+                                                            <span class="status-badge
+                                                                @(d.FNFStatus == "Approved" ? "status-approved-bg" :
+                                                                  d.FNFStatus == "Pending"  ? "status-pending-bg"  :
+                                                                       "status-reject-bg")">
+                                                                @d.FNFStatus
+                                                            </span>
+                                                        </td>
+                                                        <td>@d.Type</td>
+                                                        <td>@d.EmployeeName</td>
+                                                        <td>@d.FNFDate</td>
+                                                        <td class="text-start text-center">
+                                                            @if (!string.IsNullOrEmpty(d.FNFRemark))
+                                                            {
+
+                                                                <input type="hidden" id="hiddenRemark_@d.EmployeeName" value="@d.FNFRemark" />
+                                                                <i class="fa-solid fa-receipt fa-lg" onclick="ApprovalRemark(encodeURIComponent(document.getElementById('hiddenRemark_@d.EmployeeName').value))" style="cursor:pointer; color: #ff5b57;"></i>
+
+                                                            }
+                                                        </td>
+                                                    </tr>
+
+                                                }
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #Start modal-dialog -->
+<div class="modal fade" id="EmployeeListModel" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-black text-white">
+                <h4 class="modal-title" id="EmployeeListTitle">@*Employee List*@</h4>
+                <div class="panel-heading-btn">
+                    <a href="javascript:;" class="btn btn-icon btn-danger CloseModelHistory" data-bs-dismiss="modal" aria-hidden="true" id="CloseModelHistory">
+                        <i class="fa fa-xmark"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="modal-body" style="height: 500px; overflow-y: auto;">
+                <!-- BEGIN panel -->
+                <div class="modal-body-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <div class="table-scroll">
+                                                <div class="table-wrap">
+                                                    <table class="table table-bordered table-hover mb-0 table-wrap align-middle" id="tblEmployeeLog">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="text-nowrap text-center">S.N</th>
+                                                                <th class="text-nowrap text-left">Employee Name</th>
+                                                                <th class="text-nowrap text-left">Department Name</th>
+                                                                <th class="text-nowrap text-left">Designation Name</th>
+                                                                <th class="text-nowrap text-left">Grade Name</th>
+                                                                <th class="text-nowrap text-left">Date Of Joining</th>
+                                                                <th class="text-nowrap text-left">Resignation Date</th>
+                                                                <th class="text-nowrap text-left">Relieving Date</th>
+                                                                <th class="text-nowrap text-left">Reason Name</th>
+                                                                <th class="text-nowrap text-left">Status</th>
+                                                                <th class="text-nowrap text-left">Revoke Date</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="tbodyEmployeeList"></tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- END panel -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- #Start modal-dialog -->
+<div class="modal fade" id="modal_basic3" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-black text-white">
+                <h4 class="modal-title">Remark</h4>
+                <div class="panel-heading-btn">
+
+                </div>
+            </div>
+            <div class="modal-body">
+                <!-- BEGIN panel -->
+                <div class="modal-body-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <div id="txtRemark"></div>
+                                            @* @Html.TextArea("TaskStatus", new { @class = "summernote", style = "border: 2px solid #000; padding: 10px;", id = "txtRemark", @placeholder = "Description....", autocomplete = "Off", contenteditable = "false" })*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- END panel -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnCancel" class="btn btn-success btnpress" onclick="dismissModal('modal_basic3')">
+                    <i class="fa-solid fa-floppy-disk"> </i> Ok
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #End modal-dialog -->
+
+
+<script>
+    function AcknowledgedRemark(encodedHtml)
+    {debugger;
+        $('#txtRemark').html('');
+        const AssignDesc = decodeURIComponent(encodedHtml);
+        $('#modal_basic3').modal('show');
+        $('#modal_basic3').on('shown.bs.modal', function () {
+            $('#txtRemark').html(AssignDesc);
+            //$('#txtRemark').summernote('pasteHTML', WorkOnTask);
+        });
+    }
+
+    function ApprovalRemark(encodedHtml)
+    {debugger;
+        $('#txtRemark').html('');
+        const AssignDesc = decodeURIComponent(encodedHtml);
+        $('#modal_basic3').modal('show');
+        $('#modal_basic3').on('shown.bs.modal', function () {
+            $('#txtRemark').html(AssignDesc);
+            //$('#txtRemark').summernote('pasteHTML', WorkOnTask);
+        });
+    }
+
+    function dismissModal(modalId) {
+        $('#' + modalId).modal('hide');
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                });
+            }
+        }
+    });
+</script>
+
+<script>
+
+    function Delete(FnfId) {
+        const DeleteButtons = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        DeleteButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+            allowOutsideClick: () => {
+                const popup = Swal.getPopup()
+                popup.classList.remove('swal2-show')
+                setTimeout(() => {
+                    popup.classList.add('animate__animated', 'animate__headShake')
+                })
+                setTimeout(() => {
+                    popup.classList.remove('animate__animated', 'animate__headShake')
+                }, 500)
+                return false
+            }
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '@Url.Action("Delete", "ESS_FNF_Resignation")?FnfId=' + FnfId;
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+
+            }
+        })
+    }
+
+</script>
+
+<script>
+    function ShowResignationHistory() {
+        $.ajax({
+            url: '@Url.Action("GetResignationHistory", "ESS_FNF_Resignation")',
+            method: "GET",
+            success: function (data) {
+                const jsonData = JSON.parse(data);
+                $('#EmployeeListModel').modal('show');
+                $('#EmployeeListTitle').text('Resigned Employee History'); // Set the modal title
+                $("#tbodyEmployeeList").empty();
+                $.each(jsonData, function (index, item) {debugger;
+                    var row = `<tr>
+                                <td class="text-center">${item.SN}</td>
+                                <td class="text-left">${item.EmployeeName}</td>
+                                <td class="text-left">${item.DepartmentName}</td>
+                                <td class="text-left">${item.DesignationName}</td>
+                                <td class="text-left">${item.GradeName}</td>
+                                <td class="text-left">${item.DOJ}</td>
+                                <td class="text-left">${item.ResignationDate}</td>
+                                <td class="text-left">${item.RelievingDate}</td>
+                                <td class="text-left">${item.ReasonName}</td>
+                                <td class="text-left">${item.Status}</td>
+                                <td class="text-left">${item.RevokeDate}</td>
+                           </tr>`;
+                    $("#tbodyEmployeeList").append(row);
+                });
+            }
+        });
+    }
+</script>
+
+

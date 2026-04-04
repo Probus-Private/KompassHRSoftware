@@ -1,0 +1,633 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_ManpowerAllocation.KPI_SubCategory
+@{
+    ViewBag.Title = "ESS_ManpowerAllocation_ManpowerCategory";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+
+
+<style>
+    table.dataTable tbody {
+        background-color: #ffffff !important; /* White color */
+    }
+
+    table thead {
+        background-color: #f0f0f0; /* Light gray color */
+    }
+
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    .tblAddData td:nth-child(2) {
+        display: none;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    .chkDesignation {
+        text-align: center;
+    }
+
+    .tblAddData td:nth-child(1) {
+        text-align: center;
+    }
+
+    #tblManpowerSubCategory td:nth-child(2) {
+        display: none;
+    }
+
+    th:nth-child(1), td:nth-child(1) {
+        width: 60px; /* Set the width for the first column */
+    }
+</style>
+
+<div id="content" class="app-content">
+    <!-- BEGIN breadcrumb -->
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Manpower Sub-Category
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_ManpowerAllocation_Menu", "ESS_ManpowerAllocation_Menu", new {id = 35, ScreenId=278, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <!-- END breadcrumb -->
+   
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Manpower Sub-Category </h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Define manpower allocation sub-category here!
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "ESS_ManpowerAllocation_ManpowerCategory", new { area = "Reports" })' id="SaveManpowerCategory" method="post" data-parsley-validate="">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Company Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.CmpID, new SelectList(ViewBag.GetCompanyName, "Id", "Name"), "--Select--", new { @class = "form-select", id = "txtCmpId", type = "text", name = "CmpId" })
+                                                @Html.HiddenFor(model => model.KPISubCategoryId_Encrypted, new { id = "KPISubCategoryId_Encrypted" })
+                                                @Html.ValidationMessageFor(model => model.CmpID, "", new { @class = "help-block", @id = "ErrorCmpID", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Business Unit
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.KPISubCategoryBranchId, new SelectList(ViewBag.GetBranchName, "Id", "Name"), "--Select--", new { @class = "form-select", id = "txtKPICategoryBranchId", type = "text", name = "KPICategoryBranchId" })
+                                                @Html.ValidationMessageFor(model => model.KPISubCategoryBranchId, "", new { @class = "help-block", @id = "ErrorKPISubCategoryBranchId", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                KPI Sub Category Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.KPISubCategoryFName, new { @class = "form-control", type = "text", id = "txtKPICategoryFName", autocomplete = "Off", name = "KPICategoryFName" })
+                                                @Html.ValidationMessageFor(model => model.KPISubCategoryFName, "", new { @class = "help-block", @id = "ErrorKPISubCategoryFName", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                <button type="button" class="btn btn-danger btn-sm" onclick="redirectToAction('Action1')">
+                                                    <i class="fa-solid fa-share-from-square"></i>Show
+                                                </button>
+
+                                            </label>
+                                            @*<div class="col-md-8">
+                            @Html.TextBoxFor(model => model.KPISubCategorySName, new { @class = "form-control", type = "text", id = "txtKPICategorySName", autocomplete = "Off", name = "KPICategorySName" })
+                        </div>*@
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <!-- BEGIN table-responsive -->
+                                            <div class="table-scroll">
+                                                <div class="table-wrap">
+                                                    <table class="table table-bordered align-middle" id="tblManpowerSubCategory"
+                                                           style="width: 100%;">
+                                                        <thead class="text-center">
+                                                            <tr>
+                                                                <th class="fixed-side text-center">Select</th>
+                                                                <th hidden class="fixed-side text-center">DepartmentId</th>
+                                                                <th class="fixed-side1 text-center">Designation Name</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="tblManpowerCategory">
+                                                            @foreach (var d in ViewBag.GetDesignationName)
+                                                            {
+                                                                <tr>
+
+                                                                    <td class="text-center">
+                                                                        <input type="checkbox" id="txtDesignationId" class="chk chkDesignation" Value="@d.Id" />
+                                                                    </td>
+                                                                    <td class="text-nowrap">@d.Id</td>
+                                                                    <td class="text-nowrap">@d.Name</td>
+                                                                </tr>
+                                                            }
+                                                        </tbody>
+                                                    </table>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="button" onclick="redirectToAction('Action2')"
+                                                                class="btn btn-primary btn-sm">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                        <a href="@Url.Action("GetList", "ESS_ManpowerAllocation_ManpowerCategory", new { area = "ESS" })">
+                                                            <button type="button" class="btn btn-danger btn-sm" id="btnGetManpowerCategoryList">
+                                                                <i class="fa-solid fa-share-from-square"></i> List
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+<script>
+   
+    var SelectedManPowerList = @Html.Raw(Json.Encode(ViewBag.SelectedManPowerList));
+    var KPISubCategoryBranchId = @Html.Raw(Json.Encode(TempData["KPISubCategoryBranchId"]));
+    var KPISubCategoryFName = @Html.Raw(Json.Encode(TempData["KPISubCategoryFName"]));
+    debugger;
+    if(SelectedManPowerList!=null)
+    {
+        var table = document.getElementById("tblManpowerCategory");
+        var rowCount = table.rows.length;
+        for (i = 0; i <= rowCount-1; i++) {
+
+            var TableDepartmentId= Number(table.rows[i].cells[1].innerHTML);
+            var UpdatedepartmentId=   SelectedManPowerList[i][1].Value
+            var CheckboxValue=  Number(SelectedManPowerList[i][0].Value)
+            var chk=document.querySelectorAll('.chk')
+            if(TableDepartmentId==UpdatedepartmentId && CheckboxValue == 1)
+            {
+                var achk=chk[i];
+                achk.checked=true;
+                }
+            else
+            {
+                    continue;
+                }
+            }
+    }
+    if(KPISubCategoryBranchId!="")
+    {
+        $("#txtKPICategoryBranchId").val(KPISubCategoryBranchId);
+        $("#txtKPICategoryFName").val(KPISubCategoryFName);
+    }
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        $('#tblManpowerSubCategory').DataTable({
+            scrollY: 300,
+            scrollCollapse: true,
+            paging: false,
+            scrollX: true,
+            searching: true, // Enable searching
+        });debugger;
+
+        $("#txtKPICategoryBranchId").select2();
+        $("#txtCmpId").select2();
+        $("#ddlKPICategoryID").select2();
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        // return false
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+
+        $("#txtCmpId").on("change", function () {
+            debugger;
+            $("#txtKPICategoryBranchId").find("option").remove();
+            var CmpId = $("#txtCmpId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetBusinessUnit", "ESS_ManpowerAllocation_ManpowerCategory")',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    if (data != null) {
+                        $("#txtKPICategoryBranchId").append("<option value=''>--Select-- </option>");
+                        $.each(data, function (i, p) {
+                            $("#txtKPICategoryBranchId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        });
+
+
+    });
+
+    function redirectToAction(action) {
+        debugger;
+        var form = document.getElementById('SaveManpowerCategory');
+        var actionUrl = '';
+        var CmpId = $("#txtCmpId").val();
+        var  BranchId= $("#txtKPICategoryBranchId").val();
+        if(CmpId=="")
+        {$('#ErrorCmpID').html("Company name is required"); valid = false;  return false;}
+        else{$('#ErrorCmpID').html("");valid =true}
+
+        if(BranchId=="")
+        {$('#ErrorKPISubCategoryBranchId').html("Business unit is required"); valid = false;  return false;}
+        else{$('#ErrorKPISubCategoryBranchId').html("");valid =true}
+
+        if (action === 'Action1') {
+            actionUrl = '@Url.Action("ESS_ManpowerAllocation_ManpowerCategory", "ESS_ManpowerAllocation_ManpowerCategory")';
+            form.action = actionUrl;
+            form.submit();
+        } else if (action === 'Action2') {
+            debugger;
+            //form.valid();
+            //if(form.valid()==false)
+            //{
+            //    return false;
+            //}
+            var KPICategoryFName = $("#txtKPICategoryFName").val();
+            if(KPICategoryFName=="")
+            {$('#ErrorKPISubCategoryFName').html("KPI sub category name is required"); valid = false;  return false;}
+            else{$('#ErrorKPISubCategoryFName').html("");valid =true}
+
+            var KPISubCategoryId_Encrypted=$("#KPISubCategoryId_Encrypted").val();
+            var CompanyName=$("#txtCmpId").val();
+            var KPICategoryBranchId=$("#txtKPICategoryBranchId").val();
+            var KPISubCategoryFName = $("#txtKPICategoryFName").val();
+
+            var lstKPICategory=[];
+            $(':checkbox:checked').each(function (i) {
+                debugger;
+                var data1 = {};
+                data1.KPIDepartmentId = $(this).val();
+                lstKPICategory.push(data1);
+            });
+            debugger;
+            if (lstKPICategory == "") {
+                debugger;
+                Swal.fire({
+                    icon: "error",
+                    text: "Select atleast one designation",
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        return false;
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        window.location.reload();
+                        return false
+                    }
+                });
+                return false;
+            }
+
+            $.ajax({
+                async: true,
+                type:"POST",
+                url: '@Url.Action("IsManpowerAllocationExists", "ESS_ManpowerAllocation_ManpowerCategory")',
+                data:JSON.stringify({KPISubCategoryId_Encrypted:KPISubCategoryId_Encrypted,CompanyName:CompanyName,KPICategoryBranchId:KPICategoryBranchId,KPISubCategoryFName:KPISubCategoryFName, lstKPICategory:lstKPICategory}),
+                contentType: "application/json; charset=utf-8",
+                dataType:"text",
+                success:function(response){
+                    debugger;
+                    var Getdata = JSON.parse(response);
+                    var Message1 = Getdata.Message;
+                    var Icon1 = Getdata.Icon;
+                    if (Icon1=="error") {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                        }
+                    }
+                    else{
+                        actionUrl = '@Url.Action("SaveUpdate", "ESS_ManpowerAllocation_ManpowerCategory")';
+                        form.action = actionUrl;
+                        form.submit();
+                    }
+                }
+            });
+        }
+
+    }
+
+
+
+  //  //use for add regex function
+  //  jQuery.validator.addMethod(
+  //  "regex",
+  //   function(value, element, regexp) {
+  //       if (regexp.constructor != RegExp)
+  //           regexp = new RegExp(regexp);
+  //       else if (regexp.global)
+  //           regexp.lastIndex = 0;
+  //       return this.optional(element) || regexp.test(value);
+  //   },"erreur expression reguliere"
+  //);
+  //  $('#SaveManpowerCategory').validate({
+  //      rules: {
+  //          CmpID: {
+  //              required: true,
+  //          },
+  //          KPISubCategoryBranchId: {
+  //              required: true,
+  //          },
+  //          KPISubCategoryFName: {
+  //              required: true,
+  //          },
+  //      },
+  //      messages: {
+  //          CmpID: {
+  //              required: "Company name  is required"
+  //          },
+  //          KPISubCategoryBranchId: {
+  //              required: "Business unit is required"
+  //          },
+  //          KPISubCategoryFName: {
+  //              required: "KPI category name is required"
+  //          },
+  //      },
+  //  });
+
+  //  var form = $("#SaveManpowerCategory");
+  //  form.validate();
+    //  $("#btnSubmit").click(function () {
+    //      debugger;
+    //      form.valid();
+    //      if(form.valid()==false)
+    //      {
+    //          return false;
+    //      }
+    //      var KPISubCategoryId_Encrypted=$("#KPISubCategoryId_Encrypted").val();
+    //      var CompanyName=$("#txtCmpId").val();
+    //      var KPICategoryBranchId=$("#txtKPICategoryBranchId").val();
+    //      var KPISubCategoryFName = $("#txtKPICategoryFName").val();
+
+    //      var lstKPICategory=[];
+    //      $(':checkbox:checked').each(function (i) {
+    //          debugger;
+    //          var data1 = {};
+    //          data1.KPIDepartmentId = $(this).val();
+    //          lstKPICategory.push(data1);
+    //      });
+    //      debugger;
+    //      if (lstKPICategory == "") {
+    //          debugger;
+    //          Swal.fire({
+    //              icon: "error",
+    //              text: "Select atleast one designation",
+    //              allowOutsideClick: () => {
+    //                  const popup = Swal.getPopup()
+    //                  popup.classList.remove('swal2-show')
+    //                  return false;
+    //                  setTimeout(() => {
+    //                      popup.classList.add('animate__animated', 'animate__headShake')
+    //                  })
+    //                  setTimeout(() => {
+    //                      popup.classList.remove('animate__animated', 'animate__headShake')
+    //                  }, 500)
+    //                  window.location.reload();
+    //                  return false
+    //              }
+    //          });
+    //          return false;
+    //      }
+
+    //      $.ajax({
+    //          async: true,
+    //          type:"POST",
+    //          url:"IsManpowerAllocationExists",
+    //          data:JSON.stringify({KPISubCategoryId_Encrypted:KPISubCategoryId_Encrypted,CompanyName:CompanyName,KPICategoryBranchId:KPICategoryBranchId,KPISubCategoryFName:KPISubCategoryFName, lstKPICategory:lstKPICategory}),
+    //          contentType: "application/json; charset=utf-8",
+    //          dataType:"text",
+    //          success:function(response){
+    //              debugger;
+    //              var Getdata = JSON.parse(response);
+    //              var Message1 = Getdata.Message;
+    //              var Icon1 = Getdata.Icon;
+    //              if (Icon1=="error") {
+    //                  if (Message1 != null) {
+    //                      Swal.fire({
+    //                          icon: Icon1,
+    //                          text: Message1,
+    //                          allowOutsideClick: () => {
+    //                              const popup = Swal.getPopup()
+    //                              popup.classList.remove('swal2-show')
+    //                              setTimeout(() => {
+    //                                  popup.classList.add('animate__animated', 'animate__headShake')
+    //                              })
+    //                              setTimeout(() => {
+    //                                  popup.classList.remove('animate__animated', 'animate__headShake')
+    //                              }, 500)
+    //                              return false
+    //                          }
+    //                      });
+    //                  }
+    //              }
+    //              else{
+    //                  $("#SaveManpowerCategory").submit();
+    //              }
+    //          }
+    //      });
+    //  });
+
+</script>

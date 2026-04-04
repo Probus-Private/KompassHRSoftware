@@ -1,0 +1,384 @@
+﻿@model KompassHR.Areas.Setting.Models.Setting_Recruitment.Recruitment_TeamAssign
+@{
+    ViewBag.Title = "Setting_Recruitment_TeamAssign";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+<style>
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    th:nth-child(4), td:nth-child(4) {
+        display: none;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Recruitment Team Assign
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("ESS_AdminDashboard_Dashboard", "ESS_AdminDashboard_Dashboard", new { id = 32, ScreenId = 121, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Setting_Recruitment_Menu", "Setting_Recruitment_Menu", new { id =1 ,ScreenId =35, area = "Setting" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Settings">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Recruitment Team Assign - <b>@ViewBag.AddUpdateTitle</b></h4>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Define Recruitment Team Assign check-list here!
+                    </p>
+                </div>
+                <div class="panel-body" data-scrollbar="false">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "Setting_Recruitment_TeamAssign", new { area = "Setting" })' id="SaveTeamAssignChecklist" method="post" data-parsley-validate="">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">
+                                                Recruitment Head
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-9">
+                                                @Html.DropDownListFor(model => model.RecruitmentHeadEmployeeId, new SelectList(ViewBag.HeadEmployee, "Id", "Name"), "--Select--", new { id = "ddlRecruitmentHeadEmployeeId", @class = "form-control select", name = "RecruitmentHeadEmployeeId" })
+                                                <label class="form-label col-form-label col-md-2" id="lblClearanceError" style="display: none; color: red;">Select Recruitment Head </label>
+                                                @Html.HiddenFor(model => model.Recruitment_TeamAssignID_Encrypted, new { id = "Recruitment_TeamAssignID_Encrypted" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">
+                                                Team Assign
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-7">
+                                                @Html.DropDownListFor(model => model.TeamAssignEmployeeId, new SelectList(ViewBag.AllEmployeeName, "Id", "Name"), "--Select--", new { id = "ddlTeamAssignEmployeeId", @class = "form-control select", name = "TeamAssignEmployeeId" })
+                                                <label class="form-label col-form-label col-md-2" id="lblErrorC" style="display: none; color: red;">Select Employee Name</label>
+                                                <label class="form-label col-form-label col-md-8" id="lblErrorDuplicate" style="display: none; color: red;">Employee Name Exists In Table</label>
+
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button" id="btnAdd" onclick="btnABC('A')"
+                                                        class="btn btn-success btn-sm">
+                                                    <i class="fa-solid fa-plus"></i> Add
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <hr />
+
+                            <div class="table-scroll div1">
+                                <div class="table-wrap">
+                                    <table class="table table-bordered align-middle " id="data-table-combine"
+                                           style="width: 100%;">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-nowrap" style="width: 80px;">Delete</th>
+                                                <th class="text-nowrap" style="width: 80px;">Sr. No</th>
+                                                <th class="text-nowrap">Team Assign</th>
+                                                <th class="text-nowrap">EmployeeId</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tblBodyOptions"></tbody>
+                                    </table>
+                                    <label class="form-label col-form-label col-md-2" id="lbltblerror" style="display: none; color: red;">Select Employee Name </label>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="LastShortLeaveBx">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="BtnBx">
+                                                <div>
+                                                    <button type="button" id="btnSubmit" onclick="btnSubmit('A')"
+                                                            class="btn btn-primary btn-sm">
+                                                        <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- END panel -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        $("#ddlRecruitmentHeadEmployeeId").on("change", function () {
+            var EmployeeId = $("#ddlRecruitmentHeadEmployeeId").val();
+
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetTeam", "Setting_Recruitment_TeamAssign")',
+                data: { EmployeeId: EmployeeId },
+                dataType: "json",
+                success: function (data) {
+                    debugger
+                    var tableBody = document.getElementById("tblBodyOptions");
+                    tableBody.innerHTML = "";
+
+                    for (var i = 0; i < data.length; i++) {
+
+                        var row = tableBody.insertRow();
+
+                        // Delete button
+                        var deleteCell = row.insertCell(0);
+                        deleteCell.innerHTML =
+                            '<center><a href="javascript:void(0);" onclick="deleteRow(this)" style="cursor:pointer;">' +
+                            '<i class="fa-solid fa-trash-alt text-danger fa-lg"></i></a></center>';
+
+                        // SR No
+                        row.insertCell(1).innerHTML = i + 1;
+
+                        var name = data[i][0].Value;
+                        var teamId = data[i][1].Value;
+
+                        row.insertCell(2).innerHTML = name;
+                        row.insertCell(3).innerHTML = teamId;
+                    }
+                }            });
+        });
+
+
+        $("#ddlRecruitmentHeadEmployeeId").select2();
+        $("#ddlTeamAssignEmployeeId").select2();
+        var Team =@Html.Raw(Json.Encode(ViewBag.TeamAssign));
+        debugger;
+        if (Team != null) {
+            var table = document.getElementById("tblBodyOptions");
+            var count= Team.length;
+
+            var Head=$("#ddlRecruitmentHeadEmployeeId").text();
+            // Loop through the Team array
+            for (var i = 0; i < Team.length; i++) { // Use '<' instead of '<=' to avoid accessing undefined element
+
+                // Insert a new row at the end of the table body
+                var row = table.insertRow(table.rows.length);
+
+                // Insert delete button cell
+                var deleteButtonCell = row.insertCell(0);
+                deleteButtonCell.innerHTML = '<center><a href="javascript:void(0);" type="button" onclick="deleteRow(this)" id="btnDelete" style="cursor:pointer;">' +
+                    '<i class="fa-solid fa-trash-alt text-danger fa-lg"></i></a></center>';
+
+                // Insert the TeamAssign value cells
+                row.insertCell(1).innerHTML = Team[i][0].Value; // Value from first column of Team array
+                row.insertCell(2).innerHTML = Team[i][1].Value; // Value from second column of Team array
+            }
+        }
+    })
+
+    var srno = 1;
+    var count=0;
+    var Team =@Html.Raw(Json.Encode(ViewBag.TeamAssign));
+    if(Team.length>0){
+        count= Team.length;
+
+    }
+    else{
+        count=0;
+    }
+    function btnABC(a) {
+        debugger;
+        var TeamAssign = $("#ddlTeamAssignEmployeeId option:selected").text();
+        var error = document.getElementById("lblErrorC");
+        if (TeamAssign === "") {
+            error.style.display = "block";
+            return; // Exit if team is not selected
+        } else {
+            error.style.display = "none";
+        }
+
+        var inputData = $("#ddlTeamAssignEmployeeId option:selected").text();
+        var EmployeeId = $('#ddlTeamAssignEmployeeId').val();
+
+        // Check for duplicate based on EmployeeId (column index 3)
+        var tableBody = document.getElementById("tblBodyOptions");
+        var rows = tableBody.getElementsByTagName("tr");
+        var isDuplicate = false;
+
+        for (var i = 0; i < rows.length; i++) {
+            var cellEmployeeId = rows[i].cells[3].textContent.trim(); // Check column 3 for EmployeeId
+            if (cellEmployeeId === EmployeeId) {
+                isDuplicate = true;
+                break;
+            }
+        }
+
+        var DuplicateError = document.getElementById("lblErrorDuplicate");
+        if (isDuplicate) {
+            DuplicateError.style.display = "block";
+            return;
+        } else {
+            DuplicateError.style.display = "none";
+        }
+
+        var Head = $("#ddlRecruitmentHeadEmployeeId option:selected").text();
+
+        // Add new row
+        var newRow = tableBody.insertRow();
+
+        // Delete button
+        var deleteButtonCell = newRow.insertCell(0);
+        deleteButtonCell.innerHTML = '<center><a href="javascript:void(0);" type="button" onclick="deleteRow(this)" id="btnDelete" style="cursor:pointer;">' +
+            '<i class="fa-solid fa-trash-alt text-danger fa-lg"></i></a></center>';
+
+        // SR No
+        var cell1 = newRow.insertCell(1);
+        // Team Member Name
+        var cell2 = newRow.insertCell(2);
+        // EmployeeId
+        var cell3 = newRow.insertCell(3);
+
+        count++;
+        cell1.textContent = count;
+        cell2.textContent = inputData;
+        cell3.textContent = EmployeeId;
+
+        $("#ddlTeamAssignEmployeeId").val("").trigger("change"); // Reset and trigger Select2 update
+        adjustSerialNumbers();
+    }
+
+
+
+    function deleteRow(button) {
+        debugger;
+        var row = button.closest("tr"); // Find the row closest to the clicked button
+        row.remove();  // Remove the row when the button is clicked
+        adjustSerialNumbers();
+
+    }
+    function adjustSerialNumbers() {
+        debugger;
+        var rows = document.getElementById("tblBodyOptions").rows;  // Get all rows in the table
+
+        // Loop through the rows and update serial numbers
+        for (var i = 0; i <= rows.length; i++) {
+            rows[i].cells[1].textContent = i + 1;
+            if(rows.length>0){
+                count = i + 1;// Set new SRNO based on the index
+            }
+            else{
+                count=1;
+            }
+        }
+    }
+
+    var form = $("#SaveTeamAssignChecklist");
+    form.validate();
+    function btnSubmit(a) {
+        debugger;
+
+        var Recruitment_TeamAssignID_Encrypted = $("#Recruitment_TeamAssignID_Encrypted").val();
+        var Head = $("#ddlRecruitmentHeadEmployeeId").val();
+        var Recruitment_TeamAssignID = Number($("#Recruitment_TeamAssignID").val());
+        var TeamAssign = $("#ddlRecruitmentHeadEmployeeId option:selected").text();
+        var error = document.getElementById("lblClearanceError");
+
+        if (TeamAssign == "") {
+            error.style.display = "block";
+            return false;
+        } else {
+            error.style.display = "none";
+        }
+
+        var table = document.getElementById("tblBodyOptions");
+        var rowCount = table.rows.length;
+
+        var Task = [];
+
+        for (var i = 0; i < rowCount; i++) {
+            var data = {};
+            // data.EmployeeName = table.rows[i].cells[2].innerHTML;
+            data.EmployeeId = table.rows[i].cells[3].innerHTML;
+            Task.push(data);
+        }
+
+        var errorTable = document.getElementById("lbltblerror");
+        if (rowCount <= 0) {
+            errorTable.style.display = "block";
+            return false;
+        } else {
+            errorTable.style.display = "none";
+        }
+        $(".Userloaderbg").css("display", "flex");
+        $.ajax({
+
+            type: "POST",
+            url: '@Url.Action("SaveUpdate", "Setting_Recruitment_TeamAssign")',
+            data: JSON.stringify({Employee: Task, Head: Head}),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                debugger;
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (Message1 != null) {
+                    Swal.fire({
+                        icon: Icon1,
+                        text: Message1,
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup();
+                            popup.classList.remove('swal2-show');
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake');
+                            });
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake');
+                            }, 500);
+                            return false;
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = '@Url.Action("Setting_Recruitment_TeamAssign", "Setting_Recruitment_TeamAssign")';
+                        }
+                    });
+                }
+            }
+        });
+    }
+</script>

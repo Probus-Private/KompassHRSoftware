@@ -1,0 +1,517 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_Recruitment.Recruitment_Interview
+@{
+    ViewBag.Title = "ViewForCreatingInterviewLink";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+
+@*<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+
+    <link href="~/assets/plugins/summernote/dist/summernote-lite.css" rel="stylesheet" />
+    <script src="~/assets/plugins/summernote/dist/summernote-lite.min.js"></script>*@
+
+<style>
+    .note-toolbar {
+        display: none;
+    }
+
+    .note-editable {
+        height: 100% !important;
+        [contenteditable="false"];
+    }
+
+    .table, tr, td, th, .invoice, .smallFrom {
+        border: none;
+        font-size: 13px;
+        font-family: Arial;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Candidate Details
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_Recruitment_Menu", "ESS_Recruitment_Menu", new {id = 1, ScreenId=126, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="alert alert-warning alert-dismissible rounded-0 mb-0 fade show">
+        Here, the resource requester can create a virtual interview link and share it with the candidate and interviewer.
+    </div>
+
+    <!-- BEGIN invoice -->
+    <div class="invoice">
+        <!-- BEGIN invoice-company -->
+        <div class="invoice-company">
+            @Html.HiddenFor(model => model.ResumeId_Encrypted, new { id = "txtResumeId_Encrypted" })
+            @Html.HiddenFor(model => model.ResumeId, new { id = "txtResumeId" })
+            <span class="float-end hidden-print">
+                <button type="button" class="btn  btn-primary btn-sm" onclick="printDiv();" id="search"><i class="ace-icon fa fa-print align-top bigger-125"></i>&nbsp; Print</button>
+                <button type="button" class="btn btn-success btn-sm" id="btnCandidateManualUpload" onclick="OpenModal()">Create Link</button>
+
+            </span>
+            Recruitment for @ViewBag.ShortListedProfile.designationname
+        </div>
+        <!-- END invoice-company -->
+
+        <form class="form">
+            <div class="card">
+                <div id="card">
+                    <div class="invoice-header">
+                        <div class="invoice-from">
+                            <address class="mt-5px mb-5px">
+                                <i class="fa-solid fa-user"> </i>  <strong class="text-dark">&nbsp;@ViewBag.ShortListedProfile.CandidateName</strong><br />
+                                <i class="fa-solid fa-phone-volume"> </i>&nbsp;    <b>Phone:</b>&nbsp; +@ViewBag.ShortListedProfile.MobileNo <br />
+                                <i class="fa-solid fa-envelope"> </i>&nbsp;&nbsp;<b>Email:</b>&nbsp;  @ViewBag.ShortListedProfile.EmailId
+                            </address>
+                        </div>
+                        <div class="invoice-to">
+                            <small>   </small>
+                            <br />
+                            <address class="mt-5px mb-5px">
+                                <i class="fa-solid fa-building"> </i>&nbsp;&nbsp; &nbsp; <b> Current Organization:</b>&nbsp; @ViewBag.ShortListedProfile.LastCompanyName<br />
+                                <i class="fa-regular fa-handshake"> </i>&nbsp;&nbsp;  <b>  Current Designation: </b>&nbsp; @ViewBag.ShortListedProfile.LastDesignation<br />
+                                <i class="fa-solid fa-info"></i> &nbsp;&nbsp; &nbsp; <b>Experience:</b> &nbsp;@ViewBag.ShortListedProfile.TotalExperience<br />
+                            </address>
+                        </div>
+
+                        <div class="invoice-date">
+                            <small> </small>
+                            <br />
+                            <div class="date text-dark mt-5px"></div>
+                            <div class="invoice-detail">
+                                <i class="fa-solid fa-calendar-days"></i> <b> Notice Period (Days): </b>@ViewBag.ShortListedProfile.NoticePeriodDays<br />
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END invoice-header -->
+                    <!-- BEGIN invoice-content -->
+                    <div class="invoice-content">
+                        <!-- BEGIN table-responsive -->
+                        <div class="row">
+                            <div class="col-md-6">
+                                <table class="table ">
+                                    <tbody>
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Current CTC</span><br />
+                                            </th>
+                                            <td>@ViewBag.ShortListedProfile.CTC</td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Gender</span><br />
+                                            </th>
+                                            <td>@ViewBag.ShortListedProfile.Gender</td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Current City</span><br />
+                                            </th>
+                                            <td>@ViewBag.ShortListedProfile.CurrentCity</td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Nationality</span><br />
+                                            </th>
+                                            <td>@ViewBag.ShortListedProfile.Nationality</td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Qualification Type</span><br />
+                                            </th>
+                                            <td>@ViewBag.ShortListedProfile.CandidateType</td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Technical Skill</span><br />
+                                            </th>
+                                            <td>@ViewBag.ShortListedProfile.TechnicalDetails </td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">HR Notes</span><br />
+                                            </th>
+                                            <td>@ViewBag.ShortListedProfile.HRComment </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="col-md-6">
+                                <table class="table ">
+                                    <tbody>
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Expected CTC</span><br />
+                                            </th>
+                                            <td>@ViewBag.ShortListedProfile.ExpectedCTC</td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Marital Status </span><br />
+                                            </th>
+                                            <td>@ViewBag.ShortListedProfile.MaritalStatus</td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Ready to Travel</span><br />
+                                            </th>
+                                            <td>@ViewBag.ShortListedProfile.ReadyToTraval</td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Age</span><br />
+                                            </th>
+                                            <td>@ViewBag.ShortListedProfile.Age</td>
+                                        </tr>
+
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Highest Qualification</span><br />
+                                            </th>
+                                            <td>@ViewBag.ShortListedProfile.HighestQualification</td>
+                                        </tr>
+
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Communication Skill</span><br />
+                                            </th>
+                                            <td>@ViewBag.ShortListedProfile.CommunicationSkill</td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Candidate Comment</span><br />
+                                            </th>
+                                            <td>@ViewBag.ShortListedProfile.CandidateComment</td>
+                                        </tr>
+
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <hr />
+                        @if (ViewBag.ApprovalRemarkList.Count != 0)
+                        {
+                            <div class="col-md-12">
+                                <table class="table table-bordered table-hover mb-0 text-dark align-middle" id="data-table-combine"
+                                       style="width: 100%;">
+                                    <thead>
+                                        <tr class="trheading">
+                                            <th class="text-nowrap">Approved By</th>
+                                            <th class="text-nowrap">Remark</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var d in ViewBag.ApprovalRemarkList)
+                                        {
+                                            <tr>
+
+                                                <td class="text-nowrap">@d.EmployeeName</td>
+                                                <td class="text-nowrap">@d.ApproveRejectRemark</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+
+                    </div>
+                    <!-- END invoice-content -->
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<!-- #Start Appprove Reject Modal -dialog -->
+<div class="modal fade" id="myModal" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header bg-black text-white">
+                <h4 class="modal-title">Interview Schedule</h4>
+            </div>
+            <div class="modal-body">
+                <!-- BEGIN panel -->
+                <div class="modal-body-content">
+                    <form role="form" action='@Url.Action("SaveUpdate", "ESS_Recruitment_ShortListed", new { area = "ESS" })' id="SaveInterviewSchedule" method="post">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row mb-15px">
+                                    <label class="form-label col-form-label col-md-4">
+                                        Interview Type
+                                        <span class="important">*</span>
+                                    </label>
+                                    <div class="col-md-8">
+                                        @*@Html.Hidden("ResumeId_Encrypted", ViewBag.ShortListedProfile?.ResumeId_Encrypted, new { id = "txtResumeId_Encrypted" })*@
+                                        @Html.HiddenFor(model => model.CandidateName, new { id = "txtResumeId_Encrypted", Value = @ViewBag.ShortListedProfile.CandidateName })
+                                        @Html.HiddenFor(model => model.ResourceId, new { id = "txtResumeId_Encrypted", Value = @ViewBag.ShortListedProfile.ResourceId })
+                                        @Html.HiddenFor(model => model.designationname, new { id = "txtResumeId_Encrypted", Value = @ViewBag.ShortListedProfile.designationname })
+                                        @Html.HiddenFor(model => model.CompanyName, new { id = "txtResumeId_Encrypted", Value = @ViewBag.ShortListedProfile.CompanyName })
+                                        @Html.HiddenFor(model => model.BranchName, new { id = "txtBranchName", Value = @ViewBag.ShortListedProfile.BranchName })
+                                        @Html.HiddenFor(model => model.ResumeId_Encrypted, new { id = "txtResumeId_Encrypted", Value = @ViewBag.ShortListedProfile.ResumeId_Encrypted })
+                                        @Html.HiddenFor(model => model.CandidateMail, new { id = "CandidateMail", Value = @ViewBag.ShortListedProfile.CandidateMail })
+                                        @Html.HiddenFor(model => model.ReuestPoolRecruiterId, new { id = "RequestAssignId", Value = @ViewBag.ShortListedProfile.ReuestPoolRecruiterId })
+                                        @Html.DropDownListFor(model => model.InterviewType,
+                                                 new List<SelectListItem>{new SelectListItem {Text ="Offline", Value="Offline"},
+                                                                         new SelectListItem {Text ="Online", Value="Online"},
+                                                                        }, "--Select--", new { @class = "form-select", id = "txtInterviewType", type = "text", name = "InterviewType", autocomplete = "Off" })
+                                        @Html.HiddenFor(model => model.InterviewId_Encrypted, new { id = "txtInterviewId_Encrypted" })
+                                        @Html.HiddenFor(model => model.InterviewId, new { id = "txtInterviewId" })
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row mb-15px">
+                                    <label class="form-label col-form-label col-md-4">
+                                        Interview Date
+                                        <span class="important">*</span>
+                                    </label>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(model => model.InterviewDate, new { @class = "form-control", id = "dateInterviewDate", type = "date", name = "InterviewDate", autocomplete = "Off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row mb-15px">
+                                    <label class="form-label col-form-label col-md-4">
+                                        Interview Time
+                                        <span class="important">*</span>
+                                    </label>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(model => model.InterviewTime, new { @class = "form-control", id = "dateInterviewTime", type = "time", name = "InterviewTime", autocomplete = "Off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row mb-15px">
+                                    <label class="form-label col-form-label col-md-4">
+                                        Link/Address
+                                        <span class="important">*</span>
+                                    </label>
+                                    <div class="col-md-8">
+                                        @Html.TextAreaFor(model => model.MeetingLink, new { @class = "form-control", id = "txtMeetingLink", type = "text", name = "MeetingLink", autocomplete = "Off" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row mb-15px">
+                                    <label class="form-label col-form-label col-md-4">
+                                        Interviewer
+                                        <span class="important">*</span>
+                                    </label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.InterviewerEmployeeId, new SelectList(ViewBag.InterviewerEmployee, "Id", "Name"), "Select", new { id = "ddlInterviewerEmployeeId", @class = "form-control form-select select2", autocomplete = "off", name = "InterviewerEmployeeId" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- END panel -->
+                        <div class="modal-footer">
+                            <button type="button" id="btnSubmit" class="btn btn-primary btn-sm">
+                                <i class="fa-solid fa-floppy-disk"> </i> Submit
+                            </button>
+                            <button type="button" id="btnCancel" class="btn btn-danger btn-sm btnpress btnClear" data-bs-dismiss="modal">
+                                <i class="fa-solid fa-share-from-square"></i> Close
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- #End modal-dialog -->
+
+
+<script>
+    $(document).ready(function () {
+        $("#ddlInterviewerEmployeeId").select2();
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+    
+        var today = new Date().toISOString().split('T')[0];
+        document.getElementById("dateInterviewDate").setAttribute("min", today);
+
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500000)
+                        return false
+                    }
+                });
+            }
+        }
+
+        @*var List = @Html.Raw(Json.Encode(ViewBag.ShortListedProfile));
+        debugger;
+        var Encrypted=List[0][1].value;
+        var id=List[0][0].value;
+        $("#txtResumeId_Encrypted").val(Encrypted);
+        $("#txtResumeId").val(id);*@
+
+    });
+
+   
+    function OpenModal()
+    {
+        $("#myModal").modal('show');
+        $('#ddlInterviewerEmployeeId').select2({
+            dropdownParent: $('#myModal')
+        });
+
+    }
+
+
+    function printDiv() {
+
+        //Get the HTML of div
+        var divElements = document.getElementById('card').innerHTML;
+        //Get the HTML of whole page
+        var oldPage = document.body.innerHTML;
+
+        //Reset the page's HTML with div's HTML only
+        document.body.innerHTML =
+          "<html><head></head><body>    " +
+        divElements + "    </body>";
+
+        //Print Page
+        window.print();
+
+        //Restore orignal HTML
+        document.body.innerHTML = oldPage;
+    }
+</script>
+
+<script>
+          //use for add regex function
+          jQuery.validator.addMethod(
+        "regex",
+         function(value, element, regexp) {
+             if (regexp.constructor != RegExp)
+                 regexp = new RegExp(regexp);
+             else if (regexp.global)
+                 regexp.lastIndex = 0;
+             return this.optional(element) || regexp.test(value);
+         },"erreur expression reguliere"
+      );
+          $("#SaveInterviewSchedule").validate({
+              rules: {
+                  InterviewType: {
+                      required: true,
+                  },
+                  InterviewDate: {
+                      required: true,
+                  },
+                  InterviewTime: {
+                      required: true,
+                  },
+                  MeetingLink: {
+                      required: true,
+                  },
+                  //InterviewerEmployeeId:{
+                  //    required: true,
+                  //}
+              },
+              messages: {
+                  InterviewType: {
+                      required: "Interview type is required",
+                  },
+                  InterviewDate: {
+                      required: "Interview date is required",
+                  },
+                  InterviewTime: {
+                      required: "Interview time is required",
+                  },
+                  MeetingLink: {
+                      required: "Meeting link is required",
+                  },
+                  //InterviewerEmployeeId:{
+                  //    required: "Employee is required",
+                  //}
+              }
+          });
+          var form = $("#SaveInterviewSchedule");
+          form.validate();
+          $("#btnSubmit").click(function () {
+              debugger;
+              form.valid();
+              if(form.valid()==false)
+              {
+                  $("#dateInterviewDate").removeClass('error')
+                  $("#dateInterviewDate").removeClass('error')
+                  return false;
+              }
+              $(".Userloaderbg").css("display", "flex");
+              $("#myModal").modal('hide');
+              var Encrypted = $("#txtResumeId_Encrypted").val();
+
+              // Create a hidden input to store the encrypted value
+              var hiddenInput = $('<input>').attr({
+                  type: 'hidden',
+                  name: 'Encrypted',  // Name of the parameter
+                  value: Encrypted    // The value to be passed
+              });
+              // Append the hidden input to the form before submitting
+              $("#SaveInterviewSchedule").append(hiddenInput);
+              // Now submit the form
+              $("#SaveInterviewSchedule").submit();
+          });
+</script>

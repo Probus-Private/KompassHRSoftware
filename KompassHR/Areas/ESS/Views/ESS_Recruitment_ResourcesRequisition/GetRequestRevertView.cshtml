@@ -1,0 +1,663 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_Recruitment.Recruitment_ResourceRequest
+@{
+    ViewBag.Title = "GetRequestRevertView";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+
+<link href="~/assets/plugins/summernote/dist/summernote-lite.css" rel="stylesheet" />
+<script src="~/assets/plugins/summernote/dist/summernote-lite.min.js"></script>
+
+<style>
+    .note-toolbar {
+        display: none;
+    }
+
+    .note-editable {
+        height: 100% !important;
+        [contenteditable="false"];
+    }
+
+    .table, tr, td, th, .invoice, .smallFrom {
+        border: none;
+        font-size: 13px;
+        font-family: Arial;
+    }
+
+    p {
+        font-size: 15px;
+    }
+</style>
+
+
+
+<div id="content" class="app-content">
+    <!-- BEGIN breadcrumb -->
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Approval Request
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "ESS" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("ESS_Recruitment_Menu", "ESS_Recruitment_Menu", new {id = 1, ScreenId=126, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+
+            </ol>
+        </div>
+    </div>
+
+    <div class="alert alert-warning alert-dismissible rounded-0 mb-0 fade show">
+        The system routes the request to the appropriate approver(s). This could involve multiple levels of approval based on the organization's hierarchy or approval matrix.
+    </div>
+    <div class="invoice">
+
+        <!-- BEGIN invoice-company -->
+        <div class="invoice-company">
+            @Html.HiddenFor(model => model.ResourceId_Encrypted, new { id = "txtResourceId_Encrypted" })
+            @Html.HiddenFor(model => model.ResourceId, new { id = "txtResourceId" })
+            <span class="float-end hidden-print">
+                <button type="button" class="btn  btn-primary" onclick="printDiv();" id="search"><i class="ace-icon fa fa-print align-top bigger-125"></i>&nbsp; Print</button>
+                <a href="#modal-dialogForApproval1" onclick="OpenModule()" type="button" class="btn btn-success" id="btnmodal-dialog" value="Approved"><i class="fa-solid fa-check-double"></i>Request Revert</a>
+
+                @*<button href="#modal-dialogForHoldReject1" onclick="OpenModule('Rejected')" type="button" class="btn btn-danger" id="btnmodal-dialog1" value="Rejected">Camcel</button>*@
+            </span>
+            Recruitment for @ViewBag.ResourceApprovalList.DesignationName
+        </div>
+        <!-- END invoice-company -->
+
+        <form class="form">
+            <div class="card">
+                <div id="card">
+                    <div class="invoice-header">
+
+                        <div class="invoice-from">
+                            <b><small class="smallFrom">From,</small></b>
+
+                            <address class="mt-5px mb-5px">
+                                <i class="fa-solid fa-user"> </i>&nbsp;&nbsp;   <strong class="text-dark"><b>@ViewBag.ResourceApprovalList.EmployeeName</b></strong><br />
+                                <i class="fa-solid fa-building"> </i>&nbsp;&nbsp;&nbsp;&nbsp;<b>Department&nbsp;:</b>&nbsp;@ViewBag.ResourceApprovalList.EmpDepartmentName <br />
+                                <i class="fa-regular fa-handshake"> </i>&nbsp;&nbsp;<b>Designation&nbsp;:</b>&nbsp;@ViewBag.ResourceApprovalList.EmpDesignationName <b></b><br />
+                                <i class="fa-solid fa-phone-volume"> </i>&nbsp;&nbsp; <b>Phone&nbsp;:</b>&nbsp;+91-@ViewBag.ResourceApprovalList.companymobileno  <b></b><br />
+                                <i class="fa-solid fa-envelope"> </i>&nbsp;&nbsp; <b>Email &nbsp;:</b>   @ViewBag.ResourceApprovalList.CompanyMailID
+                            </address>
+                        </div>
+
+                        <div class="invoice-to">
+                            <b><small class="smallFrom">For,</small></b>
+                            <address class="mt-5px mb-5px">
+                                <i class="fa-solid fa-building"> </i>&nbsp;&nbsp;  <b> Department&nbsp;:</b> &nbsp;@ViewBag.ResourceApprovalList.DepartmentName <br />
+                                <i class="fa-solid fa-desktop"> </i>&nbsp; <b>Job Title&nbsp;:</b> &nbsp; @ViewBag.ResourceApprovalList.DesignationName <br />
+                                <i class="fa-solid fa-briefcase"> </i>&nbsp;&nbsp; <b>No. of Positions&nbsp;:&nbsp;</b>@ViewBag.ResourceApprovalList.TotalPositions<br />
+                            </address>
+                        </div>
+
+                        <div class="invoice-date">
+                            <small> </small><br />
+                            <div class="date text-dark mt-5px"></div><br />
+                            <div class="date text-dark mt-5px"></div>
+                            <div class="invoice-detail">
+                                <i class="fa-solid fa-calendar-days"></i> <b>Opening Date&nbsp;: </b>&nbsp; @ViewBag.ResourceApprovalList.DocDate<br />
+                                <i class="fa-solid fa-calendar-days"></i>  <b> Closing Date&nbsp;:</b> &nbsp; @ViewBag.ResourceApprovalList.ClosingDate
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- END invoice-header -->
+                    <!-- BEGIN invoice-content -->
+                    <div class="invoice-content">
+                        <!-- BEGIN table-responsive -->
+                        <div class="table-responsive row">
+                            <div class="col-md-6">
+                                <table class="table">
+                                    <tbody>
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Company Name</span><br />
+                                            </th>
+                                            <td>@ViewBag.ResourceApprovalList.CompanyName</td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Department</span><br />
+                                            </th>
+                                            <td>@ViewBag.ResourceApprovalList.DepartmentName</td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Position Type</span><br />
+                                            </th>
+                                            <td>@ViewBag.ResourceApprovalList.PositionType</td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Closing Date</span><br />
+                                            </th>
+                                            <td>@ViewBag.ResourceApprovalList.ClosingDate</td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Legal Bond</span><br />
+                                            </th>
+                                            <td>@ViewBag.ResourceApprovalList.LegalBond</td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Priority</span><br />
+                                            </th>
+                                            <td>@ViewBag.ResourceApprovalList.Priority</td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Minimum Experience</span><br />
+                                            </th>
+                                            <td>@ViewBag.ResourceApprovalList.MinExperience</td>
+                                        </tr>
+                                        <tr></tr>
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Preferred Technical Skills</span><br />
+                                            </th>
+                                            <td>@ViewBag.ResourceApprovalList.PreferredTechnicalSkills</td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Qualification</span><br />
+                                            </th>
+                                            <td>@ViewBag.ResourceApprovalList.Qualification</td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Position Budgeted</span><br />
+                                            </th>
+                                            <td>@ViewBag.ResourceApprovalList.PositionBudgeted</td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Minimum Budget</span><br />
+                                            </th>
+                                            <td>@ViewBag.ResourceApprovalList.MinBudget</td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Minimum Age</span><br />
+                                            </th>
+                                            <td>@ViewBag.ResourceApprovalList.MinAge</td>
+                                        </tr>
+
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Language</span><br />
+                                            </th>
+                                            <td>@ViewBag.ResourceApprovalList.PreferredLanguage</td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Gender</span><br />
+                                            </th>
+                                            <td>@ViewBag.ResourceApprovalList.PreferredGender</td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Competencies</span><br />
+                                            </th>
+                                            <td>@ViewBag.ResourceApprovalList.Competencies</td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="col-md-6">
+                                <table class="table ">
+                                    <tbody>
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Business Unit</span><br />
+                                            </th>
+                                            <td>@ViewBag.ResourceApprovalList.BranchName</td>
+                                        </tr>
+
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Designation Name</span><br />
+                                            </th>
+                                            <td>@ViewBag.ResourceApprovalList.DesignationName</td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Total Position</span><br />
+                                            </th>
+                                            <td>@ViewBag.ResourceApprovalList.TotalPositions</td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Replacement For</span><br />
+                                            </th>
+                                            <td>@ViewBag.ResourceApprovalList.EmployeeifReplacement</td>
+                                        </tr>
+
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Work Type</span><br />
+                                            </th>
+                                            <td>@ViewBag.ResourceApprovalList.WorkType</td>
+                                        </tr>
+
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Legal Bond Duration</span><br />
+                                            </th>
+                                            <td>@ViewBag.ResourceApprovalList.LegalBondDuration</td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Maximum Experience.</span><br />
+                                            </th>
+                                            <td>@ViewBag.ResourceApprovalList.MaxExperience</td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Must have Technical Skills</span><br />
+                                            </th>
+                                            <td>@ViewBag.ResourceApprovalList.MusthaveTechnicalSkills</td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Residence</span><br />
+                                            </th>
+                                            <td>@ViewBag.ResourceApprovalList.Residence</td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Currency</span><br />
+                                            </th>
+                                            <td>@ViewBag.ResourceApprovalList.Currency</td>
+                                        </tr>
+
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Maximum Budget</span><br />
+                                            </th>
+                                            <td>@ViewBag.ResourceApprovalList.MaxBudget</td>
+                                        </tr>
+
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Maximum Age</span><br />
+                                            </th>
+                                            <td>@ViewBag.ResourceApprovalList.MaxAge</td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Marital Status</span><br />
+                                            </th>
+                                            <td>@ViewBag.ResourceApprovalList.PreferredMaritalStatus</td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                <span class="text-dark">Shift Timimg</span><br />
+                                            </th>
+                                            <td>@ViewBag.ResourceApprovalList.PreferredShiftTiming</td>
+                                        </tr>
+
+
+                                        <tr></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <!-- END table-responsive -->
+                        <hr />
+
+                        @if (ViewBag.ApprovalRemarkList.Count != 0)
+                        {
+                            <table class="table table-bordered table-hover mb-0 text-dark align-middle" id="data-table-combine"
+                                   style="width: 100%;">
+                                <thead>
+                                    <tr class="trheading">
+                                        <th class="text-nowrap">Approved By</th>
+                                        <th class="text-nowrap">Remark</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var d in ViewBag.ApprovalRemarkList)
+                                    {
+                                        <tr>
+                                            <td class="text-nowrap">@d.EmployeeName</td>
+                                            <td class="text-nowrap">@d.ApproveRejectRemark</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        <hr />
+
+                        <!-- BEGIN invoice-price -->
+                        <h6>&nbsp;<b>Job Description:</b></h6>
+                        <div class="invoice-price ">
+                            <div class="invoice-price-left ">
+                                <div class="invoice-price-row col-md-12">
+                                    <div class="col-12">
+                                        <div class="form-group">
+                                            @*<small id="summernotedata" class="disabled">
+
+
+                                                </small>*@
+                                            <textarea autocomplete="Off" class="form-control summernote" cols="20" height="auto" id="summernote" name="JobDescription" rows="2" style="font-size:16px" Value="" disabled="disabled" readonly="readonly">@ViewBag.ResourceApprovalList.Remark</textarea>
+                                            @*<textarea autocomplete="Off" class="form-control" cols="20" height="auto" id="txtsummernote" name="JobDescription" rows="2" value="">@ViewBag.ResourceApprovalList.Remark</textarea>*@
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END invoice-price -->
+                        </div>
+                        <!-- END invoice-content -->
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+
+
+
+<!-- #Start Appprove Reject Modal -dialog -->
+<div class="modal fade" id="myModalFinal" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header bg-black text-white">
+                <h4 class="modal-title"> Remark </h4>
+                <div class="panel-heading-btn">
+                    @*<a href="javascript:;" class="btn btn-icon btn-danger btnClear" data-bs-dismiss="modal"
+                           aria-hidden="true" id="CloseModel">
+                            <i class="fa fa-xmark"></i>
+                        </a>*@
+                </div>
+            </div>
+            <div class="modal-body">
+                <!-- BEGIN panel -->
+                <div class="modal-body-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <textarea id="txtApproveRejectRemark" class="form-control" rows="4"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- END panel -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="Approved()" id="btnReject" class="btn btn-primary btn-sm">
+                    <i class="fa-solid fa-floppy-disk"> </i> Submit
+                </button>
+                <button type="button" id="btnCancel" class="btn btn-danger btnpress CloseModel" data-bs-dismiss="modal">
+                    <i class="fa-solid fa-share-from-square"></i> Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #End modal-dialog -->
+
+
+
+
+<script>
+    $(document).ready(function () {
+        debugger;
+
+        var List = @Html.Raw(Json.Encode(ViewBag.ResourceApprovalList));
+        debugger;
+        var Encrypted=List[1].Value;
+        var id=List[0].Value;
+        var Remark=List[42].Value;
+        $("#txtResourceId_Encrypted").val(Encrypted);
+        $("#txtResourceId").val(id);
+
+        cleanText =Remark.code().replace(/<\/?[^>]+(>|$)/g, "");
+
+        $("#").val(cleanText);
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500000)
+                        return false
+                    }
+                });
+            }
+        }
+
+
+
+    });
+</script>
+
+
+
+<script>
+    function printDiv() {
+
+        //Get the HTML of div
+        var divElements = document.getElementById('card').innerHTML;
+        //Get the HTML of whole page
+        var oldPage = document.body.innerHTML;
+
+        //Reset the page's HTML with div's HTML only
+        document.body.innerHTML =
+          "<html><head></head><body>    " +
+        divElements + "    </body>";
+
+        //Print Page
+        window.print();
+
+        //Restore orignal HTML
+        document.body.innerHTML = oldPage;
+    }
+
+    function OpenModule()
+    {        debugger;
+        $("#myModalFinal").modal('show');
+    }
+
+
+    function Approved()
+    {
+        debugger
+        const Approved = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        Approved.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes submit!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+
+            allowOutsideClick: () => {
+                const popup = Swal.getPopup()
+                popup.classList.remove('swal2-show')
+                setTimeout(() => {
+                    popup.classList.add('animate__animated', 'animate__headShake')
+                })
+                setTimeout(() => {
+                    popup.classList.remove('animate__animated', 'animate__headShake')
+                }, 500)
+                return false
+            }
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                debugger;
+
+                var DocId=$("#txtResourceId").val();
+               var RequestRevertRemark = $("#txtApproveRejectRemark").val();
+
+
+                $.ajax({
+                    url: "@Url.Action("SaveRequestRevert", "ESS_Recruitment_ResourcesRequisition")",
+                    method:"get",
+                    data:{DocId:DocId,RequestRevertRemark:RequestRevertRemark},
+                    success:function(response){
+                        debugger;
+                        var Message1 = response.Message;
+                        var Icon1 = response.Icon;
+                        if (response.Icon=="error") {
+                            if (Message1 != null) {
+                                if (Message1 != null) {
+                                    Swal.fire({
+                                        icon: Icon1,
+                                        text: Message1,
+                                        allowOutsideClick: () => {
+                                            const popup = Swal.getPopup()
+                                            popup.classList.remove('swal2-show')
+                                            setTimeout(() => {
+                                                popup.classList.add('animate__animated', 'animate__headShake')
+                                            })
+                                            setTimeout(() => {
+                                                popup.classList.remove('animate__animated', 'animate__headShake')
+                                            }, 500)
+                                            return false
+                                        }
+                                    });
+
+                                    $("#myModalFinal").modal('hide');
+                                    $("#txtApproveRejectRemark").val("")
+                                    .then((result) => {
+                                        if (result.isConfirmed) {
+                                            window.location.href = '@Url.Action("ApprovalList", "ESS_Recruitment_ResourcesRequisition")';
+                                        } else if (
+                                            /* Read more about handling dismissals below */
+                                            result.dismiss === Swal.DismissReason.cancel
+                                        ) {
+
+                                        }
+                                    })
+
+
+                                }
+                            }
+
+                        }
+
+                        else{
+                            var Message1 = response.Message;
+                            var Icon1 = response.Icon;
+                            if (response.Icon=="success") {
+                                if (Message1 != null) {
+                                    if (Message1 != null) {
+                                        Swal.fire({
+                                            icon: Icon1,
+                                            text: Message1,
+                                            allowOutsideClick: () => {
+                                                const popup = Swal.getPopup()
+                                                popup.classList.remove('swal2-show')
+                                                setTimeout(() => {
+                                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                                })
+                                                setTimeout(() => {
+                                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                                }, 500)
+                                                return false
+                                            }
+                                        })
+                                        .then((result) => {
+                                            if (result.isConfirmed) {
+                                                window.location.href = '@Url.Action("ApprovalList", "ESS_Recruitment_ResourcesRequisition")';
+                                            } else if (
+                                                /* Read more about handling dismissals below */
+                                                result.dismiss === Swal.DismissReason.cancel
+                                            ) {
+
+                                            }
+                                        })
+
+                                        $("#myModalFinal").modal('hide');
+                                        $("#txtApproveRejectRemark").val("");
+
+
+                                    }
+                                }
+                            }
+
+
+                        }
+                    }
+                });
+
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+
+            }
+        })
+
+
+    }
+
+    $("#CloseModel").click(function () {
+        $("#txtApproveRejectRemark").val('');
+    })
+
+</script>
+
+
+<script>
+    $(".summernote").summernote({
+        placeholder: '',
+        contenteditable:false,
+        focus: true  ,
+        toolbar: false,
+        disabled:true,
+        height: "300"
+    });
+</script>
+
+

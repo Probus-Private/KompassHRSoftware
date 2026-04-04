@@ -1,0 +1,2126 @@
+﻿
+@{
+    ViewBag.Title = "ESS_Travel_Plans";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@model KompassHR.Areas.ESS.Models.ESS_Travel.Travel_Plan_Travel
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+
+<style>
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    .trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .dataTables_scrollBody::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .dataTables_scrollBody::-webkit-scrollbar {
+        width: 6px;
+        height: 3px;
+        background-color: #F5F5F5;
+    }
+
+    .dataTables_scrollBody::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <!-- BEGIN breadcrumb -->
+    <ol class="breadcrumb float-xl-end">
+        <li class="breadcrumb-item">
+            <a href="javascript:;">
+                <button type="button" class="btn btn-danger d-lg-block m-l-15" onclick="location.href='@Url.Action("Traveldesk", "TravelDesk", new { area = "TravelDesk" })'" style="float:right;"><i class="icon-prev"></i>&nbsp;Back To Home  </button>
+            </a>
+        </li>
+        @*<li class="breadcrumb-item"><a href="javascript:;">Resource Request</a></li>
+            <li class="breadcrumb-item active">Resource Request</li>*@
+    </ol>
+    <!-- END breadcrumb -->
+    <!-- BEGIN page-header -->
+    <h1 class="page-header">You creating a new travel plan <small>Travel plans are created under your travel calendars</small></h1>
+    <!-- END page-header -->
+    <!-- BEGIN panel -->
+    <div class="alert alert-warning alert-dismissible rounded-0 mb-0 fade show">
+        This is the individual travel itinerary.
+    </div>
+    <br />
+
+
+    <!-- END panel -->
+    <!-- BEGIN row -->
+    <div class="row">
+        <!-- BEGIN col-6 -->
+        <div class="col-xl-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse">
+                <div class="panel-heading ui-sortable-handle">
+                    <h4 class="panel-title">CREATE PLANS</h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+
+                <div class="panel-body">
+                    <div class="alert alert-muted">
+
+                        You have created travel calendar for <code>@ViewBag.TravelPurpose</code>, where the descrition is  <code>@ViewBag.PurposeDescription</code>,
+                        You are travelling <code>@ViewBag.TravelType</code>Your tour would start on<code>@Convert.ToDateTime(ViewBag.TourStart).ToString("dd/MMM/yyy")</code> and should end On<code>
+                            @Convert.ToDateTime(ViewBag.TourEnd).ToString("dd/MMM/yyy")
+                        </code> You mentioned in the travel note that @ViewBag.TravelNote .
+                    </div>
+
+                    <br />
+                    <!-- END invoice-header -->
+                    <!-- BEGIN nav-tabs -->
+                    <ul id="ioniconsTab" class="nav nav-pills mb-5">
+                        <li class="nav-item"><a href="#outline" data-bs-toggle="tab" class="nav-link active d-flex align-items-center"><ion-icon name="aperture-outline" class="fs-16px"></ion-icon><span class="d-none d-lg-inline ms-2">TRAVEL</span></a></li>
+                        <li class="nav-item ms-2"><a href="#filled" data-bs-toggle="tab" class="nav-link d-flex align-items-center"><ion-icon name="aperture" class="fs-16px"></ion-icon><span class="d-none d-lg-inline ms-2"> ACCOMMODATION</span></a></li>
+                        <li class="nav-item ms-2"><a href="#sharp" data-bs-toggle="tab" class="nav-link d-flex align-items-center"><ion-icon name="aperture-sharp" class="fs-16px"></ion-icon><span class="d-none d-lg-inline ms-2">TRANSPORT</span></a></li>
+                        @*<li class="nav-item ms-2"><a href="#logo" data-bs-toggle="tab" class="nav-link d-flex align-items-center"><ion-icon name="logo-apple" class="fs-16px"></ion-icon><span class="d-none d-lg-inline ms-2">REQUEST</span> </a></li>*@
+                    </ul>
+                    <!-- END nav-tabs -->
+                    <hr class="bg-gray-500" />
+                    <!-- BEGIN tab-content -->
+                    <div id="ioniconsTabContent" class="tab-content rounded-bottom fs-13px">
+                        <!-- BEGIN tab-pane -->
+                        <div class="tab-pane fade show active" id="outline">
+                            <!-- BEGIN row -->
+                            <div class="row">
+                                <div class="invoice">
+
+                                    <!-- END invoice-company -->
+                                    <!-- BEGIN invoice-content -->
+                                    <div class="panel-body">
+                                        @*<form action="/OnBoarding/OnBoarding/BasicDetailsPage" class="form-horizontal" data-parsley-validate="true" name="demo-form">*@
+                                        @using (Html.BeginForm("Save", "ESS_Travel_Plans", FormMethod.Post, new { id = "SavePlan", enctype = "multipart/form-data" }))
+                                        {
+                                        <div class="form-group row" hidden>
+
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-6" hidden>
+                                                <label class="mb-2">Plan Type<span class="text-danger">*</span></label>
+                                                @Html.DropDownListFor(model => model.PlanType, new SelectList(new List<object>() {
+                                           new {text="Travel",value="Travel"},
+                                       }, "text", "value"), new { @class = "form-control form-select", @id = "PlanType" })
+                                                @Html.ValidationMessageFor(model => model.PlanType, "", new { @class = "help-block", id = "ErrorPlanType", @style = "color:red" })
+
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="mb-2">Doc No <span class="text-danger"></span></label>
+                                                @Html.TextBoxFor(model => model.DocNo, new { @class = "form-control", name = "DocNoT", type = "text", id = "DocNoT", Value = @ViewBag.DocNoT.DocNo, autocomplete = "Off", @readonly = "readonly", Style = "background-color: lightgray;" })
+                                                @Html.ValidationMessageFor(model => model.DocNo, "", new { @class = "help-block", id = "ErrorDocNoT", @style = "color:red" })
+
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="mb-2">Select your prefered travel mode<span class="text-danger">*</span></label>
+
+                                                @Html.DropDownListFor(model => model.Mode, new SelectList(new List<object>() {
+                                           new {text="Air",value="Air"},
+                                           new {text="Train",value="Train"},
+                                           new {text="Bus",value="Bus"}
+                                       }, "text", "value"), "--Select--", new { @class = "form-control form-select", @id = "ModeT" })
+                                                @Html.ValidationMessageFor(model => model.Mode, "", new { @class = "help-block", id = "ErrorModeT", @style = "color:red" })
+                                            </div>
+
+                                        </div>
+                                        <br />
+                                        <div class="form-group row">
+                                            <div class="col-md-6">
+                                                <label class="mb-2">Your journey starts on<span class="text-danger">*</span></label>
+                                                @Html.TextBoxFor(model => model.StartDate, new { @class = "form-control", Type = "date", id = "StartDateT" })
+                                                @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "help-block", id = "ErrorStartDateT", @style = "color:red" })
+
+
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="mb-2">Journey ends on <span class="text-danger"></span></label>
+                                                @Html.TextBoxFor(model => model.EndDate, new { @class = "form-control", Type = "date", id = "EndDateT" })
+                                                @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "help-block", id = "ErrorEndDateT", @style = "color:red" })
+                                            </div>
+
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-6">
+                                                <label class="mb-2">Start Location<span class="text-danger">*</span></label>
+                                                @Html.TextBoxFor(model => model.StartLocation, new { @class = "form-control", id = "StratLocationT", type = "text" })
+                                                @Html.ValidationMessageFor(model => model.StartLocation, "", new { @class = "help-block", id = "ErrorStratLocationT", @style = "color:red" })
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <label class="mb-2">Start Time <span class="text-danger">*</span></label>
+
+                                                @Html.TextBoxFor(model => model.StartTime, new { @class = "form-control", id = "timepicker", type = "time" })
+                                                @Html.ValidationMessageFor(model => model.StartTime, "", new { @class = "help-block", id = "ErrorStartTimeT", @style = "color:red" })
+
+
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-6">
+                                                <label class="mb-2">End Location<span class="text-danger">*</span></label>
+                                                @Html.TextBoxFor(model => model.EndLocation, new { @class = "form-control", id = "EndLocationT", type = "text" })
+                                                @Html.ValidationMessageFor(model => model.EndLocation, "", new { @class = "help-block", id = "ErrorEndLocationT", @style = "color:red" })
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="mb-2">End Time <span class="text-danger"></span></label>
+                                                <div class="input-group bootstrap-timepicker">
+                                                    @Html.TextBoxFor(model => model.EndTime, new { @class = "form-control", id = "timepicker3", type = "Time" })
+                                                    <span class="input-group-text input-group-addon">
+                                                        <i class="fa fa-clock"></i>
+                                                    </span>
+                                                    @Html.ValidationMessageFor(model => model.EndTime, "", new { @class = "help-block", id = "ErrorEndTime", @style = "color:red" })
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <div class="col-md-6">
+                                                <label class="mb-2">What is your meal preference <span class="text-danger"></span></label>
+                                                @Html.DropDownListFor(model => model.TravelMealPreference, new SelectList(new List<object>() {
+                                           new {text="Vegetarian ",value="Vegetarian"},
+                                           new {text="Non-Vegetarian",value="Non-Vegetarian"},
+                                             new {text="Meal not available",value="Meal not available"},
+                                               new {text="Meal not required",value="Meal not required"},
+                                       }, "text", "value"), "--Select--", new { @class = "form-control form-select", @id = "TravelMealPreferenceT" })
+                                                @Html.ValidationMessageFor(model => model.Mode, "", new { @class = "help-block", id = "ErrorTravelMealPreferenceT", @style = "color:red" })
+
+
+                                            </div>
+
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-6">
+                                                <label class="mb-2">Who should make the booking? <span class="text-danger">*</span></label>
+                                                @Html.DropDownListFor(model => model.BookingType, new SelectList(new List<object>() {
+                                                    new {text="Travel Desk",value="Travel Desk"},
+                                           new {text="Self Booking ",value="Self Booking"},
+
+
+                                       }, "text", "value"), new { @class = "form-control form-select", @id = "BookingTypeT" })
+                                                @Html.ValidationMessageFor(model => model.BookingType, "", new { @class = "help-block", id = "ErrorBookingTypeT", @style = "color:red" })
+
+                                            </div>
+                                            <div class="col-md-4" id="UpladDocsT">
+                                                <label class="mb-2">Upload Docs <span class="text-danger">*</span></label>
+                                                <div class="col-lg-8">
+                                                    <span class="btn btn-info fileinput-button me-1">
+                                                        <i class="fa fa-fw fa-plus"></i>
+                                                        <span></span>
+                                                        <input type="file" id="UploadDocs" name="UploadDocs" multiple="multiple">
+
+
+                                                    </span>
+                                                </div>
+                                                @Html.ValidationMessage("ErrorUploadDocsT", "", new { @class = "help-block", id = "ErrorUploadDocsT", @style = "color:red" })
+
+
+                                            </div>
+
+
+                                        </div>
+
+
+                                        <div class="form-group row">
+
+
+                                            <div class="col-md-12">
+                                                <label class="mb-2">Add a note to your booking.<span class="text-danger">*</span></label>
+                                                @Html.TextAreaFor(model => model.Note, new { @class = "form-control", id = "NoteT", autocomplete = "off", row = "3", autofocus = "autofocus" })
+                                                @Html.ValidationMessageFor(model => model.Note, "", new { @class = "help-block", id = "ErrorNoteT", @style = "color:red" })
+
+
+                                            </div>
+
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-6">
+                                                @Html.HiddenFor(model => model.TravelCalenderID, new { @class = "form-control", Value=ViewBag.TravelCalenderID, id = "TRAVELCAL_Fid" })
+                                                @Html.HiddenFor(model => model.TravelPlanID_Encrypted, new { id = "TravelPlanID_Encrypted" })
+                                                @Html.HiddenFor(model => model.TravelBranchID, new { id = "TravelBranchIDT" })
+                                                @Html.HiddenFor(model => model.CmpId, new { id = "CmpIdT" })
+                                                <div hidden>
+                                                    @Html.TextBoxFor(model => model.DocDate, new { Type = "date", id = "DocDateT" })
+
+                                                </div>
+
+
+
+                                            </div>
+
+
+                                        </div>
+
+                                        <br />
+
+                                        <center>
+                                            <button type="button" id="btnSubmit"
+                                                    class="btn btn-primary btn-sm">
+                                                <i class="fa-solid fa-floppy-disk"></i> Submit
+                                            </button>
+
+                                        </center>
+                                        @*</form>*@
+                                        }
+                                    </div>
+
+                                    <!-- END invoice-content -->
+                                    <div class="col-md-12">
+                                        <!-- BEGIN panel -->
+                                        <div class="panel panel-inverse" data-sortable-id="index-1">
+                                            <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                                                <h4 class="panel-title"> Travel Plan - List</h4>
+                                                <div class="panel-heading-btn">
+                                                    <a href="javascript:;" class="btn btn-xs btn-icon btn-default"
+                                                       data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                                                </div>
+                                            </div>
+                                            <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                                                <p class="pb-0">
+                                                    View Travel Calender status here!
+                                                </p>
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="row overflow-auto">
+                                                    <div class="col-12">
+                                                        <!-- BEGIN table-responsive -->
+                                                        <div class="table-scroll div1">
+                                                            <div class="table-wrap">
+                                                                <table class="table table-bordered table-hover mb-0 text-dark align-middle TablePage" id="data-table-combine"
+                                                                       style="width: 100%;">
+                                                                    <thead>
+                                                                        <tr class="trheading">
+                                                                            <th class="text-nowrap text-center">Update</th>
+                                                                            <th class="text-nowrap text-center">Delete</th>
+                                                                            <th hidden class="text-nowrap text-center">TravelPlanID_Encrypted</th>
+                                                                            <th hidden class="text-nowrap text-center">TravelPlanEmployeeId</th>
+                                                                            <th hidden class="text-nowrap text-center">DocNo</th>
+                                                                            <th hidden class="text-nowrap text-center">TravelCalenderID</th>
+                                                                            <th class="text-nowrap text-center">PlanType</th>
+                                                                            <th class="text-nowrap text-center">Mode</th>
+                                                                            <th class="text-nowrap text-center">StartDate</th>
+                                                                            <th class="text-nowrap text-center">EndDate</th>
+                                                                            <th class="text-nowrap text-center">StartTime</th>
+                                                                            <th class="text-nowrap text-center">EndTime</th>
+                                                                            <th class="text-nowrap text-center">StartLocation</th>
+                                                                            <th class="text-nowrap text-center">EndLocation</th>
+                                                                            <th class="text-nowrap text-center">TravelMealPreference</th>
+                                                                            <th class="text-nowrap text-center">Note</th>
+                                                                            <th class="text-nowrap text-center">BookingType</th>
+                                                                            <th class="text-nowrap text-center">BookingStatus</th>
+                                                                            <th class="text-nowrap text-center">CancelPlanDescription</th>
+                                                                            <th class="text-nowrap text-center">TravelConfirmed</th>
+                                                                            <th class="text-nowrap text-center">RejectionRemark</th>
+                                                                            <th hidden class="text-nowrap text-center">CompId</th>
+                                                                            <th hidden class="text-nowrap text-center">BranchId</th>
+
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        @foreach (var d in ViewBag.TravelPlanDetails)
+                                                                        {
+                                                                            <tr>
+                                                                                <td class="text-center">
+                                                                                    <button type="button" id="UpdateBtn"
+                                                                                           class="btn btn-success btnpress ListBtn">
+                                                                                        <i class="fa-solid fa-pencil-alt"></i>
+                                                                                    </button>
+                                                                                </td>
+                                                                                <td class="text-center">
+                                                                                    <button type="button" id="btnCancel" onclick="DeleteTravel('@d.TravelPlanID_Encrypted')"
+                                                                                            class="btn btn-danger ListBtn btnpress">
+                                                                                        <i class="fa-solid fa-xmark"></i>
+                                                                                    </button>
+                                                                                </td>
+                                                                                <td hidden class="text-nowrap">@d.TravelPlanID_Encrypted</td>
+                                                                                <td hidden class="text-nowrap">@d.TravelPlanEmployeeId</td>
+                                                                                <td hidden class="text-nowrap">@d.DocNo</td>
+                                                                                <td hidden class="text-nowrap">@d.TravelCalenderID</td>
+                                                                                <td class="text-nowrap">@d.PlanType</td>
+                                                                                <td class="text-nowrap">@d.Mode</td>
+                                                                                <td class="text-nowrap">@Convert.ToDateTime(d.StartDate).ToString("yyyy-MM-dd")</td>
+                                                                                <td class="text-nowrap">@Convert.ToDateTime(d.EndDate).ToString("yyyy-MM-dd")</td>
+                                                                                <td class="text-nowrap">@d.StartTime</td>
+                                                                                <td class="text-nowrap">@d.EndTime</td>
+                                                                                <td class="text-nowrap">@d.StartLocation</td>
+                                                                                <td class="text-nowrap">@d.EndLocation</td>
+                                                                                <td class="text-nowrap">@d.TravelMealPreference</td>
+                                                                                <td class="text-nowrap">@d.Note</td>
+                                                                                <td class="text-nowrap">@d.BookingType</td>
+                                                                                <td class="text-nowrap">@d.BookingStatus</td>
+                                                                                <td class="text-nowrap">@d.CancelPlanDescription</td>
+                                                                                <td class="text-nowrap">@d.TravelConfirmed</td>
+                                                                                <td class="text-nowrap">@d.RejectionRemark</td>
+                                                                                <td hidden class="text-nowrap">@d.CmpId</td>
+                                                                                <td hidden class="text-nowrap">@Convert.ToDateTime(d.DocDate).ToString("yyyy-MM-dd")</td>
+                                                                                <td hidden class="text-nowrap">@d.TravelBranchID</td>
+
+                                                                            </tr>
+                                                                        }
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- END panel -->
+                                        </div>
+                                    </div>
+                                    <!-- BEGIN invoice-footer -->
+                                    <div id="footer" class="app-footer m-0">
+                                        &copy; 2023 Probus All Right Reserved
+                                    </div>
+                                    <!-- END invoice-footer -->
+                                </div>
+                            </div>
+                            <!-- END row -->
+                        </div>
+                        <!-- END tab-pane -->
+                        <!-- BEGIN tab-pane -->
+                        <div class="tab-pane fade" id="filled">
+                            <div class="row">
+
+                                <!-- GRP EDITED-->
+                                <div class="invoice">
+
+                                    <div class="invoice-content">
+                                        <!-- BEGIN table-responsive -->
+                                        <div class="panel-body">
+                                            @*<form action="/OnBoarding/OnBoarding/BasicDetailsPage" class="form-horizontal" data-parsley-validate="true" name="demo-form">*@
+                                            @using (Html.BeginForm("SaveA", "ESS_Travel_Plans", FormMethod.Post, new { id = "SavePlanA", enctype = "multipart/form-data" }))
+                                            {
+
+
+                                                <div class="form-group row">
+                                                    <div class="col-md-6" hidden>
+                                                        <label class="mb-2">Plan Type<span class="text-danger">*</span></label>
+                                                        @Html.DropDownListFor(model => model.PlanType, new SelectList(new List<object>() {
+                                           new {text="Accomodation",value="Accomodation"},
+                                       }, "text", "value"), new { @class = "form-control form-select", @id = "PlanType" })
+                                                        @Html.ValidationMessageFor(model => model.PlanType, "", new { @class = "help-block", id = "ErrorPlanType", @style = "color:red" })
+
+                                                    </div>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <label class="mb-2">Doc No <span class="text-danger"></span></label>
+                                                            @Html.TextBoxFor(model => model.DocNo, new { @class = "form-control", name = "DocNoA", type = "text", id = "DocNoA", Value = @ViewBag.DocNoA.DocNo, autocomplete = "Off", @readonly = "readonly", Style = "background-color: lightgray;" })
+                                                            @Html.ValidationMessageFor(model => model.DocNo, "", new { @class = "help-block", id = "ErrorDocNoA", @style = "color:red" })
+
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label class="mb-2">Mode<span class="text-danger">*</span></label>
+
+                                                            @Html.DropDownListFor(model => model.Mode, new SelectList(new List<object>() {
+
+                                            new {text="Regular",value="Regular"},
+                                            new {text="Premium",value="Premium"},
+                                            new {text="Deluxe",value="Deluxe"},
+
+                                       }, "text", "value"), "--Select--", new { @class = "form-control form-select", @id = "ModeA" })
+                                                            @Html.ValidationMessageFor(model => model.Mode, "", new { @class = "help-block", id = "ErrorModeA", @style = "color:red" })
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <div class="row">
+                                                            <div class="col-md-4">
+                                                                <label class="mb-2">Breakfast <span class="text-danger">*</span></label>
+                                                                @Html.DropDownListFor(model => model.BKAirlineName, new SelectList(new List<object>() {
+                                           new {text=true,value="YES"},
+                                           new {text=false,value="NO"},
+                                       }, "text", "value"), "--Select--", new { @class = "form-control form-select", @id = "Breakfast" })
+                                                                @Html.ValidationMessageFor(model => model.BKAirlineName, "", new { @class = "help-block", id = "ErrorBreakfast", @style = "color:red" })
+
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <label class="mb-2">Lunch<span class="text-danger">*</span></label>
+                                                                @Html.DropDownListFor(model => model.BKAircraftNo, new SelectList(new List<object>() {
+                                           new {text=true,value="YES"},
+                                           new {text=false,value="NO"},
+                                       }, "text", "value"), "--Select--", new { @class = "form-control form-select", @id = "Lunch" })
+                                                                @Html.ValidationMessageFor(model => model.BKAircraftNo, "", new { @class = "help-block", id = "ErrorLunch", @style = "color:red" })
+
+
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <label class="mb-2">Dinner<span class="text-danger">*</span></label>
+                                                                @Html.DropDownListFor(model => model.BKSeatNo, new SelectList(new List<object>() {
+                                           new {text=true,value="YES"},
+                                           new {text=false,value="NO"},
+                                       }, "text", "value"), "--Select--", new { @class = "form-control form-select", @id = "Dinner" })
+                                                                @Html.ValidationMessageFor(model => model.BKSeatNo, "", new { @class = "help-block", id = "ErrorDinner", @style = "color:red" })
+
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                    <div class="form-group row">
+                                                        <div class="col-md-6">
+                                                            <label class="mb-2">Start Date<span class="text-danger">*</span></label>
+                                                            @Html.TextBoxFor(model => model.StartDate, new { @class = "form-control", Type = "date", id = "StartDateA" })
+                                                            @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "help-block", id = "ErrorStartDateA", @style = "color:red" })
+
+
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label class="mb-2">End Date <span class="text-danger">*</span></label>
+                                                            @Html.TextBoxFor(model => model.EndDate, new { @class = "form-control", Type = "date", id = "EndDateA" })
+                                                            @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "help-block", id = "ErrorEndDateA", @style = "color:red" })
+
+
+                                                        </div>
+
+                                                    </div>
+
+                                                    <br />
+                                                    <div class="form-group row">
+                                                        <div class="col-md-6">
+                                                            <label class="mb-2">Who should make the booking? <span class="text-danger">*</span></label>
+                                                            @Html.DropDownListFor(model => model.BookingType, new SelectList(new List<object>() {
+                                                          new {text="Travel Desk",value="Travel Desk"},
+                                           new {text="Self Booking ",value="Self Booking"},
+
+
+                                       }, "text", "value"), new { @class = "form-control form-select", @id = "BookingTypeA" })
+                                                            @Html.ValidationMessageFor(model => model.BookingType, "", new { @class = "help-block", id = "ErrorBookingTypeA", @style = "color:red" })
+
+
+                                                        </div>
+                                                        <div id="UpladDocsA" class="col-md-4">
+                                                            <label class="mb-2">Upload Docs <span class="text-danger">*</span></label>
+                                                            <div class="col-lg-8">
+                                                                <span class="btn btn-info fileinput-button me-1">
+                                                                    <i class="fa fa-fw fa-plus"></i>
+                                                                    <span></span>
+                                                                    <input type="file" id="UploadDocs2" name="UploadDocs2" multiple="multiple">
+
+                                                                </span>
+                                                            </div>
+                                                            @Html.ValidationMessage("ErrorUploadDocsA", "", new { @class = "help-block", id = "ErrorUploadDocsA", @style = "color:red" })
+
+                                                        </div>
+
+
+                                                    </div>
+                                                    <div class="form-group row">
+
+
+                                                        <div class="col-md-12">
+                                                            <label class="mb-2">Note <span class="text-danger">*</span></label>
+                                                            @Html.TextAreaFor(model => model.Note, new { @class = "form-control", id = "NoteA", autocomplete = "off", row = "3", autofocus = "autofocus" })
+                                                            @Html.ValidationMessageFor(model => model.Note, "", new { @class = "help-block", id = "ErrorNoteA", @style = "color:red" })
+
+
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="form-group row" hidden>
+                                                        <div class="col-md-6">
+                                                            @Html.HiddenFor(model => model.TravelCalenderID, new { @class = "form-control", Value = ViewBag.TravelCalenderID, id = "TRAVELCAL_FidA" })
+                                                            @Html.HiddenFor(model => model.TravelPlanID_Encrypted, new { id = "TravelPlanID_EncryptedA" })
+                                                            @Html.HiddenFor(model => model.TravelBranchID, new { id = "TravelBranchIDA" })
+                                                            @Html.HiddenFor(model => model.CmpId, new { id = "CmpIdA" })
+                                                            <div hidden>
+                                                                @Html.TextBoxFor(model => model.DocDate, new { Type = "date", id = "DocDateA" })
+
+                                                            </div>
+
+                                                        </div>
+
+                                                        <div class="col-md-6" hidden>
+                                                            <label class="mb-2">Plan Date <span class="text-danger">*</span></label>
+                                                            @Html.TextBox("PlannedEnddateA", new { @class = "form-control", Type = "date", id = "PlannedEnddateA" })
+
+
+                                                        </div>
+                                                        <div class="col-md-6" hidden>
+                                                            <label class="mb-2">Plan Date <span class="text-danger">*</span></label>
+                                                            @Html.TextBox("PlannedStartdateA", new { @class = "form-control", Type = "date", id = "PlannedStartdateA" })
+
+
+                                                        </div>
+                                                    </div>
+                                                    <br />
+                                                    <center>
+                                                        <button type="button" id="btnSubmitA"
+                                                                class="btn btn-primary btn-sm">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+
+                                                    </center>
+
+
+                                                    @*</form>*@
+                                            }
+                                        </div>
+                                        <!-- END table-responsive -->
+                                        <!-- BEGIN invoice-price -->
+                                        <div class="col-md-12">
+                                            <!-- BEGIN panel -->
+                                            <div class="panel panel-inverse" data-sortable-id="index-1">
+                                                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                                                    <h4 class="panel-title"> Accomodation Plan - List</h4>
+                                                    <div class="panel-heading-btn">
+                                                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default"
+                                                           data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+
+
+                                                    </div>
+                                                </div>
+                                                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                                                    <p class="pb-0">
+                                                        View Travel Calender status here!
+                                                    </p>
+                                                </div>
+                                                <div class="panel-body">
+                                                    <div class="row overflow-auto">
+                                                        <div class="col-12">
+                                                            <!-- BEGIN table-responsive -->
+                                                            <div class="table-scroll div1">
+                                                                <div class="table-wrap">
+                                                                    <table class="table table-bordered table-hover mb-0 text-dark align-middle TablePage" id="data-table-combine1"
+                                                                           style="width: 100%;">
+                                                                        <thead>
+                                                                            <tr class="trheading">
+                                                                                <th class="text-nowrap text-center">Update</th>
+                                                                                <th class="text-nowrap text-center">Delete</th>
+                                                                                <th hidden class="text-nowrap text-center">TravelPlanID_Encrypted</th>
+                                                                                <th hidden class="text-nowrap text-center">TravelPlanEmployeeId</th>
+                                                                                <th hidden class="text-nowrap text-center">DocNo</th>
+                                                                                <th hidden class="text-nowrap text-center">TravelCalenderID</th>
+                                                                                <th class="text-nowrap text-center">PlanType</th>
+                                                                                <th class="text-nowrap text-center">Mode</th>
+                                                                                <th class="text-nowrap text-center">StartDate</th>
+                                                                                <th class="text-nowrap text-center">EndDate</th>
+                                                                                <th class="text-nowrap text-center">Breakfast</th>
+                                                                                <th class="text-nowrap text-center">Lunch</th>
+                                                                                <th class="text-nowrap text-center">Dinner</th>
+                                                                                <th class="text-nowrap text-center">Note</th>
+                                                                                <th class="text-nowrap text-center">BookingType</th>
+                                                                                <th class="text-nowrap text-center">BookingStatus</th>
+                                                                                <th class="text-nowrap text-center">CancelPlanDescription</th>
+                                                                                <th class="text-nowrap text-center">RejectionRemark</th>
+                                                                                <th hidden class="text-nowrap text-center"></th>
+                                                                                <th hidden class="text-nowrap text-center"></th>
+                                                                                <th hidden class="text-nowrap text-center"></th>
+
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                            @foreach (var d in ViewBag.AccomodationPlanDetails)
+                                                                            {
+                                                                                <tr>
+                                                                                    <td class="text-center">
+                                                                                        <button type="button" id="UpdateBtn1"
+                                                                                                class="btn btn-success btnpress ListBtn">
+                                                                                            <i class="fa-solid fa-pencil-alt"></i>
+                                                                                        </button>
+                                                                                    </td>
+                                                                                    <td class="text-center">
+                                                                                        <button type="button" id="btnCancel" onclick="DeleteAccomodation('@d.AccomodationPlanID_Encrypted')"
+                                                                                                class="btn btn-danger ListBtn btnpress">
+                                                                                            <i class="fa-solid fa-xmark"></i>
+                                                                                        </button>
+                                                                                    </td>
+                                                                                    <td hidden class="text-nowrap">@d.AccomodationPlanID_Encrypted</td>
+                                                                                    <td hidden class="text-nowrap">@d.AccomodationPlanEmployeeId</td>
+                                                                                    <td hidden class="text-nowrap">@d.DocNo</td>
+                                                                                    <td hidden class="text-nowrap">@d.TravelCalenderID</td>
+                                                                                    <td class="text-nowrap">@d.PlanType</td>
+                                                                                    <td class="text-nowrap">@d.Mode</td>
+                                                                                    <td class="text-nowrap">@Convert.ToDateTime(d.StartDate).ToString("yyyy-MM-dd")</td>
+                                                                                    <td class="text-nowrap">@Convert.ToDateTime(d.EndDate).ToString("yyyy-MM-dd")</td>
+                                                                                    <td class="text-nowrap">@d.Breakfast</td>
+                                                                                    <td class="text-nowrap">@d.Lunch</td>
+                                                                                    <td class="text-nowrap">@d.Dinner</td>
+                                                                                    <td class="text-nowrap">@d.Note</td>
+                                                                                    <td class="text-nowrap">@d.BookingType</td>
+                                                                                    <td class="text-nowrap">@d.BookingStatus</td>
+                                                                                    <td class="text-nowrap">@d.CancelPlanDescription</td>
+                                                                                    <td class="text-nowrap">@d.RejectionRemark</td>
+                                                                                    <td hidden class="text-nowrap">@d.CmpId</td>
+                                                                                    <td hidden class="text-nowrap">@Convert.ToDateTime(d.DocDate).ToString("yyyy-MM-dd")</td>
+                                                                                    <td hidden class="text-nowrap">@d.TravelBranchID</td>
+                                                                                </tr>
+                                                                            }
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>                                                        
+                                                    </div>
+                                                </div>
+                                                <!-- END panel -->
+                                            </div>
+                                        </div>
+                                        <!-- END invoice-price -->
+                                    </div>
+                                    <!-- END invoice-content -->
+                                    <!-- BEGIN invoice-footer -->
+                                    <div id="footer" class="app-footer m-0">
+                                        &copy; 2023 Probus All Right Reserved
+                                    </div>
+                                    <!-- END invoice-footer -->
+                                </div>
+                                <!-- GRP EDITED-->
+                            </div>
+                        </div>
+                        <!-- END tab-pane -->
+                        <!-- BEGIN tab-pane -->
+                        <div class="tab-pane fade" id="sharp">
+                            <div class="row">
+                                <div class="invoice">
+
+                                    <!-- END invoice-company -->
+                                    <!-- BEGIN invoice-content -->
+                                    <div class="panel-body">
+                                        @*<form action="/OnBoarding/OnBoarding/BasicDetailsPage" class="form-horizontal" data-parsley-validate="true" name="demo-form">*@
+                                        @using (Html.BeginForm("SaveLT", "ESS_Travel_Plans", FormMethod.Post, new { id= "SavePlanLT", enctype = "multipart/form-data" }))
+                                        {
+
+
+                                            <div class="form-group row" hidden>
+                                               
+
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="col-md-6" hidden>
+                                                    <label class="mb-2">Plan Type<span class="text-danger">*</span></label>
+                                                    @Html.DropDownListFor(model => model.PlanType, new SelectList(new List<object>() {
+                                            new {text="Local Transport",value="Local Transport"},
+                                       }, "text", "value"), new { @class = "form-control form-select", @id = "PlanType" })
+                                                    @Html.ValidationMessageFor(model => model.PlanType, "", new { @class = "help-block", id = "ErrorPlanType", @style = "color:red" })
+
+
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="mb-2">Doc No <span class="text-danger"></span></label>
+                                                    @Html.TextBoxFor(model => model.DocNo, new { @class = "form-control", name = "DocNoA", type = "text", id = "DocNoLT", Value = @ViewBag.DocNoLT.DocNo, autocomplete = "Off", @readonly = "readonly", Style = "background-color: lightgray;" })
+                                                    @Html.ValidationMessageFor(model => model.DocNo, "", new { @class = "help-block", id = "ErrorDocNoLT", @style = "color:red" })
+
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="mb-2">Mode<span class="text-danger">*</span></label>
+                                                    @Html.DropDownListFor(model => model.Mode, new SelectList(new List<object>() {
+                                           new {text="public transport",value="public transport"},
+                                           new {text="Private transport",value="Private transport"},
+                                       }, "text", "value"), "--Select--", new { @class = "form-control form-select", @id = "ModeLT" })
+                                                    @Html.ValidationMessageFor(model => model.Mode, "", new { @class = "help-block", id = "ErrorModeLT", @style = "color:red" })
+                                                </div>
+
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="col-md-6">
+                                                    <label class="mb-2">Start Date<span class="text-danger">*</span></label>
+                                                    @Html.TextBoxFor(model => model.StartDate, new { @class = "form-control", Type = "date", id = "StartDateLT" })
+                                                    @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "help-block", id = "ErrorStartDateLT", @style = "color:red" })
+
+
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="mb-2">End Date <span class="text-danger">*</span></label>
+                                                    @Html.TextBoxFor(model => model.EndDate, new { @class = "form-control", Type = "date", id = "EndDateLT" })
+                                                    @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "help-block", id = "ErrorEndDateLT", @style = "color:red" })
+
+
+                                                </div>
+
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="col-md-6">
+                                                    <label class="mb-2">Start Location<span class="text-danger">*</span></label>
+                                                    @Html.TextBoxFor(model => model.StartLocation, new { @class = "form-control", Type = "text", id = "StratLocationLT" })
+                                                    @Html.ValidationMessageFor(model => model.StartLocation, "", new { @class = "help-block", id = "ErrorStratLocationLT", @style = "color:red" })
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <label class="mb-2">Start Time <span class="text-danger"></span></label>
+                                                    <div class="input-group bootstrap-timepicker">
+                                                        @Html.TextBoxFor(model => model.StartTime, new { @class = "form-control", id = "timepicker4", type = "Time" })
+                                                        <span class="input-group-text input-group-addon">
+                                                            <i class="fa fa-clock"></i>
+                                                        </span>
+                                                        @Html.ValidationMessageFor(model => model.StartTime, "", new { @class = "help-block", id = "ErrorStartTime", @style = "color:red" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="col-md-6">
+                                                    <label class="mb-2">End Location<span class="text-danger">*</span></label>
+                                                    @Html.TextBoxFor(model => model.EndLocation, new { @class = "form-control", Type = "text", id = "EndLocationLT" })
+                                                    @Html.ValidationMessageFor(model => model.EndLocation, "", new { @class = "help-block", id = "ErrorEndLocationLT", @style = "color:red" })
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="mb-2">End Time <span class="text-danger"></span></label>
+                                                    <div class="input-group bootstrap-timepicker">
+                                                        @Html.TextBoxFor(model => model.EndTime, new { @class = "form-control", id = "timepicker5", type = "Time" })
+                                                        <span class="input-group-text input-group-addon">
+                                                            <i class="fa fa-clock"></i>
+                                                        </span>
+                                                        @Html.ValidationMessageFor(model => model.EndTime, "", new { @class = "help-block", id = "ErrorEndTime", @style = "color:red" })
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <div class="col-md-6">
+                                                    <label class="mb-2">Who should make the booking? <span class="text-danger">*</span></label>
+                                                    @Html.DropDownListFor(model => model.BookingType, new SelectList(new List<object>() {
+                                           new {text="Travel Desk",value="Travel Desk"},
+                                             new {text="Self Booking ",value="Self Booking"},
+                                       }, "text", "value"), new { @class = "form-control form-select", @id = "BookingTypeLT" })
+                                                    @Html.ValidationMessageFor(model => model.BookingType, "", new { @class = "help-block", id = "ErrorBookingTypeLT", @style = "color:red" })
+
+
+                                                </div>
+                                                <div class="col-md-4" id="UpladDocsLT">
+                                                    <label class="mb-2">Upload Docs <span class="text-danger">*</span></label>
+                                                    <div class="col-lg-8">
+                                                        <span class="btn btn-info fileinput-button me-1">
+                                                            <i class="fa fa-fw fa-plus"></i>
+                                                            <span></span>
+                                                            <input type="file" id="UploadDocs1" name="UploadDocs1" multiple="multiple">
+
+
+                                                        </span>
+                                                    </div>
+                                                    @Html.ValidationMessage("ErrorUploadDocsLT", "", new { @class = "help-block", id = "ErrorUploadDocsLT", @style = "color:red" })
+
+
+                                                </div>
+
+
+                                            </div>
+                                            <div class="form-group row">
+
+
+                                                <div class="col-md-12">
+                                                    <label class="mb-2">Note <span class="text-danger"></span></label>
+                                                    @Html.TextAreaFor(model => model.Note, new { @class = "form-control", id = "NoteLT", autocomplete = "off", row = "3", autofocus = "autofocus" })
+                                                    @Html.ValidationMessageFor(model => model.Note, "", new { @class = "help-block", id = "ErrorNoteLT", @style = "color:red" })
+
+
+                                                </div>
+
+                                            </div>
+                                            <div class="form-group row" hidden>
+                                                <div class="col-md-6">
+                                                    @Html.HiddenFor(model => model.TravelCalenderID, new { @class = "form-control", Value = ViewBag.TravelCalenderID, id = "TRAVELCAL_FidLT" })
+                                                    @Html.HiddenFor(model => model.TravelPlanID_Encrypted, new { id = "TravelPlanID_EncryptedLT" })
+                                                    @Html.HiddenFor(model => model.TravelBranchID, new { id = "TravelBranchIDLT" })
+                                                    @Html.HiddenFor(model => model.CmpId, new { id = "CmpIdLT" })
+                                                    <div hidden>
+                                                        @Html.TextBoxFor(model => model.DocDate, new { Type = "date", id = "DocDateLT" })
+
+                                                    </div>
+
+                                                </div>
+                                                <div class="col-md-6" hidden>
+                                                    <label class="mb-2">Plan Date <span class="text-danger">*</span></label>
+                                                    @Html.TextBox("PlannedEnddateLT", new { @class = "form-control", Type = "date", id = "PlannedEnddateLT" })
+
+                                                </div>
+                                                <div class="col-md-6" hidden>
+                                                    <label class="mb-2">Plan Date <span class="text-danger">*</span></label>
+                                                    @Html.TextBox("PlannedStartdateLT", new { @class = "form-control", Type = "date", id = "PlannedStartdateLT" })
+
+
+                                                </div>
+
+                                            </div>
+                                            <br />
+
+
+                                            <center>
+                                                <button type="button" id="btnSubmitLT"
+                                                        class="btn btn-primary btn-sm">
+                                                    <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                </button>
+
+                                            </center>
+
+                                            @*</form>*@
+                                        }
+                                    </div>
+
+                                    <!-- END invoice-content -->
+                                    <div class="col-md-12">
+                                        <!-- BEGIN panel -->
+                                        <div class="panel panel-inverse" data-sortable-id="index-1">
+                                            <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                                                <h4 class="panel-title"> Local Transport Plan - List</h4>
+                                                <div class="panel-heading-btn">
+                                                    <a href="javascript:;" class="btn btn-xs btn-icon btn-default"
+                                                       data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+
+
+                                                </div>
+                                            </div>
+                                            <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                                                <p class="pb-0">
+                                                    View Travel Calender status here!
+                                                </p>
+                                            </div>
+                                            <div class="panel-body">
+                                                <div class="row overflow-auto">
+                                                    <div class="col-12">
+                                                        <!-- BEGIN table-responsive -->
+                                                        <div class="table-scroll div1">
+                                                            <div class="table-wrap">
+                                                                <table class="table table-bordered table-hover mb-0 text-dark align-middle TablePage" id="data-table-combine2"
+                                                                       style="width: 100%;">
+                                                                    <thead>
+                                                                        <tr class="trheading">
+                                                                            <th class="text-nowrap text-center">Update</th>
+                                                                            <th class="text-nowrap text-center">Delete</th>
+                                                                            <th hidden class="text-nowrap text-center">TravelPlanID_Encrypted</th>
+                                                                            <th hidden class="text-nowrap text-center">TravelPlanEmployeeId</th>
+                                                                            <th hidden class="text-nowrap text-center">DocNo</th>
+                                                                            <th hidden class="text-nowrap text-center">TravelCalenderID</th>
+                                                                            <th class="text-nowrap text-center">PlanType</th>
+                                                                            <th class="text-nowrap text-center">Mode</th>
+                                                                            <th class="text-nowrap text-center">StartDate</th>
+                                                                            <th class="text-nowrap text-center">EndDate</th>
+                                                                            <th class="text-nowrap text-center">StartTime</th>
+                                                                            <th class="text-nowrap text-center">EndTime</th>
+                                                                            <th class="text-nowrap text-center">StartLocation</th>
+                                                                            <th class="text-nowrap text-center">EndLocation</th>
+                                                                            <th class="text-nowrap text-center">Note</th>
+                                                                            <th class="text-nowrap text-center">BookingType</th>
+                                                                            <th class="text-nowrap text-center">BookingStatus</th>
+                                                                            <th class="text-nowrap text-center">CancelPlanDescription</th>
+                                                                            <th class="text-nowrap text-center">RejectionRemark</th>
+                                                                            <th hidden></th>
+                                                                            <th hidden></th>
+                                                                            <th hidden></th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        @foreach (var d in ViewBag.LocalPlanDetails)
+                                                                        {
+                                                                            <tr>
+                                                                                <td class="text-center">
+                                                                                    <button type="button" id="UpdateBtn2"
+                                                                                            class="btn btn-success btnpress ListBtn">
+                                                                                        <i class="fa-solid fa-pencil-alt"></i>
+                                                                                    </button>
+                                                                                </td>
+                                                                                <td class="text-center">
+                                                                                    <button type="button" id="btnCancel" onclick="DeleteLT('@d.LocalTranPlanID_Encrypted')"
+                                                                                            class="btn btn-danger ListBtn btnpress">
+                                                                                        <i class="fa-solid fa-xmark"></i>
+                                                                                    </button>
+                                                                                </td>
+                                                                                <td hidden class="text-nowrap">@d.LocalTranPlanID_Encrypted</td>
+                                                                                <td hidden class="text-nowrap">@d.LTPlanEmployeeId</td>
+                                                                                <td hidden class="text-nowrap">@d.DocNo</td>
+                                                                                <td hidden class="text-nowrap">@d.TravelCalenderID</td>
+                                                                                <td class="text-nowrap">@d.PlanType</td>
+                                                                                <td class="text-nowrap">@d.Mode</td>
+                                                                                <td class="text-nowrap">@Convert.ToDateTime(d.StartDate).ToString("yyyy-MM-dd")</td>
+                                                                                <td class="text-nowrap">@Convert.ToDateTime(d.EndDate).ToString("yyyy-MM-dd")</td>
+                                                                                <td class="text-nowrap">@d.StartTime</td>
+                                                                                <td class="text-nowrap">@d.EndTime</td>
+                                                                                <td class="text-nowrap">@d.StartLocation</td>
+                                                                                <td class="text-nowrap">@d.EndLocation</td>
+                                                                                <td class="text-nowrap">@d.Note</td>
+                                                                                <td class="text-nowrap">@d.BookingType</td>
+                                                                                <td class="text-nowrap">@d.BookingStatus</td>
+                                                                                <td class="text-nowrap">@d.CancelPlanDescription</td>
+                                                                                <td class="text-nowrap">@d.RejectionRemark</td>
+                                                                                <td hidden class="text-nowrap">@d.CmpId</td>
+                                                                                <td hidden class="text-nowrap">@Convert.ToDateTime(d.DocDate).ToString("yyyy-MM-dd")</td>
+                                                                                <td hidden class="text-nowrap">@d.TravelBranchID</td>
+                                                                            </tr>
+                                                                        }
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- END panel -->
+                                        </div>
+                                    </div>
+                                    <!-- BEGIN invoice-footer -->
+                                    <div id="footer" class="app-footer m-0">
+                                        &copy; 2023 Probus All Right Reserved
+                                    </div>
+                                    <!-- END invoice-footer -->
+                                </div>
+
+                            </div>
+                        </div>
+                        <!-- END tab-pane -->
+                        <!-- BEGIN tab-pane -->
+                        <!-- END tab-pane -->
+                    </div>
+                    <!-- END tab-content -->
+                </div>
+
+
+
+            </div>
+            <!-- END panel -->
+
+        </div>
+        <!-- END col-6 -->
+        <!-- BEGIN col-6 -->
+        <!-- END col-6 -->
+
+    </div>
+    <!-- END row -->
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        $("#UpladDocsT").hide();
+        $("#UpladDocsA").hide();
+        $("#UpladDocsLT").hide();
+        var Company = @Html.Raw(Json.Encode(ViewBag.GetCompanyname));
+        $("#ddlCompanyName").val(Company);
+        debugger
+
+        $("#StartDateT").change(function()
+        {
+            var dt = @Html.Raw(Json.Encode(ViewBag.TourStart));
+            var dt1 = @Html.Raw(Json.Encode(ViewBag.TourEnd));
+            var CalStart =  convertDate(dt);
+            var CalEnd =  convertDate(dt1);
+            var PlanStart =$("#StartDateT").val();
+            var PlanEnd =$("#TourEnd").val();
+            var today=new Date();
+            var today1=YYYYMMDD(today);
+
+            if(PlanStart >=CalStart)
+            {
+                if(today1 <=PlanStart && PlanStart <=CalEnd)
+                {
+                    $('#ErrorStartDateT').html("");
+                }
+                else
+                {
+                    $('#ErrorStartDateT').html("Please Enter Date Greater Than Today Date And Less Than Tour End Date!");
+                    $('#StartDateT').val('');
+                    $('#StartDateT').focus();
+                    return false;
+                }
+            }
+            else
+            {
+                $('#ErrorStartDateT').html("Please Enter Date Greater Than Today Date And Greater Than Tour Start Date!");
+                $('#StartDateT').val('');
+                $('#StartDateT').focus();
+                return false;
+            }
+
+
+
+        });
+        $("#EndDateT").change(function(){
+            var dt = @Html.Raw(Json.Encode(ViewBag.TourStart));
+            var dt1 = @Html.Raw(Json.Encode(ViewBag.TourEnd));
+            var CalStart =  convertDate(dt);
+            var CalEnd =  convertDate(dt1);
+            var PlanStart =$("#StartDateT").val();
+            var PlanEnd =$("#EndDateT").val();
+            var today=new Date();
+            var today1=YYYYMMDD(today);
+
+            if(PlanStart =="")
+            {
+                $('#ErrorStartDateT').html("Please Enter Start Journy Date First !");
+                $('#ErrorEndDateT').html("Start Journy Date Should Not Be Empty!");
+                $('#EndDateT').val('');
+                $('#EndDateT').focus();
+                return false;
+            }
+            else
+            {
+                if(PlanStart <=PlanEnd && PlanEnd <=CalEnd)
+                {
+                    $('#ErrorEndDateT').html("");
+                }
+                else
+                {
+                    $('#ErrorEndDateT').html("Please Enter Date Greater Than And Less Than Tour Last Date!");
+                    $('#EndDateT').val('');
+                    $('#EndDateT').focus();
+                    return false;
+                }
+            }
+
+        });
+
+        $("#StartDateA").change(function(){
+            debugger
+            var dt = @Html.Raw(Json.Encode(ViewBag.TourStart));
+            var dt1 = @Html.Raw(Json.Encode(ViewBag.TourEnd));
+            var CalStart =  convertDate(dt);
+            var CalEnd =  convertDate(dt1);
+            var PlanStart =$("#StartDateA").val();
+            var PlanEnd =$("#EndDateA").val();
+            var today=new Date();
+            var today1=YYYYMMDD(today);
+
+            if(PlanStart >=CalStart)
+            {
+                if(today1 <=PlanStart && PlanStart <=CalEnd)
+                {
+                    $('#ErrorStartDateA').html("");
+                }
+                else
+                {
+                    $('#ErrorStartDateA').html("Please Enter Date Greater Than Today Date And Less Than Tour End Date!");
+                    $('#StartDateA').val('');
+                    $('#StartDateA').focus();
+                    return false;
+                }
+            }
+            else
+            {
+                $('#ErrorStartDateA').html("Please Enter Date Greater Than Today Date And Greater Than Tour Start Date!");
+                $('#StartDateA').val('');
+                $('#StartDateA').focus();
+                return false;
+            }
+        });
+
+
+        $("#EndDateA").change(function(){
+            var dt = @Html.Raw(Json.Encode(ViewBag.TourStart));
+            var dt1 = @Html.Raw(Json.Encode(ViewBag.TourEnd));
+            var CalStart =  convertDate(dt);
+            var CalEnd =  convertDate(dt1);
+            var PlanStart =$("#StartDateA").val();
+            var PlanEnd =$("#EndDateA").val();
+            var today=new Date();
+            var today1=YYYYMMDD(today);
+
+            if(PlanStart =="")
+            {
+                $('#ErrorEndDateA').html("Start Date Should not be Empty!");
+                $('#ErrorStartDateA').html("Please Enter Start Date!");
+                $('#EndDateA').val('');
+                $('#EndDateA').focus();
+                return false;
+            }
+            else
+            {
+                if(PlanStart <=PlanEnd && PlanEnd <=CalEnd)
+                {
+                    $('#ErrorEndDateA').html("");
+                }
+                else
+                {
+                    $('#ErrorEndDateA').html("Please Enter Date Greater Than Start Date &&  Less Than Tour Last Date!");
+                    $('#EndDateA').val('');
+                    $('#EndDateA').focus();
+                    return false;
+                }
+            }
+
+        });
+
+        $("#StartDateLT").change(function(){
+
+            var dt = @Html.Raw(Json.Encode(ViewBag.TourStart));
+            var dt1 = @Html.Raw(Json.Encode(ViewBag.TourEnd));
+            var CalStart =  convertDate(dt);
+            var CalEnd =  convertDate(dt1);
+            var PlanStart =$("#StartDateLT").val();
+            var PlanEnd =$("#EndDateLT").val();
+            var today=new Date();
+            var today1=YYYYMMDD(today);
+
+            if(PlanStart >=CalStart)
+            {
+                if(today1 <=PlanStart && PlanStart <=CalEnd)
+                {
+                    $('#ErrorStartDateLT').html("");
+                }
+                else
+                {
+
+
+                    $('#ErrorStartDateLT').html("Please Enter Date Greater Than Today Date And Less Than Tour End Date!");
+                    $('#StartDateLT').val('');
+                    $('#StartDateLT').focus();
+                    return false;
+                }
+            }
+            else
+            {
+                $('#ErrorStartDateLT').html("Please Enter Date Greater Than Today Date And Greater Than Tour Start Date!");
+                $('#StartDateLT').val('');
+                $('#StartDateLT').focus();
+                return false;
+            }
+
+
+
+        });
+        $("#EndDateLT").change(function(){
+
+            var dt = @Html.Raw(Json.Encode(ViewBag.TourStart));
+            var dt1 = @Html.Raw(Json.Encode(ViewBag.TourEnd));
+            var CalStart =  convertDate(dt);
+            var CalEnd =  convertDate(dt1);
+            var PlanStart =$("#StartDateLT").val();
+            var PlanEnd =$("#EndDateLT").val();
+            var today=new Date();
+            var today1=YYYYMMDD(today);
+
+            if(PlanStart =="")
+            {
+                $('#ErrorStartDateLT').html("Please Enter Start Journy Date First !");
+                $('#ErrorEndDateLT').html("Start Journy Date Should Not Be Empty!");
+                $('#EndDateLT').val('');
+                $('#EndDateLT').focus();
+                return false;
+            }
+            else
+            {
+                if(PlanStart <=PlanEnd && PlanEnd <=CalEnd)
+                {
+                    $('#ErrorEndDateLT').html("");
+                }
+                else
+                {
+                    $('#ErrorEndDateLT').html("Please Enter Date Greater Than And Less Than Tour Last Date!");
+                    $('#EndDateLT').val('');
+                    $('#EndDateLT').focus();
+                    return false;
+                }
+            }
+
+
+        });
+
+        $("#BookingTypeT").change(function(){
+            var BookingTypeT = document.getElementById("BookingTypeT").value;
+            if(BookingTypeT=="Self Booking "){
+
+                $("#UpladDocsT").show();
+            }
+            if(BookingTypeT=="Travel Desk"){
+
+                $("#UpladDocsT").hide();
+            }
+        });
+
+        $("#BookingTypeA").change(function(){
+            var BookingTypeT = document.getElementById("BookingTypeA").value;
+            if(BookingTypeT=="Self Booking "){
+
+                $("#UpladDocsA").show();
+            }
+            if(BookingTypeT=="Travel Desk"){
+
+                $("#UpladDocsA").hide();
+            }
+        });
+
+        $("#BookingTypeLT").change(function(){
+            var BookingTypeT = document.getElementById("BookingTypeLT").value;
+            if(BookingTypeT=="Self Booking "){
+
+                $("#UpladDocsLT").show();
+            }
+            if(BookingTypeT=="Travel Desk"){
+
+                $("#UpladDocsLT").hide();
+            }
+        });
+
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                });
+            }
+        }
+
+        $("#formReset").click(function () {
+            $("#SaveCalender")[0].reset()
+        });
+
+        $("#data-table-combine").on('click','#UpdateBtn',function(){
+            // get the current row
+            debugger
+            var table = document.getElementById("data-table-combine");
+            var rowCount = table.rows.length;
+
+            var currentRow=$(this).closest("tr");
+            var TravelPlanID_Encrypted=currentRow.find("td:eq(2)").text(); // get current row 2nd TD
+            var TravelPlanEmployeeId=currentRow.find("td:eq(3)").text(); // get current row 3rd TD
+            var DocNo=currentRow.find("td:eq(4)").text();
+            var TravelCalenderID=currentRow.find("td:eq(5)").text();
+            var PlanType=currentRow.find("td:eq(6)").text();
+            var Mode=currentRow.find("td:eq(7)").text();
+            var StartDate=currentRow.find("td:eq(8)").text();
+            var EndDate=currentRow.find("td:eq(9)").text();
+            var StartTime=currentRow.find("td:eq(10)").text();
+            var EndTime=currentRow.find("td:eq(11)").text();
+            var StartLocation=currentRow.find("td:eq(12)").text();
+            var EndLocation=currentRow.find("td:eq(13)").text();
+            var TravelMealPreference=currentRow.find("td:eq(14)").text();
+            var Note=currentRow.find("td:eq(15)").text();
+            var BookingType=currentRow.find("td:eq(16)").text();
+            var CompId=currentRow.find("td:eq(21)").text();
+            var DocDate=currentRow.find("td:eq(22)").text();
+            var Branchid=currentRow.find("td:eq(23)").text();
+            var Today = new Date(StartDate);
+            var dd = ("0" + Today.getDate()).slice(-2);
+            var mm = ("0" + (Today.getMonth() + 1)).slice(-2);
+            var yyyy = Today.getFullYear();
+            var StartDate1 = yyyy + "-" + mm + "-" + dd;
+
+            var Today1 = new Date(EndDate);
+            var dd1 = ("0" + Today1.getDate()).slice(-2);
+            var mm1 = ("0" + (Today1.getMonth() + 1)).slice(-2);
+            var yyyy1 = Today1.getFullYear();
+            var EndDate1 = yyyy1 + "-" + mm1 + "-" + dd1;
+
+            var Today2 = new Date(DocDate);
+            var dd2 = ("0" + Today2.getDate()).slice(-2);
+            var mm2 = ("0" + (Today2.getMonth() + 1)).slice(-2);
+            var yyyy2 = Today2.getFullYear();
+            var DocDate = yyyy2 + "-" + mm2 + "-" + dd2;
+
+            $('#TravelBranchIDT').val(Branchid);
+            $('#CmpIdT').val(CompId);
+            $('#DocDateT').val(DocDate);
+            $('#TravelPlanID_Encrypted').val(TravelPlanID_Encrypted);
+            $('#TravelPlanEmployeeId').val(TravelPlanEmployeeId);
+            $('#DocNo').val(DocNo);
+            $('#TRAVELCAL_Fid').val(TravelCalenderID);
+            $('#PlanTypeT').val(PlanType);
+            $('#ModeT').val(Mode);
+            $('#StartDateT').val(StartDate1);
+            $('#EndDateT').val(EndDate1);
+            $('#timepicker').val(StartTime);
+            $('#timepicker3').val(EndTime);
+            $('#StratLocationT').val(StartLocation);
+            $('#EndLocationT').val(EndLocation);
+            $('#TravelMealPreferenceT').val(TravelMealPreference);
+            $('#NoteT').val(Note);
+            $('#BookingTypeT').val(BookingType);
+
+
+        });
+
+        $("#data-table-combine1").on('click','#UpdateBtn1',function(){
+            // get the current row
+            debugger
+            var table = document.getElementById("data-table-combine1");
+            var rowCount = table.rows.length;
+
+            var currentRow=$(this).closest("tr");
+            var TravelPlanID_Encrypted=currentRow.find("td:eq(2)").text(); // get current row 2nd TD
+            var TravelPlanEmployeeId=currentRow.find("td:eq(3)").text(); // get current row 3rd TD
+            var DocNo=currentRow.find("td:eq(4)").text();
+            var TravelCalenderID=currentRow.find("td:eq(5)").text();
+            var PlanType=currentRow.find("td:eq(6)").text();
+            var Mode=currentRow.find("td:eq(7)").text();
+            var StartDate=currentRow.find("td:eq(8)").text();
+            var EndDate=currentRow.find("td:eq(9)").text();
+            var Breakfast=currentRow.find("td:eq(10)").text();
+            var Lunch=currentRow.find("td:eq(11)").text();
+            var Dinner=currentRow.find("td:eq(12)").text();
+            var Note=currentRow.find("td:eq(13)").text();
+            var BookingType=currentRow.find("td:eq(14)").text();
+            var Note=currentRow.find("td:eq(15)").text();
+            var CompId=currentRow.find("td:eq(18)").text();
+            var DocDate=currentRow.find("td:eq(19)").text();
+            var Branchid=currentRow.find("td:eq(20)").text();
+            var Today = new Date(StartDate);
+            var dd = ("0" + Today.getDate()).slice(-2);
+            var mm = ("0" + (Today.getMonth() + 1)).slice(-2);
+            var yyyy = Today.getFullYear();
+            var StartDate1 = yyyy + "-" + mm + "-" + dd;
+
+            var Today1 = new Date(EndDate);
+            var dd1 = ("0" + Today1.getDate()).slice(-2);
+            var mm1 = ("0" + (Today1.getMonth() + 1)).slice(-2);
+            var yyyy1 = Today1.getFullYear();
+            var EndDate1 = yyyy1 + "-" + mm1 + "-" + dd1;
+
+            var Today2 = new Date(DocDate);
+            var dd2 = ("0" + Today2.getDate()).slice(-2);
+            var mm2 = ("0" + (Today2.getMonth() + 1)).slice(-2);
+            var yyyy2 = Today2.getFullYear();
+            var DocDate = yyyy2 + "-" + mm2 + "-" + dd2;
+
+            $('#TravelBranchIDA').val(Branchid);
+            $('#CmpIdA').val(CompId);
+            $('#DocDateA').val(DocDate);
+            $('#TravelPlanID_EncryptedA').val(TravelPlanID_Encrypted);
+            $('#TravelPlanEmployeeIdA').val(TravelPlanEmployeeId);
+            $('#DocNoA').val(DocNo);
+            $('#TRAVELCAL_FidA').val(TravelCalenderID);
+            $('#PlanTypeA').val(PlanType);
+            $('#ModeA').val(Mode);
+            $('#StartDateA').val(StartDate1);
+            $('#EndDateA').val(EndDate1);
+            $('#Breakfast').val(Breakfast);
+            $('#Lunch').val(Lunch);
+            $('#Dinner').val(Dinner);
+            $('#NoteA').val(Note);
+            $('#BookingTypeA').val(BookingType);
+
+        });
+
+        $("#data-table-combine2").on('click','#UpdateBtn2',function(){
+            // get the current row
+            debugger
+            var table = document.getElementById("data-table-combine2");
+            var rowCount = table.rows.length;
+
+            var currentRow=$(this).closest("tr");
+            var TravelPlanID_Encrypted=currentRow.find("td:eq(2)").text(); // get current row 2nd TD
+            var TravelPlanEmployeeId=currentRow.find("td:eq(3)").text(); // get current row 3rd TD
+            var DocNo=currentRow.find("td:eq(4)").text();
+            var TravelCalenderID=currentRow.find("td:eq(5)").text();
+            var PlanType=currentRow.find("td:eq(6)").text();
+            var Mode=currentRow.find("td:eq(7)").text();
+            var StartDate=currentRow.find("td:eq(8)").text();
+            var EndDate=currentRow.find("td:eq(9)").text();
+            var StartTime=currentRow.find("td:eq(10)").text();
+            var EndTime=currentRow.find("td:eq(11)").text();
+            var StartLocation=currentRow.find("td:eq(12)").text();
+            var EndLocation=currentRow.find("td:eq(13)").text();
+            var Note=currentRow.find("td:eq(14)").text();
+            var BookingType=currentRow.find("td:eq(15)").text();
+            var CompId=currentRow.find("td:eq(19)").text();
+            var DocDate=currentRow.find("td:eq(20)").text();
+            var Branchid=currentRow.find("td:eq(21)").text();
+            var Today = new Date(StartDate);
+            var dd = ("0" + Today.getDate()).slice(-2);
+            var mm = ("0" + (Today.getMonth() + 1)).slice(-2);
+            var yyyy = Today.getFullYear();
+            var StartDate1 = yyyy + "-" + mm + "-" + dd;
+
+            var Today1 = new Date(EndDate);
+            var dd1 = ("0" + Today1.getDate()).slice(-2);
+            var mm1 = ("0" + (Today1.getMonth() + 1)).slice(-2);
+            var yyyy1 = Today1.getFullYear();
+            var EndDate1 = yyyy1 + "-" + mm1 + "-" + dd1;
+
+            var Today2 = new Date(DocDate);
+            var dd2 = ("0" + Today2.getDate()).slice(-2);
+            var mm2 = ("0" + (Today2.getMonth() + 1)).slice(-2);
+            var yyyy2 = Today2.getFullYear();
+            var DocDate = yyyy2 + "-" + mm2 + "-" + dd2;
+
+            $('#TravelBranchIDLT').val(Branchid);
+            $('#CmpIdLT').val(CompId);
+            $('#DocDateLT').val(DocDate);
+            $('#TravelPlanID_EncryptedLT').val(TravelPlanID_Encrypted);
+            $('#TravelPlanEmployeeIdLT').val(TravelPlanEmployeeId);
+            $('#DocNoLT').val(DocNo);
+            $('#TRAVELCAL_FidLT').val(TravelCalenderID);
+            $('#PlanTypeLT').val(PlanType);
+            $('#ModeLT').val(Mode);
+            $('#StartDateLT').val(StartDate1);
+            $('#EndDateLT').val(EndDate1);
+            $('#timepicker4').val(StartTime);
+            $('#timepicker5').val(EndTime);
+            $('#StratLocationLT').val(StartLocation);
+            $('#EndLocationLT').val(EndLocation);
+            $('#NoteLT').val(Note);
+            $('#BookingTypeLT').val(BookingType);
+
+        });
+
+    });
+
+</script>
+
+<script>
+
+
+    var form = $("#SavePlan");
+    form.validate();
+    var form1 = $("#SavePlanA");
+    form1.validate();
+    var form2 = $("#SavePlanLT");
+    form2.validate();
+    $("#btnSubmit").click(function () {
+        // function SaveResignation() {
+        debugger
+        $('#ErrorModeT').html(" ");
+        $('#ErrorStartDateT').html(" ");
+        $('#ErrorEndDateT').html(" ");
+        $('#Errortimepicker').html(" ");
+        $('#Errortimepicker3').html(" ");
+        $('#ErrorStratLocationT').html(" ");
+        $('#ErrorEndLocationT').html(" ");
+        $('#ErrorTravelMealPreferenceT').html(" ");
+        $('#ErrorNoteT').html(" ");
+
+
+        var ModeT=$("#ModeT").val();
+        var StartDateT=$("#StartDateT").val();
+        var EndDateT=$("#EndDateT").val();
+        var timepicker=$("#timepicker").val();
+        var timepicker3=$("#timepicker3").val();
+        var StratLocationT=$("#StratLocationT").val(); 
+        var EndLocationT=$("#EndLocationT").val();
+        var TravelMealPreferenceT=$("#TravelMealPreferenceT").val();
+        var NoteT=$("#NoteT").val();
+
+        
+        if(ModeT == "" || ModeT ==null)
+        {
+            $('#ErrorModeT').html("Please select Mode !");
+            $('#ModeT').val('');
+            $('#ModeT').focus();
+            return false;
+        }
+        if(StartDateT == "" || StartDateT ==null)
+        {
+            $('#ErrorStartDateT').html("Please select Date !");
+            $('#StartDateT').val('');
+            $('#StartDateT').focus();
+            return false;
+        }
+        if(EndDateT == "" || EndDateT ==null)
+        {
+            $('#ErrorEndDateT').html("Please select Date !");
+            $('#EndDateT').val('');
+            $('#EndDateT').focus();
+            return false;
+        }
+        if(timepicker == "" || timepicker ==null)
+        {
+            $('#Errortimepicker').html("Please select Start Time !");
+            $('#timepicker').val('');
+            $('#timepicker').focus();
+            return false;
+        }
+        if(timepicker3 == "" || timepicker3 ==null)
+        {
+            $('#Errortimepicker3').html("Please select End Time !");
+            $('#timepicker3').val('');
+            $('#timepicker3').focus();
+            return false;
+        }
+        if(StratLocationT == "" || StratLocationT ==null)
+        {
+            $('#ErrorStratLocationT').html("Please select Start Location !");
+            $('#StratLocationT').val('');
+            $('#StratLocationT').focus();
+            return false;
+        }
+        if(EndLocationT == "" || EndLocationT ==null)
+        {
+            $('#ErrorEndLocationT').html("Please select End Location !");
+            $('#EndLocationT').val('');
+            $('#EndLocationT').focus();
+            return false;
+        }
+        if(TravelMealPreferenceT == "" || TravelMealPreferenceT ==null)
+        {
+            $('#ErrorTravelMealPreferenceT').html("Please select Travel Meal Preference !");
+            $('#TravelMealPreferenceT').val('');
+            $('#TravelMealPreferenceT').focus();
+            return false;
+        }
+
+        if(NoteT == "" || NoteT ==null)
+        {
+            $('#ErrorNoteT').html("Please select Note !");
+            $('#NoteT').val('');
+            $('#NoteT').focus();
+            return false;
+        }
+
+        debugger;
+        form.valid();
+        if(form.valid()==false)
+        {
+            $("#StartDateT").removeClass('error');
+            return false;
+        }
+        if(form.valid()==false)
+        {
+            $("#EndDateT").removeClass('error');
+            return false;
+        }
+        var TravelPlanID_Encrypted=$("#TravelPlanID_Encrypted").val();
+        var StartDate=$("#StartDateT").val();
+        var EndDate=$("#EndDateT").val();
+        var Mode=$("#ModeT").val();
+        var TravelCalenderID1=$("#TRAVELCAL_Fid").val();
+        var TravelCalenderID= parseInt(TravelCalenderID1);
+        $.ajax({
+            url:"IsTravelPlansExists",
+            method:"get",
+            data:{TravelPlanID_Encrypted:TravelPlanID_Encrypted,StartDate:StartDate,EndDate:EndDate,TravelCalenderID:TravelCalenderID,Mode:Mode},
+            success:function(response){
+                debugger;
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon=="error") {
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                        }
+                    }
+                }
+                else{
+                    $("#SavePlan").submit();
+
+                }
+            }
+        });
+        //}
+    });
+
+    $("#btnSubmitA").click(function () {
+        // function SaveResignation() {
+        debugger;
+        $('#ErrorModeA').html(" ");
+        $('#ErrorStartDateA').html(" ");
+        $('#ErrorEndDateA').html(" ");
+        $('#ErrorBreakfast').html(" ");
+        $('#ErrorLunch').html(" ");
+        $('#ErrorDinner').html(" ");
+        $('#ErrorNoteA').html("");
+
+        var ModeA=$("#ModeA").val();
+        var StartDateA=$("#StartDateA").val();
+        var EndDateA=$("#EndDateA").val();
+        var Breakfast=$("#Breakfast").val();
+        var Lunch=$("#Lunch").val();
+        var Dinner=$("#Dinner").val();
+        var StratLocationA=$("#StratLocationA").val(); 
+        var EndLocationA=$("#EndLocationA").val();
+        var TravelMealPreferenceA=$("#TravelMealPreferenceA").val();
+        var NoteA=$("#NoteA").val();
+
+
+        if(ModeA == "" || ModeA ==null)
+        {
+            $('#ErrorModeA').html("Please select Mode !");
+            $('#ModeA').val('');
+            $('#ModeA').focus();
+            return false;
+        }
+       
+        if(Breakfast == "" || Breakfast ==null)
+        {
+            $('#ErrorBreakfast').html("Please select any option!");
+            $('#Breakfast').val('');
+            $('#Breakfast').focus();
+            return false;
+        }
+        if(Lunch == "" || Lunch ==null)
+        {
+            $('#ErrorLunch').html("Please select any option !");
+            $('#Lunch').val('');
+            $('#Lunch').focus();
+            return false;
+        }
+        if(Dinner == "" || Dinner ==null)
+        {
+            $('#ErrorDinner').html("Please select any option !");
+            $('#Dinner').val('');
+            $('#Dinner').focus();
+            return false;
+        }
+        if(StartDateA == "" || StartDateA ==null)
+        {
+            $('#ErrorStartDateA').html("Please select Date !");
+            $('#StartDateA').val('');
+            $('#StartDateA').focus();
+            return false;
+        }
+        if(EndDateA == "" || EndDateA ==null)
+        {
+            $('#ErrorEndDateA').html("Please select Date !");
+            $('#EndDateA').val('');
+            $('#EndDateA').focus();
+            return false;
+        }
+     
+        if(NoteA == "" || NoteA ==null)
+        {
+            $('#ErrorNoteA').html("Please select Note !");
+            $('#NoteA').val('');
+            $('#NoteA').focus();
+            return false;
+        }
+
+        form.valid();
+        if(form.valid()==false)
+        {
+            $("#StartDateA").removeClass('error');
+            return false;
+        }
+        if(form.valid()==false)
+        {
+            $("#EndDateA").removeClass('error');
+            return false;
+        }
+        var AccomodationPlanID_Encrypted=$("#TravelPlanID_EncryptedA").val();
+        var StartDate=$("#StartDateA").val();
+        var EndDate=$("#EndDateA").val();
+        var Mode=$("#ModeA").val();
+        var TravelCalenderID1=$("#TRAVELCAL_FidA").val();
+        var TravelCalenderID= parseInt(TravelCalenderID1);
+        $.ajax({
+            url:"IsAccomodationPlansExists",
+            method:"get",
+            data:{AccomodationPlanID_Encrypted:AccomodationPlanID_Encrypted,StartDate:StartDate,EndDate:EndDate,TravelCalenderID:TravelCalenderID,Mode:Mode},
+            success:function(response){
+                debugger;
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon=="error") {
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                        }
+                    }
+                }
+                else{
+                    $("#SavePlanA").submit();
+
+                }
+            }
+        });
+        //}
+    });
+
+    $("#btnSubmitLT").click(function () {
+        // function SaveResignation() {
+        $('#ErrorModeLT').html(" ");
+        $('#ErrorStartDateLT').html(" ");
+        $('#ErrorEndDateLT').html(" ");
+        $('#Errortimepicker4').html(" ");
+        $('#Errortimepicker5').html(" ");
+        $('#ErrorStratLocationLT').html(" ");
+        $('#ErrorEndLocationLT').html(" ");
+        $('#ErrorNoteLT').html(" ");
+
+
+
+        var ModeLT=$("#ModeLT").val();
+        var StartDateLT=$("#StartDateLT").val();
+        var EndDateLT=$("#EndDateLT").val();
+        var timepicker4=$("#timepicker4").val();
+        var timepicker5=$("#timepicker5").val();
+        var StratLocationLT=$("#StratLocationLT").val(); 
+        var EndLocationLT=$("#EndLocationLT").val();
+        var NoteLT=$("#NoteLT").val();
+
+        if(ModeLT == "" || ModeLT ==null)
+        {
+            $('#ErrorModeLT').html("Please select Mode !");
+            $('#ModeLT').val('');
+            $('#ModeLT').focus();
+            return false;
+        }
+        if(StartDateLT == "" || StartDateLT ==null)
+        {
+            $('#ErrorStartDateLT').html("Please select Date !");
+            $('#StartDateLT').val('');
+            $('#StartDateLT').focus();
+            return false;
+        }
+        if(EndDateLT == "" || EndDateLT ==null)
+        {
+            $('#ErrorEndDateLT').html("Please select Date !");
+            $('#EndDateLT').val('');
+            $('#EndDateLT').focus();
+            return false;
+        }
+        if(StratLocationLT == "" || StratLocationLT ==null)
+        {
+            $('#ErrorStratLocationLT').html("Please select Start Location !");
+            $('#StratLocationLT').val('');
+            $('#StratLocationLT').focus();
+            return false;
+        }
+        if(EndLocationLT == "" || EndLocationLT ==null)
+        {
+            $('#ErrorEndLocationLT').html("Please select End Location !");
+            $('#EndLocationLT').val('');
+            $('#EndLocationLT').focus();
+            return false;
+        }
+
+        if(timepicker4 == "" || timepicker4 ==null)
+        {
+            $('#Errortimepicker4').html("Please select Start Time !");
+            $('#timepicker4').val('');
+            $('#timepicker4').focus();
+            return false;
+        }
+        if(timepicker5 == "" || timepicker5 ==null)
+        {
+            $('#Errortimepicker5').html("Please select End Time !");
+            $('#timepicker5').val('');
+            $('#timepicker5').focus();
+            return false;
+        }
+        
+       
+
+        if(NoteLT == "" || NoteLT ==null)
+        {
+            $('#ErrorNoteLT').html("Please select Note !");
+            $('#NoteLT').val('');
+            $('#NoteLT').focus();
+            return false;
+        }
+
+        debugger;
+        form.valid();
+        if(form.valid()==false)
+        {
+            $("#StartDateLT").removeClass('error');
+            return false;
+        }
+        if(form.valid()==false)
+        {
+            $("#EndDateLT").removeClass('error');
+            return false;
+        }
+        var LocalTranPlanID_Encrypted=$("#TravelPlanID_EncryptedLT").val();
+        var StartDate=$("#StartDateLT").val();
+        var EndDate=$("#EndDateLT").val();
+        var Mode=$("#ModeLT").val();
+        var TravelCalenderID1=$("#TRAVELCAL_FidLT").val();
+        var TravelCalenderID= parseInt(TravelCalenderID1);
+        $.ajax({
+            url:"IsLTPlansExists",
+            method:"get",
+            data:{LocalTranPlanID_Encrypted:LocalTranPlanID_Encrypted,StartDate:StartDate,EndDate:EndDate,TravelCalenderID:TravelCalenderID,Mode:Mode},
+            success:function(response){
+                debugger;
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon=="error") {
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                        }
+                    }
+                }
+                else{
+                    $("#SavePlanLT").submit();
+
+                }
+            }
+        });
+        //}
+    });
+
+
+
+    function DeleteLT(LocalTranPlanID_Encrypted) {
+        const DeleteButtons = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        DeleteButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+            allowOutsideClick: () => {
+                const popup = Swal.getPopup()
+                popup.classList.remove('swal2-show')
+                setTimeout(() => {
+                    popup.classList.add('animate__animated', 'animate__headShake')
+                })
+                setTimeout(() => {
+                    popup.classList.remove('animate__animated', 'animate__headShake')
+                }, 500)
+                return false
+            }
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '@Url.Action("DeleteLT", "ESS_Travel_Plans")?LocalTranPlanID_Encrypted=' + LocalTranPlanID_Encrypted;
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+
+            }
+        })
+    }
+
+    function DeleteTravel(TravelPlanID_Encrypted) {
+        const DeleteButtons = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        DeleteButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+            allowOutsideClick: () => {
+                const popup = Swal.getPopup()
+                popup.classList.remove('swal2-show')
+                setTimeout(() => {
+                    popup.classList.add('animate__animated', 'animate__headShake')
+                })
+                setTimeout(() => {
+                    popup.classList.remove('animate__animated', 'animate__headShake')
+                }, 500)
+                return false
+            }
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '@Url.Action("DeleteTravel", "ESS_Travel_Plans")?TravelPlanID_Encrypted=' + TravelPlanID_Encrypted;
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+
+            }
+        })
+    }
+
+    function DeleteAccomodation(AccomodationPlanID_Encrypted) {
+        const DeleteButtons = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        DeleteButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+            allowOutsideClick: () => {
+                const popup = Swal.getPopup()
+                popup.classList.remove('swal2-show')
+                setTimeout(() => {
+                    popup.classList.add('animate__animated', 'animate__headShake')
+                })
+                setTimeout(() => {
+                    popup.classList.remove('animate__animated', 'animate__headShake')
+                }, 500)
+                return false
+            }
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '@Url.Action("DeleteAccomodation", "ESS_Travel_Plans")?AccomodationPlanID_Encrypted=' + AccomodationPlanID_Encrypted;
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+
+            }
+        })
+    }
+
+</script>
+
+<script>
+    function millisecTodate(milliDate) {
+        var date = new Date(milliDate);
+        var mnth = ("0" + (date.getMonth() + 1)).slice(-2);
+        var day = ("0" + date.getDate()).slice(-2);
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        hours = hours < 10 ? '0'+hours : hours;
+        minutes = minutes < 10 ? '0'+minutes : minutes;
+        var ddmmyyyy = [date.getFullYear(), mnth,day].join("-");
+        return ddmmyyyy;
+    }
+
+    function convertDate(data) {
+        var getdate = parseInt(data.replace("/Date(", "").replace(")/", ""));
+        var date = millisecTodate(getdate);
+        return date;
+    }
+
+
+    function YYYYMMDD(data) {
+        var Today = new Date();
+        var d =("0" + Today.getDate()).slice(-2)
+        var m = ("0" + (Today.getMonth() + 1)).slice(-2);
+        var y = Today.getFullYear();
+        var ddmmyy = y+"-"+m+"-"+d;
+        return ddmmyy;
+    }
+</script>

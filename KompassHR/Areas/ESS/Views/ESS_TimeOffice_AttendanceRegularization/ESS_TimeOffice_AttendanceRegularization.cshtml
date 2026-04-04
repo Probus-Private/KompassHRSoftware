@@ -1,0 +1,429 @@
+﻿
+@{
+    ViewBag.Title = "ESS_TimeOffice_AttendanceRegularization";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    h4 {
+        font-weight: 1000 !important;
+    }
+
+    .blink_me {
+        animation: blinker 1s linear infinite;
+    }
+
+
+
+    @@keyframes blinker {
+        50% {
+            opacity: 0;
+        }
+    }
+
+
+    .small-box .icon {
+        top: 5px;
+    }
+
+    .fa-fw {
+        width: 1em;
+    }
+
+    .fc-basic-view td.fc-day-number, .fc-basic-view td.fc-week-number span {
+        padding-right: 10px !important;
+    }
+
+    .fc-widget-header {
+        background: #8caed8 !important;
+        height: 30px !important;
+    }
+
+    .fc td, .fc th {
+        vertical-align: middle !important;
+    }
+
+    .fc-time {
+        display: none;
+    }
+
+    thead {
+        background-color: transparent !important;
+    }
+
+    .fc-event {
+        font-size: .99em !important;
+        height: 15px !important;
+    }
+
+    .fc-title {
+        vertical-align: middle;
+    }
+
+    @@media (max-width: 600px) {
+        .fc-event {
+            font-size: .65em !important;
+            height: 15px !important;
+        }
+
+        .fc-day-grid-event {
+            padding: 0 0px !important;
+        }
+
+        #Approval {
+            margin-left: 27px !important;
+        }
+
+        #Cancellation {
+            margin-left: 9px !important;
+        }
+
+        .fc-scroller {
+            overflow-y: hidden !important;
+            height: auto !important;
+        }
+    }
+
+    .small-box > .inner {
+        padding: 5px 10px !important;
+    }
+
+    p {
+        margin: 0 0 2px !important;
+    }
+
+    .center {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width: 80%;
+        height: 250px;
+    }
+</style>
+
+<link href="~/calAssetes/assets/css/fonts.googleapis.com.css" rel="stylesheet" />
+<link href="~/calAssetes/assets/css/fullcalendar.min.css" rel="stylesheet" />
+<link href="~/calAssetes/assets/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<script src="~/calAssetes/assets/js/jquery-2.1.4.min.js"></script>
+
+<script type="text/javascript">
+    if ('ontouchstart' in document.documentElement) document.write("<script src='~/calAssetes/assets/js/jquery.mobile.custom.min.js'>" + "<" + "/script>");
+</script>
+<script src="~/calAssetes/assets/js/bootstrap.min.js"></script>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Calendar
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_TimeOffice_Menu", "ESS_TimeOffice_Menu", new {id = 5, ScreenId=150, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12">
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">Calender</h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="box box-primary">
+                                <div class="info-box">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Employee Name <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        @Html.DropDownList("EmployeeName", new SelectList(ViewBag.GetEmployeeList ?? new List<SelectListItem>(), "Id", "Name"),
+                                                        "--Select--",
+                                                        new { id = "ddlEmployeeId", name = "EmployeeId", @class = "form-select w-100", autocomplete = "off" })
+                                                                                                <span class="text-danger small mt-1" id="ErrorddlEmployeeId"></span>
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <button id="btnLoadCalendar" type="button" class="btn btn-primary w-100">Load</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div id="calendar"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- page specific plugin scripts -->
+<script src="~/calAssetes/assets/js/jquery-ui.custom.min.js"></script>
+<script src="~/calAssetes/assets/js/jquery.ui.touch-punch.min.js"></script>
+<script src="~/calAssetes/assets/js/moment.min.js"></script>
+<script src="~/calAssetes/assets/js/fullcalendar.min.js"></script>
+<script src="~/calAssetes/assets/js/bootbox.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+
+<!-- ace scripts -->
+<script src="~/calAssetes/assets/js/ace-elements.min.js"></script>
+<script src="~/calAssetes/assets/js/ace.min.js"></script>
+
+
+<script>
+    $(document).ready(function () {
+        $("#ddlEmployeeId").select2();
+        jQuery.noConflict();
+        jQuery(document).on('click', '#btnLoadCalendar', function () {
+            var EmployeeId = $("#ddlEmployeeId").val();
+            
+            if (EmployeeId=="") {
+                $("#ErrorddlEmployeeId").html("Please select employee");
+                return false;
+            }
+            else {
+                $("#ErrorddlEmployeeId").html("");
+            }
+            
+            $('#calendar').fullCalendar('removeEvents');
+            $('#calendar').fullCalendar('refetchEvents');
+        });
+    });
+
+</script>
+
+<script type="text/javascript">
+    jQuery(function ($) {
+        debugger;
+        var calendar = $('#calendar').fullCalendar({
+            lang: 'es',
+            buttonHtml: {
+                prev: '<i class="ace-icon fa fa-chevron-left"></i>',
+                next: '<i class="ace-icon fa fa-chevron-right"></i>'
+            },
+            // height: 'auto',
+            //contentHeight: 360,
+            header: {
+                right: 'prev,next',
+                //center: 'title',
+                //right: 'month,agendaWeek,agendaDay'
+            },
+            eventLimit: true,
+
+            events: function (start, end, timezone, callback) {
+                var month = $('#calendar').fullCalendar('getDate').month();
+                var year = $('#calendar').fullCalendar('getDate').year();
+                var lastDay = new Date(year, month + 1, 0);
+
+
+                var currdate = new Date();
+                var currmonth = currdate.getMonth() + 1;
+                var curryear = currdate.getFullYear();
+                var currDay = new Date(curryear, currmonth, 0);
+                //  if (currDay >= lastDay) {
+                if (currmonth == (month + 1) && curryear == year) {
+                    var end = millisecTodate(currdate);
+                }
+                else {
+                    var end = millisecTodate(lastDay);
+                }
+                $(".Userloaderbg").css("display", "flex");
+                $.ajax({
+                    url: "@Url.Action("GetCalendarData", "ESS_TimeOffice_AttendanceRegularization")",
+                    method: 'post',
+                    //data: '{"Date":' + JSON.stringify(end) + '}',
+                    data: JSON.stringify({ Date: end, EmployeeId: $('#ddlEmployeeId').val() }),
+                    contentType: 'application/json',
+                    dataType: 'json',
+                    success: function (result) {
+                        debugger;
+                        $(".Userloaderbg").css("display", "none");
+                        if (result != null) {
+                            var events = [];
+
+                            const absentStatuses = [ "P/AB", "AB/P", "AB/PL", "PL/AB", "SL/AB", "AB/SL", "AB/CL", "CL/AB", "EL/AB" ];
+
+                            $.each(result, function (i, data) {
+                                var backroundcolor = "";
+                                var bordercolor = "";
+
+                                if (data.InOutStatus == "AA") {
+                                    backroundcolor = "#f56954";
+                                    bordercolor = "#f56954"
+                                }
+                                else if (absentStatuses.includes(data.InOutStatus)) {
+                                    backroundcolor = "red";
+                                    bordercolor = "red";
+                                }
+                                else if (data.InOutStatus == " ") {
+                                    backroundcolor = "#FFFFFF";
+                                    bordercolor = "#FFFFFF"
+                                }
+                                else if (data.InOutStatus == "WO" || data.InOutStatus == "PH") {
+                                    backroundcolor = "#f39c12";
+                                    bordercolor = "#f39c12"
+                                }
+                                else if (data.InOutStatus == "Not Verified") {
+                                    backroundcolor = "#f56954";
+                                    bordercolor = "#f56954"
+                                }
+                                else {
+                                    var time = data.InTime + "-" + data.OutTime;
+                                    if (data.InTime != "0" && data.OutTime != "0") {
+                                        backroundcolor = "#00a65a";
+                                        bordercolor = "#00a65a"
+                                    }
+                                    else if (data.IOTime == "0") {
+                                        backroundcolor = "#FFFFFF";
+                                        bordercolor = "#FFFFFF"
+                                    }
+                                }
+                                //if (data.InOutStatus == "AB") {
+                                //    events.push(
+                                //  {
+                                //      title: " Status : " + data.InOutStatus,
+                                //      start: new Date(convertDate(data.AttendanceDate)),
+                                //      className: 'label-important',
+                                //      backgroundColor: "red",
+                                //      //textColor: "black",
+                                //      borderColor: "red"
+                                //  })
+                                //}
+                                if (data.InOutStatus == "AB") {
+                                    if (data.InTime != null || data.OutTime != null) {
+                                        events.push(
+                                      {
+                                          title: " Status : " + data.InOutStatus,
+                                          start: new Date(convertDate(data.AttendanceDate)),
+                                          className: 'label-important',
+                                          backgroundColor: "red",
+                                          //textColor: "black",
+                                          borderColor: "red"
+                                      }),
+                                     events.push({
+                                         title: data.InOutShift + " : ( " + data.InTime + " - " + data.OutTime + " ) \n Duration : " + data.Duration + "\n NetHrs : " + data.NetHrs,
+                                         start: new Date(convertDate(data.AttendanceDate)),
+                                         className: 'label-important',
+                                         backgroundColor: "transparent",
+                                         textColor: "black",
+                                         borderColor: "transparent"
+                                     });
+                                    }
+                                    else {
+                                        events.push(
+                                         {
+                                             title: " Status : " + data.InOutStatus,
+                                             start: new Date(convertDate(data.AttendanceDate)),
+                                             className: 'label-important',
+                                             backgroundColor: "red",
+                                             //textColor: "black",
+                                             borderColor: "red"
+                                         })
+                                    }
+
+                                }
+
+                                else if (data.InOutStatus == "WO" || data.InOutStatus == "PH") {
+                                    events.push(
+                                  {
+                                      title: " Status : " + data.InOutStatus,
+                                      start: new Date(convertDate(data.AttendanceDate)),
+                                      className: 'label-important',
+                                      backgroundColor: "#f39c12",
+                                      //textColor: "black",
+                                      borderColor: "#f39c12"
+                                  });
+                                }
+                                else if (data.InOutStatus == "-") {
+                                    events.push(
+                                 {
+                                     title: " ",
+                                     start: new Date(convertDate(data.AttendanceDate)),
+                                     className: 'label-important',
+                                     backgroundColor: "transparent",
+                                     //textColor: "black",
+                                     borderColor: "transparent"
+                                 });
+                                }
+                                else {
+                                    events.push(
+                                    {
+                                        title: " Status : " + data.InOutStatus,
+                                        start: new Date(convertDate(data.AttendanceDate)),
+                                        className: 'label-important',
+                                        backgroundColor: backroundcolor,
+                                        //textColor: "black",
+                                        borderColor: bordercolor
+                                    }),
+                                     events.push({
+                                         title: data.InOutShift + " : ( " + data.InTime + " - " + data.OutTime + " ) \n Duration : " + data.Duration + "\n NetHrs : " + data.NetHrs,
+                                         start: new Date(convertDate(data.AttendanceDate)),
+                                         className: 'label-important',
+                                         backgroundColor: "transparent",
+                                         textColor: "black",
+                                         borderColor: "transparent"
+                                     });
+                                }
+                            });
+                            callback(events);
+                        }
+                        else if (result == "false") {
+                            window.location.href = "@Url.Action("ErrorPage","Home")";
+                        }
+                    }
+                });
+            },
+        });
+        //$(document).on('change', '#ddlEmployeeId', function () {
+        //    alert("ok");
+        //    $('#calendar').fullCalendar('refetchEvents');
+        //});
+    });
+</script>
+
+<script>
+    function millisecTodate(milliDate) {
+        var date = new Date(milliDate);
+        var mnth = ("0" + (date.getMonth() + 1)).slice(-2);
+        var day = ("0" + date.getDate()).slice(-2);
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        hours = hours < 10 ? '0' + hours : hours;
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        var ddmmyyyy = [date.getFullYear(), mnth, day].join("-");
+        return ddmmyyyy;
+    }
+
+    function convertDate(data) {
+        var getdate = parseInt(data.replace("/Date(", "").replace(")/", ""));
+        var date = millisecTodate(getdate);
+        return date;
+    }
+</script>
+

@@ -1,0 +1,531 @@
+﻿@model KompassHR.Areas.Reports.Models.DailyAttendanceReportFilter
+@{
+    ViewBag.Title = "Reports_Onboarding_GenderWiseList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+
+
+<style>
+    .Col-md-2 {
+        margin: 10px 0;
+    }
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Gender Wise Employee
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Reports_Onboarding_Menu", "Reports_Onboarding_Menu", new {id =41, ScreenId=275, area = "Reports" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+   
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" EmpList-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Gender Wise Employee - List</h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        A gender-wise employee report categorizes and analyzes employees based on their gender distribution within the company.
+                    </p>
+                </div>
+                <div class="panel-body" EmpList-scrollbar="true">
+                    <form role="form" action="/Reports/Rpt_OverTime/Rpt_OverTime" id="rptOverTime" method="post">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row mb-15px">
+                                    <label class="form-label col-form-label col-md-4">
+                                        Company
+                                    </label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.CmpId, new SelectList(ViewBag.CompanyName, "Id", "Name"), new { @class = "form-select", name = "CompanyName", id = "ddlCmpId" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row mb-15px">
+                                    <label class="form-label col-form-label col-md-4">
+                                        Business Unit
+                                    </label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.BranchId, new SelectList(ViewBag.BranchName, "Id", "Name"), "All", new { @class = "form-select", type = "text", name = "BranchId", id = "ddlBranchId" })
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row mb-15px">
+                                    <label class="form-label col-form-label col-md-4">
+                                        Department
+                                    </label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.DepartmentId, new SelectList(ViewBag.DepartmentName, "Id", "Name"), "All", new { @class = "form-select", name = "DepartmentId", id = "ddlDepartmentId" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row mb-15px">
+                                    <label class="form-label col-form-label col-md-4">
+                                        Sub Department
+                                    </label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.SubDepartmentId, new SelectList(ViewBag.SubDepartmentName, "Id", "Name"), "All", new { @class = "form-select", type = "text", name = "SubDepartmentId", id = "ddlSubDepartmentId" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row mb-15px">
+                                    <label class="form-label col-form-label col-md-4">
+                                        Designation
+                                    </label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.DesignationId, new SelectList(ViewBag.DesignationName, "Id", "Name"), "All", new { @class = "form-select", name = "DesignationId", id = "ddlDesignationId" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row mb-15px">
+                                    <label class="form-label col-form-label col-md-4">
+                                        Grade
+                                    </label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.GradeId, new SelectList(ViewBag.GradeName, "Id", "Name"), "All", new { @class = "form-select", type = "text", name = "GradeId", id = "ddlGradeId" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row mb-15px">
+                                    <label class="form-label col-form-label col-md-4">
+                                        Line Master
+                                    </label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.LineId, new SelectList(ViewBag.LineName, "Id", "Name"), "All", new { @class = "form-select", name = "LineId", id = "ddlLineId" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row mb-15px">
+                                    <label class="form-label col-form-label col-md-4">
+                                        Sub Unit
+                                    </label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.SubUnitId, new SelectList(ViewBag.SubUnit, "Id", "Name"), "All", new { @class = "form-select", name = "SubUnit", id = "ddlSubUnit" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row mb-15px">
+                                    <label class="form-label col-form-label col-md-4">
+                                        Contractor
+                                    </label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.ContractorId, new SelectList(ViewBag.ContractorName, "Id", "Name"), "All", new { @class = "form-select", name = "ContractorId", id = "ddlContractorId" })
+                                    </div>
+                                </div>
+                            </div>
+                            @*<div class="col-md-6">
+                                <div class="row mb-15px">
+                                    <label class="form-label col-form-label col-md-4">
+                                        Employee Name
+                                    </label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.EmployeeID, new SelectList(ViewBag.EmployeeName, "Id", "Name"), "All", new { @class = "form-select", name = "EmployeeID", id = "ddlEmployeeID" })
+                                    </div>
+                                </div>
+                            </div>*@
+                            <div class="col-md-6">
+                                <div class="row mb-15px">
+                                    <label class="form-label col-form-label col-md-4">
+                                        Gender
+                                    </label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.Gender, new List<SelectListItem>{
+                                                new SelectListItem {Text ="Male", Value="Male"},
+                                                 new SelectListItem {Text ="Female", Value="Female"},
+                                              }, new { @class = "form-select", name = "Gender", @id = "ddlGender" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="LastShortLeaveBx">
+                                <div class="row">
+                                    <div class="col-md-10">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="BtnBx">
+                                            <div>
+                                                <button type="button" class="btn btn-success" id="btlExportToExcel" onclick="downloadExcelFile()">
+                                                    <i class="fa-regular fa-file-excel fa-xl"></i> Export To Excel
+                                                </button>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('title').html("Gender Wise Employee");
+        $("#ddlBranchId").select2();
+        $("#ddlCmpId").select2();
+        $("#ddlDepartmentId").select2();
+        $("#ddlSubDepartmentId").select2();
+        $("#ddlDesignationId").select2();
+        $("#ddlLineId").select2();
+        $("#ddlGradeId").select2();
+        $("#ddlEmployeeID").select2();
+        $("#ddlSubUnit").select2();
+        $("#ddlGender").select2();
+        $("#ddlContractorId").select2();
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                });
+            }
+        }
+
+        $("#ddlCmpId").on("change", function () {
+            debugger;
+            $("#ddlBranchId").find("option").remove();
+            $("#ddlContractorId").find("option").remove();
+            $("#ddlEmployeeID").find("option").remove();
+            var CmpId = $("#ddlCmpId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetBusinessUnit", "Reports_Onboarding_Menu")',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    debugger;
+                    if (data == false) {
+                        $("#ddlLineId").find("option").remove();
+                        $("#ddlEmployeeID").find("option").remove();
+                        $("#ddlSubUnit").find("option").remove();
+                        $("#ddlEmployeeID").append("<option value=''>All </option>");
+                        $("#ddlLineId").append("<option value=''>All </option>");
+                        $("#ddlSubUnit").append("<option value=''>All </option>");
+                    }
+                    else {
+                        var Branch = data.Branch;
+                        if (Branch != null) {
+                            $("#ddlBranchId").append("<option value=''>All </option>");
+                            $.each(Branch, function (i, p) {
+                                $("#ddlBranchId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+                        }
+                        var GetContractorDropdown=data.GetContractorDropdown;
+                        if (GetContractorDropdown != null) {
+                            $("#ddlContractorId").append("<option value=''>All </option>");
+                            $.each(GetContractorDropdown, function (i, p) {
+                                $("#ddlContractorId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+                        }
+                        //var EmployeeName = data.EmployeeName;
+                        //if (EmployeeName != null) {
+                        //    $("#ddlEmployeeID").append("<option value=''>All </option>");
+                        //    $.each(EmployeeName, function (i, p) {
+                        //        $("#ddlEmployeeID").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        //    });
+                        //}
+                        else {
+                            $('#ErrorESSPassword').html(" ");
+                        }
+                    }
+                }
+            })
+        });
+
+
+        $("#ddlDepartmentId").on("change", function () {
+            debugger;
+            $("#ddlSubDepartmentId").find("option").remove();
+            var DepartmentId = $("#ddlDepartmentId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetSubDepartment", "Rpt_OverTime")',
+                data: { DepartmentId: DepartmentId },
+                success: function (data) {
+                    debugger;
+                    if (data == false) {
+                        $("#ddlSubDepartmentId").find("option").remove();
+                        $("#ddlSubDepartmentId").append("<option value=''>All </option>");
+                    }
+                    else {
+                        if (data != null) {
+                            $("#ddlSubDepartmentId").append("<option value=''>All </option>");
+                            $.each(data, function (i, p) {
+                                $("#ddlSubDepartmentId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+                        }
+                    }
+                }
+            })
+        });
+
+        $("#ddlBranchId").on("change", function () {
+            debugger;
+            $("#ddlLineId").find("option").remove();
+            $("#ddlEmployeeID").find("option").remove();
+            $("#ddlSubUnit").find("option").remove();
+            $("#ddlContractorId").find("option").remove();
+            var CmpId = $("#ddlCmpId").val();
+            var UnitBranchId = $("#ddlBranchId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetUnit", "Reports_Onboarding_Menu")',
+                data: { CmpId: CmpId, UnitBranchId: UnitBranchId },
+                success: function (data) {
+                    debugger;
+                    if (data == false) {
+                        $("#ddlLineId").find("option").remove();
+                        $("#ddlEmployeeID").find("option").remove();
+                        $("#ddlSubUnit").find("option").remove();
+                        $("#ddlEmployeeID").append("<option value=''>All </option>");
+                        $("#ddlLineId").append("<option value=''>All </option>");
+                        $("#ddlSubUnit").append("<option value=''>All </option>");
+                    }
+                    else {
+                      //  var EmployeeName = data.EmployeeName;
+                        var LineMaster = data.List_LineMaster;
+                        var ListSubUnit = data.List_SubUnit;
+                        //if (EmployeeName != null) {
+                        //    $("#ddlEmployeeID").append("<option value=''>All </option>");
+                        //    $.each(EmployeeName, function (i, p) {
+                        //        $("#ddlEmployeeID").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        //    });
+                        //}
+                        debugger;
+                        if (LineMaster != null) {
+                            $("#ddlLineId").append("<option value=''>All </option>");
+                            $.each(LineMaster, function (i, p) {
+                                $("#ddlLineId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+                        }
+                        debugger;
+                        if (ListSubUnit != null) {
+                            $("#ddlSubUnit").append("<option value=''>All </option>");
+                            $.each(ListSubUnit, function (i, p) {
+                                $("#ddlSubUnit").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+                        }
+                        var GetContractorDropdown=data.GetContractorDropdown;
+                        if (GetContractorDropdown != null) {
+                            $("#ddlContractorId").append("<option value=''>All </option>");
+                            $.each(GetContractorDropdown, function (i, p) {
+                                $("#ddlContractorId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+                        }
+                    }
+                }
+            })
+        });
+    }); //Ready Function
+
+    function downloadExcelFile() {
+        debugger;
+        $(".Userloaderbg").css("display", "flex");
+        //var CmpId = $("#ddlCmpId").val();
+        //var BranchId = $("#ddlBranchId").val();
+        //var DepartmentId = $("#ddlDepartmentId").val();
+        //var SubDepartmentId = $("#ddlSubDepartmentId").val();
+        //var DesignationId = $("#ddlDesignationId").val();
+        //var GradeId = $("#ddlGradeId").val();
+        //var LineId = $("#ddlLineId").val();
+        //var SubUnitId = $("#ddlSubUnit").val();
+        //var EmployeeID = $("#ddlEmployeeID").val();
+
+        var DepartmentId = encodeURIComponent($("#ddlDepartmentId").val());
+        var SubDepartmentId = encodeURIComponent($("#ddlSubDepartmentId").val());
+        var DesignationId = encodeURIComponent($("#ddlDesignationId").val());
+        var GradeId = encodeURIComponent($("#ddlGradeId").val());
+        var LineId = encodeURIComponent($("#ddlLineId").val());
+        var SubUnitId = encodeURIComponent($("#ddlSubUnit").val());
+        //var EmployeeID = encodeURIComponent($("#ddlEmployeeID").val());
+        var branchId = encodeURIComponent($("#ddlBranchId").val());
+        var CmpID = encodeURIComponent($("#ddlCmpId").val());
+        var Gender = encodeURIComponent($("#ddlGender").val());
+        var ContractorId = encodeURIComponent($("#ddlContractorId").val());
+
+        
+        var url = `@Url.Action("DownloadExcelFile", "Reports_Onboarding_GenderWiseList")?BranchId=${branchId}&CmpID=${CmpID}&DepartmentId=${DepartmentId}&SubDepartmentId=${SubDepartmentId}&DesignationId=${DesignationId}&GradeId=${GradeId}&LineId=${LineId}&SubUnitId=${SubUnitId}&Gender=${Gender}&ContractorId=${ContractorId}`;
+
+        // Create a full URL with query parameters
+        //var url = '/Reports_Onboarding_GenderWiseList/DownloadExcelFile?BranchId=' + encodeURIComponent(BranchId) +'&CmpId='+ encodeURIComponent(CmpId) +'&DepartmentId='+encodeURIComponent(DepartmentId)+'&SubDepartmentId='+encodeURIComponent(SubDepartmentId)+'&DesignationId='+encodeURIComponent(DesignationId)+'&GradeId='+encodeURIComponent(GradeId)+'&LineId='+encodeURIComponent(LineId)+'&SubUnitId='+encodeURIComponent(SubUnitId)+'&EmployeeID='+encodeURIComponent(EmployeeID);
+        $.ajax({
+            url: url,
+            method: 'GET',
+            xhrFields: {
+                responseType: 'blob' // Set the response type to blob
+            },
+            success: function(data) {
+                debugger;
+                if(data.size==0)
+                {
+                    Swal.fire({
+                        icon: 'error',
+                        text: 'Record Not Found',
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup()
+                            popup.classList.remove('swal2-show')
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake')
+                            })
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake')
+                            }, 500)
+                            return false
+                        }
+                    });
+                    $(".Userloaderbg").css("display", "none");
+                    return false;
+                }
+            
+                // Create a Blob from the response data
+                var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                // Create a temporary anchor element to initiate the download
+                var anchorElement = document.createElement('a');
+                var url = window.URL.createObjectURL(blob);
+                anchorElement.href = url;
+                anchorElement.download = 'GenderWiseEmployee.xlsx';
+                anchorElement.click();
+                // Clean up
+                window.URL.revokeObjectURL(url);
+                $(".Userloaderbg").css("display", "none");
+            },
+            error: function(xhr, status, error) {
+                console.error('Error downloading file:', error);
+                // Handle error scenarios here
+            }
+        });
+    }
+
+
+        @*var GenderList = @Html.Raw(Json.Encode(ViewBag.GetEmployeeReportList));
+        if(GenderList!="")
+        {
+            var MaleCount=GenderList[0][1].Value;
+            var FemaleCount=GenderList[1][1].Value;
+            $("#txtMaleCount").val(MaleCount);
+            $("#txtFemaleCount").val(FemaleCount);
+        }
+        else{
+            $("#txtMaleCount").val("0");
+            $("#txtFemaleCount").val("0");
+        }*@
+
+</script>
+
+

@@ -1,0 +1,452 @@
+﻿@model KompassHR.Areas.Setting.Models.Setting_Leave.Leave_ShortLeaveSetting
+@{
+    ViewBag.Title = "Setting_Leave_ShortLeave";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+<style>
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Short Leave Setting
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("ESS_AdminDashboard_Dashboard", "ESS_AdminDashboard_Dashboard", new { id = 32, ScreenId = 121, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Setting_Onboarding_Menu", "Setting_Onboarding_Menu", new { id = 4, ScreenId =44, area = "Setting" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Settings">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Short Leave Setting <Span>- <b>@ViewBag.AddUpdateTitle</b> </Span></h4>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Define short leave setting here!
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "Setting_Leave_ShortLeave", new { area = "Setting" })' id="SaveShortLeaveSetting" method="post" data-parsley-validate="">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Comapany Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.CmpID, new SelectList(ViewBag.GetCompanyname, "Id", "Name"), "--Select--", new { id = "ddlCmpID", @class = "form-select", autocomplete = "off", name = "CmpID" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Business Unit
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.ShortLeaveSettingBranchId, new SelectList(ViewBag.GetBranchName, "Id", "Name"), "--Select--", new { id = "ShortLeaveSettingBranchId", @class = "form-select", autocomplete = "off", name = "ShortLeaveSettingBranchId" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Setting Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.ShortLeaveSettingName, new { @class = "form-control", type = "text", id = "txtShortLeaveSettingName", autocomplete = "Off", name = "ShortLeaveSettingName" })
+                                                @Html.HiddenFor(model => model.ShortLeaveSettingID_Encrypted, new { id = "ShortLeaveSettingID_Encrypted" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Monthly Limit
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.MonthlyLimit, new { @class = "form-control", type = "text", id = "txtMonthlyLimit", autocomplete = "Off", name = "MonthlyLimit", Maxlength = 2, onkeypress = "return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" })
+                                                @Html.ValidationMessageFor(model => model.MonthlyLimit, "", new { @class = "help-block", @id = "ErrorMonthlyLimit", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Duration(min)
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.Minute, new { @class = "form-control", type = "text", id = "txtMinute", autocomplete = "Off", name = "Minute", Maxlength = 3, onkeypress = "return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" })
+                                                @Html.ValidationMessageFor(model => model.Minute, "", new { @class = "help-block", @id = "ErrorMinute", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Type
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.Direction, new List<SelectListItem> {
+                                                    new SelectListItem { Text = "ShiftStart", Value = "1"},
+                                                    new SelectListItem { Text = "ShiftEnd", Value = "2"},
+                                                     new SelectListItem { Text = "ShiftStart + End", Value = "3"},
+                                                    new SelectListItem { Text = "AnyTime", Value = "4"},
+                                                }, "--Select--", new { id = "ddlDirection", @class = "form-select", autocomplete = "off", name = "Direction" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Back Date Days
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.BackDateDays, new { @class = "form-control", type = "text", id = "txtBackDateDays", autocomplete = "Off", name = "BackDateDays", Maxlength = 2, onkeypress = "return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" })
+                                                @Html.ValidationMessageFor(model => model.BackDateDays, "", new { @class = "help-block", @id = "ErrorBackDateDays", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Auto Approval (in Days)
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.AutoApprovalDays, new { @class = "form-control", type = "text", id = "txtAutoApprovalDays", autocomplete = "Off", name = "AutoApprovalDays", Maxlength = 2, onkeypress = "return (event.charCode !=8 && event.charCode ==0 || (event.charCode >= 48 && event.charCode <= 57))" })
+                                                @Html.ValidationMessageFor(model => model.AutoApprovalDays, "", new { @class = "help-block", @id = "ErrorAutoApprovalDays", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="col-md-4"></label>
+                                            <div class="col-md-8">
+                                                @Html.CheckBoxFor(model => model.IsMultipleReqAllowInDay, new { name = "IsMultipleReqAllowInDay", id = "chkIsMultipleReqAllowInDay" })  &nbsp;  <label class="form-check-label form-label">Multiple Entry Allow in A Single Day</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="button" id="btnSubmit"
+                                                                class="btn btn-primary btn-sm">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                        <a href="@Url.Action("GetList", "Setting_Leave_ShortLeave", new { area = "Setting" })">
+                                                            <button type="button" class="btn btn-danger btn-sm" id="btnGetShortLeaveList">
+                                                                <i class="fa-solid fa-share-from-square"></i> List
+                                                            </button>
+                                                        </a>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- END panel -->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+
+        $("#ddlCmpID").select2();
+        $("#ShortLeaveSettingBranchId").select2();
+        $("#ddlDirection").select2();
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                });
+            }
+        }
+
+        $("#ddlCmpID").on("change", function () {
+            $("#ShortLeaveSettingBranchId").find("option").remove();
+            var CmpId = $("#ddlCmpID").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: 'GetBusinessUnit',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    if (data !=null) {
+                        $("#ShortLeaveSettingBranchId").append("<option value=0> --Select--</option>");
+                        $.each(data, function(i, p) {
+
+                            $("#ShortLeaveSettingBranchId").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                        });
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        });
+
+    });//ready function
+</script>
+
+
+<script>
+    $("#btnGetShortLeaveList").click(function () {
+        var url = '@Url.Action("GetList", "Setting_Leave_ShortLeave")';
+        window.location.href = url;
+    });
+    $("#formReset").click(function () {
+        $("#SaveShortLeaveSetting")[0].reset();
+    })
+    //use for add regex function
+    jQuery.validator.addMethod(
+  "regex",
+   function(value, element, regexp) {
+       if (regexp.constructor != RegExp)
+           regexp = new RegExp(regexp);
+       else if (regexp.global)
+           regexp.lastIndex = 0;
+       return this.optional(element) || regexp.test(value);
+   },"erreur expression reguliere"
+);
+    $("#SaveShortLeaveSetting").validate({
+        rules: {
+            CmpID: {
+                required: true,
+            },
+            ShortLeaveSettingName: {
+                required: true,
+            },
+            ShortLeaveSettingBranchId: {
+                required: true,
+            },
+            MonthlyLimit: {
+                required: true,
+            },
+            Minute: {
+                required: true,
+            },
+            Direction: {
+                required: true,
+            },
+            BackDateDays: {
+                required: true,
+            },
+            AutoApprovalDays: {
+                required: true,
+            }
+        },
+        messages: {
+            CmpID: {
+                required: "Company name is required",
+            },
+            ShortLeaveSettingName: {
+                required: "Setting name is required",
+            },
+            ShortLeaveSettingBranchId: {
+                required: "Business unit is required",
+            },
+            MonthlyLimit: {
+                required: "Monthly limit is required",
+            },
+            Minute: {
+                required: "Minute is required",
+            },
+            Direction: {
+                required: "Type is required",
+            },
+
+            BackDateDays: {
+                required: "Back date days is required",
+            },
+            AutoApprovalDays: {
+                required: "Auto approval days is required",
+            },
+        }
+    });
+
+
+    var form = $("#SaveShortLeaveSetting");
+    form.validate();
+    $("#btnSubmit").click(function () {
+        debugger;
+        form.valid();
+        if(form.valid()==false)
+        {
+            return false;
+        }
+        var ShortLeaveSettingName=$("#txtShortLeaveSettingName").val();
+        var ShortLeaveSettingID_Encrypted=$("#ShortLeaveSettingID_Encrypted").val();
+        $.ajax({
+            url:"IsLeaveSettingExists",
+            method:"get",
+            data:{ShortLeaveSettingName:ShortLeaveSettingName,ShortLeaveSettingID_Encrypted:ShortLeaveSettingID_Encrypted},
+            success:function(response){
+                debugger;
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon=="error") {
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                        }
+                    }
+                }
+                else{
+                    $("#SaveShortLeaveSetting").submit();
+
+                }
+            }
+        });
+
+    });
+</script>
+
+<script>
+
+
+    $("#txtMinute").on("keyup change", function(e) {
+        var DurationLimit=$("#txtMinute").val();
+        if(DurationLimit>180)
+        {
+            $('#ErrorMinute').html("Please enter the value less than 180 min"); $("#txtMinute").focus();  return false;
+        }
+        else{
+            $('#ErrorMinute').html("");
+        }
+    })
+
+    $("#txtMonthlyLimit").on("keyup change", function(e) {
+        var DurationLimit=$("#txtMonthlyLimit").val();
+        if(DurationLimit>31)
+        {
+            $('#ErrorMonthlyLimit').html("Please enter the value less than 31"); $("#txtMonthlyLimit").focus();  return false;
+        }
+        else{
+            $('#ErrorMonthlyLimit').html("");
+        }
+    })
+
+    $("#txtBackDateDays").on("keyup change", function(e) {
+        var DurationLimit=$("#txtBackDateDays").val();
+        if(DurationLimit>31)
+        {
+            $('#ErrorBackDateDays').html("Please enter the value less than 31"); $("#txtBackDateDays").focus();  return false;
+        }
+        else{
+            $('#ErrorBackDateDays').html("");
+        }
+    })
+</script>
+
+
+
+
+
+
+

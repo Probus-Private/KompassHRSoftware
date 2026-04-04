@@ -1,0 +1,352 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_TimeOffice.Atten_RotationalWeekOff
+@{
+    ViewBag.Title = "ESS_TimeOffice_RotationalWeekOff";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+
+
+<div id="content" class="app-content">
+    <ol class="breadcrumb float-xl-end">
+        <li class="breadcrumb-item"><a href="/Dashboard/Dashboard/Dashboard">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="/Reports/Report_Attendance_RptMenu/Report_Attendance_RptMenu">Report Menu</a></li>
+    </ol>
+    <h1 class="page-header"> Rotational Week Off </h1>
+
+    <div class="row">
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="panel panel-inverse" data-sortable-id="index-1">
+                    <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                        <h4 class="panel-title">@*@i.SET_MODULES.FormName*@</h4>
+                        <div class="panel-heading-btn">
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                        </div>
+                    </div>
+                    <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                        <p class="pb-0">
+
+                        </p>
+                    </div>
+                    <div class="panel-body" style="max-height: fit-content;">
+                        <div class="row justify-content-center">
+                            @*<hr class="mt-15px">*@
+                            <div class="row justify-content-center">
+                                <form role="form" action="/ESS/ESS_TimeOffice_RotationalWeekOff/ESS_TimeOffice_RotationalWeekOff" id="formRotationalWeekOff" method="post">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Company Name
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.CmpID, new SelectList(ViewBag.ComapnyName, "Id", "Name"), "--Select--", new { @id = "ddlCompanyId", name = "CmpanyId", @class = "form-select", autocomplete = "off" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Bunieness Unit
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.RotationalWeekOffBranchId, new SelectList(ViewBag.BranchName, "Id", "Name"), "--Select--", new { @id = "ddlBranchId", name = "RotationalWeekOffBranchId", @class = "form-select", autocomplete = "off" })
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Department Name
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.RotationalWeekOffDepartmentID, new SelectList(ViewBag.DepartmentName, "Id", "Name"), "--Select--", new { @id = "ddlDepartmentId", name = "RotationalWeekOffDepartmentID", @class = "form-select", autocomplete = "off" })
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="row mb-15px">
+                                                <div class="col-md-8">
+                                                    <button type="button" onclick="funRotationalWeekOff()" class="btn btn-sm btn-success">Show</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row" id="DivDate">
+                                        <div class="col-md-5">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Week Off Date
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.RotationalWeekOffDate, new { @class = "form-control", name = "RotationalWeekOffDate", type = "date", id = "RWODate" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="row mb-15px">
+                                                <div class="col-md-8">
+                                                    <button type="button" id="btnSubmit" class="btn btn-sm btn-success">Save</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                        <hr class="mt-15px">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="panel panel-inverse" data-sortable-id="index-1">
+                                    <div class="panel-body" data-scrollbar="true">
+                                        <!-- BEGIN table-responsive -->
+                                        <div class="table-scroll div1">
+                                            <div class="table-wrap">
+                                                <table class="table table-bordered table-hover mb-0 text-dark align-middle TablePage" id="tblRotationalWeekOff">
+                                                    <thead style="background-color: rgba(233, 236, 239, 1) !important;">
+                                                        <tr class="trheading">
+                                                            <th class="text-nowrap text-center" style="width:128px;"> Action</th>
+                                                            <th class="text-nowrap text-center" style="width:128px;"> Employee Id </th>
+                                                            <th class="text-nowrap text-center" style="width:128px;"> Employee Card No</th>
+                                                            <th class="text-nowrap text-center" style="width:128px;"> Employee Name</th>
+                                                            <th class="text-nowrap text-center" style="width:128px;"> Joining Date	</th>
+                                                            <th class="text-nowrap text-center" style="width:128px;"> Designation Name</th>
+                                                            <th class="text-nowrap text-center" style="width:128px;"> Department Name</th>
+                                                            <th class="text-nowrap text-center" style="width:128px;"> Business Area</th>
+                                                            <th class="text-nowrap text-center" style="width:128px;"> Line Name</th>
+                                                            <th class="text-nowrap text-center" style="width:128px;"> Sub Department Name</th>
+                                                            <th class="text-nowrap text-center" style="width:128px;"> Branch Name</th>
+                                                            <th class="text-nowrap text-center" style="width:128px;"> Grade Name	</th>
+                                                            <th class="text-nowrap text-center" style="width:128px;"> Critical Stage Name</th>
+                                                        </tr>
+                                                      
+                                                    </thead>
+                                                    <tbody id="tbodyRotationalWeekOff">
+                                                        @if (@ViewBag.GetRotationalWeekOff != null)
+                                                        {
+                                                            foreach (var d in ViewBag.GetRotationalWeekOff)
+                                                            {
+                                                                <tr>
+                                                                    <td style="width:10px"><input type="checkbox" class="form-check-input" data-checked="email-checkbox" value="@d.DocID" id="tblCheckbox"></td>
+                                                                    <td>@d.EmployeeId</td>
+                                                                    <td>@d.EmployeeCardNo </td>
+                                                                    <td>@d.EmployeeName</td>
+                                                                    <td>@d.joininggdate	</td>
+                                                                    <td>@d.DesignationName</td>
+                                                                    <td>@d.DepartmentName</td>
+                                                                    <td>@d.BusinessArea</td>
+                                                                    <td>@d.LineName</td>
+                                                                    <td>@d.EmployeeSubDepartmentName</td>
+                                                                    <td>@d.BranchName	</td>
+                                                                    <td>@d.GradeName</td>
+                                                                    <td>@d.CriticalStageName</td>
+                                                                </tr>
+                                                            }
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <!-- END table-responsive -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="LastShortLeaveBx">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="BtnBx">
+                                            <div>
+                                                <a  href="/ESS/ESS_TimeOffice_RotationalWeekOff/GetList">
+                                                    <button type="button" class="btn btn-danger btn-sm" id="btnGetList">
+                                                        <i class="fa-solid fa-share-from-square"></i> List
+                                                    </button>
+                                                </a>
+                                               
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function funRotationalWeekOff() {
+        debugger;
+        $("#formRotationalWeekOff").submit();
+    }
+</script>
+
+<script>
+
+    $(document).ready(function () {
+        $("#ddlCompanyId").select2();
+        $("#ddlDepartmentId").select2();
+        $("#ddlBranchId").select2();
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                });
+            }
+        }
+
+        $("#ddlCompanyId").on("change", function () {
+            debugger;
+            $("#ddlBranchId").find("option").remove();
+            var CmpId = $("#ddlCompanyId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: 'GetBusinessUnit',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    debugger;
+                    if (data.data !=null) {
+                        $("#ddlBranchId").append("<option value=0>--Select-- </option>");
+                        $.each(data.data, function(i, p) {
+                            $("#ddlBranchId").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                        });
+                    }
+                    if (data.data1 !=null) {
+                        //$("#ddlDepartmentId").append("<option value=0>--Select-- </option>");
+                        $.each(data.data1, function(i, p) {
+                            $("#ddlDepartmentId").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                        });
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        });
+
+    });
+</script>
+
+<script>
+    $("#btnSubmit").click(function () {
+        $(".Userloaderbg").css("display", "flex");
+        var table = document.getElementById("tbodyRotationalWeekOff");
+        var CmpId = $("#ddlCompanyId").val();
+        var BranchId = $("#ddlBranchId").val();
+        var DepartmentId = $("#ddlDepartmentId").val();
+        var WeekOffDate = $("#RWODate").val();
+        
+        var RotationalWeekOff = new Array();
+        $(':checkbox:checked').each(function (i) {
+            debugger;
+            var data = {};
+            var currentRow = $(this).closest("tr");
+            data.EmployeeId = currentRow[i].children[1].innerHTML;
+            RotationalWeekOff.push(data);
+        });
+        
+        if (RotationalWeekOff == "") {
+            debugger;
+            Swal.fire({
+                icon: "error",
+                text: "Select atleast one record",
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup()
+                    popup.classList.remove('swal2-show')
+                    return false;
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                    })
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                    }, 500)
+                    window.location.reload();
+                    return false
+                }
+            });
+            return false;
+        }
+        $.ajax({
+            type: "POST",
+            url: "SaveUpdate",
+            data: JSON.stringify({ RotationalWeekOff: RotationalWeekOff, CmpId: CmpId , BranchId:BranchId , DepartmentId:DepartmentId , WeekOffDate:WeekOffDate}),
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            success: function (response) {
+                debugger;
+                var data = JSON.parse(response);
+                var Message1 = data.Message;
+                var Icon1 = data.Icon;
+                if (Icon1 != null) {
+                    if (Message1 != null) {
+                        Swal.fire({
+                            icon: Icon1,
+                            text: Message1,
+                            allowOutsideClick: () => {
+                                const popup = Swal.getPopup()
+                                popup.classList.remove('swal2-show')
+                                setTimeout(() => {
+                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                })
+                                setTimeout(() => {
+                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                }, 500)
+                                // return false
+                            }
+                        }).then(function () {
+                            var CmpId = $("#ddlCompanyId").val("").select2();
+                            var BranchId = $("#ddlBranchId").val("").select2();
+                            var DepartmentId = $("#ddlDepartmentId").val("").select2();
+                            var WeekOffDate = $("#RWODate").val("");
+                            location.reload();
+                            $(".Userloaderbg").css("display", "none");
+                        })
+                    }
+                }
+            }
+        });
+    });
+</script>
+

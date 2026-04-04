@@ -1,0 +1,360 @@
+﻿@model KompassHR.Areas.Setting.Models.Setting_Payroll.Payroll_HeadMapping
+@{
+    ViewBag.Title = "Setting_Payroll_HeadMapping";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+<style>
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    #tblDynamic input[type="text"] {
+        height: 25px; /* Adjust the height as needed */
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Company Wise Head Mapping
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("ESS_AdminDashboard_Dashboard", "ESS_AdminDashboard_Dashboard", new { id = 32, ScreenId = 121, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Setting_Payroll_Menu", "Setting_Payroll_Menu", new { id = 6, ScreenId = 287, area = "Setting" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Settings">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                 <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Company Wise Head Mapping - <b>@ViewBag.AddUpdateTitle</b> </h4>
+                   
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Add currency here!
+                    </p>
+                </div>
+                <div class="panel-body" data-scrollbar="false">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "Setting_Payroll_HeadMapping", new { area = "Setting" })' id="FormHeadMapping" method="post">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Company Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.Mapping_CompanyId, new SelectList(ViewBag.CompanyName ?? new List<SelectListItem>(), "Id", "Name"), "--Select--", new { id = "ddlCompanyName", @class = "form-select", autocomplete = "off", name = "CompanyName" })
+                                            </div>
+                                            @Html.HiddenFor(model => model.EncryptedId, new { id = "hdnEncryptedId", name = "EncryptedId" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Head Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.Mapping_HeadId, new SelectList(ViewBag.HeadName ?? new List<SelectListItem>(), "Id", "Name"), "--Select--", new { id = "ddlHeadName", @class = "form-select", autocomplete = "off", name = "HeadName" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Column Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.ColumnName, new List<SelectListItem> {
+                                                    new SelectListItem { Text = "Column1", Value = "Column1"},
+                                                    new SelectListItem { Text = "Column2", Value = "Column2"},
+                                                    new SelectListItem { Text = "Column3", Value = "Column3"},
+                                                    new SelectListItem { Text ="Column4",Value="Column4"}
+                                                }, "--Select--", new { id = "ddlColumnName", @class = "form-select", autocomplete = "off", name = "ColumnName" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="LastShortLeaveBx">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="BtnBx">
+                                                        <div>
+                                                            <button type="button" class="btn btn-success btn-sm" id="btnSubmit" style="width: 60px;">
+                                                                <i class="fas fa-plus"></i> Add
+                                                            </button>
+                                                            <button type="button" class="btn btn-danger btn-sm" id="btnGetList" style="width: 60px;">
+                                                                <i class="fa-solid fa-share-from-square"></i> List
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    jQuery.validator.addMethod(
+    "regex",
+     function(value, element, regexp) {
+         if (regexp.constructor != RegExp)
+             regexp = new RegExp(regexp);
+         else if (regexp.global)
+             regexp.lastIndex = 0;
+         return this.optional(element) || regexp.test(value);
+     },"erreur expression reguliere"
+  );
+    $('#FormHeadMapping').validate({
+        rules: {
+            Mapping_CompanyId: {
+                required: true,
+            },
+            Mapping_HeadId: {
+                required: true,
+            },
+            ColumnName: {
+                required: true,
+            }
+        },
+        messages: {
+            Mapping_CompanyId: {
+                required: "Company name is required",
+            },
+            Mapping_HeadId: {
+                required: "Head Name is required",
+            },
+            ColumnName: {
+                required: "Column Name is required",
+            }
+        },
+        errorPlacement: function (error, element) {
+            if (element.hasClass("select2-hidden-accessible")) {
+                // Insert error after Select2's container
+                error.insertAfter(element.next('.select2'));
+            } else {
+                error.insertAfter(element);
+            }
+        },
+        //highlight: function (element) {
+        //    if ($(element).hasClass("select2-hidden-accessible")) {
+        //        $(element).next('.select2').find('.select2-selection').css('border-color', 'red');
+        //    } else {
+        //        $(element).css('border-color', 'red');
+        //    }
+        //},
+        unhighlight: function (element) {
+            if ($(element).hasClass("select2-hidden-accessible")) {
+                $(element).next('.select2').find('.select2-selection').css('border-color', '');
+            } else {
+                $(element).css('border-color', '');
+            }
+        }
+    });
+    var form = $("#FormHeadMapping");
+    form.validate();
+    $("#btnSubmit").click(function () {
+        debugger;
+        form.valid();
+        if(form.valid()==false)
+        {
+            return false;
+        }
+        var CompanyId = $("#ddlCompanyName").val();
+        var HeadId = $("#ddlHeadName").val();
+        var ColumnName = $('#ddlColumnName :selected').text();
+        var EncryptedId = $("#hdnEncryptedId").val();
+        $.ajax({
+            url: '@Url.Action("IsExists", "Setting_Payroll_HeadMapping")',
+            method: "POST",
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify({
+                CompanyId: CompanyId,
+                HeadId: HeadId,
+                ColumnName: ColumnName,
+                EncryptedId: EncryptedId
+            }),
+            success:function(response){
+                debugger;
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon=="error") {
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                        }
+                    }
+                }
+                else{
+                    //$("#SaveHeadMapping").submit();
+                    $.ajax({
+                        url: '@Url.Action("SaveUpdate", "Setting_Payroll_HeadMapping")',
+                        method: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify({
+                            CompanyId: CompanyId,
+                            HeadId: HeadId,
+                            ColumnName: ColumnName,
+                            EncryptedId: EncryptedId
+                        }),
+                        success: function (response)
+                        {
+                            debugger;
+                            if (response!=null)
+                            {
+                                Swal.fire({
+                                    icon: response.Icon,
+                                    text: response.Message,
+                                    allowOutsideClick: () => {
+                                        const popup = Swal.getPopup()
+                                        popup.classList.remove('swal2-show')
+                                        setTimeout(() => {
+                                            popup.classList.add('animate__animated', 'animate__headShake')
+                                        })
+                                        setTimeout(() => {
+                                            popup.classList.remove('animate__animated', 'animate__headShake')
+                                        }, 500)
+                                        return false
+                                    }
+                                }).then(function() {
+                                    window.location.reload();
+                                    @*$.ajax({
+                                        url: '@Url.Action("GetAllMappings", "Setting_Payroll_HeadMapping")',
+                                        method: "GET",
+                                        data: {CompanyId: CompanyId },
+                                        success: function (data) {
+                                            renderTable(data); // Render the data into the table.
+                                        },
+                                        error: function (err) {
+                                            console.error("Error fetching data:", err);
+                                        }
+                                    });*@
+                                });
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    });
+
+    // Function to render data in the HTML table
+    function renderTable(data) {
+        debugger;
+        var parsedData = JSON.parse(data);
+        var tableBody = $("#tblDynamic tbody");
+        tableBody.empty(); // Clear existing table rows if any.
+        parsedData.forEach(function (item) {
+            debugger;
+            var row = `<tr>
+              <td class ="text-center" style="background-color:#eee">
+                    <i class ="fa-regular fa-trash-can fa-xl" onclick="removeRow("${item.EncryptedId}")" style="color:#ff5b57; cursor:pointer"></i>
+                </td>
+            <td>${item.CompanyName}</td>
+            <td>${item.HeadName}</td>
+            <td>${item.EarningDeductionType}</td>
+        </tr>`;
+            tableBody.append(row);
+        });
+    }
+
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#btnGetList").click(function () {
+            var url = '@Url.Action("GetList", "Setting_Payroll_HeadMapping")';
+            window.location.href = url;
+        });
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            Swal.fire({
+                icon: Icon,
+                text: Message,
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup()
+                    popup.classList.remove('swal2-show')
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                    })
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                    }, 500)
+                    return false
+                }
+            }).then(function() {
+                var CompanyId = $("#ddlCompanyName").val();
+                var HeadId = $("#ddlHeadName").val();
+                $.ajax({
+                    url: '@Url.Action("GetAllMappings", "Setting_Payroll_HeadMapping")',
+                    method: "GET",
+                    data: {CompanyId: CompanyId , HeadId: HeadId},
+                    success: function (data) {
+                        renderTable(data); // Render the data into the table.
+                    },
+                    error: function (err) {
+                        console.error("Error fetching data:", err);
+                    }
+                });
+            });
+        }
+    });
+</script>

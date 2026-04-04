@@ -1,0 +1,674 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_Tax.InvestmentDeclaration_OtherDetails
+@{
+    ViewBag.Title = "ESS_Tax_Investment_OtherDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+
+<style>
+    body {
+        font-family: 'Montserrat', sans-serif;
+    }
+
+        body.swal2-shown > [aria-hidden="true"] {
+            /* transition: 0.1s filter; */
+            filter: blur(2px);
+        }
+
+    .btnpress:focus-visible {
+        outline: 0 !important;
+    }
+
+    .btnpress:active {
+        transform: translateY(4px);
+        color: #fff;
+    }
+
+    .BtnBx {
+        display: flex;
+        justify-content: end;
+    }
+
+        .BtnBx .btn {
+            /* width: 80px; */
+            margin: 5px 3px;
+            font-size: 12px;
+        }
+
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .dataTables_scrollBody::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .dataTables_scrollBody::-webkit-scrollbar {
+        width: 6px;
+        height: 3px;
+        background-color: #F5F5F5;
+    }
+
+    .dataTables_scrollBody::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    .invoice {
+        /* background-color: #fAfAfA; */
+        border-radius: 12px;
+        border: 3px solid #fff;
+        /* border: 3px solid rgba(255, 255, 255, 1); */
+        /* border-top: 1px solid #adb5bd;
+            border-bottom: 1px solid #adb5bd; */
+        padding: 10px 20px !important;
+        margin-bottom: 10px;
+        backdrop-filter: blur(25px) saturate(00%);
+        background-color: rgba(255, 255, 255, 1);
+        box-shadow: inset 0 15px 25px rgba(0, 0, 0, 0.03), inset 0px -15px 25px rgba(0, 0, 0, 0.03), 0 15px 25px rgba(0, 0, 0, 0.05);
+    }
+
+        .invoice > div:not(.invoice-footer) {
+            margin: 0;
+        }
+
+    .Error {
+        font-size: 12px;
+        color: red;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .fa-share-from-square {
+        transform: rotate(180deg);
+    }
+
+    .form-label.col-5 {
+        font-weight: bold; /* Adjust the weight as needed */
+    }
+
+    th:nth-child(2), td:nth-child(2) {
+        width: 528px; /* Set the width for the first column */
+    }
+
+    th:nth-child(3), td:nth-child(3) {
+        width: 1150px; /* Set the width for the first column */
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Other Income
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_Tax_InvestmentMenu", "ESS_Tax_InvestmentMenu", new {id = 9, ScreenId=176, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-12 ">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">Other Income - <b>@ViewBag.AddUpdateTitle</b></h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Add here other income.
+                    </p>
+                </div>
+                <div class="panel-body" style="overflow: auto !important;">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action="@Url.Action("SaveUpdate", "ESS_Tax_Investment_OtherDetails", new { area = "ESS" })" id="SaveOtherDetails" name="OtherDetails" method="post">
+                                @*<div class="row">
+                                        <div class="col-md-12">
+                                            <div class="invoice">
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="row">
+
+                                                            <label class="form-label col-form-label p-0 col-md-4 col-5">
+                                                                Employee No
+                                                            </label>
+                                                            <div class="col-md-2 col-1">
+                                                                :
+                                                            </div>
+                                                            <div class="col-md-6 col-6">
+                                                                <h6>
+                                                                    <label class="form-label col-form-label p-0">
+                                                                        @if (ViewBag.GetOtherDetails != null)
+                                                                        {
+                                                                            @ViewBag.GetOtherDetails.EmployeeNo
+                                                                        }
+                                                                    </label>
+                                                                </h6>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <div class="row">
+                                                            <label class="form-label col-form-label p-0 col-md-2 col-5">
+                                                                Name
+                                                            </label>
+                                                            <div class="col-md-1 col-1">
+                                                                :
+                                                            </div>
+                                                            <div class="col-md-9 col-6">
+                                                                <h6>
+                                                                    <label class="form-label col-form-label p-0">
+                                                                        @if (ViewBag.GetOtherDetails != null)
+                                                                        {
+                                                                            @ViewBag.GetOtherDetails.EmployeeName
+                                                                        }
+                                                                    </label>
+                                                                </h6>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="row">
+                                                            <label class="form-label col-form-label p-0 col-md-4 col-5">
+                                                                Department :
+                                                            </label>
+                                                            <div class="col-md-2 col-1">
+                                                                :
+                                                            </div>
+                                                            <div class="col-md-6 col-6">
+                                                                <h6>
+                                                                    <label class="form-label col-form-label p-0">
+                                                                        @if (ViewBag.GetOtherDetails != null)
+                                                                        {
+                                                                            @ViewBag.GetOtherDetails.DepartmentName
+                                                                        }
+
+                                                                    </label>
+                                                                </h6>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="row">
+                                                            <label class="form-label col-form-label p-0 col-md-4 col-5">
+                                                                Designation
+                                                            </label>
+                                                            <div class="col-md-2 col-1">
+                                                                :
+                                                            </div>
+                                                            <div class="col-md-6 col-6">
+                                                                <h6>
+                                                                    <label class="form-label col-form-label p-0">
+                                                                        @if (ViewBag.GetOtherDetails != null)
+                                                                        {
+                                                                            @ViewBag.GetOtherDetails.DesignationName
+                                                                        }
+
+                                                                    </label>
+                                                                </h6>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-1"></div>
+                                                    <div class="col-md-3">
+                                                        <div class="row">
+                                                            <label class="form-label col-form-label p-0 col-md-4 col-5">
+                                                                Grade
+                                                            </label>
+                                                            <div class="col-md-2 col-1">
+                                                                :
+                                                            </div>
+                                                            <div class="col-md-6 col-6">
+                                                                <h6>
+                                                                    <label class="form-label col-form-label p-0">
+                                                                        @if (ViewBag.GetOtherDetails != null)
+                                                                        {
+                                                                            @ViewBag.GetOtherDetails.GradeName
+                                                                        }
+
+                                                                    </label>
+                                                                </h6>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="row">
+                                                            <label class="form-label col-form-label p-0 col-md-4 col-5">
+                                                                DOJ
+
+                                                            </label>
+                                                            <div class="col-md-2 col-1">
+                                                                :
+                                                            </div>
+                                                            <div class="col-md-6 col-6">
+                                                                <h6>
+                                                                    <label class="form-label col-form-label p-0">
+                                                                        @if (ViewBag.GetOtherDetails != null)
+                                                                        {
+                                                                            @ViewBag.GetOtherDetails.JoiningDate.ToString(string.Format("dd/MMM/yyyy"))
+                                                                        }
+
+                                                                    </label>
+                                                                </h6>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="row">
+                                                            <label class="form-label col-form-label p-0 col-md-4 col-5">
+                                                                PAN
+
+                                                            </label>
+                                                            <div class="col-md-2 col-1">
+                                                                :
+                                                            </div>
+                                                            <div class="col-md-6 col-6">
+                                                                <h6>
+                                                                    <label class="form-label col-form-label p-0">
+                                                                        @if (ViewBag.GetOtherDetails != null)
+                                                                        {
+                                                                            @ViewBag.GetOtherDetails.PAN
+                                                                        }
+
+                                                                    </label>
+                                                                </h6>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-1"></div>
+                                                    <div class="col-md-3">
+                                                        <div class="row">
+                                                            <label class="form-label col-form-label p-0 col-md-4 col-5">
+                                                                Age
+
+                                                            </label>
+                                                            <div class="col-md-2 col-1">
+                                                                :
+                                                            </div>
+                                                            <div class="col-md-6 col-6">
+                                                                <h6>
+                                                                    <label class="form-label col-form-label p-0">
+                                                                        @if (ViewBag.GetOtherDetails != null)
+                                                                        {
+                                                                            @ViewBag.GetOtherDetails.Age
+                                                                        }
+
+                                                                    </label>
+                                                                </h6>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="row">
+                                                            <label class="form-label col-form-label p-0 col-md-4 col-5">
+                                                                Financial Year
+                                                            </label>
+                                                            <div class="col-md-2 col-1">
+                                                                :
+                                                            </div>
+                                                            <div class="col-md-6 col-6">
+                                                                <h6>
+                                                                    <label class="form-label col-form-label p-0">
+                                                                        @Session["TaxYear"]
+                                                                    </label>
+                                                                </h6>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="row">
+                                                            <label class="form-label col-form-label p-0 col-md-4 col-5">
+                                                                Last Update
+                                                            </label>
+                                                            <div class="col-md-2 col-1">
+                                                                :
+                                                            </div>
+                                                            <div class="col-md-6 col-6">
+                                                                <h6>
+                                                                    <label class="form-label col-form-label p-0">
+                                                                        @TempData["OtherIncome_SubmitDate"]
+                                                                    </label>
+                                                                </h6>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-1"></div>
+                                                    <div class="col-md-3">
+                                                        <div class="row">
+                                                            <label class="form-label col-form-label p-0 col-md-4 col-5">
+                                                                Count
+                                                            </label>
+                                                            <div class="col-md-2 col-1">
+                                                                :
+                                                            </div>
+                                                            <div class="col-md-6 col-6">
+                                                                <h6>
+                                                                    <label class="form-label col-form-label p-0">
+                                                                        @TempData["OtherIncome_SubmitCount"]
+                                                                    </label>
+                                                                </h6>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>*@
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="empbx">
+                                            <span>
+                                                <h5> <i class="fa-solid fa-calendar"></i> &nbsp;  Financial Year - @Session["TaxYear"]  </h5>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="empbx">
+                                            @if (TempData["SubmitValid"] != null)
+                                            {
+                                                <span>
+                                                    <h5> <i class="fa-solid fa-lock-open"></i> &nbsp; Declaration Window - <span class="text-success">Open</span>  </h5>
+                                                </span>
+                                            }
+                                            else
+                                            {
+                                                <span>
+                                                    <h5> <i class="fa-solid fa-lock"></i>  &nbsp;  Declaration Window - <span class="text-danger">Close</span>  </h5>
+                                                </span>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <hr />
+
+                                <!-- BEGIN table-responsive -->
+                                <table class="table table-bordered table-hover mb-0 ">
+                                    <thead>
+                                        <tr class="trheading" style="background-color: rgba(233, 236, 239, 1) !important;">
+                                            @*<th class="text-nowrap text-center"> Sr. No.</th>*@
+                                            <th class="text-nowrap text-center"> Other Income Details </th>
+
+                                            <th class="text-nowrap text-center"> Amount</th>
+                                            <th class="text-nowrap text-center">Remark </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            @*<td> 1 </td>*@
+                                            <td class="form-label text-nowrap">Bank (Saving A/C)</td>
+                                            <td>@Html.TextBoxFor(model => model.OtherIncome1, new { @class = "form-control rnt", id = "txtOtherIncome1", type = "number", autocomplete = "Off", name = "OtherIncome1", @style = "text-align:Right;height:23px;" })</td>
+                                            <td>
+                                                @Html.TextBoxFor(model => model.OtherIncome1_Remark, new { @class = "form-control rnt", id = "txtOtherIncome1_Remark", autocomplete = "Off", name = "OtherIncome1_Remark", @style = "height:23px;" })
+                                                @Html.ValidationMessageFor(model => model.OtherIncome1_Remark, "", new { @class = "help-block", @id = "ErrorOtherIncome1Remark", @style = "color:red" })
+                                            </td>
+
+                                        </tr>
+                                        <tr>
+                                            @*  <td> 2 </td>*@
+                                            <td class="form-label text-nowrap">Bank (F.D / Received)</td>
+                                            <td>
+                                                @Html.TextBoxFor(model => model.OtherIncome2, new { @class = "form-control rnt", id = "txtOtherIncome2", type = "number", autocomplete = "Off", name = "OtherIncome2", @style = "text-align:Right;height:23px;" })
+                                            </td>
+                                            <td>
+                                                @Html.TextBoxFor(model => model.OtherIncome2_Remark, new { @class = "form-control rnt", id = "txtOtherIncome2_Remark", autocomplete = "Off", name = "OtherIncome2_Remark", @style = "height:23px;" })
+                                                @Html.ValidationMessageFor(model => model.OtherIncome2_Remark, "", new { @class = "help-block", @id = "ErrorOtherIncome2Remark", @style = "color:red" })
+                                            </td>
+
+                                        </tr>
+
+                                        <tr>
+                                            @*  <td> 2 </td>*@
+                                            <td class="form-label text-nowrap">N.S.C (Accrued / Received)</td>
+                                            <td>@Html.TextBoxFor(model => model.OtherIncome3, new { @class = "form-control rnt", id = "txtOtherIncome3", type = "number", autocomplete = "Off", name = "OtherIncome3", @style = "text-align:Right;height:23px;" })</td>
+                                            <td>
+                                                @Html.TextBoxFor(model => model.OtherIncome3_Remark, new { @class = "form-control rnt", id = "txtOtherIncome3_Remark", autocomplete = "Off", name = "OtherIncome3_Remark", @style = "height:23px;" })
+                                                @Html.ValidationMessageFor(model => model.OtherIncome3_Remark, "", new { @class = "help-block", @id = "ErrorOtherIncome3Remark", @style = "color:red" })
+                                            </td>
+
+                                        </tr>
+
+
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="1"> <h5 class="text-center">Total</h5></td>
+                                            <td>
+                                                @Html.TextBoxFor(model => model.TotalOtherIncome, new { @class = "form-control rnt", id = "txtTotalOtherIncome", type = "number", autocomplete = "Off", name = "TotalOtherIncome", @style = "text-align:right;background-color:#eee;height:23px;", @readonly = "readonly" })
+                                            <td colspan="1"> <h5 class="text-center"></h5></td>
+                                        </tr>
+
+                                    </tfoot>
+                                </table>
+                                <span id="CheckError" class="Error"></span>
+                                <!-- END table-responsive -->
+
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="BtnBx">
+                                            <div>
+                                                <button type="button" id="btnSubmit"
+                                                        class="btn btn-primary btn-sm">
+                                                    <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                </button>
+                                                <button type="button" id="" class="btn btn-danger btn-sm" onclick="location.href='@Url.Action("ESS_Tax_InvestmentMenu", "ESS_Tax_InvestmentMenu", new { area = "ESS",id=9,ScreenId=176 })'">
+                                                    <i class="fa-solid fa-share-from-square"></i> Back
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        // return false
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+
+
+        $("#btnBack").click(function () {
+            var url = '@Url.Action("ESS_Tax_InvestmentMenu", "ESS_Tax_InvestmentMenu")';
+            window.location.href = url;
+        });
+
+
+        //for total Calculation
+        function CalculateSum() {
+            debugger;
+            var sum=0;
+            var value =Number ($("#txtOtherIncome1").val());
+            var value1 =Number ($("#txtOtherIncome2").val());
+            var value2 =Number ($("#txtOtherIncome3").val());
+
+            var sum = value + value1 + value2;
+            $("#txtTotalOtherIncome").val(sum);
+        }
+        $('#txtOtherIncome1').keyup(function(){
+            var CurrentAmmout = Number($(this).val());
+            CalculateSum();
+        })
+        $('#txtOtherIncome2').keyup(function(){
+            var CurrentAmmout = Number($(this).val());
+            CalculateSum();
+        })
+        $('#txtOtherIncome3').keyup(function(){
+            var CurrentAmmout = Number($(this).val());
+            CalculateSum();
+        })
+    });
+
+</script>
+<script>
+    var SubmitCheck = @Html.Raw(Json.Encode(TempData["SubmitValid"]));
+    $("#btnSubmit").click(function () {
+        //Check Submit button valid or not based on open close taxDeclaration beetween Date
+        if(SubmitCheck==null || SubmitCheck=="")
+        {
+            Swal.fire({
+                //title: 'Saved',
+                icon: 'error',
+                text: 'Declaration window is close',
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup()
+                    popup.classList.remove('swal2-show')
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                    })
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                    }, 500)
+                    return false
+                }
+            });
+            return false;
+        }
+
+        //var Total = $("#txtTotalOtherIncome").val();
+        //if(Total==0 || Total=="")
+        //{
+        //    $("#CheckError").html("Enter atleast one field");
+        //    return false;
+        //}
+        //else{
+        //    $("#CheckError").html("");
+        //}
+        debugger;
+        var OtherIncome1 = $('#txtOtherIncome1').val();
+        var OtherIncome2 = $('#txtOtherIncome2').val();
+        var OtherIncome3 = $('#txtOtherIncome3').val();
+        var OtherIncome1_Remark = $('#txtOtherIncome1_Remark').val();
+        var OtherIncome2_Remark = $('#txtOtherIncome2_Remark').val();
+        var OtherIncome3_Remark = $('#txtOtherIncome3_Remark').val();
+
+        //if(OtherIncome1!="")
+        //{
+        //    if(OtherIncome1_Remark=="")
+        //    {
+        //        $('#ErrorOtherIncome1Remark').html("Value is required"); return false;
+        //    }
+        //    else{ $('#ErrorOtherIncome1Remark').html("");}
+        //}
+        //if(OtherIncome2!="")
+        //{
+        //    if(OtherIncome2_Remark=="" )
+        //    {
+        //        $('#ErrorOtherIncome2Remark').html("Value is required"); return false;
+        //    }
+        //    else{ $('#ErrorOtherIncome2Remark').html("");}
+
+        //}
+        //if(OtherIncome3!="")
+        //{
+        //    if(OtherIncome3_Remark=="")
+        //    {
+        //        $('#ErrorOtherIncome3Remark').html("Value is required"); return false;
+        //    }
+        //    else{ $('#ErrorOtherIncome3Remark').html("");}
+        //}
+
+        $("#SaveOtherDetails").submit();
+    });
+
+    //$('#txtOtherIncome1_Remark').change(function()  {
+    //    var Remark1= $("#txtOtherIncome1_Remark").val();
+
+    //    if(Remark1=="")
+    //    {$('#ErrorOtherIncome1Remark').html("Value is required");   return false;}
+    //    else{ $('#ErrorOtherIncome1Remark').html("");return true;}
+    //});
+
+    //$('#txtOtherIncome2_Remark').change(function()  {
+    //    var Remark2= $("#txtOtherIncome2_Remark").val();
+
+    //    if(Remark2=="")
+    //    {$('#ErrorOtherIncome1Remark').html("Value is required");   return false;}
+    //    else{ $('#ErrorOtherIncome2Remark').html("");return true;}
+    //});
+
+    //$('#txtOtherIncome3_Remark').change(function()  {
+    //    var Remark3= $("#txtOtherIncome3_Remark").val();
+
+    //    if(Remark3=="")
+    //    {$('#ErrorOtherIncome3Remark').html("Value is required");   return false;}
+    //    else{ $('#ErrorOtherIncome3Remark').html("");return true;}
+    //});
+
+</script>

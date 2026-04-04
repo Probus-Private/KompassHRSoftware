@@ -1,0 +1,126 @@
+﻿
+@{
+    ViewBag.Title = "CheckMaster";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<div id="content" class="app-content">
+    <ol class="breadcrumb float-xl-end">
+    </ol>
+
+    <!-- BEGIN page-header -->
+    @*<h1 class="page-header">Industry</h1>*@
+    <div class="d-flex flex-wrap">
+        <button type="button" class="btn btn-success me-1 mb-1" onclick="location.href='@Url.Action("MAS_CHKMAS","CRM",new { Accmain = ViewBag.Accmain})'"><i class="fa fa-plus fa-sm" title="Add New" style="font-size:x-small"></i> Add New</button>
+    </div>
+    <!-- END page-header -->
+
+    <div class="panel panel-inverse" data-sortable-id="table-basic-4">
+        <!-- BEGIN panel-heading -->
+        <div class="panel-heading">
+            <h4 class="panel-title">Site Activity Managment</h4>
+            <div class="panel-heading-btn">
+                <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+            </div>
+        </div>
+        <!-- END panel-heading -->
+        <!-- BEGIN panel-body -->
+
+        <div class="panel-body">
+
+            <div class="row">
+                <div class="col-12 ">
+                    <table id="" class="table table-striped table-bordered align-middle TablePage mt-1 mb-1">
+                        <thead>
+                            <tr>
+                                <th class="width-45"></th>
+                                <th hidden class="text-nowrap">Industry Id</th>
+                                <th class="">Site Name</th>
+                                <th class="">Activity Name</th>
+                                <th class="">Reporting Role</th>
+                                <th class="">Activity Count</th>
+                                <th class="">Activity Unit</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @foreach (var item in ViewBag.Checkmaster)
+                            {
+                                <tr>
+                                    <td class="width-45">
+                                        <span class="d-flex justify-content-evenly">
+                                            <a href="#" onclick="location.href='@Url.Action("MAS_CHKMAS", "CRM",new {ids = item.Fid ,Accmain = ViewBag.Accmain,area="CRM"})'" title="Update Shift"> <i class="fa fa-pencil fa-lg"></i></a>
+                                            <a href="#" onclick="DeleteCHKMAS('@item.Fid')" title="Delete Task">
+                                                <i class="far fa-trash-alt fa-lg text-danger"></i>
+                                            </a>
+
+
+                                        </span>
+                                    </td>
+                                    <td hidden>@item.Fid</td>
+                                    <td>@item.SiteName</td>
+                                    <td>@item.ActivityName</td>
+                                    <td>@item.ReportingRole</td>
+                                    <td>@item.ActivityCount</td>
+                                    <td>@item.ActivityUnit</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+        <!-- END panel-body -->
+
+    </div>
+    <div id="footer" class="app-footer m-0">
+        &copy;
+        <script>document.write(new Date().getFullYear())</script> Probus Software. All Right Reserved
+    </div>
+</div>
+
+
+<script>
+
+    $(document).ready(function () {
+        function DeleteCHKMAS(Fid) {
+            if (!confirm("Are you sure you want to delete this record?")) {
+                return;
+            }
+
+            $.ajax({
+                url: "/CRMS/CRM/DeleteCHKMAS",
+                type: "GET",
+                data: { Fid: Fid },
+                success: function (response) {
+                    Swal.fire({
+                        icon: response.Icon,
+                        text: response.Message
+                    }).then(function () {
+                        location.reload();
+                    });
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: 'error',
+                        text: 'An error occurred while deleting the record.'
+                    });
+                }
+            });
+        }
+
+        // Make the function globally accessible
+        window.DeleteCHKMAS = DeleteCHKMAS;
+    });
+
+</script>
+
+
+

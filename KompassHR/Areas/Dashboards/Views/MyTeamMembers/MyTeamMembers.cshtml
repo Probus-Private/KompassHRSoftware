@@ -1,0 +1,215 @@
+﻿
+@{
+    ViewBag.Title = "MyTeamMembers";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using System.Drawing
+@using System.Globalization
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+
+
+<style>
+    .container {
+        padding: 30px;
+    }
+
+    .Teambx {
+        margin: 40px 0;
+    }
+
+        .Teambx .TeamMembcard {
+            padding: 10px;
+            width: 100%;
+            border-radius: 10px;
+            background: #fff;
+            position: relative;
+        }
+
+    .TeamMembcard .MembCardHead {
+        display: flex;
+        justify-content: center;
+        margin-top: -50px;
+    }
+
+    .MembCardHead IMG {
+        width: 100PX;
+        border-radius: 50%;
+        height:100px;
+        border: 3PX SOLID #007bff;
+    }
+
+    .TeamMembcard .MembCardBody {
+        margin-top: 15PX;
+        text-align: center;
+        font-size: 16PX;
+    }
+
+    .card-footer {
+        font-size: 14px;
+        text-align: left;
+        border-radius: 10px !important;
+    }
+
+        .card-footer i {
+            margin-right: 10px;
+        }
+</style>
+
+
+
+<div id="content" class="app-content">
+
+    <div class="pageHeader d-flex align-items-center justify-content-between" style="flex-wrap:nowrap;">
+        <h5 class="page-header text-center text-md-start">Our Team</h5>
+        <ol class="breadcrumb float-md-end mb-0">
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                    <img src="~/assets/MenuImages/Home.png" class="img-fluid" style="max-width: 100%;float:right" />
+                </a>
+            </li>
+        </ol>
+    </div>
+    <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+        <p>Our team member details.</p>
+    </div>
+    <div class="container">
+        <div class="row">
+            @foreach (var d in ViewBag.GetMyTeamList)
+            {
+                var FinalPath = "";
+                List<string> normalizedImageUrls = new List<string>();
+                <div class="col-xl-3 col-lg-6 col-md-6">
+                    <div class="Teambx">
+                        <div class="TeamMembcard card">
+                            <div class="MembCardHead">
+                                @if (@d.PhotoPath != null)
+                                {
+                                    if (@d.PhotoPath != null)
+                                    {
+                                        string directoryPath = Path.GetDirectoryName(@d.PhotoPath);
+                                        if (!Directory.Exists(directoryPath))
+                                        {
+                                            if (@d.Gender == "Male")
+                                            {
+                                                <img id="ImagesSrc1" class="ImagesSrcClass" src="~/assets/img/Allimages/Male.png" />
+                                            }
+                                            else
+                                            {
+                                                <img id="ImagesSrc1" class="ImagesSrcClass" src="~/assets/img/Allimages/Female.png" />
+                                            }
+                                        }
+                                        else
+                                        {
+                                            string directoryPath1 = Path.GetDirectoryName(@d.PhotoPath);
+                                            if (Directory.Exists(directoryPath1))
+                                            {
+                                                using (Image image = Image.FromFile(@d.PhotoPath))
+                                                {
+                                                    using (MemoryStream m = new MemoryStream())
+                                                    {
+                                                        image.Save(m, image.RawFormat);
+                                                        byte[] imageBytes = m.ToArray();
+
+                                                        // Convert byte[] to Base64 String
+                                                        string base64String = Convert.ToBase64String(imageBytes);
+
+                                                        FinalPath = "data:image; base64," + base64String;
+                                                        //normalizedImageUrls.Add(FinalPath);
+                                                    }
+                                                }
+                                                <img id="ImagesSrc1" class="ImagesSrcClass" src="@FinalPath" />
+                                            }
+                                            else
+                                            {
+                                                if (@d.Gender == "Male")
+                                                {
+                                                    <img id="ImagesSrc1" class="ImagesSrcClass" src="~/assets/img/Allimages/Male.png" />
+                                                }
+                                                else
+                                                {
+                                                    <img id="ImagesSrc1" class="ImagesSrcClass" src="~/assets/img/Allimages/Female.png" />
+                                                }
+                                            }
+                                        }
+
+                                    }
+                                }
+                                else
+                                {
+                                    if (@d.Gender == "Male")
+                                    {
+                                        <img id="ImagesSrc1" class="ImagesSrcClass" src="~/assets/img/Allimages/Male.png" />
+                                    }
+                                    else
+                                    {
+                                        <img id="ImagesSrc1" class="ImagesSrcClass" src="~/assets/img/Allimages/Female.png" />
+                                    }
+                                }
+                            </div>
+
+                            <div class="MembCardBody">
+                                <div class="EmpId" id="txtEmployeeNo">
+                                    @d.EmployeeNo
+                                </div>
+                                <div class="EmpName">
+                                    @d.EmployeeName
+                                </div>
+                                <hr>
+
+                            </div>
+                            <div class="card-footer">
+                                <div class="EmpDesignation"><i class="fa fa-user-tag"></i>@d.DesignationName</div>
+                                <div class="EmpDoJ"> <i class="fa fa-calendar-days"></i>@string.Format("{0:dd/MMM/yyyy}", d.JoiningDate)</div>
+                                <div class="EmpDoJ"> <i class="fa fa-clock-rotate-left"></i>@d.Experience</div>
+                                <div class="EmpMob"> <i class="fa fa-phone"></i>@d.PrimaryMobile</div>
+                                <div class="EmpMob"> <i class="fa fa-phone"></i>@d.CompanyMobileNo</div>
+                                <div class="EmpEmail"><i class="fa fa-envelope"></i>@d.PersonalEmailId</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+<script>
+    //$(document).ready(function () {
+    //    debugger;
+    //    $.ajax({
+    //        async: true,
+    //        type: 'GET',
+    //        dataType: 'JSON',
+    //        contentType: 'application/json; charset=utf-8',
+    //        url: 'GetPhotoBase64Convert',
+    //        data:  {},
+    //        success: function (data) {
+    //            debugger;
+    //            if (data.list.length != 0) {
+    //                for (i = 0; i < data.list.length; i++) {
+    //                    var ImagesSrcId = "ImagesSrcId" + i;
+    //                    var img = document.getElementById("ImagesSrc1");
+    //                    img.id = ImagesSrcId;
+
+    //                    var PhotoPath = data.list[i];
+    //                    if (PhotoPath != "") {
+    //                        document.getElementById(ImagesSrcId).src = PhotoPath;
+    //                    }
+    //                }
+    //            }
+    //            //$(".Userloaderbg").css("display", "none");
+    //        },
+    //    });
+
+    //});
+</script>

@@ -1,0 +1,465 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_Training.TrainingPlan_Document
+@{
+    ViewBag.Title = "TrainingPlanUploadFile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+
+<style>
+    #txtURL-error, #fileUploadFile-error, label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .lbltext {
+        text-align: left;
+        height: 25px;
+        color: green;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    th:nth-child(1), td:nth-child(1) {
+        width: 80px; /* Set the width for the first column */
+    }
+
+    #ListLMSLibrary tbody tr {
+        background-color: #fff !important;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Upload Training Plan Documents.
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("ESS_AdminDashboard_Dashboard", "ESS_AdminDashboard_Dashboard", new { id = 32, ScreenId = 121, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("GetTrainingPlanList", "ESS_Training_TrainingPlan", new {ScreenId = 558, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Settings">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">
+                        Training Plan Documents.
+                        </h4>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Upload training plan documents here.
+                    </p>
+                </div>
+                <div class="panel-body" data-scrollbar="false">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdateUploadFile", "ESS_Training_TrainingPlan", new { area = "ESS" })' id="MainForm" method="post" enctype="multipart/form-data">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Title
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-10">
+                                                @Html.TextBoxFor(model => model.Title, new { @class = "form-control", type = "text", name = "Title", id = "txtTitle", autocomplete = "Off" })
+                                                @Html.ValidationMessageFor(model => model.Title, null, new { @class = "help-block", @id = "ErrorTitle", @style = "color:red" })
+                                                @Html.HiddenFor(model => model.TrainingPlanId, new { @id = "TrainingPlanId" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <style>
+                                    .progress-container {
+                                        posit width: 30%;
+                                        background: #ddd;
+                                        border-radius: 0px;
+                                        overflow: hidden;
+                                        height: 18px;
+                                        margin-top: -15px;
+                                    }
+
+                                    .progress-bar {
+                                        height: 100%;
+                                        width: 0;
+                                        background: linear-gradient(to right, #00c6ff, #0072ff);
+                                        transition: width 0.4s ease;
+                                    }
+
+                                    .progress-text {
+                                        position: absolute;
+                                        top: 0;
+                                        left: 50%;
+                                        transform: translateX(-50%);
+                                        height: 100%;
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: center;
+                                        font-weight: bold;
+                                        color: #333;
+                                    }
+                                </style>
+
+
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Upload File
+                                            </label>
+                                            <div class="col-md-10">
+                                                <input class="form-control" type="file" onchange="ResetFile(this)" name="DocumentPath" id="DocumentPath" accept=".pdf, image/png, image/jpeg, video/*" />
+                                                @Html.ValidationMessageFor(model => model.DocumentPath, null, new { @class = "help-block", @id = "ErrorDocumentPath", @style = "color:red" })
+                                                <label class="form-label col-form-label col-md-8" id="fileUploadFile-lbltext">Only allow jpeg, jpg, png, pdf and video</label>
+                                                <label class="form-label col-form-label col-md-8" id="fileUploadFile-lbltext">@TempData["FileName"]</label>
+                                                <div id="loader" style="display:none;text-align:center;">
+                                                    <img src="https://i.gifer.com/ZZ5H.gif" alt="Uploading..." style="width:50px;height:50px;" />
+                                                </div>
+
+                                                <div class="progress-container" id="divProcessBar" style="display:none">
+                                                    <div class="progress-bar" id="progressBar"></div>
+                                                    <div class="progress-text" id="progressText">0%</div>
+                                                </div>
+
+                                                <div id="result" style="margin-top:10px;"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="button" id="btnSubmit" class="btn btn-primary btn-sm">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <hr />
+                    <div class="table-scroll div1">
+                        <div class="table-wrap">
+                            <table class="table table-bordered TablePage4" id="" style="width: 100%">
+                                <thead style="background-color: rgba(233, 236, 239, 1) !important;">
+                                    <tr>
+                                        <th class="text-nowrap">Delete  </th>
+                                        <th class="text-nowrap">Title </th>
+                                        <th class="text-nowrap">Document Name </th>
+                                        <th class="text-nowrap">FilteType</th>
+                                        <th class="text-nowrap" hidden>Download</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (ViewBag.GetListTrainingPlan != null)
+                                    {
+                                        foreach (var d in ViewBag.GetListTrainingPlan)
+                                        {
+                                            <tr>
+
+                                                <td class="text-center">
+                                                    <a onclick="DeletePlan('@d.TrainingPlanDoc_Encrypted','@d.DocumentPath','@d.TrainingPlan_PlanId')" id="btnDelete"
+                                                       style="cursor:pointer">
+                                                        <i class="fa-solid fa-trash-alt text-danger fa-lg"></i>
+                                                    </a>
+                                                </td>
+
+                                                <td>@d.Title</td>
+                                                <td>@d.DocumentPath</td>
+                                                <td>@d.FileType</td>
+                                                @if (d.FilePath == "File Not Found")
+                                                {
+                                                    <td class="text-center" hidden>
+                                                        <a style="cursor:pointer;">
+                                                            <i class="fa-solid fa-xmark text-danger fa-lg"></i>
+                                                        </a>
+                                                    </td>
+                                                }
+                                                else
+                                                {
+                                                    <td class="text-center" hidden>
+                                                        <a onclick="DownloadLMSLibrary('@d.FilePath')" id="btnDownload"
+                                                           style="cursor:pointer">
+                                                            <i class="fa-solid fa-arrow-down text-danger fa-lg"></i>
+                                                        </a>
+                                                    </td>
+                                                }
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>   <!-- END panel -->
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: false
+                }).then(function () {
+                    window.location.reload();
+                });
+            }
+        }
+        $('.ListLMSLibrary').DataTable({
+            scrollY: 200,
+            scrollCollapse: true,
+            paging: false,
+            scrollX: true,
+            searching: true, // Enable searching
+            strippedclass:[]// Enable searching});
+        });//Ready Funcation
+    });
+</script>
+
+<script>
+    function validateFileSize(input) {
+        const file = input.files[0];
+        const maxSize = 3 * 1024 * 1024; // 3 MB in bytes
+
+        if (file && file.size > maxSize) {
+            alert("File size must be less than 3 MB.");
+            input.value = ''; // Clear the file
+        }
+    }
+</script>
+
+<script>
+    function validateFileSize(input) {
+        const file = input.files[0];
+        const maxSize = 3 * 1024 * 1024; // 3 MB in bytes
+
+        if (file && file.size > maxSize) {
+            alert("File size must be less than 3 MB.");
+            input.value = ''; // Clear the file
+        }
+    }
+
+
+    //use for add regex function
+    jQuery.validator.addMethod(
+  "regex",
+   function(value, element, regexp) {
+       if (regexp.constructor != RegExp)
+           regexp = new RegExp(regexp);
+       else if (regexp.global)
+           regexp.lastIndex = 0;
+       return this.optional(element) || regexp.test(value);
+   },"erreur expression reguliere"
+);
+
+    // Use for Add validation in form
+    $("#MainForm").validate({
+        rules: {
+
+            Title:{
+                required: true,
+            },
+            DocumentPath: {
+                required: true,
+            },
+        },
+        messages: {
+
+            Title:{
+                required: "Title is required",
+            },
+            DocumentPath: {
+                required: "Choose a file",
+            },
+        }
+    });
+
+
+    var form = $("#MainForm");
+    form.validate();
+    $("#btnSubmit").click(function () {
+        debugger;
+        if(form.valid()==false)
+        {
+            return false;
+        }
+        $(".Userloaderbg").css("display", "flex");
+        $("#MainForm").submit();
+
+    });
+
+    //remove here "ResetFile" this function for scan file
+
+</script>
+
+<script>
+    function DeletePlan(TrainingPlanDoc_Encrypted,DocumentPath,TrainingPlan_PlanId) {
+        const DeleteButtons = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        DeleteButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+            allowOutsideClick: () => {
+                const popup = Swal.getPopup()
+                popup.classList.remove('swal2-show')
+                setTimeout(() => {
+                    popup.classList.add('animate__animated', 'animate__headShake')
+                })
+                setTimeout(() => {
+                    popup.classList.remove('animate__animated', 'animate__headShake')
+                }, 500)
+                return false
+            }
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '@Url.Action("DeleteDocument", "ESS_Training_TrainingPlan")' +
+                '?TrainingPlanDoc_Encrypted=' + encodeURIComponent(TrainingPlanDoc_Encrypted) +
+                '&FileName=' + encodeURIComponent(DocumentPath) +
+                '&TrainingPlan_PlanId=' + encodeURIComponent(TrainingPlan_PlanId);
+
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+
+            }
+        })
+    }
+
+
+</script>
+
+
+<script>
+    function DownloadLMSLibrary(attachmentPath) {
+        debugger;
+        if (attachmentPath!="File Not Found")
+        {
+            var url = '@Url.Action("DownloadAttachment", "Setting_LMS_Library")';
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: { DownloadAttachment: attachmentPath },
+                success: function (response) {
+                    debugger;
+                    if (response.Success) {
+                        var fileName = response.FileName;
+                        var fileData = atob(response.FileData);  // Decode the base64 string
+                        var byteArray = new Uint8Array(fileData.length);
+                        for (var i = 0; i < fileData.length; i++) {
+                            byteArray[i] = fileData.charCodeAt(i);
+                        }
+
+                        var blob = new Blob([byteArray], { type: response.ContentType });
+                        var downloadUrl = window.URL.createObjectURL(blob);
+                        var a = document.createElement('a');
+                        a.href = downloadUrl;
+                        a.download = fileName;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
+                        window.URL.revokeObjectURL(downloadUrl);
+                    }
+                    else {
+                        Swal.fire({
+                            icon: response.Icon || 'error',
+                            text: response.Message || 'An error occurred.',
+                            allowOutsideClick: false
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    Swal.fire({
+                        icon: 'error',
+                        text: 'An unexpected error occurred.',
+                        allowOutsideClick: false
+                    });
+                }
+            });
+        }
+        else{
+            var Message1 = "The file has not been uploaded.";
+            var Icon1 = "error";
+            if (Message1 != null) {
+                if (Message1 != null) {
+                    Swal.fire({
+                        icon: Icon1,
+                        text: Message1,
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup()
+                            popup.classList.remove('swal2-show')
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake')
+                            })
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake')
+                            }, 500)
+                            return false
+                        }
+                    });
+                }
+            }
+        }
+
+    }
+</script>

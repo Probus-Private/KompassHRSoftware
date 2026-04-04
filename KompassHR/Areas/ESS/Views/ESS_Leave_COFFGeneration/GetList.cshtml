@@ -1,0 +1,542 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_Leave.Atten_CoffGeneration
+
+@{
+    ViewBag.Title = "GetList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+
+
+<style>
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    .tblAddData td:nth-child(9) {
+        display: none;
+    }
+</style>
+
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                COFF Generation
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_Leave_Menu", "ESS_Leave_Menu", new {id = 4, ScreenId=145, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">COFF Generation - List</h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        This is the list of COff Generation.
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <a href="@Url.Action("ESS_Leave_COFFGeneration", "ESS_Leave_COFFGeneration", new { area = "ESS" })">
+                                <button type="button" class="btn btn-primary btn-sm  mb-10px">
+                                    <i class="fa-solid fa-plus"></i> &nbsp; Add
+                                </button>
+                            </a>
+
+                            <form role="form" action='@Url.Action("GetList", "ESS_Leave_COFFGeneration", new { area = "ESS" })' id="SaveCOFFGenerationlist">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Company Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.CmpID, new SelectList(ViewBag.CompanyName, "Id", "Name"), "--Select--", new { @class = "form-select", id = "ddlCmpId", type = "text", name = "CmpId", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Business Unit <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.CoffGenerationBranchID, new SelectList(ViewBag.BranchName, "Id", "Name"), "-Select--", new { @class = "form-select", id = "ddlBranchId", type = "text", name = "BranchId", autocomplete = "Off" })
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                From Date
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.FromDate, new { @class = "form-control", name = "FromDate", type = "date", id = "txtFromDate" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                To Date
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.ToDate, new { @class = "form-control", name = "FromDate", type = "date", id = "txtToDate" })
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Employee Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.CoffGenerationEmployeeID, new SelectList(ViewBag.EmployeeName, "Id", "Name"), "--Select--", new { @id = "ddlCoffGenerationEmployeeID", name = "CoffGenerationEmployeeID", @class = "form-select", autocomplete = "off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button" id="btnShow" class="btn btn-primary btn-sm  mb-10px" onclick="ShowData()">
+                                            &nbsp; Show
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                            <!-- BEGIN table-responsive -->
+                            <div class="table-scroll div1">
+                                <div class="table-wrap">
+                                    <table class="table table-bordered align-middle TablePage" id="fixed-header"
+                                           style="width: 100%;">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-nowrap width-45">Extend</th>
+                                                <th class="text-nowrap width-45">Delete</th>
+                                                <th class="text-nowrap">Doc No</th>
+                                                <th class="text-nowrap">Doc Date </th>
+                                                <th class="text-nowrap">Company </th>
+                                                <th class="text-nowrap">Business Unit </th>
+                                                <th class="text-nowrap">Employee Name</th>
+                                                <th class="text-nowrap">Days</th>
+                                                <th class="text-nowrap">Coff Generation Date</th>
+                                                <th class="text-nowrap">Remark</th>
+                                                <th class="text-nowrap">CoffStatus</th>
+                                                <th class="text-nowrap">Coff Exprired Date</th>
+                                                <th class="text-nowrap">Extension Date</th>
+                                                <th class="text-nowrap">Extension Remark</th>
+                                                <th class="text-nowrap">Generated Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var d in (ViewBag.GetCoffGeneration ?? new List<dynamic>()))
+                                            {
+                                            <tr>
+                                                <td class="text-center">
+                                                    <a onclick="UpdateCoffGenration('@d.CoffGenerationID_Encrypted','@d.CoffStatus')" id="UpdateBtn" style="cursor:pointer;">
+                                                        <i class="fa-solid fa-pen-to-square fa-lg text-Dark"></i>
+                                                    </a>
+                                                </td>
+                                                <td class="text-center">
+                                                    <a onclick="DeleteCoffGenration('@d.CoffGenerationID_Encrypted')" id="DeleteBtn" style="cursor:pointer;">
+                                                        <i class="fa-solid fa-trash-alt text-danger fa-lg"></i>
+                                                    </a>
+                                                </td>
+                                                <td class="text-nowrap">@d.DocNo</td>
+                                                <td class="text-nowrap">@d.DocDate</td>
+                                                <td class="text-nowrap">@d.CompanyName</td>
+                                                <td class="text-nowrap">@d.BranchName</td>
+                                                <td class="text-nowrap">@d.EmployeeName</td>
+                                                <td class="text-nowrap">@d.Approvenoofcoff</td>
+                                                <td class="text-nowrap">@d.CoffGenerationDate</td>
+                                                <td class="text-nowrap">@d.Reason</td>
+                                                <td class="text-nowrap">@d.CoffStatus</td>
+                                                <td class="text-nowrap">@d.CoffExpriredDate</td>
+                                                <td class="text-nowrap">@d.ExtensionDate</td>
+                                                <td class="text-nowrap">@d.ExtensionRemark</td>
+                                                <td class="text-nowrap">@d.CoffGenerationStatus</td>
+                                            </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END panel -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#ddlCmpId").select2();
+        $("#ddlBranchId").select2();
+        $("#ddlCoffGenerationEmployeeID").select2();
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                });
+            }
+        }
+
+        $("#ddlCmpId").change(function () {
+            debugger;
+            $("#ddlBranchId").find("option").remove();
+            var CmpId = $("#ddlCmpId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetBusinessUnit", "ESS_Leave_COFFGeneration")',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    debugger;
+                    if (data != null) {
+                        $("#ddlBranchId").append("<option value=''>--Select-- </option>");
+                        $.each(data, function (i, p) {
+                            $("#ddlBranchId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                }
+            })
+        });
+
+
+        $("#ddlBranchId").change(function () {
+            debugger;
+            $("#ddlCoffGenerationEmployeeID").find("option").remove();
+            var Buninessunit = $("#ddlBranchId").val();
+            var companyId = $("#ddlCmpId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetEmployeeName", "ESS_Leave_COFFGeneration")',
+                data: { Buninessunit: Buninessunit, companyId: companyId },
+                success: function (data) {
+                    debugger;
+                    var GetEmployee1= data.GetEmployee;
+                    if (GetEmployee1 != null) {
+                        $("#ddlCoffGenerationEmployeeID").append("<option value=''>--Select-- </option>");
+                        $.each(GetEmployee1, function (i, p) {
+                            $("#ddlCoffGenerationEmployeeID").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                }
+            });
+        });
+    });
+
+</script>
+
+<script>
+
+    function UpdateCoffGenration(CoffGenerationID_Encrypted,CoffStatus) {
+        if (CoffStatus=="Taken")
+        {
+            var Message ="Coff already taken.";
+            var Icon ="error";
+            if (Message != null) {
+                if (Message != null) {
+                    Swal.fire({
+                        icon: Icon,
+                        text: Message,
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup()
+                            popup.classList.remove('swal2-show')
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake')
+                            })
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake')
+                            }, 500)
+                            return false
+                        }
+                    });
+                }
+            }
+            return false;
+        }
+
+        var url = '@Url.Action("ESS_Leave_COFFGeneration", "ESS_Leave_COFFGeneration")?CoffGenerationID_Encrypted=' + CoffGenerationID_Encrypted;
+        window.location.href = url;
+    }
+
+    function DeleteCoffGenration(CoffGenerationID_Encrypted) {
+        const DeleteButtons = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        DeleteButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+            allowOutsideClick: () => {
+                const popup = Swal.getPopup()
+                popup.classList.remove('swal2-show')
+                setTimeout(() => {
+                    popup.classList.add('animate__animated', 'animate__headShake')
+                })
+                setTimeout(() => {
+                    popup.classList.remove('animate__animated', 'animate__headShake')
+                }, 500)
+                return false
+            }
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '@Url.Action("Delete", "ESS_Leave_COFFGeneration")?CoffGenerationID_Encrypted=' + CoffGenerationID_Encrypted;
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+
+            }
+        })
+    }
+
+    //use for add regex function
+    jQuery.validator.addMethod(
+    "regex",
+     function(value, element, regexp) {
+         if (regexp.constructor != RegExp)
+             regexp = new RegExp(regexp);
+         else if (regexp.global)
+             regexp.lastIndex = 0;
+         return this.optional(element) || regexp.test(value);
+     },"erreur expression reguliere"
+  );
+
+    $('#SaveCOFFGenerationlist').validate({
+        rules: {
+            CmpID: {
+                required: true,
+            },
+            CoffGenerationBranchID: {
+                required:true,
+            },
+            FromDate: {
+                required:true,
+            },
+            ToDate: {
+                required:true,
+            },
+            CoffGenerationEmployeeID: {
+                required:true,
+            },
+        },
+        messages: {
+
+            CmpID: {
+                required:"Comapny name is required",
+            },
+            CoffGenerationBranchID: {
+                required:"Buniess Unit is required",
+            },
+            FromDate: {
+                required:"From Date is required",
+            },
+            ToDate: {
+                required:"To Date is required",
+            },
+            CoffGenerationEmployeeID: {
+                required:"Employee Name is required"
+            },
+        },
+    });
+
+    var form = $("#SaveCOFFGenerationlist");
+    form.validate();
+
+    function ShowData(){
+        debugger
+        form.valid();
+        if(form.valid()==false)
+        {
+            $("#txtEstablishedDate").removeClass("error");
+            return false;
+        }
+
+        $("#SaveCOFFGenerationlist").submit();
+    }
+
+</script>

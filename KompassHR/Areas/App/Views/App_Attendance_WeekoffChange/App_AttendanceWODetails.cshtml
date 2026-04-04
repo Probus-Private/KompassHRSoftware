@@ -1,0 +1,241 @@
+﻿
+@{
+    ViewBag.Title = "App_AttendanceWODetails";
+    Layout = "~/Views/Shared/_MobileLayout.cshtml";
+}
+
+
+
+<style>
+    .app-header-fixed {
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+
+    .app-content {
+        padding: 5px 5px;
+    }
+</style>
+
+
+
+<div id="content" class="app-content">
+    <!-- BEGIN panel -->
+    <div class="panel panel-inverse" data-sortable-id="index-1">
+        <div class="panel-body" data-scrollbar="false">
+            <div class="row">
+                <div class="col-md-2">
+                    <a href="@Url.Action("App_Attendance_Weekoffchange", "App_Attendance_Weekoffchange", new { area = "App" })">
+                        <button type="button" class="btn btn-primary btn-sm">
+                            <i class="fa-solid fa-plus"></i> &nbsp; Add
+                        </button>
+                    </a>
+                </div>
+                @{
+                    var WOList = ViewBag.GetAttenWOList as IEnumerable<dynamic>;
+                    var d = WOList?.FirstOrDefault();
+                }
+                <div class="container px-1 py-1">
+                    @{
+                        var leaveMasterId = d?.WOID ?? 0;
+                    }
+                    <div class="card">
+                        <div class="card-body">
+                            <p><strong>Employee Name:</strong> @(d?.EmployeeName ?? "")</p>
+                            <p><strong>Week off Date:</strong> @(d?.WO_Date ?? "")</p>
+                            <p><strong>Remark:</strong> @(d?.Remark ?? "")</p>
+                            <p><strong>Created by:</strong>@(d?.CreatedBy ?? "")</p>
+                            <p><strong>Created Date:</strong> @(d?.CreatedDate ?? "")</p>
+                            <p><strong>Modify by:</strong> @(d?.ModifyBy ?? "")</p>
+                           
+                            <p><strong>Modified Date:</strong> @(d?.ModifiedDate ?? "")</p>
+                            
+                        </div>
+                        <div class="card-footer">
+                            <div class="action-buttons d-flex justify-content-between px-3 pb-3">
+
+                                <a href="@Url.Action("App_GetList", "App_Attendance_Weekoffchange", new { area = "App" })" class="btn btn-outline-primary btn-sm">
+                                    <i class="fa fa-list"></i> List
+                                </a>
+
+                                <button onclick="DeleteAttenWO('@d.WOID')" class="btn btn-outline-danger btn-sm">
+                                    <i class="fa fa-trash"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+   
+
+function DeleteAttenWO(WOID) {
+        debugger
+            const DeleteButtons = Swal.mixin({
+                customClass: {
+                    cancelButton: ' btnpress',
+                    confirmButton: ' btnpress'
+                },
+                buttonsStyling: true
+            })
+            DeleteButtons.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: false,
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup()
+                    popup.classList.remove('swal2-show')
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                    })
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                    }, 500)
+                    return false
+                }
+
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '@Url.Action("App_Delete", "App_Attendance_WeekoffChange")?WOID=' + WOID;
+                } else if (
+                    /* Read more about handling dismissals below */
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+
+                }
+            })
+        }
+</script>
+
+<script>
+    function SendCancelRequest() {
+        //$("#CancelModal").modal('show');
+        var ddlManagerName = $('select#ddlManagerName option:selected').val();
+        if (ddlManagerName == "") {
+            $("#ErrorMessage").html("Please select approver name");
+            $("#ddlManagerName").focus();
+            return false;
+        }
+        else {
+            $("#ErrorMessage").html("");
+        }
+
+        const Approved = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        Approved.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes Submit!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+
+            allowOutsideClick: false
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                debugger;
+                $("#CancelModal").modal('hide');
+                $(".Userloaderbg").css("display", "flex");
+                var GetLeaveId = localStorage.getItem('LeaveMasterId');
+
+                var ddlManagerId = $("#ddlManagerName").val();
+                var Origin = "Leave";
+                Remark = $("#txtApproveRejectRemark").val();
+                $("#CancelModal").modal('hide');
+                $(".Userloaderbg").css("display", "flex");
+                $.ajax({
+                    url: "@Url.Action("CancelRequest", "ESS_TimeOffice_Leave")",
+                    method: "get",
+                    data: { LeaveMasterId: GetLeaveId, ddlManagerId: ddlManagerId, Remark: Remark, Origin: Origin },
+                    success: function (response) {
+                        debugger;
+                        var Message1 = response.Message;
+                        var Icon1 = response.Icon;
+                        if (response.Icon == "error") {
+                            if (Message1 != null) {
+                                if (Message1 != null) {
+                                    Swal.fire({
+                                        icon: Icon1,
+                                        text: Message1,
+                                        allowOutsideClick: false
+                                    })
+                                    .then((result) => {
+                                        if (result.isConfirmed) {
+                                            $("#CancelModal").modal('hide');
+                                            $("#txtApproveRejectRemark").val("")
+                                            window.location.reload();
+
+                                            //window.location.href = '@Url.Action("MbLeaveMasterDetails", "ESS_TimeOffice_Leave")';
+                                        } else if (
+                                            /* Read more about handling dismissals below */
+                                            result.dismiss === Swal.DismissReason.cancel
+                                        ) {
+
+                                        }
+                                    })
+                                }
+                            }
+                        }
+                        else {
+                            var Message1 = response.Message;
+                            var Icon1 = response.Icon;
+                            if (response.Icon == "success") {
+                                if (Message1 != null) {
+                                    if (Message1 != null) {
+                                        Swal.fire({
+                                            icon: Icon1,
+                                            text: Message1,
+                                            allowOutsideClick: false
+                                        })
+                                        .then((result) => {
+                                            if (result.isConfirmed) {
+                                                window.location.reload();
+
+                                                //window.location.href = '@Url.Action("MbLeaveMasterDetails", "ESS_TimeOffice_Leave")';
+                                            } else if (
+                                                /* Read more about handling dismissals below */
+                                                result.dismiss === Swal.DismissReason.cancel
+                                            ) {
+
+                                            }
+                                        })
+
+                                        $("#CancelModal").modal('hide');
+                                        $("#txtApproveRejectRemark").val("");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+            } else if (
+                /* Read more about handling dismissals below */
+                                result.dismiss === Swal.DismissReason.cancel
+                            ) {
+                $("#CancelModal").modal('hide');
+                $("#ddlManagerName").val(null);
+                $("#txtApproveRejectRemark").val("");
+            }
+        })
+    }
+</script>
+

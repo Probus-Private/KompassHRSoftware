@@ -1,0 +1,897 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_TimeOffice.Leave_ShortLeave
+@{
+    ViewBag.Title = "Short Leave";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+<script src="~/assets/js/CaptchaVerification.js"></script>
+
+<style>
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    .teambx {
+        border: 1px solid gray;
+        padding: 10px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        margin: 10px 5px;
+        border-radius: 10px;
+    }
+
+        .teambx .teamheading {
+            position: absolute;
+            right: 0px;
+            bottom: 5px;
+            padding: 5px 15px;
+            width: fit-content;
+            border-radius: 20px 0px 0px 20px;
+            background: #000;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 900;
+        }
+
+        .teambx .teamname {
+            font-size: 16px;
+            font-weight: 800;
+            border-bottom: 1px solid lightgray;
+            margin-bottom: 8px;
+        }
+
+    .teamname i {
+        margin-right: 0 10px !important;
+    }
+
+    .teamcontactBx {
+        font-size: 14px;
+        text-align: left;
+        font-weight: 600;
+    }
+
+        .teamcontactBx i {
+            margin: 0 5px;
+        }
+</style>
+
+
+
+<div id="content" class="app-content">
+    <!-- BEGIN breadcrumb -->
+    <ol class="breadcrumb float-xl-end">
+        <li class="breadcrumb-item"><a href="/Dashboard/Dashboard/Dashboard">Dashboard</a></li>
+        <li class="breadcrumb-item active"><a href="/ESS/ESS_TimeOffice_Menu/ESS_TimeOffice_Menu/?id=5">Attendance Menu</a></li>
+    </ol>
+    <!-- END breadcrumb -->
+    <!-- BEGIN page-header -->
+    <h1 class="page-header">Short Leave </h1>
+    <!-- END page-header -->
+
+    <div class="row">
+        <div class="col-md-8">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">Short Leave - Add</h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Short leaves provide employees with the flexibility to address personal matters or emergencies without significantly disrupting work operations.
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form action="/ESS/ESS_TimeOffice_ShortLeave/SaveUpdate" id="FormShortLeave" method="post" data-parsley-validate="true">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4"></label>
+                                            <div class="col-md-8 d-flex justify-content-end">
+                                                <div class="Tooltip">
+                                                    <button type="button"
+                                                            class="btn btn-success btn-sm btnpress"
+                                                            style="margin: 0 5px;">
+                                                        <i class="fa-solid fa-download"></i>
+                                                        <div class="Tooltip-text">Download</div>
+                                                    </button>
+                                                </div>
+                                                <div class="Tooltip">
+                                                    <button type="button" class="btn btn-red btn-sm btnpress"
+                                                            style="margin: 0 5px;">
+                                                        <i class="fa-solid fa-chart-column"></i>
+                                                        <div class="Tooltip-text">Attendance</div>
+                                                    </button>
+                                                </div>
+                                                <div class="Tooltip">
+                                                    <button type="button" class="btn btn-green btn-sm btnpress"
+                                                            style="margin: 0 5px;">
+                                                        <i class="fa-solid fa-question"></i>
+                                                        <div class="Tooltip-text">Help</div>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            @Html.HiddenFor(model => Model.ShortLeaveId_Encrypted)
+                                            @Html.HiddenFor(model => model.ShortLeaveId)
+                                            <label class="form-label col-form-label col-md-4"> Doc No. <span class="important">*</span></label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => Model.DocNo, new { @class = "form-control mb-5px", @id = "txtDocNo", @readonly = "readonly", Value = @ViewBag.DocNo.DocNo, Style = "background-color: #eee;" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">Date <span class="important">*</span></label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.ShortLeaveDate, new { @class = "form-control", @id = "ShortLeaveDate", Type = "date" })
+                                                @Html.ValidationMessageFor(model => model.ShortLeaveDate, "", new { @class = "help-block", @id = "ErrorShortLeaveDate", @style = "color:red" })
+                                            </div>
+                                            <div hidden>
+                                                @Html.TextBox("BAckDate", "", new { @class = "form-control", @id = "BAckDate", Type = "text" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Shift
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.ShortLeaveShiftId, new SelectList(ViewBag.GetShiftList, "ShiftId", "ShiftName"), "--Select--", new { id = "ddlShift", name = "ShortLeaveShiftId", @class = "form-select", autocomplete = "off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4"> Direction <span class="important">*</span></label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.Direction, new SelectList(ViewBag.Direction, "Id", "Name"), "--Select--", new { id = "ddlDirection", @class = "form-select", autocomplete = "off", name = "Direction" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4"> From Time<span class="important">*</span></label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.StartTime, new { @class = "form-control", @id = "StartTime", type = "time", autocomplete = "off" })
+                                                @Html.ValidationMessageFor(model => model.StartTime, "", new { @class = "help-block", @id = "ErrorStartTime", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">To Time <span class="important">*</span></label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.EndTime, new { @class = "form-control", @id = "EndTime", type = "Time", autocomplete = "off" })
+                                                @Html.ValidationMessageFor(model => model.EndTime, "", new { @class = "help-block", @id = "ErrorEndTime", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">Total Time Allow <span class="important">*</span></label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.TotalDuration, new { @class = "form-control", @id = "TotalDuration", type = "text", autocomplete = "off", @readonly = "readonly", Style = "background-color: #eee;" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4"> Total Minutes<span class="important">*</span></label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.TotalMinutes, new { @class = "form-control", @id = "TotalMinutes", type = "text", autocomplete = "off", @readonly = "readonly", Style = "background-color: #eee;" })
+                                                @Html.ValidationMessageFor(model => model.TotalMinutes, "", new { @class = "help-block", @id = "ErrorTotalMinutes", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3" style="width: 16.5%;">Reason</label>
+                                            <div class="col-md-9" style="min-width: 83.5%; max-width: 100%;">
+                                                @Html.TextAreaFor(model => model.Reason, new { @class = "form-control", @id = "txtReason", autocomplete = "off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @*<div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3" style="width: 16.5%;"> Addition Notify </label>
+                                            <div class="col-md-9" style="min-width: 83.5%; max-width: 100%;">
+                                                @Html.DropDownListFor(model => model.AdditionNotify, new MultiSelectList(ViewBag.GetAdditionalList, "Id", "Name"), new { id = "ddlAdditionNotify", name = "AdditionNotify", @class = "form-select multiple-select2", @multiple = "multiple" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>*@
+                                <br>
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-4 d-flex">
+                                                <div class="title d-flex align-items-center">
+                                                    Last Record :
+                                                    <span> @ViewBag.LastRecored</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="button" id="btnSubmit" class="btn btn-primary btn-sm">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                        <button type="button" class="btn btn-danger btn-sm" id="btnGetList">
+                                                            <i class="fa-solid fa-share-from-square"></i> List
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+
+        <div class="col-md-4">
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Detail</h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="panel-body" data-scrollbar="true">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="ShortLeaveCountBx d-flex justify-content-between">
+                                <div class="ShortLeaveTitle">
+                                    Total
+                                    <h4 id="ShortLeaveTotalCount" class="ShortLeaveCount p-2 ArrowIconBtn text-black">
+                                        @if (ViewBag.GetTotalCount != null && ViewBag.GetTotalCount.Count > 0)
+                                        {
+                                            @ViewBag.GetTotalCount[0].MonthlyLimit
+                                        }
+
+                                    </h4>
+                                </div>
+                                <div class="ShortLeaveTitle">
+                                    Availed
+                                    <h4 id="ShortLeaveAvailedCount" class="ShortLeaveCount p-2 ArrowIconBtn text-black">
+                                        @if (ViewBag.GetAvailedCount != null && ViewBag.GetAvailedCount.Count > 0)
+                                        {
+                                            @ViewBag.GetAvailedCount[0].Availed
+                                        }
+
+                                    </h4>
+                                </div>
+                                <div class="ShortLeaveTitle">
+                                    Balance
+                                    <h4 id="ShortLeaveBalanceCount" class="ShortLeaveCount p-2 ArrowIconBtn bg-red">
+                                        @if (ViewBag.GetBalanceCount != null && ViewBag.GetBalanceCount.Count > 0)
+                                        {
+                                            @ViewBag.GetBalanceCount[0].Balance
+                                        }
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="max-height:350px; overflow-y:auto;">
+                        <div class="col-md-12">
+                            <!-- BEGIN table-responsive -->
+                            <table class="table table-bordered align-middle" id="fixed-header" style="width: 100%;">
+                                <thead style="background-color:#eee">
+                                    <tr>
+                                        <th class="text-nowrap">Device Log</th>
+                                        <th class="text-nowrap">I/O</th>
+                                        <th class="text-nowrap">Remark</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var d in ViewBag.GetDeviceLogsList)
+                                    {
+                                        <tr>
+                                            <td class="text-nowrap">@d.LogDate</td>
+                                            <td class="text-nowrap">@d.Direction</td>
+                                            <td class="text-nowrap">@d.C1</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- #Start NotificationModalPopUp modal-dialog -->
+<div class="modal fade" id="NotificationModalPopUp" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header bg-black text-white">
+                <h4 class="modal-title">Manager Details</h4>
+                <div class="panel-heading-btn">
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                </div>
+            </div>
+            <div class="modal-body">
+                <!-- BEGIN panel -->
+                <div class="modal-body-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="table table-bordered table-hover mb-0 text-dark align-middle" id="data-table-combine">
+                                <thead style="background-color:#eee">
+                                    <tr>
+                                        <td>Manager Name</td>
+                                        <td>Status</td>
+                                    </tr>
+                                </thead>
+                                <tbody id="tblegetmanagerdetails">
+                                    <!-- Populate this section dynamically with manager details -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- END panel -->
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" id="btnCancel" class="btn btn-primary btn-sm" data-bs-dismiss="modal">
+                    <i class="fa-solid fa-floppy-disk"> </i> Ok
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #End NotificationModalPopUp modal-dialog -->
+<!-- #Start SendNotificationModalPopUp modal-dialog -->
+<div class="modal fade" id="SendNotificationModalPopUp" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    @Html.Action("SendNotificationPopupModal", "ESS_TimeOffice_Leave")
+</div>
+<!-- #End SendNotificationModalPopUp modal-dialog -->
+
+<script>
+
+    $('#btnGetList').on('click', function () {
+        var url = '@Url.Action("ESS_Timeoffice_GetAllRejectApprovalList", "ESS_TimeOffice_ShortLeave")';
+        window.location.href = url;
+    });
+
+    $("#formReset").click(function () {
+        $("#FormShortLeave")[0].reset()
+    });
+
+    $(document).ready(function () {
+        debugger;
+        var Total = $("#ShortLeaveTotalCount").html();
+        var Availed = $("#ShortLeaveAvailedCount").html();
+        var Balance = Total-Availed;
+        $("#ShortLeaveBalanceCount").html(Balance);
+
+
+        //Validation for back day days
+        var BackDatedDays = @Html.Raw(Json.Encode(ViewBag.GetBackDatedDays));
+        var fromDateInput = document.getElementById("ShortLeaveDate");
+        var currentDate = new Date();
+        var minDate = new Date();
+        minDate.setDate(currentDate.getDate() - BackDatedDays);
+        var minDateString = minDate.toISOString().split('T')[0];
+        fromDateInput.setAttribute("min", minDateString);
+        //End Validation for back day days
+
+        var duration = @Html.Raw(Json.Encode(ViewBag.Duration));
+        $("#TotalDuration").val(duration);
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                });
+            }
+        }
+
+        $("#StartTime").change(function () {
+            debugger;
+            var FromTime = $("#StartTime").val();
+            var ToTime = $("#EndTime").val();
+
+            if (ToTime == "" || ToTime == null) {
+                $('#ErrorStartTime').html("");
+            } else if (FromTime >= ToTime) {
+                $('#ErrorStartTime').html("From Time should be less than To time");
+                return false;
+            }else if(FromTime < ToTime){
+                $('#ErrorEndTime ,#ErrorStartTime').html("");
+            }
+            else {
+                $("#ErrorStartTime").html("");
+            }
+
+            var difference = (strToMins(ToTime) - strToMins(FromTime));
+            $('#TotalMinutes').val(difference);
+
+            var TotalTimeAllowed = $('#TotalDuration').val();
+            var TotalMinutes = $('#TotalMinutes').val();
+            var TotalTimeAllow = parseInt(TotalTimeAllowed);
+            var TotalMinutesEnter = parseInt(TotalMinutes);
+            if (TotalMinutesEnter > TotalTimeAllow || TotalMinutesEnter < 0) {
+                $('#ErrorTotalMinutes').html("Total min. should not be greater than total time");
+                return false;
+            }
+        });
+
+
+
+        $("#EndTime").change(function(){
+            debugger;
+            var FromTime = $("#StartTime").val();
+            var ToTime = $("#EndTime").val();
+
+            if (FromTime >= ToTime) {
+                $('#ErrorEndTime').html("To time should be less than from time");
+                return false;
+            } else if(FromTime < ToTime){
+                $('#ErrorEndTime ,#ErrorStartTime').html("");
+            }
+            else {
+                $('#ErrorEndTime').html("");
+            }
+
+            if (ToTime >= FromTime) {
+                $('#ErrorTotalMinutes').html("Total min. should not be greater than total time");
+            }
+
+            var difference = (strToMins(ToTime) - strToMins(FromTime));
+            $('#TotalMinutes').val(difference);
+
+            var TotalTimeAllowed = $('#TotalDuration').val();
+            var TotalMinutes = $('#TotalMinutes').val();
+            var TotalTimeAllow = parseInt(TotalTimeAllowed);
+            var TotalMinutesEnter = parseInt(TotalMinutes);
+
+            if (TotalMinutesEnter > TotalTimeAllow || TotalMinutesEnter < 0) {
+                $('#ErrorTotalMinutes').html("Total min. should not be greater than total time");
+                return false;
+            } else {
+                $('#ErrorTotalMinutes').html("");
+            }
+        });
+
+        debugger
+        function strToMins(t) {
+            var s = t.split(":");
+            return Number(s[0]) * 60 + Number(s[1]);
+        }
+
+        function minsToStr(t) {
+            return Math.trunc(t / 60)+':'+('00' + t % 60).slice(-2);
+        }
+
+        var date = new Date();
+        var dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000 )).toISOString().split("T")[0];
+        $("#ShortLeaveDate").val(dateString);
+
+    });//ready function
+
+
+</script>
+
+<script>
+    function DeleteShortLeave(ShortLeaveId_Encrypted) {
+
+        const DeleteButtons = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        DeleteButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+            allowOutsideClick: () => {
+                const popup = Swal.getPopup()
+                popup.classList.remove('swal2-show')
+                setTimeout(() => {
+                    popup.classList.add('animate__animated', 'animate__headShake')
+                })
+                setTimeout(() => {
+                    popup.classList.remove('animate__animated', 'animate__headShake')
+                }, 500)
+                return false
+            }
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '@Url.Action("DeleteShortLeave", "ESS_TimeOffice_ShortLeave")?ShortLeaveId_Encrypted=' + ShortLeaveId_Encrypted;
+
+            } else if (
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+
+            }
+        })
+    }
+
+
+    jQuery.validator.addMethod(
+    "regex",
+        function(value, element, regexp) {
+            if (regexp.constructor != RegExp)
+                regexp = new RegExp(regexp);
+            else if (regexp.global)
+                regexp.lastIndex = 0;
+            return this.optional(element) || regexp.test(value);
+        },"erreur expression reguliere"
+    );
+
+    $('#FormShortLeave').validate({
+        rules: {
+            ShortLeaveShiftId:{
+                required: true,
+            },
+            ShortLeaveDate: {
+                required: true,
+            },
+            ShortLeaveEmployeeId: {
+                required: true,
+            },
+            ShortLeaveShiftId: {
+                required: true,
+            },
+            Direction: {
+                required: true,
+            },
+            StartTime: {
+                required: true,
+            },
+            EndTime: {
+                required: true,
+            },
+        },
+        messages: {
+            ShortLeaveShiftId:{
+                required: "Please select shift",
+            },
+            ShortLeaveDate: {
+                required: "Short Leave Date is required",
+            },
+            ShortLeaveEmployeeId: {
+                required: "Short Leave Employee Id is required",
+            },
+            ShortLeaveShiftId: {
+                required: "Short Leave Shift Id is required",
+            },
+            Direction: {
+                required: "Direction is required",
+            },
+            StartTime: {
+                required: "StartTime is required",
+            },
+            EndTime: {
+                required: "EndTime is required",
+            },
+        },
+    });
+
+    var form = $( "#FormShortLeave" );
+    form.validate();
+    $("#btnSubmit").click(function () {
+        debugger;
+        if(form.valid()==false)
+        {
+            $("#ShortLeaveDate").removeClass('error');
+            $("#StartTime").removeClass('error');
+            $("#EndTime").removeClass('error');
+            return false;
+        }
+        var AdditionalNotify = [];
+        for (var option of document.getElementById('ddlAdditionNotify').options)
+        {
+            if (option.selected) {
+                AdditionalNotify.push(option.value);
+            }
+        }
+        var AdditionalNotifyPerson = JSON.stringify(AdditionalNotify);
+        var ShortLeaveDate=$("#ShortLeaveDate").val();
+        var ShortLeaveTotalCount = $("#ShortLeaveTotalCount").val();
+        var shortLeaveShiftId = $("#ddlShift").val();
+        var FromTime = $("#StartTime").val();
+        var ToTime = $("#EndTime").val();
+        var ErrorEndTime = $("#ErrorEndTime").text();
+        var ErrorStartTime = $("#ErrorStartTime").text();
+        var ShortLeaveId_Encrypted=$("#ShortLeaveId_Encrypted").val();
+        var TotalMinutes = $("#TotalMinutes").val();
+        var duration = @Html.Raw(Json.Encode(ViewBag.Duration));
+        var ShortLeaveTotalCount = Number($("#ShortLeaveTotalCount").html());
+        var ShortLeaveBalanceCount = $("#ShortLeaveBalanceCount").html();
+        if(ShortLeaveTotalCount == "")
+        {
+            Swal.fire({
+                title:"",
+                text:"Sorry, total count cannot exceed.",
+                icon:"warning",
+                confirmButton:"ok"
+            });
+            return false;
+        }
+        if(duration < TotalMinutes || FromTime > ToTime || ToTime < FromTime  )
+        {
+            return false;
+        }
+        else
+        {
+            $.ajax({
+                url:"IsShortLeaveExists",
+                method:"get",
+                data:{ShortLeaveDate:ShortLeaveDate,shortLeaveShiftId:shortLeaveShiftId,FromTime:FromTime,ToTime:ToTime,AdditionalNotifyPerson:AdditionalNotifyPerson},
+                success:function(response){
+                    debugger;
+                    var Message1 = response.Message;
+                    var Icon1 = response.Icon;
+                    if (response.Icon=="error") {
+                        if (Message1 != null) {
+                            if (Message1 != null) {
+                                Swal.fire({
+                                    icon: Icon1,
+                                    text: Message1,
+                                    allowOutsideClick: () => {
+                                        const popup = Swal.getPopup()
+                                        popup.classList.remove('swal2-show')
+                                        setTimeout(() => {
+                                            popup.classList.add('animate__animated', 'animate__headShake')
+                                        })
+                                        setTimeout(() => {
+                                            popup.classList.remove('animate__animated', 'animate__headShake')
+                                        }, 500)
+                                        return false
+                                    }
+                                });
+                            }
+                        }
+                    }
+                    else{
+                        $("#FormShortLeave").submit();
+                    }
+                }
+            });
+        }
+    });
+
+    function NotificationFunction(EmployeeId,ShortLeaveId) {
+        debugger;
+        $.ajax({
+            type: "Get",
+            url: "GetContactDetails",
+            data: {EmployeeId:EmployeeId,ShortLeaveId:ShortLeaveId},
+            dataType: "text",
+            success: function (response) {
+                debugger;
+                var datas = JSON.parse(response);
+                //var table = document.getElementById("tblegetmanagerdetails");
+
+                for (var i = 0; i < datas.data.length; i++) {
+                    var currentData = datas[i];
+                    // var row = table.insertRow(table.rows.length);
+                    var table = document.getElementById("tblegetmanagerdetails");
+                    var rowCount = table.rows.length;
+                    var row = table.insertRow(rowCount);
+                    var count = $('#tblegetmanagerdetails tr').length;
+
+                    row.insertCell(0).innerHTML = datas.data[i][1].Value;
+                    row.insertCell(1).innerHTML = datas.data[i][2].Value;
+                }               
+                $('#NotificationModalPopUp').modal('show');
+            }
+        });
+    }
+
+
+    //CapthaVerification code added in CapthaVerification.js file.
+    $(".Close").click(function () {
+        $("#mainCaptcha").val("");
+        $("#txtInput").val("");
+        $("#success").html("");
+        $("#error").html("");
+    });
+
+    function millisecTodate(milliDate) {
+        var date = new Date(milliDate);
+        var mnth = ("0" + (date.getMonth() + 1)).slice(-2);
+        var day = ("0" + date.getDate()).slice(-2);
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        hours = hours < 10 ? '0'+hours : hours;
+        minutes = minutes < 10 ? '0'+minutes : minutes;
+        var ddmmyyyy = [date.getFullYear(), mnth,day].join("-");
+        return ddmmyyyy;
+    }
+
+    function convertDate(data) {
+        var getdate = parseInt(data.replace("/Date(", "").replace(")/", ""));
+        var date = millisecTodate(getdate);
+        return date;
+    }
+</script>
+

@@ -1,0 +1,457 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_TimeOffice.ShiftChange
+
+@{
+    ViewBag.Title = "App_Attendance_ShiftChange";
+    Layout = "~/Views/Shared/_MobileLayout.cshtml";
+}
+
+<style>
+    .app-header-fixed {
+        padding-top: 0px;
+        padding-bottom: 0px;
+    }
+
+    .app-content {
+        padding: 0px 0px;
+    }
+
+    .panel .panel-body {
+        padding: 8px;
+    }
+
+    label.error, .Error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+</style>
+
+<style>
+    /*.form-label-container {
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: flex-end;
+                                    }*/
+
+
+
+    .form-label-text {
+        display: inline-flex;
+        align-items: center;
+        min-width: 120px; /* Adjust this value to fit your longest label */
+    }
+
+        .form-label-text i {
+            margin-right: 0.5rem; /* Space between icon and label text */
+        }
+</style>
+
+
+
+<style>
+    @@media (max-width: 767px) {
+        .row.mb-3.align-items-center {
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: center;
+        }
+            /*@@media (max-width: 576px) {
+    .form-label-container {
+        text-align: left;
+    }*/
+            .row.mb-3.align-items-center .col-md-4,
+            .row.mb-3.align-items-center .col-md-8 {
+                flex: 1;
+                max-width: none;
+                padding-right: 10px;
+                padding-left: 10px;
+            }
+
+            .row.mb-3.align-items-center .col-md-4 {
+                flex: 0 0 auto;
+                width: 40%;
+            }
+
+            .row.mb-3.align-items-center .col-md-8 {
+                flex: 1;
+                width: 60%;
+            }
+
+        .form-label {
+            margin-bottom: 0;
+            white-space: nowrap;
+        }
+
+        .form-control,
+        .form-select {
+            width: 100%;
+        }
+
+        #divMaxAllow {
+            flex-wrap: nowrap;
+        }
+    }
+</style>
+
+<link href="~/assets/MyCSS/Tailwindcss.css" rel="stylesheet" />
+
+<div id="content" class="app-content">
+    <div class="panel panel-inverse" data-sortable-id="index-1">
+        <div class="panel-body" data-scrollbar="false">
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- BEGIN panel -->
+                    <div class="panel panel-inverse" data-sortable-id="index-1">
+                        <div class="panel-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <form action='@Url.Action("App_SaveUpdate", "App_Attendance_ShiftChange", new { area = "App" })' id="SaveShiftChange" method="post" enctype="multipart/form-data">
+                                
+                                        @Html.HiddenFor(model => Model.ShiftChangeID)
+                                        @Html.HiddenFor(model => Model.ShiftChangeID_Encrypted, new { id = "ShiftChangeID_Encrypted" })
+                                        <div class="row mb-3 align-items-center">
+                                            <div class="col-md-4">
+                                                <div class="form-label-container">
+                                                    <label class="form-label">
+                                                        <span class="form-label-text">
+                                                            <i class="fa-solid fa-hashtag text-purple-600"></i> Doc No.
+                                                        </span>:
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => Model.DocNo, new { @class = "form-control mb-5px", id = "DocNo", name = "DocNo", @readonly = "readonly", Value = @ViewBag.DocNo, @style = "background-color:#EEE" })
+                                            </div>
+                                        </div>
+                                        
+                                        
+                                        
+                                        <div class="row mb-3 align-items-center">
+                                            <div class="col-md-4 form-label-container">
+                                                <label class="form-label"><span class="form-label-text"><i class="fas fa-briefcase text-purple-600"></i> Shift <span class="important">*</span></span>:</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.ShiftChangeShiftId, new SelectList(ViewBag.GetShiftList, "Id", "Name"), "--Select--", new { id = "ddlShiftNameId", name = "ShiftNameId", @class = "form-select", autocomplete = "off" })
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row mb-3 align-items-center">
+                                            <div class="col-md-4 form-label-container">
+                                                <label class="form-label">
+                                                    <span class="form-label-text">
+                                                        <i class="fa-solid fa-calendar-day text-blue-500"></i> From Date <span class="important">*</span>
+                                                    </span>:
+                                                </label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.FromDate, new { name = "FromDate", @class = "form-control", id = "txtFromDate", type = "date", onkeydown = "return false" })
+
+
+                                            </div>
+                                        </div>
+
+
+
+                                        <div class="row mb-3 align-items-center">
+                                            <div class="col-md-4 form-label-container">
+                                                <label class="form-label">
+                                                    <span class="form-label-text">
+                                                        <i class="fa-solid fa-calendar-check text-blue-600"></i> To Date <span class="important">*</span>
+                                                    </span>:
+                                                </label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.ToDate, new { name = "ToDate", @class = "form-control", id = "txtToDate", type = "date", onkeydown = "return false" })
+                                                @Html.ValidationMessageFor(model => model.ToDate, "", new { @class = "help-block", id = "ErrortxtToDate", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        
+                                        <div class="row mb-3 align-items-center">
+                                            <div class="col-md-4 form-label-container">
+                                                <label class="form-label"><span class="form-label-text"><i class="fas fa-lightbulb text-yellow-500"></i> Reason <span class="important">*</span></span>:</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                @Html.TextAreaFor(model => model.ShiftChangeReason, new { name = "ShiftChangeReason", @class = "form-control", id = "txtShiftChangeReason" })
+                                            </div>
+                                        </div>
+
+
+
+
+
+
+
+
+                                        <div class="row">
+                                            <div class="LastShortLeaveBx">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="BtnBx">
+                                                            <div>
+                                                                <button type="button" id="btnSubmit" class="btn btn-primary btn-sm">
+                                                                    <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                                </button>
+                                                                <button type="button" class="btn btn-danger btn-sm" id="btnGetList" onclick="btnGetLists();">
+                                                                    <i class="fa-solid fa-share-from-square"></i> List
+                                                                </button>
+
+                                                               
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    function btnGetLists()
+    {
+        var url = '@Url.Action("App_GetList", "App_Attendance_ShiftChange")';
+        window.location.href = url;
+    }
+    $(document).ready(function () {
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        // return false
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+
+        var date = new Date();
+        var GetMinMaxDate = @Html.Raw(Json.Encode(TempData["GetMinMaxDate"]));
+        var MinDate = GetMinMaxDate[0].Value;
+        var MaxDate = GetMinMaxDate[1].Value;
+        var currentDate = new Date();
+        var currentDateMax = new Date();
+        var dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000 )).toISOString().split("T")[0];
+        $("#txtToDate").val(dateString);
+        $("#txtFromDate").val(dateString);
+
+        currentDate.setDate(currentDate.getDate() - MinDate); //2 Meanse Currect daye plus 2 days enabled only
+        currentDateMax.setDate(currentDateMax.getDate() + MaxDate); //2 Meanse Currect daye plus 2 days enabled only
+        var SetMinDays = currentDate.toISOString().split('T')[0];
+        var SetMaxDays = currentDateMax.toISOString().split('T')[0];
+        document.getElementById("txtToDate").setAttribute("min", SetMinDays);
+        document.getElementById("txtToDate").setAttribute("max", SetMaxDays);
+        document.getElementById("txtFromDate").setAttribute("min", SetMinDays);
+        document.getElementById("txtFromDate").setAttribute("max", SetMaxDays);
+
+
+        $("#btnSubmit").click(function () {
+            debugger;
+            form.valid();
+            if(form.valid()==false)
+            {
+                $("#txtToDate").removeClass('error');
+                $("#txtFromDate").removeClass('error');
+                return false;
+            }
+            var ToDate = $("#txtToDate").val();
+            var FromDate = $("#txtFromDate").val();
+            var ShiftNameId = $("#ddlShiftNameId").val();
+            var StartDate= document.getElementById('txtFromDate').value;
+            var EndDate= document.getElementById('txtToDate').value;
+            var eDate = new Date(EndDate);
+            var sDate = new Date(StartDate);
+            if(StartDate!= '' && EndDate!= '' && sDate > eDate)
+            {
+                $("#ErrortxtToDate").html("To date should not be less than from date.");
+                $("#txtToDate").val('');
+                return false;
+            }
+            else{
+                $("#ErrortxtToDate").html("");
+            }
+
+            $(".Userloaderbg").css("display","flex");
+            $.ajax({
+                url: '@Url.Action("App_IsShiftChangeExists", "App_Attendance_ShiftChange")',
+                method:"get",
+                data:{ShiftNameId:ShiftNameId,FromDate:FromDate,ToDate:ToDate},
+                success:function(response){
+                    debugger;
+                    var Message1 = response.Message;
+                    var Icon1 = response.Icon;
+                    $(".Userloaderbg").css("display","none");
+                    if (response.Icon=="error" || response.Icon=="") {
+                        if (Message1 != null) {
+                            if (Message1 != null) {
+                                Swal.fire({
+                                    icon: Icon1,
+                                    text: Message1,
+                                    allowOutsideClick: () => {
+                                        const popup = Swal.getPopup()
+                                        popup.classList.remove('swal2-show')
+                                        setTimeout(() => {
+                                            popup.classList.add('animate__animated', 'animate__headShake')
+                                        })
+                                        setTimeout(() => {
+                                            popup.classList.remove('animate__animated', 'animate__headShake')
+                                        }, 500)
+                                        return false
+                                    }
+                                });
+
+                            }
+                        }
+                        return false;
+                    }
+                    else{
+                        $(".Userloaderbg").css("display","flex");
+                        $("#SaveShiftChange").submit();
+                    }
+                }
+            });
+
+        });
+
+    });//Ready Funcation
+</script>
+
+<script>
+    //use for add regex function
+    jQuery.validator.addMethod(
+  "regex",
+   function(value, element, regexp) {
+       debugger;
+       if (regexp.constructor != RegExp)
+           regexp = new RegExp(regexp);
+       else if (regexp.global)
+           regexp.lastIndex = 0;
+       return this.optional(element) || regexp.test(value);
+   },"erreur expression reguliere"
+);
+
+    $("#SaveShiftChange").validate({
+
+        rules: {
+            FromDate: {
+                required: true,
+
+            },
+            ToDate: {
+                required: true,
+
+            },
+            ShiftChangeShiftId: {
+                required: true,
+
+            },
+            ShiftChangeReason: {
+                required:true,
+            },
+
+        },
+        messages: {
+            FromDate: {
+                required: "From date is required",
+
+            },
+            ToDate: {
+                required: "To date is required",
+
+            },
+            ShiftChangeShiftId: {
+                required: "Shift name is required",
+
+            },
+            ShiftChangeReason: {
+                required: "Reason is required",
+            },
+
+        }
+    });
+
+    //<-----------------------------Alreay exist---------------------------------->
+    var form = $("#SaveShiftChange");
+    form.validate();
+
+
+    $("#txtToDate").change(function () {
+        debugger;
+        var StartDate= document.getElementById('txtFromDate').value;
+        var EndDate= document.getElementById('txtToDate').value;
+        var eDate = new Date(EndDate);
+        var sDate = new Date(StartDate);
+        if(StartDate!= '' && EndDate!= '' && sDate > eDate)
+        {
+            $("#ErrortxtToDate").html("To date should not be less than from date.");
+            $("#txtToDate").val('');
+
+        }
+        else{
+            $("#ErrortxtToDate").html("");
+        }
+
+
+
+
+
+    });
+</script>
+
+<script>
+    debugger;
+    function millisecTodate(milliDate) {
+        var date = new Date(milliDate);
+        var mnth = ("0" + (date.getMonth() + 1)).slice(-2);
+        var day = ("0" + date.getDate()).slice(-2);
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        hours = hours < 10 ? '0'+hours : hours;
+        minutes = minutes < 10 ? '0'+minutes : minutes;
+        var ddmmyyyy = [date.getFullYear(), mnth,day].join("-");
+        return ddmmyyyy;
+    }
+
+    function convertDate(data) {
+        var getdate = parseInt(data.replace("/Date(", "").replace(")/", ""));
+        var date = millisecTodate(getdate);
+        return date;
+    }
+</script>

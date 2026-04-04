@@ -1,0 +1,132 @@
+﻿
+@{
+    ViewBag.Title = "GetList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<style>
+    body {
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f5f5;
+    }
+
+    .container {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr); /* Default: 3 columns */
+        gap: 20px;
+        padding: 40px;
+        max-width: 1200px;
+        margin: auto;
+    }
+
+    .card {
+        background-color: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        text-align: center;
+        transition: transform 0.2s;
+        cursor: pointer;
+        text-decoration: none !important;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card img {
+            width: 100%;
+            height: 140px;
+            /*object-fit: cover;*/
+        }
+
+        .card h3 {
+            margin: 0;
+            padding: 12px;
+            font-weight: 500;
+            color: #333;
+            font-size: 16px;
+        }
+
+    /* Responsive for mobile */
+    @@media (max-width: 768px) {
+        .container {
+            grid-template-columns: 1fr; /* Show only 1 column on mobile */
+        }
+    }
+</style>
+
+<!-- ================== Icon Css ================== -->
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+<link href="~/assets/MyCSS/MenuImages.css" rel="stylesheet" />
+<link href="~/Content/Site.css" rel="stylesheet" />
+<!-- ================== End SWEEand css ================== -->
+
+
+<div id="content" class="app-content">
+
+    <div class="pageHeader d-flex align-items-center justify-content-between" style="flex-wrap:nowrap;">
+        <h5 class="page-header text-center text-md-start">My Letters</h5>
+        <ol class="breadcrumb float-md-end mb-0">
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                    <img src="~/assets/MenuImages/Home.png" class="img-fluid" style="max-width: 100%;float:right" />
+                </a>
+            </li>
+        </ol>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p> <b>My Letters</b>  Here is the list of letters.</p>
+                </div>
+
+                <div class="panel-body">
+                   
+                    <div class="container">
+                        @foreach (var item in ViewBag.GetLetterList)
+                        {
+                            <a href="@Url.Action("ESS_Curve_MyLetter", "ESS_Curve_MyLetter", new { area = "ESS", Letter_DetailId_Encrypeted=@item.Letter_DetailId_Encrypeted })" class="card">
+                                <img src="~/assets/MenuImages/Letters.jpg" alt="@item.LetterName" />
+                                <h3>@item.LetterName</h3>
+                            </a>
+                        }
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    $(document).ready(function () {
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        if (Message != null && Icon != null) {
+            Swal.fire({
+                icon: Icon,
+                text: Message,
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup();
+                    popup.classList.remove('swal2-show');
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake');
+                    });
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake');
+                    }, 500);
+                    return false;
+                }
+            });
+        }
+
+    });
+</script>

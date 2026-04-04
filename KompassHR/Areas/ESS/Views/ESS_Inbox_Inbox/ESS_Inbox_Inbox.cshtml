@@ -1,0 +1,593 @@
+﻿
+@{
+    ViewBag.Title = "ESS_Inbox_Inbox";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/additional-methods.min.js"></script>
+
+<style type="text/css">
+    /*.table {
+        background: -moz-linear-gradient(-90deg, #003471, #448CCB);
+        background: -webkit-gradient(linear, left top, left bottom, from(#003471), to(#448CCB));
+    }*/
+
+    table, th, td {
+        border-left: none;
+        border-right: none;
+        padding: 15PX 8PX !important;
+        cursor: pointer !important;
+    }
+
+    .email-user {
+        display: inline-flex;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        min-width: 30px;
+        overflow: hidden;
+        font-size: 18px;
+        line-height: 30px;
+        text-align: center;
+        color: #fff;
+        background: #adb5bd;
+        margin: -5px 0;
+        border-radius: 30px;
+        text-decoration: none;
+    }
+
+    .email-time {
+        display: block;
+        font-size: 11px;
+        font-weight: 600;
+        color: rgba(var(--app-component-color-rgb),.65);
+        width: 100px;
+        right: 0;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        text-align: right;
+    }
+
+
+
+    @@media (min-width: 768px) {
+        .email-desc {
+            padding-left: 20px;
+        }
+    }
+
+    .email-desc {
+        display: block;
+        position: relative;
+        color: rgba(var(--app-component-color-rgb),.5);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        flex: 1;
+    }
+
+    .email-sender {
+        display: block;
+        width: 300px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-weight: 600;
+    }
+
+    @@media (min-width: 1200px) {
+        .email-title {
+            padding-left: 15px;
+        }
+    }
+
+    .email-title {
+        display: block;
+        line-height: 20px;
+        width: 200px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-weight: 600;
+    }
+
+    .sub {
+        display: block;
+        line-height: 20px;
+        width: 200px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-weight: 600;
+        color: rgba(var(--app-component-color-rgb),.5);
+    }
+
+    .table-bordered > :not(caption) > * > * {
+        border-width: 3px 1px;
+    }
+
+    .mailbox-sidebar {
+        height: 600px;
+    }
+
+    .mailbox .nav-inbox > li > a:hover {
+        color: var(--app-component-color);
+    }
+
+    .icon2 {
+        position: relative;
+    }
+
+        .icon2 i {
+            font-size: 16px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+    .badge2 {
+        position: absolute;
+        top: -8px;
+        display: block;
+        background: var(--app-theme);
+        line-height: 12px;
+        font-weight: 600;
+        color: var(--app-theme-color);
+        padding: 3px 6px;
+        font-size: 8px;
+        border-radius: 30px;
+        right: -5px;
+        z-index: 99;
+    }
+</style>
+
+<style> 
+    /*THIS DATALIST FORM TBODY ADDED SCROLL*/
+    .scrollable-tbody {
+        display: block;
+        height: 462px; /* Set the desired height */
+        overflow-y: auto; /* Enable vertical scroll */
+    }
+
+</style>
+
+<div id="content" class="app-content p-0">
+    <!-- BEGIN mailbox -->
+    <div class="mailbox">
+        <!-- BEGIN mailbox-sidebar -->
+        <div class="mailbox-sidebar">
+            @*<div class="mailbox-sidebar-header d-flex justify-content-center">
+                    <a href="#emailNav" data-bs-toggle="collapse" class="btn btn-dark btn-sm me-auto d-block d-lg-none">
+                        <i class="fa fa-cog"></i>
+                    </a>
+                    <a href="email_compose.html" class="btn btn-dark ps-40px pe-40px btn-sm">
+                        Requisition List
+                    </a>
+                </div>*@
+            <div class="mailbox-sidebar-content collapse d-lg-block" id="emailNav">
+                <!-- BEGIN scrollbar -->
+                <div data-scrollbar="true" data-height="100%" data-skip-mobile="true">
+                    <div class="nav-title"><b>Requisition List</b></div>
+                    <ul class="nav nav-inbox">
+                        <li class="active"><a href="/ESS/ESS_Inbox_Inbox/GetInboxList?GetFilter=All"> All <div class="ms-auto icon2" id="DivLeaveCount"><i class="fa fa-bell"></i><span class="badge2" id="LeaveCount">@TempData["LeaveCount"]</span></div></a></li>
+                        <li><a href="/ESS/ESS_Inbox_Inbox/GetInboxList?GetFilter=Leave">Leave <div class="ms-auto icon2" id="DivTeamLeaveCount"><i class="fa fa-bell"></i><span class="badge2" id="TeamLeaveCount">@ViewBag.RquisitionCount[0].TeamLeaveCount</span></div></a></li>
+                        <li><a href="/ESS/ESS_Inbox_Inbox/GetInboxList?GetFilter=OD"> Outdoor<div class="ms-auto icon2" id="DivTeamOutDoorCompanyCount"><i class="fa fa-bell"></i><span class="badge2" id="TeamOutDoorCompanyCount">@ViewBag.RquisitionCount[0].TeamOutDoorCompanyCount</span></div></a></li>
+                        <li><a href="/ESS/ESS_Inbox_Inbox/GetInboxList?GetFilter=PM"> Punch Missing<div class="ms-auto icon2" id="DivTeamPunchMissingCount"><i class="fa fa-bell"></i><span class="badge2" id="TeamPunchMissingCount">@ViewBag.RquisitionCount[0].TeamPunchMissingCount</span></div></a></li>
+                        <li><a href="/ESS/ESS_Inbox_Inbox/GetInboxList?GetFilter=SL">Short Leave<div class="ms-auto icon2" id="DivTeamShortLeaveCount"><i class="fa fa-bell"></i><span class="badge2" id="TeamShortLeaveCount">@ViewBag.RquisitionCount[0].TeamShortLeaveCount</span></div></a></li>
+                        <li><a href="/ESS/ESS_Inbox_Inbox/GetInboxList?GetFilter=WFH"> Work Form Home<div class="ms-auto icon2" id="DivTeamWorkFromHomeCount"><i class="fa fa-bell"></i><span class="badge2" id="TeamWorkFromHomeCount">@ViewBag.RquisitionCount[0].TeamWorkFromHomeCount</span></div></a></li>
+                        <li><a href="/ESS/ESS_Inbox_Inbox/GetInboxList?GetFilter=CO"> Comp Off @*<div class="ms-auto icon2" id="DivTeamCoffCount"><i class="fa fa-bell"></i><span class="badge2" id="TeamCoffCount">@ViewBag.RquisitionCount[0].TeamCoffCount</span></div>*@</a></li>
+                        <li><a href="/ESS/ESS_Inbox_Inbox/GetInboxList?GetFilter=PG"> Personal Getpass <div class="ms-auto icon2" id="DivTeamPersonalGatepassCount"><i class="fa fa-bell"></i><span class="badge2" id="TeamPersonalGatepassCount">@ViewBag.RquisitionCount[0].TeamPersonalGatepassCount</span></div></a></li>
+                        <li><a href="/ESS/ESS_Inbox_Inbox/GetInboxList?GetFilter=PG"> New Added-Pending @*<div class="ms-auto icon2"><i class="fa fa-bell"></i><span class="badge2" id="Team1">@ViewBag.RquisitionCount[0].TeamPersonalGatepassCount</span></div>*@</a></li>
+                        <li><a href="/ESS/ESS_Inbox_Inbox/GetInboxList?GetFilter=PG"> New Added-Pending @*<div class="ms-auto icon2"><i class="fa fa-bell"></i><span class="badge2" id="Team2">@ViewBag.RquisitionCount[0].TeamPersonalGatepassCount</span></div>*@</a></li>
+                    </ul>
+                </div>
+                <!-- END scrollbar -->
+            </div>
+        </div>
+        <!-- END mailbox-sidebar -->
+        <!-- BEGIN mailbox-content -->
+        <div class="mailbox-content">
+            <div class="mailbox-content-header">
+                <!-- BEGIN btn-toolbar -->
+                <div class="btn-toolbar align-items-center">
+                    <div class="form-check me-2">
+                        <input type="checkbox" class="form-check-input" data-checked="email-checkbox" id="emailSelectAll" onchange="checkAll(this)" value="" data-change="email-select-all" />
+                        <label class="form-check-label" for="emailSelectAll"></label>
+                    </div>
+                    <div class="dropdown me-2">
+                        <button id="btnApprove" onclick="ApproveReject('Approved')" type="button" class="btn btn-success btn-sm"><i class="fa-solid fa-floppy-disk"> </i> <span class="d-none d-lg-inline">Approve</span></button> &nbsp; &nbsp;
+                        <button id="btnReject" onclick="OpenModel()" data-toggle="modal" data-target="#myModal" type="button" class="btn btn-danger btn-sm"><i class="fa-solid fa-share-from-square"></i> <span class="d-none d-lg-inline">Reject</span></button>
+                    </div>
+                    <button onclick="RefreshTable()" class="btn btn-sm btn-white me-2" id="tblReload"><i class="fa fa-redo"></i></button>
+                    <a class="btn btn-white btn-sm" href='/ESS/ESS_Requisition_Menu/ESS_Requisition_Menu'> <i class="fa fa-fw fa-reply"></i> <span class="d-none d-lg-inline">Back</span></a>
+                    @*<button class="btn btn-sm btn-white" id="tblReload">
+                        <i class="fa fa-arrow-left"><a href="/ESS/ESS_Requisition_Menu/ESS_Requisition_Menu"> Back</a></i>
+                    </button>*@
+                    <div class="w-100 d-sm-none d-block mb-2 hide" data-email-action="divider"></div>
+                    <!-- BEGIN btn-group -->
+                    <div class="btn-group">
+                        <button class="btn btn-sm btn-white hide" data-email-action="delete"><i class="fa fa-times me-1"></i> <span class="hidden-xs">Delete</span></button>
+                        <button class="btn btn-sm btn-white hide" data-email-action="archive"><i class="fa fa-folder me-1"></i> <span class="hidden-xs">Archive</span></button>
+                        <button class="btn btn-sm btn-white hide" data-email-action="archive"><i class="fa fa-trash me-1"></i> <span class="hidden-xs">Junk</span></button>
+                    </div>
+                    <!-- END btn-group -->
+                    <!-- BEGIN btn-group -->
+                    @*New and Preveius Button*@
+                    @*<div class="btn-group ms-auto">
+                        <button class="btn btn-white btn-sm">
+                            <i class="fa fa-chevron-left"></i>
+                        </button>
+                        <button class="btn btn-white btn-sm">
+                            <i class="fa fa-chevron-right"></i>
+                        </button>
+                    </div>*@
+                    <!-- END btn-group -->
+                </div>
+                <!-- END btn-toolbar -->
+            </div>
+            <div class="mailbox-content-body" id="tblDiv">
+                <div data-scrollbar="false" data-height="100%" data-skip-mobile="false">
+                    <!-- BEGIN list-email -->
+                    @* Table Code*@
+                    <table class="table table-bordered align-middle" id="tblInbox" style="width: 100%;">
+                        <thead>
+                            <tr>
+                                @*<th class="text-nowrap"></th>
+                                    <th class="text-nowrap"></th>
+                                    <th class="text-nowrap"> </th>
+                                    <th class="text-nowrap"></th>
+                                    <th class="text-nowrap"></th>
+                                    <th class="text-nowrap"></th>*@
+                            </tr>
+                        </thead>
+                        <tbody class="scrollable-tbody">
+                            @if (@ViewBag.GetPending_ForApproval != null)
+                            {
+                                foreach (var d in ViewBag.GetPending_ForApproval)
+                                {
+                                    <tr>
+                                        <td hidden>@d.DocID_Encrypted</td>
+                                        <td hidden>@d.Origin</td>
+                                        <td style="width:10px"><input type="checkbox" class="form-check-input" data-checked="email-checkbox" value="@d.DocID_Encrypted" id="tblCheckbox"></td>
+                                        <td style="width:20px">
+                                            <span class="email-userBx">
+                                                <a class="email-user bg-indigo">
+                                                    <span class="text-white">@d.FirstEmployeeName</span>
+                                                </a>
+                                            </span>
+                                        </td>
+                                        <td onclick="GetDetails(this)"><span class="email-sender">@d.EmployeeName</span></td>
+                                        <td onclick="GetDetails(this)"> <span class="email-title">@d.Reason</span></td>
+                                        <td onclick="GetDetails(this)"><span class="email-title sub">@d.TotalDuration</span></td>
+                                        <td onclick="GetDetails(this)"  style="text-align: left; padding-left: 10px;"><span class="email-time">@d.PendingScience</span></td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                    @*Table Code End*@
+                </div>
+            </div>
+            <div class="mailbox-content-footer d-flex align-items-center">
+                <div class="text-dark fw-bold">@TempData["LeaveCount"] &nbsp; messages</div>
+                <div class="btn-group ms-auto">
+                    <button id="btnApprove" onclick="ApproveReject('Approved')" type="button" class="btn btn-success btn-sm"><i class="fa-solid fa-floppy-disk"> </i> <span class="d-none d-lg-inline">Approve</span></button> &nbsp; &nbsp;
+                    <button id="btnReject" onclick="OpenModel()" data-toggle="modal" data-target="#myModal" type="button" class="btn btn-danger btn-sm"><i class="fa-solid fa-share-from-square"></i> <span class="d-none d-lg-inline">Reject</span></button>&nbsp; &nbsp;
+                </div>
+            </div>
+        </div>
+        <!-- END mailbox-content -->
+    </div>
+    <!-- END mailbox -->
+</div>
+
+<!-- Modal -->
+@*<div class="modal lg" id="myModal" tabindex="-1" role="dialog" aria-labelledby="defModalHead" aria-hidden="true" style="display: none ;margin-top:50px">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Leave Reject Resion</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                </div>
+                <div class="form-control">
+                    <div class="row">
+                        @*<input type="text" class = "form-control" rows="4"/>
+                        <textarea id="txtApproveRejectRemark" class="form-control" rows="4"></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <input type="button" onclick="ApproveReject('Rejected')" class="Ok btn btn-success" data-bs-dismiss="modal" id="btnReject" value="Submit" />
+                    <input type="button" class="Ok btn btn-success" data-bs-dismiss="modal" id="btnCancel" value="Cancel" />
+                </div>
+            </div>
+        </div>
+    </div>*@
+
+<!-- #Start Appprove Reject Modal -dialog -->
+<div class="modal fade" id="myModal" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header bg-black text-white">
+                <h4 class="modal-title">Remark For Reject</h4>
+                <div class="panel-heading-btn">
+                    <a href="javascript:;" class="btn btn-icon btn-danger btnClear" data-bs-dismiss="modal" aria-hidden="true">
+                        <i class="fa fa-xmark"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="modal-body">
+                <!-- BEGIN panel -->
+                <div class="modal-body-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <textarea id="txtApproveRejectRemark" class="form-control" rows="4"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- END panel -->
+            </div>
+            <div class="modal-footer">
+                @*<input type="button" onclick="ApproveReject('Reject')" class="Ok btn btn-success" data-bs-dismiss="modal" id="btnReject" value="Submit" />*@
+                <button type="button" onclick="ApproveReject('Rejected')" id="btnReject" class="btn btn-primary btn-sm">
+                    <i class="fa-solid fa-floppy-disk"> </i> Submit
+                </button>
+                <button type="button" id="btnCancel" class="btn btn-danger btnpress btnClear" data-bs-dismiss="modal">
+                    <i class="fa-solid fa-share-from-square"></i> Cancel
+                </button>
+                @*<input type="button" class="Ok btn btn-close" data-bs-dismiss="modal" id="btnCancel" value="Cancel" />*@
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #End modal-dialog -->
+<script>
+    $(document).ready(function () {
+        var LeaveCount = $("#LeaveCount").html();
+        var TeamLeaveCount = $("#TeamLeaveCount").html();
+        var OutDoorCompanyCount = $("#TeamOutDoorCompanyCount").html();
+        var PunchMissingCount = $("#TeamPunchMissingCount").html();
+        var ShortLeaveCount = $("#TeamShortLeaveCount").html();
+        var WorkFromHomeCount = $("#TeamWorkFromHomeCount").html();
+        var CoffCount = $("#TeamCoffCount").html();
+        var PersonalGatepassCount = $("#TeamPersonalGatepassCount").html();
+
+        if (LeaveCount == 0) {
+            $("#DivLeaveCount").hide()
+        } else {
+            $("#DivLeaveCount").show()
+        }
+        if (TeamLeaveCount == 0) {
+            $("#DivTeamLeaveCount").hide()
+        }
+        else {
+            $("#DivTeamLeaveCount").show()
+        }
+        if (OutDoorCompanyCount == 0) {
+            $("#DivTeamOutDoorCompanyCount").hide()
+        }
+        else {
+            $("#DivTeamOutDoorCompanyCount").show()
+        }
+        if (PunchMissingCount == 0) {
+            $("#DivTeamPunchMissingCount").hide()
+        }
+        else {
+            $("#DivTeamPunchMissingCount").show()
+        }
+        if (ShortLeaveCount == 0) {
+            $("#DivTeamShortLeaveCount").hide()
+        }
+        else {
+            $("#DivTeamShortLeaveCount").show()
+        }
+        if (WorkFromHomeCount == 0) {
+            $("#DivTeamWorkFromHomeCount").hide()
+        }
+        else {
+            $("#DivTeamWorkFromHomeCount").show()
+        }
+        if (PersonalGatepassCount == 0) {
+            $("#DivTeamPersonalGatepassCount").hide()
+        }
+        else {
+            $("#DivTeamPersonalGatepassCount").show()
+        }
+
+        debugger;
+        @*var Filter = 'All';
+        location.href = '@Url.Action("Inbox", "Inbox")?GetFilter=' + Filter;*@
+
+
+        //$("#tblInbox").load();
+        //setInterval(function () {
+        //    debugger;
+        //    $('#tblInbox').load();
+        //}, 2000);
+
+        //RecordFilter('All');
+
+
+    });
+
+    //Select All Checkboxes
+    function checkAll(ele) {
+        var checkboxes = document.getElementsByTagName('input');
+        if (ele.checked) {
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].type == 'checkbox') {
+                    checkboxes[i].checked = true;
+                }
+            }
+        } else {
+            for (var i = 0; i < checkboxes.length; i++) {
+                console.log(i)
+                if (checkboxes[i].type == 'checkbox') {
+                    checkboxes[i].checked = false;
+                }
+            }
+        }
+    }
+    //Clear Remark in Reject Reson
+    $(".btnClear").click(function () {
+        $("#txtApproveRejectRemark").val("");
+    });
+    //$(document).on('click', '#tblInbox tr td', function () {
+    function GetDetails(tblRow) {
+        debugger;
+        var currentRow = $(tblRow).closest("tr");
+        var DocID_Encrypted = currentRow.find("td:eq(0)").html();
+        var Origin = currentRow.find("td:eq(1)").html();
+        var EmployeeName = currentRow.find("td:eq(4)").html();
+
+        $.ajax({
+            type: "Get",
+            url :'@Url.Action("GetEmailDetails", "ESS_Inbox_Inbox")',
+            data: { DocID: DocID_Encrypted, Origin: Origin, },
+            dataType: "text",
+            success: function (data) {
+                debugger;
+                var url = '@Url.Action("EmailDetails", "ESS_Inbox_Inbox")';
+                window.location.href = url;
+            }
+        });
+    }
+
+    function OpenModel() {
+        debugger;
+        var RecordList = new Array();
+        $(':checkbox:checked').each(function (i) {
+            debugger;
+            var data = {};
+            data.DocID = $(this).val();
+            var currentRow = $(this).closest("tr");
+            data.Origin = currentRow.find("td:eq(1)").html();
+            RecordList.push(data);
+        });
+        debugger;
+        if (RecordList == "") {
+            debugger;
+            Swal.fire({
+                icon: "error",
+                text: "Select atleast one record",
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup()
+                    popup.classList.remove('swal2-show')
+                    return false;
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                    })
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                    }, 500)
+                    window.location.reload();
+                    return false
+                }
+            });
+            return false;
+        }
+        $("#myModal").modal('show');
+    }
+    //Approve Leave Request
+    //$("#btnApprove").on('click', function () {
+    function ApproveReject(Status) {
+        debugger;
+        var Remark;
+        if (Status == "Rejected") {
+
+            Remark = $("#txtApproveRejectRemark").val();
+        }
+        var RecordList = new Array();
+        $(':checkbox:checked').each(function (i) {
+            debugger;
+            var data = {};
+            data.DocID = $(this).val();
+            var currentRow = $(this).closest("tr");
+            data.Origin = currentRow.find("td:eq(1)").html();
+            data.Status = Status;
+            data.ApproveRejectRemark = Remark;
+            RecordList.push(data);
+        });
+
+        if (RecordList == "") {
+            debugger;
+            Swal.fire({
+                icon: "error",
+                text: "Select atleast one record",
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup()
+                    popup.classList.remove('swal2-show')
+                    return false;
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                    })
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                    }, 500)
+                    window.location.reload();
+                    return false
+                }
+            });
+            return false;
+        }
+        $.ajax({
+            type: "POST",
+            url: "MultipleApproveLeaveRequest",
+            data: JSON.stringify(RecordList),
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            success: function (data) {
+                debugger;
+                var datas = JSON.parse(data);
+                if (datas != null) {
+                    //$('#tblInbox').load();
+                    Swal.fire({
+                        icon: datas.Icon,
+                        text: datas.Message,
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup()
+                            popup.classList.remove('swal2-show')
+                            return false;
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake')
+                            })
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake')
+                            }, 500)
+                            window.location.reload();
+                            return false
+                        }
+                    }).then(function () {
+                        var url = '@Url.Action("ESS_Inbox_Inbox", "ESS_Inbox_Inbox")';
+                        window.location.href = url;
+                    });
+                }
+
+                @*var url = '@Url.Action("Inbox", "Inbox")';
+                window.location.href = url;*@
+            }
+        });
+    }
+
+    function RefreshTable() {
+        window.location.reload();
+    }
+</script>
+
+

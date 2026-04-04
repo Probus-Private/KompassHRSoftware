@@ -1,0 +1,478 @@
+﻿
+@{
+    ViewBag.Title = "GetList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+
+<style>
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    .div1 td:nth-child(1) {
+        position: sticky;
+        left: 0;
+    }
+
+    .div1 td:nth-child(2) {
+        position: sticky;
+        left: 63px;
+    }
+
+    .fixed-side {
+        position: sticky;
+        left: 0;
+    }
+
+    .fixed-side1 {
+        position: sticky;
+        left: 63px;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <!-- BEGIN breadcrumb -->
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Market Place Post
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_MarketPlace_Menu", "ESS_MarketPlace_Menu", new {id =14, ScreenId=202, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">Market Place Post - List</h4>
+
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        This is the list of your postings.
+                    </p>
+                </div>
+                <div class="panel-body" data-scrollbar="true">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <a href="/ESS/ESS_Marketplace_Marketplace/ESS_Marketplace_Marketplace">
+                                <button type="button" class="btn btn-primary btn-sm  mb-10px">
+                                    <i class="fa-solid fa-plus"></i> &nbsp; Add
+                                </button>
+                            </a>
+                            <!-- BEGIN table-responsive -->
+                            <div class="table-scroll div1">
+                                <div class="table-wrap">
+                                    <table class="table table-bordered align-middle TablePage" id="fixed-header" style="width: 100%;">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-nowrap width-45">Update</th>
+                                                <th class="text-nowrap width-45">Delete</th>
+                                                <th class="text-nowrap width-45">Sold</th>
+                                                <th class="text-nowrap">Doc No. </th>
+                                                <th class="text-nowrap">Doc Date </th>
+                                                <th class="text-nowrap">Title</th>
+                                                <th class="text-nowrap">Description </th>
+                                                <th class="text-nowrap">Price </th>
+                                                <th class="text-nowrap">Contact No </th>
+                                                <th class="text-nowrap">Photo 1 </th>
+                                                <th class="text-nowrap">Photo 2 </th>
+                                                <th class="text-nowrap">Photo 3 </th>
+                                                <th class="text-nowrap">Buyer Name</th>
+                                                <th class="text-nowrap">Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var d in ViewBag.GetMarketPlace)
+                                            {
+                                                <tr>
+                                                    <td class="text-center">
+                                                        <button type="button" id="UpdateBtn"
+                                                                onclick="UpdateMarketPlace('@d.MarketPlacePostID_Encrypted')"
+                                                                class="btn btn-success btnpress ListBtn"
+                                                                @if (!d.IsActive) { <text> disabled</text> }>
+                                                            <i class="fa-solid fa-pencil-alt"></i>
+                                                        </button>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <button type="button" id="DeleteBtn"
+                                                                onclick="DeleteMarketPlace('@d.MarketPlacePostID_Encrypted')"
+                                                                class="btn btn-danger ListBtn btnpress"
+                                                                @if (!d.IsActive) { <text> disabled</text> }>
+                                                            <i class="fa-solid fa-trash-alt"></i>
+                                                        </button>
+                                                    </td>
+                                                    <td>
+                                                        <a href="javascript:void(0);" class="mark-sold @(d.IsActive ? "" : "disabled")" data-id="@d.MarketPlacePostID_Encrypted" data-status="@d.IsActive">
+                                                            <i class="fas fa-bookmark @(d.IsActive ? "text-primary" : "text-secondary")"
+                                                               id="soldIcon @d.MarketPlacePostID"
+                                                               title="@(d.IsActive ? "Mark as Sold" : "Already Sold")"></i>
+                                                            <span id="soldLabel @d.MarketPlacePostID_Encrypted" class="badge bg-dark ms-1" style="display:@(d.IsActive ? "none" : "inline-block");">
+                                                                SOLD
+                                                            </span>
+                                                        </a>
+                                                    </td>
+
+                                                    <td>@d.DocNo</td>
+                                                    <td>@d.DocDate</td>
+                                                    <td>@d.MarketPlacePostTitle</td>
+                                                    <td>@d.MarketPlacePostDesciption</td>
+                                                    <td>@d.MarketPlacePostPrice</td>
+                                                    <td>@d.ContactNo</td>
+                                                    <td class="text-center">
+                                                        @if (!string.IsNullOrEmpty(d.Photo1))
+                                                        {
+                                                            <a href="@Url.Action("DownloadFile", "ESS_Marketplace_Marketplace", new { filePath = d.Photo1 })" download>
+                                                                Download
+                                                            </a>
+
+                                                        }
+                                                    </td>
+                                                    <td class="text-center">
+                                                        @if (!string.IsNullOrEmpty(d.Photo2))
+                                                        {
+                                                            <a href="@Url.Action("DownloadFile", "ESS_Marketplace_Marketplace", new { filePath = d.Photo2 })" download>
+                                                                Download
+                                                            </a>
+                                                        }
+                                                    </td>
+                                                    <td class="text-center">
+                                                        @if (!string.IsNullOrEmpty(d.Photo3))
+                                                        {
+                                                            <a href="@Url.Action("DownloadFile", "ESS_Marketplace_Marketplace", new { filePath = d.Photo3 })" download>
+                                                                Download
+                                                            </a>
+                                                        }
+                                                    </td>
+                                                    <td>@d.BuyerName</td>
+                                                    <td>@d.BuyerDate</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="markAsSoldModal" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title">Mark as Sold</h5>
+            </div>
+
+            <div class="modal-body">
+                <form id="markAsSoldForm">
+                    <input type="hidden" id="soldPostId" />
+
+                    <div class="mb-3">
+                        <label class="form-label">Buyer Name</label>
+                        @Html.TextBox("BuyerName", "", new { id = "txtBuyerName", name = "BuyerName", @class = "form-control", required = "required" })
+                    </div>
+
+
+                    <div class="mb-3">
+                        <label class="form-label">Sold Date</label>
+                        <input type="date" class="form-control" id="soldDate" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Remark</label>
+                        <textarea class="form-control" id="remark" rows="3"></textarea>
+                    </div>
+
+                    <div class="text-danger fw-bold" id="soldError"></div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" id="submitSoldBtn" class="btn btn-primary">Yes, mark as SOLD</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    $(document).ready(function () {
+        ("#txtBuyerName").select2();
+            var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+            var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+            debugger;
+            if (Message != null) {
+                if (Message != null) {
+                    Swal.fire({
+                        icon: Icon,
+                        text: Message,
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup()
+                            popup.classList.remove('swal2-show')
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake')
+                            })
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake')
+                            }, 500)
+                            return false
+                        }
+                    });
+                }
+            }
+
+    });
+
+$('.mark-sold').on('click', function () {
+    const $this = $(this);
+    const isActive = $this.data('status');
+    const fid = $this.data('id');
+
+    if (!isActive || $this.hasClass('disabled')) return;
+
+    // Set the post ID in hidden field
+    $('#soldPostId').val(fid);
+    $('#buyerName, #soldDate, #remark, #soldError').val('').text(''); // clear old data
+
+    // Show the modal
+    const modal = new bootstrap.Modal(document.getElementById('markAsSoldModal'));
+    modal.show();
+});
+
+$('#submitSoldBtn').on('click', function () {
+    debugger
+    const fid = $('#soldPostId').val();
+    const buyerName = $('#txtBuyerName').val();
+    const soldDate = $('#soldDate').val();
+    const remark = $('#remark').val().trim();
+
+    if (!buyerName) {
+        $('#soldError').text('Buyer Name is required.');
+        return;
+    }
+    if (!soldDate) {
+        $('#soldError').text('Date is required.');
+        return;
+    }
+
+    $.ajax({
+        url:'@Url.Action("MarkAsSold", "ESS_Marketplace_Marketplace", new { area = "ESS" })',
+        type: 'POST',
+        data: {
+            MarketPlacePostID_Encrypted: fid,
+            BuyerName: buyerName,
+            SoldDate: soldDate,
+            Remark: remark
+        },
+        success: function (response) {
+            $('#markAsSoldModal').modal('hide');
+            Swal.fire('Success', 'Marked as Sold.', 'success').then(() => {
+                location.reload();
+            });
+        },
+        error: function () {
+            $('#soldError').text('Something went wrong. Please try again.');
+        }
+    });
+});
+
+
+
+
+</script>
+<script>
+
+    function DownloadPhoto1(Photo1) {
+        debugger;
+        var url = '@Url.Action("DownloadFile", "ESS_Marketplace_Marketplace")?Photo1=' + Photo1;
+        window.location.href = url;
+    }
+
+
+    function UpdateMarketPlace(MarketPlacePostID_Encrypted) {
+        var url = '@Url.Action("ESS_Marketplace_Marketplace", "ESS_Marketplace_Marketplace")?MarketPlacePostID_Encrypted=' + MarketPlacePostID_Encrypted;
+            window.location.href = url;
+        }
+
+    function DeleteMarketPlace(MarketPlacePostID_Encrypted) {
+            const DeleteButtons = Swal.mixin({
+                customClass: {
+                    cancelButton: ' btnpress',
+                    confirmButton: ' btnpress'
+                },
+                buttonsStyling: true
+            })
+            DeleteButtons.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: false,
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup()
+                    popup.classList.remove('swal2-show')
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                    })
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                    }, 500)
+                    return false
+                }
+
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '@Url.Action("Delete", "ESS_Marketplace_Marketplace")?MarketPlacePostID_Encrypted=' + MarketPlacePostID_Encrypted;
+                } else if (
+                    /* Read more about handling dismissals below */
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+
+                }
+            })
+        }
+</script>

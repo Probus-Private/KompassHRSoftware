@@ -1,0 +1,342 @@
+﻿
+@{
+    ViewBag.Title = "PersonalGatepassList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+
+<style>
+     .fa-share-from-square {
+        transform: rotate(180deg);
+    }
+
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Todays Personal Gatepass
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_VMS_Menu", "ESS_VMS_Menu",  new { id = 10,ScreenId=184, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+ 
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">Todays Personal Getpass - List</h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div> <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                    </p>
+                </div>
+                <br />
+
+                @*<div>
+                    <a href="/ESS/ESS_VMS_VisitorEntry/ESS_VMS_VisitorEntry">
+                        <button type="button" class="btn btn-success btnpress  mb-10px" style="margin-left:10px">
+                            &nbsp;Back To Visitor Entry
+                        </button>
+                    </a>
+                </div>*@
+                <div class="panel-body" >
+                    <div class="row">
+                        <div class="col-md-12">
+                            <!-- BEGIN table-responsive -->
+                            <div class="table-scroll div1">
+                                <div class="table-wrap">
+                                    <table class="table table-bordered table-hover mb-0 text-dark align-middle TablePage" id="data-table-combine"
+                                           style="width: 100%;">
+                                        <thead>
+                                            <tr class="trheading">
+                                                <th class="fixed-side">Check Out</th>
+                                                <th class="text-nowrap text-center">Employee Name</th>
+                                                <th class="text-start text-nowrap">Doc No </th>
+                                                <th class="text-start text-nowrap">Req Date</th>
+                                                <th class="text-start text-nowrap">Shift</th>
+                                                <th class="text-start text-nowrap">Visitor In-Out</th>
+                                                <th class="text-start text-nowrap">For Time</th>
+                                                <th class="text-start text-nowrap">Reason</th>
+                                                <th class="text-start text-nowrap">Approve by</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var d in ViewBag.PersoanlGetpass)
+                                            {
+                                                <tr>
+                                                    <td class="text-center">
+                                                        @if (@d.Visitor_INOuts == "" || @d.Visitor_INOuts == null)
+                                                        {
+                                                            <i class="fa-solid fa-circle-up fa-xl" style="color:#fe6966; padding: 0px; cursor: pointer;" onclick="CheckOutVisitor('@d.PersonalGatepassId','OUT')"></i>
+                                                        }
+                                                        @if (@d.Visitor_INOuts == "OUT" || @d.Visitor_INOuts == "Out")
+                                                        {
+                                                            <i class="fa-solid fa-circle-down fa-xl" style="color: #5cce40; padding: 0px; cursor: pointer;" onclick="CheckOutVisitor('@d.PersonalGatepassId', 'IN')"></i>
+                                                        }
+                                                    </td>
+                                                    <td class="text-nowrap">@d.EmployeeName</td>
+                                                    <td class="text-nowrap">@d.DocNo</td>
+                                                    <td class="text-nowrap">@d.ReqDate</td>
+                                                    <td class="text-nowrap">@d.PersonalGatepassShiftName</td>
+                                                    <td class="text-nowrap">@d.Visitor_INOut</td>
+                                                    <td class="text-nowrap">@d.ForTime</td>
+                                                    <td class="text-nowrap">@d.Reason</td>
+                                                    <td class="text-nowrap">@d.ApprovedBy</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="LastShortLeaveBx">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="BtnBx">
+                                                <a  href="@Url.Action("ESS_VMS_VisitorEntry", "ESS_VMS_VisitorEntry", new { id=10 , ScreenId=188 , area = "ESS" })">
+                                                    <button id="btnManualUpload"
+                                                            class="btn btn-danger btn-sm">
+                                                        <i class="fa-solid fa-share-from-square"></i>  Back
+                                                    </button>
+                                                </a>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END panel -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function CheckOutVisitor(PersonalGatepassId, InOut) {
+        //var url = '@Url.Action("UpdateCheckOutVisitor", "ESS_VMS_VisitorEntry")?PersonalGatepassId_Encrypted=' + PersonalGatepassId_Encrypted;
+        var url = '@Url.Action("UpdateCheckOutVisitor", "ESS_VMS_VisitorEntry")'
+         + '?PersonalGatepassId=' + encodeURIComponent(PersonalGatepassId)
+         + '&InOut=' + encodeURIComponent(InOut)
+        window.location.href = url;
+    }
+    //Code for Update Time
+    @*var Duration =@Html.Raw(Json.Encode(ViewBag.Duration));
+    const buttons = document.querySelectorAll('.btnUpdate');
+    buttons.forEach(button => {
+        button.addEventListener('click', function() {
+            debugger;
+            const row = this.closest('tr');
+            const inputs = row.querySelectorAll('input[type="time"]');
+            const inputs1 = row.querySelectorAll('input[type="hidden"]');
+            const FromTime = inputs[0].value;
+            const ToTime = inputs[1].value;
+            const EncrptId = inputs1[0].value;
+
+            // Convert fromtime to Date object
+            var fromDate = new Date();
+            var fromParts = FromTime.split(':');
+            fromDate.setHours(parseInt(fromParts[0], 10));
+            fromDate.setMinutes(parseInt(fromParts[1], 10));
+            fromDate.setSeconds(0);
+            // Convert totime to Date object
+            var toDate = new Date();
+            var toParts = ToTime.split(':');
+            toDate.setHours(parseInt(toParts[0], 10));
+            toDate.setMinutes(parseInt(toParts[1], 10));
+            toDate.setSeconds(0);
+            // Calculate the difference in milliseconds
+            var differenceMin = toDate - fromDate;
+            // Convert milliseconds to minutes
+            var differenceMinutes = Math.floor(differenceMin / (1000 * 60));
+            if(differenceMinutes>Duration)
+            {
+                Swal.fire({
+                    icon:  "error",
+                    text: "Time should not be greter than : "+Duration+" min",
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                });
+                return false;
+            }
+            var url = '@Url.Action("UpdateVisitorTime", "ESS_VMS_VisitorEntry")'
+         + '?PersonalGatepassId_Encrypted=' + encodeURIComponent(EncrptId)
+         + '&FromTime=' + encodeURIComponent(FromTime)
+         + '&ToTime=' + encodeURIComponent(ToTime);
+            window.location.href = url;
+        });
+    });*@
+
+</script>
+<script>
+    $(document).ready(function () {
+        debugger;
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                });
+            }
+        }
+    });//ready function
+</script>

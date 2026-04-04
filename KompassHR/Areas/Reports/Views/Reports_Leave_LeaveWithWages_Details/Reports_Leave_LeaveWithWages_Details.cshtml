@@ -1,0 +1,1116 @@
+﻿@model KompassHR.Areas.Reports.Models.LeaveWithWage
+@{
+    ViewBag.Title = "Reports_Leave_LeaveWithWages_Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+
+<style>
+    .table-bordered, .table-bordered th, .table-bordered td {
+        border: 1px solid black;
+        border-collapse: collapse;
+        padding: 8px; /* Added padding */
+    }
+
+    .table, .table th, .table td {
+        border: 1px solid black;
+    }
+
+    .table {
+        border-collapse: collapse;
+    }
+
+
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+</style>
+
+<style>
+    .vertical-header {
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        text-align: center;
+        vertical-align: middle;
+        padding: 10px;
+        width: 10%; /* Set width to 10% */
+        height: 18%; /* Set height to 5% */
+        font-weight: bold; /* Ensure the font is bold */
+        font-size: 11px; /* Adjust size for readability */
+        color: black; /* Set text color for contrast */
+    }
+
+    #tbl {
+        border-collapse: collapse; /* Ensures borders collapse into a single border */
+    }
+
+        #tbl tr {
+            border: 1px solid black; /* Adds a border around each row */
+        }
+
+        #tbl th, #tbl td {
+            border: 1px solid black; /* Ensures individual cell borders are visible */
+            padding: 8px; /* Adds padding for better readability */
+        }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Leave With Wages Register Form No 20 Details
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Reports_Leave_RptMenu", "Reports_Leave_RptMenu", new {id = 4, ScreenId=299, area = "Reports" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+   
+    <div class="row">
+        <div class="col-lg-12 col-md-12">
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">Leave With Wages Register Form No 20 Details</h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row justify-content-center">
+                        <form role="form" action='@Url.Action("Reports_Leave_LeaveWithWages_Details", "Reports_Leave_LeaveWithWages_Details", new { area = "Reports" })' id="formEmployeeWiseReport" method="post">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-4">
+                                            Company Name
+                                        </label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.CmpId, new SelectList(ViewBag.CompanyName, "Id", "Name"), new { @class = "form-select", name = "CmpID", id = "ddlCmpId" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-4">
+                                            Business Unit
+                                        </label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.BranchId, new SelectList(ViewBag.BranchName, "Id", "Name"), new { @id = "txtBranchId", name = "LeaveOpeningBalanceBranchID", @class = "form-select" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-4">
+                                            Year
+                                        </label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.Year, new { @class = "form-control", name = "Month", type = "text", id = "GetMonth", @Value = "2024", autocomplete = "Off", Maxlength = 4, onkeypress = " return numbervalidate(event)" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-4">
+                                            Employee Name
+                                            <span class="important">*</span>
+                                        </label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.EmployeeId, new SelectList(ViewBag.EmployeeName, "Id", "Name"), "--Select--", new { @id = "ddlEmployeeId", name = "LeaveOpeningBalanceEmployeeId", @class = "form-select" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="LastShortLeaveBx">
+                                    <div class="row">
+                                        <div class="col-md-10">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="BtnBx">
+                                                <div>
+                                                    <button type="button" onclick="funEmployeeWiseReport()" class="btn btn-sm btn-success btn-sm"> Show</button>
+                                                    @*<button type="button" onclick="funEmployeeWiseReport()" class="btn btn-sm btn-success">Show</button>*@
+                                                    <button type="button" class="btn  btn-primary btn-sm" onclick="printDiv();" id="search"><i class="ace-icon fa fa-print align-top bigger-100"></i>&nbsp; Print</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    @*<div class="row">
+                        <div class="col-12">
+                            <div class="invoice">
+                                <div class="invoice-company mb-3"></div>
+                                <form class="form">
+                                    <div class="row" id="DIVheader">
+                                        <div class="col-md-12 text-center">
+                                            <h3><b>Leave With Wages Register Form No 20 Details</b></h3>
+                                        </div>
+                                    </div>
+                                    <div class="invoice-content" id="divPrint">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <table class="table table-bordered table-hover mb-0 " id="tblContractorVSLine" style="width: 100%;">
+                                                    <thead class="table-active horizontal-scroll" style="background-color: rgba(233, 236, 239, 1) !important;">
+                                                        @if (ViewBag.GetEmployeeDetails.ToString() != "")
+                                                        {
+
+                                                            <tr class="trheading">
+                                                                <th class="text-left" colspan="6">Company Name : <b>@ViewBag.GetEmployeeDetails[0].CompanyName</b></th>
+                                                                <th class="text-left" colspan="6">Business Unit : <b>@ViewBag.GetEmployeeDetails[0].BranchName</b></th>
+                                                                <th class="text-left" colspan="4">Dischared Worker </th>
+                                                            </tr>
+                                                            <tr class="trheading">
+                                                                <th class="text-left" colspan="6">Employee Name : @ViewBag.GetEmployeeDetails[0].EmployeeName</th>
+                                                                <th class="text-left" colspan="6">Father Name :</th>
+                                                                <th class="text-left" colspan="4">Date : @ViewBag.GetEmployeeDetails[0].LeavingDate</th>
+                                                            </tr>
+                                                            <tr class="trheading">
+                                                                <th class="text-left" colspan="6">Employee No : @ViewBag.GetEmployeeDetails[0].EmployeeNo</th>
+                                                                <th class="text-left" colspan="6">Normal Rate of Wages :</th>
+                                                                <th class="text-left" colspan="4"></th>
+                                                            </tr>
+                                                            <tr class="trheading">
+                                                                <th class="text-left" colspan="6">Department : @ViewBag.GetEmployeeDetails[0].DepartmentName</th>
+                                                                <th class="text-left" colspan="6">Page No. Old / New : </th>
+                                                                <th class="text-left" colspan="4"></th>
+                                                            </tr>
+                                                            <tr class="trheading">
+                                                                <th class="text-left" colspan="6">Section : @ViewBag.GetEmployeeDetails[0].ContractorName</th>
+                                                                <th class="text-left" colspan="6">Serial No. From Adult / Children's Worker register :</th>
+                                                                <th class="text-left" colspan="4">Date & amount of payment made in lieu of leave with wages etc.</th>
+                                                            </tr>
+                                                            <tr class="trheading">
+                                                                <th class="text-left" colspan="6">Designation : @ViewBag.GetEmployeeDetails[0].DesignationName</th>
+                                                                <th class="text-left" colspan="6">Date of entry into service : @ViewBag.GetEmployeeDetails[0].JoiningDate</th>
+                                                                <th class="text-left" colspan="4">Remarks</th>
+                                                            </tr>
+                                                            <tr class="trheading">
+                                                                <th class="text-left" colspan="16">Address : @ViewBag.GetEmployeeDetails[0].Address</th>
+
+                                                            </tr>
+                                                        }
+                                                        @if (ViewBag.GetLeaveWithWagesRegister != null)
+                                                        {
+                                                            <tr class="trheading">
+                                                                <th style="width:5%; border-color:black !important;" class="text-center vertical-header"></th>
+                                                                <th class="text-center" style="width:5%; border-color:black !important;" colspan="5">No. of days eligible during the calendar year</th>
+                                                                <th class="text-center" style="width:5%; border-color:black !important;" colspan="3">Leave with wages to credit</th>
+                                                                <th style="width:5%;border-color:black !important;" class="text-center vertical-header"></th>
+                                                                <th  style="width:5%;border-color:black !important;" class="text-center vertical-header"></th>
+                                                                <th class="text-center" style="width:5%" colspan="1"></th>
+                                                                <th style="width:5%;border-color:black !important;" class="text-center"></th>
+                                                                <th style="width:5%;border-color:black !important;" class="text-center vertical-header"></th>
+                                                                <th style="width:5%;border-color:black !important;" class="text-center vertical-header"></th>
+                                                                <th style="width:5%;border-color:black !important;" class="text-center vertical-header"></th>
+                                                            </tr>
+                                                            <tr class="trheading">
+                                                                @foreach (var row in ViewBag.GetLeaveWithWagesRegister)
+                                                                {
+                                                                    foreach (var cell in row)
+                                                                    {
+                                                                        <th class="text-center vertical-header" style="width:8%; border-color:black !important;">@cell.Key</th>
+                                                                        <th class="text-nowrap">@cell.Key</th>
+                                                                        if (@cell.Key == "NoOfDaysWorkPerformed")
+                                                                        {
+                                                                            <th class="text-center vertical-header" style="width:8%; border-color:black !important;">No. of days work performed</th>
+                                                                        }
+                                                                        else if (@cell.Key == "NoOfDaysOfLayOff")
+                                                                        {
+                                                                            <th class="text-center vertical-header" style="width:8%; border-color:black !important;">No. of days of lay-off</th>
+                                                                        }
+                                                                        else if (@cell.Key == "NoOfDaysOfMaternityLeaveWith")
+                                                                        {
+                                                                            <th class="text-center vertical-header" style="width:6%; border-color:black !important;">No. of days of maternity leave with</th>
+                                                                        }
+                                                                        else if (@cell.Key == "NoOfDaysLeaveWithWagesEnjoyed")
+                                                                        {
+                                                                            <th class="text-center vertical-header" style="width:8%; border-color:black !important;">No. of days leave with wages enjoyed</th>
+                                                                        }
+                                                                        else if (@cell.Key == "NoTotal")
+                                                                        {
+                                                                            <th class="text-center" style="width:8%; border-color:black !important;">Total</th>
+                                                                        }
+                                                                        else if (@cell.Key == "BalanceOfLeaveWithWagesFromPrecedingYear")
+                                                                        {
+                                                                            <th class="text-center vertical-header" style="width:8%; border-color:black !important;">Balance of leave with wages from preceding year</th>
+                                                                        }
+                                                                        else if (@cell.Key == "LeaveWithWagesEarnedDuringThisYear")
+                                                                        {
+                                                                            <th class="text-center vertical-header" style="width:8%; border-color:black !important;">Leave with wages earned during this year</th>
+                                                                        }
+                                                                        else if (@cell.Key == "EarnedLeaveTotal")
+                                                                        {
+                                                                            <th class="text-center" style="width:8%; border-color:black !important;">Total</th>
+                                                                        }
+                                                                        else if (@cell.Key == "LeaveWithWagesEnjoyedFromTo")
+                                                                        {
+                                                                            <th class="text-center" style="width:5%; border-color:black !important;">From - To</th>
+                                                                        }
+                                                                    }
+                                                                    break;
+                                                                }
+                                                            </tr>
+                                                        }
+                                                    </thead>
+                                                    <tbody class="table-body-scroll">
+                                                        @if (ViewBag.GetLeaveWithWagesRegister != null)
+                                                        {
+
+                                                            foreach (var d in ViewBag.GetLeaveWithWagesRegister)
+                                                            {
+                                                                <tr>
+                                                                    @foreach (var cell in d)
+                                                                    {
+                                                                        if (@cell.Key == "Business Unit")
+                                                                        {
+
+                                                                        }
+                                                                        if (d.MonthYear == "Total")
+                                                                        {
+                                                                            if (d.MonthYear == null)
+                                                                            {
+                                                                                <td class="text-nowrap text-center" style="font-weight: bold; font-size: 1.1em; background-color: #EEE;">0</td>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <td class="text-nowrap text-center" style="font-weight: bold; font-size: 1.1em; background-color: #EEE;">@d.MonthYear</td>
+                                                                            }
+
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td class="text-nowrap text-center">@d.MonthYear</td>
+                                                                        }
+                                                                        <td class="text-nowrap text-center">@d.NoOfDaysWorkPerformed</td>
+                                                                        if (d.NoOfDaysOfLayOff == null)
+                                                                        {
+                                                                            <td class="text-nowrap text-center">0</td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td class="text-nowrap text-center">@d.NoOfDaysOfLayOff</td>
+                                                                        }
+
+                                                                        if (d.NoOfDaysOfMaternityLeaveWith == null)
+                                                                        {
+                                                                            <td class="text-nowrap text-center">0</td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td class="text-nowrap text-center">@d.NoOfDaysOfMaternityLeaveWith</td>
+                                                                        }
+
+
+                                                                        if (d.NoOfDaysLeaveWithWagesEnjoyed == null)
+                                                                        {
+                                                                            <td class="text-nowrap text-center">0</td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td class="text-nowrap text-center">@d.NoOfDaysLeaveWithWagesEnjoyed</td>
+                                                                        }
+
+                                                                        if (d.NoTotal == null)
+                                                                        {
+                                                                            <td class="text-nowrap text-center">0</td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td class="text-nowrap text-center">@d.NoTotal</td>
+                                                                        }
+
+                                                                        if (d.BalanceOfLeaveWithWagesFromPrecedingYear == null)
+                                                                        {
+                                                                            <td class="text-nowrap text-center">0</td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td class="text-nowrap text-center">@d.BalanceOfLeaveWithWagesFromPrecedingYear</td>
+                                                                        }
+
+                                                                        if (d.LeaveWithWagesEarnedDuringThisYear == null)
+                                                                        {
+                                                                            <td class="text-nowrap text-center">0</td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td class="text-nowrap text-center">@d.LeaveWithWagesEarnedDuringThisYear</td>
+                                                                        }
+
+                                                                        if (d.EarnedLeaveTotal == null)
+                                                                        {
+                                                                            <td class="text-nowrap text-center">0</td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td class="text-nowrap text-center">@d.EarnedLeaveTotal</td>
+                                                                        }
+
+                                                                        if (d.WhetherLeaveWithWagesRefused == null)
+                                                                        {
+                                                                            <td class="text-nowrap text-center">0</td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td class="text-nowrap text-center">@d.WhetherLeaveWithWagesRefused</td>
+                                                                        }
+
+                                                                        if (d.WhetherLeaveWithWagesNotDesiredDuringTheNextCalendarYear == null)
+                                                                        {
+                                                                            <td class="text-nowrap text-center">0</td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td class="text-nowrap text-center">@d.WhetherLeaveWithWagesNotDesiredDuringTheNextCalendarYear</td>
+                                                                        }
+
+                                                                        if (d.LeaveWithWagesEnjoyedFromTo == null)
+                                                                        {
+                                                                            <td class="text-nowrap text-center">-</td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td class="text-nowrap text-center">@d.LeaveWithWagesEnjoyedFromTo</td>
+                                                                        }
+
+                                                                        if (d.BalanceToCredit == null)
+                                                                        {
+                                                                            <td class="text-nowrap text-center">0</td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td class="text-nowrap text-center">@d.BalanceToCredit</td>
+                                                                        }
+
+                                                                        if (d.NormalRateOfWages == null)
+                                                                        {
+                                                                            <td class="text-nowrap text-center">0</td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td class="text-nowrap text-center">@d.NormalRateOfWages</td>
+                                                                        }
+
+                                                                        if (d.CashEquivalentorAccruingThroughConcessionalSaleofFoodgrainsorOtherArticles == null)
+                                                                        {
+                                                                            <td class="text-nowrap text-center">0</td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td class="text-nowrap text-center">@d.CashEquivalentorAccruingThroughConcessionalSaleofFoodgrainsorOtherArticles</td>
+                                                                        }
+
+                                                                        if (d.RateOfWagesForLeaveWagesPeriod == null)
+                                                                        {
+                                                                            <td class="text-nowrap text-center">0</td>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <td class="text-nowrap text-center">@d.RateOfWagesForLeaveWagesPeriod</td>
+                                                                        }
+
+                                                                    }
+                                                                    break;
+                                                                </tr>
+                                                            }
+                                                        }
+
+
+                                                    </tbody>
+                                                </table>
+                                                <table class="table table-bordered table-hover mb-0 text-dark align-middle" id="tbl">
+                                                    <thead>
+                                                        @if (ViewBag.GetEmployeeDetails.ToString() != "")
+                                                        {
+
+                                                            <tr class="trheading">
+                                                                <th class="text-left" colspan="6">Company Name : <b>@ViewBag.GetEmployeeDetails[0].CompanyName</b></th>
+                                                                <th class="text-left" colspan="6">Business Unit : <b>@ViewBag.GetEmployeeDetails[0].BranchName</b></th>
+                                                                <th class="text-left" colspan="4">Dischared Worker </th>
+                                                            </tr>
+                                                            <tr class="trheading">
+                                                                <th class="text-left" colspan="6">Employee Name : @ViewBag.GetEmployeeDetails[0].EmployeeName</th>
+                                                                <th class="text-left" colspan="6">Father Name :</th>
+                                                                <th class="text-left" colspan="4">Date : @ViewBag.GetEmployeeDetails[0].LeavingDate</th>
+                                                            </tr>
+                                                            <tr class="trheading">
+                                                                <th class="text-left" colspan="6">Employee No : @ViewBag.GetEmployeeDetails[0].EmployeeNo</th>
+                                                                <th class="text-left" colspan="6">Normal Rate of Wages :</th>
+                                                                <th class="text-left" colspan="4"></th>
+                                                            </tr>
+                                                            <tr class="trheading">
+                                                                <th class="text-left" colspan="6">Department : @ViewBag.GetEmployeeDetails[0].DepartmentName</th>
+                                                                <th class="text-left" colspan="6">Page No. Old / New : </th>
+                                                                <th class="text-left" colspan="4"></th>
+                                                            </tr>
+                                                            <tr class="trheading">
+                                                                <th class="text-left" colspan="6">Section : @ViewBag.GetEmployeeDetails[0].ContractorName</th>
+                                                                <th class="text-left" colspan="6">Serial No. From Adult / Children's Worker register :</th>
+                                                                <th class="text-left" colspan="4">Date & amount of payment made in lieu of leave with wages etc.</th>
+                                                            </tr>
+                                                            <tr class="trheading">
+                                                                <th class="text-left" colspan="6">Designation : @ViewBag.GetEmployeeDetails[0].DesignationName</th>
+                                                                <th class="text-left" colspan="6">Date of entry into service : @ViewBag.GetEmployeeDetails[0].JoiningDate</th>
+                                                                <th class="text-left" colspan="4">Remarks</th>
+                                                            </tr>
+                                                            <tr class="trheading">
+                                                                <th class="text-left" colspan="16">Address : @ViewBag.GetEmployeeDetails[0].Address</th>
+
+                                                            </tr>
+                                                        }
+                                                        <tr class="trheading">
+                                                            <th rowspan="2" style="width:5%; border-color:black !important;" class="text-center vertical-header">Year & Month</th>
+                                                            <th class="text-center" style="width:5%; border-color:black !important;" colspan="5">No. of days eligible during the calendar year</th>
+                                                            <th class="text-center" style="width:5%; border-color:black !important;" colspan="3">Leave with wages to credit</th>
+                                                            <th rowspan="2" style="width:5%;border-color:black !important;" class="text-center vertical-header">Whether leave with wages refused</th>
+                                                            <th rowspan="2" style="width:5%;border-color:black !important;" class="text-center vertical-header">Whether leave with wages not desired during the next calendar year</th>
+                                                            <th class="text-center" style="width:5%" colspan="1">Leave with wages enjoyed</th>
+                                                            <th rowspan="2" style="width:5%;border-color:black !important;" class="text-center">Balance to Credit</th>
+                                                            <th rowspan="2" style="width:5%;border-color:black !important;" class="text-center vertical-header">Normal Rate of Wages</th>
+                                                            <th rowspan="2" style="width:5%;border-color:black !important;" class="text-center vertical-header">Cash equivalent or accruing through concessional sale of foodgrains or other articles</th>
+                                                            <th rowspan="2" style="width:5%;border-color:black !important;" class="text-center vertical-header">Rate of wages for leave wages period</th>
+                                                        </tr>
+                                                        <tr class="trheading">
+                                                            <th class="text-center vertical-header" style="width:8%; border-color:black !important;">No. of days work performed</th>
+                                                            <th class="text-center vertical-header" style="width:8%; border-color:black !important;">No. of days of lay-off</th>
+                                                            <th class="text-center vertical-header" style="width:6%; border-color:black !important;">No. of days of maternity leave with</th>
+                                                            <th class="text-center vertical-header" style="width:8%; border-color:black !important;">No. of days leave with wages enjoyed</th>
+                                                            <th class="text-center" style="width:8%; border-color:black !important;">Total</th>
+                                                            <th class="text-center vertical-header" style="width:8%; border-color:black !important;">Balance of leave with wages from preceding year</th>
+                                                            <th class="text-center vertical-header" style="width:8%; border-color:black !important;">Leave with wages earned during this year</th>
+                                                            <th class="text-center" style="width:8%; border-color:black !important;">Total</th>
+                                                            <th class="text-center" style="width:5%; border-color:black !important;">From - To</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var d in ViewBag.GetLeaveWithWagesRegister)
+                                                        {
+                                                            <tr>
+                                                                @if (d.MonthYear == "Total")
+                                                                {
+                                                                    if (d.MonthYear == null)
+                                                                    {
+                                                                        <td class="text-nowrap text-center" style="font-weight: bold; font-size: 1.1em; background-color: #EEE;">0</td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <td class="text-nowrap text-center" style="font-weight: bold; font-size: 1.1em; background-color: #EEE;">@d.MonthYear</td>
+                                                                    }
+
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-nowrap text-center">@d.MonthYear</td>
+                                                                }
+                                                                <td class="text-nowrap text-center">@d.NoOfDaysWorkPerformed</td>
+                                                                @if (d.NoOfDaysOfLayOff == null)
+                                                                {
+                                                                    <td class="text-nowrap text-center">0</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-nowrap text-center">@d.NoOfDaysOfLayOff</td>
+                                                                }
+
+                                                                @if (d.NoOfDaysOfMaternityLeaveWith == null)
+                                                                {
+                                                                    <td class="text-nowrap text-center">0</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-nowrap text-center">@d.NoOfDaysOfMaternityLeaveWith</td>
+                                                                }
+
+
+                                                                @if (d.NoOfDaysLeaveWithWagesEnjoyed == null)
+                                                                {
+                                                                    <td class="text-nowrap text-center">0</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-nowrap text-center">@d.NoOfDaysLeaveWithWagesEnjoyed</td>
+                                                                }
+
+                                                                @if (d.NoTotal == null)
+                                                                {
+                                                                    <td class="text-nowrap text-center">0</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-nowrap text-center">@d.NoTotal</td>
+                                                                }
+
+                                                                @if (d.BalanceOfLeaveWithWagesFromPrecedingYear == null)
+                                                                {
+                                                                    <td class="text-nowrap text-center">0</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-nowrap text-center">@d.BalanceOfLeaveWithWagesFromPrecedingYear</td>
+                                                                }
+
+                                                                @if (d.LeaveWithWagesEarnedDuringThisYear == null)
+                                                                {
+                                                                    <td class="text-nowrap text-center">0</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-nowrap text-center">@d.LeaveWithWagesEarnedDuringThisYear</td>
+                                                                }
+
+                                                                @if (d.EarnedLeaveTotal == null)
+                                                                {
+                                                                    <td class="text-nowrap text-center">0</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-nowrap text-center">@d.EarnedLeaveTotal</td>
+                                                                }
+
+                                                                @if (d.WhetherLeaveWithWagesRefused == null)
+                                                                {
+                                                                    <td class="text-nowrap text-center">0</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-nowrap text-center">@d.WhetherLeaveWithWagesRefused</td>
+                                                                }
+
+                                                                @if (d.WhetherLeaveWithWagesNotDesiredDuringTheNextCalendarYear == null)
+                                                                {
+                                                                    <td class="text-nowrap text-center">0</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-nowrap text-center">@d.WhetherLeaveWithWagesNotDesiredDuringTheNextCalendarYear</td>
+                                                                }
+
+                                                                @if (d.LeaveWithWagesEnjoyedFromTo == null)
+                                                                {
+                                                                    <td class="text-nowrap text-center">-</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-nowrap text-center">@d.LeaveWithWagesEnjoyedFromTo</td>
+                                                                }
+
+                                                                @if (d.BalanceToCredit == null)
+                                                                {
+                                                                    <td class="text-nowrap text-center">0</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-nowrap text-center">@d.BalanceToCredit</td>
+                                                                }
+
+                                                                @if (d.NormalRateOfWages == null)
+                                                                {
+                                                                    <td class="text-nowrap text-center">0</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-nowrap text-center">@d.NormalRateOfWages</td>
+                                                                }
+
+                                                                @if (d.CashEquivalentorAccruingThroughConcessionalSaleofFoodgrainsorOtherArticles == null)
+                                                                {
+                                                                    <td class="text-nowrap text-center">0</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-nowrap text-center">@d.CashEquivalentorAccruingThroughConcessionalSaleofFoodgrainsorOtherArticles</td>
+                                                                }
+
+                                                                @if (d.RateOfWagesForLeaveWagesPeriod == null)
+                                                                {
+                                                                    <td class="text-nowrap text-center">0</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-nowrap text-center">@d.RateOfWagesForLeaveWagesPeriod</td>
+                                                                }
+
+
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <br />
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>*@
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function printDiv() {
+        var divElements = document.getElementById('divPrint').innerHTML;
+        var headerElements = document.getElementById('DIVheader').innerHTML; // Get header content
+        var printWindow = window.open('', '', 'height=595,width=842'); // A4 Landscape dimensions
+
+        printWindow.document.write('<html><head><title>Print</title>');
+        printWindow.document.write('<style>');
+
+        // General print styles
+        printWindow.document.write('body, html { width: 297mm; height: 210mm; margin: 0; padding: 0; font-size: 9pt; }');
+        printWindow.document.write('#divPrint { width: 100%; max-width: 277mm; margin: 0 auto; }'); // Center-align the printable content
+        printWindow.document.write('table { width: 100%; table-layout: fixed; border-collapse: collapse; font-size: 9pt; }');
+        printWindow.document.write('table, th, td { border: 1px solid black; }');
+        printWindow.document.write('th, td { padding: 4px; word-wrap: break-word; vertical-align: middle; }');
+        printWindow.document.write('.text-nowrap { white-space: nowrap; }');
+        printWindow.document.write('.text-left { text-align: left; }');
+        printWindow.document.write('.text-center { text-align: center; }');
+        printWindow.document.write('th, td:nth-last-child(-n+2) { width: 7%; }');
+        printWindow.document.write('#tbl { border: 2px solid black; margin: 0 auto; }'); // Adds border around entire table
+        printWindow.document.write('#tbl th, #tbl td { border: 1px solid black; }'); // Ensures individual cell borders are visible
+
+        // Vertical header style
+        printWindow.document.write('.vertical-header {');
+        printWindow.document.write('writing-mode: vertical-rl;');
+        printWindow.document.write('transform: rotate(180deg);');
+        printWindow.document.write('text-align: center;');
+        printWindow.document.write('vertical-align: middle;');
+        printWindow.document.write('padding: 10px;');
+        printWindow.document.write('width: 50px !important;'); // Set fixed width to 50px
+        printWindow.document.write('height: 100px !important;'); // Set fixed height to 100px
+        printWindow.document.write('}');
+
+        // Header h2 style
+        printWindow.document.write('h2 { text-align: center; font-size: 1.5em; margin-bottom: 20px; }');
+
+        printWindow.document.write('</style></head><body>');
+
+        // Write header as <h2> and then write the rest of the content
+        printWindow.document.write('<h2>' + headerElements + '</h2>'); // Write the header as an <h2> element
+        printWindow.document.write('<div id="divPrint">' + divElements + '</div>');
+
+        printWindow.document.write('</body></html>');
+
+        printWindow.document.close();
+
+        // Adjust zoom for fitting content to a single page
+        printWindow.onload = function() {
+            printWindow.document.body.style.zoom = "99%";
+            printWindow.print();
+        };
+    }
+
+
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#ddlCmpId").select2();
+        $("#ddlEmployeeId").select2();
+        $("#txtBranchId").select2();
+        var today = new Date();
+        // Format the date as YYYY-MM (year-month)
+        var yyyy = today.getFullYear();
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+        var defaultMonth = yyyy + '-' + mm;
+        // Set the value of the input element to the default month
+
+        ////var CheckEmptyDate = document.getElementById('GetMonth').value;
+        ////if(CheckEmptyDate =="")
+        ////{
+        ////    document.getElementById('GetMonth').value = defaultMonth;
+        ////}
+
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                });
+            }
+        }
+
+        $("#ddlCmpId").on("change", function () {
+            debugger;
+            $("#txtBranchId").find("option").remove();
+            $("#ddlEmployeeId").find("option").remove();
+            var CmpId = $("#ddlCmpId").val();
+            var GetMonthYear=$("#GetMonth").val();
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("GetMonthlyBusinessUnit", "Reports_Leave_LeaveWithWages_Details")',
+                data: { CmpId: CmpId, GetMonthYear: GetMonthYear },
+                success: function (data) {
+                    debugger;
+                    $("#ddlEmployeeId").find("option").remove();
+                    if (data !=null) {
+                        $("#ddlEmployeeId").append("<option value=''>--Select-- </option>");
+                        $.each(data.Branch, function(i, p) {
+                            $("#txtBranchId").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                        });
+                        $.each(data.EmployeeName, function(i, p) {
+                            $("#ddlEmployeeId").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                        });
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        });
+
+        $("#txtBranchId").change(function () {
+            debugger;
+            $("#ddlEmployeeId").find("option").remove();
+            var CmpId = $("#ddlCmpId").val();
+            var BranchId = $("#txtBranchId").val();
+            var GetMonth = $("#GetMonth").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetMonthlyEmployeeName", "Reports_Leave_LeaveWithWages_Details")',
+                data: { BranchId: BranchId , CmpId:CmpId,GetMonth:GetMonth },
+                success: function (data) {
+                    debugger;
+
+                    if (data != null) {
+                        $("#ddlEmployeeId").append("<option value=''>--Select-- </option>");
+                        $.each(data, function (i, p) {
+                            $("#ddlEmployeeId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                }
+            })
+        });
+
+        $("#GetMonth").change(function () {
+            debugger;
+            $("#ddlEmployeeId").find("option").remove();
+            var GetMonth = $("#GetMonth").val();
+            var BranchId = $("#txtBranchId").val();
+
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetMonthlyEmployeeNameDateWise", "Reports_Leave_LeaveWithWages_Details")',
+                data: { BranchId: BranchId ,GetMonth:GetMonth },
+                success: function (data) {
+                    debugger;
+                    if (data != null) {
+                        $("#ddlEmployeeId").append("<option value=''>--Select-- </option>");
+                        $.each(data, function (i, p) {
+                            $("#ddlEmployeeId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                }
+            })
+        });
+
+    });//Ready Funcation
+
+    function numbervalidate(key) {
+        var presskeys = (key.which) ? key.which : key.presskeys;
+        if (!(presskeys == 8 || presskeys == 46) && (presskeys < 48 || presskeys > 57)) {
+            return false;
+        }
+    }
+
+
+
+
+    function downloadExcelFile() {
+        debugger;
+        // Show loader
+        $(".Userloaderbg").css("display", "flex");
+
+        // Get values from the input fields
+        var CmpId = encodeURIComponent($("#ddlCompanyName").val());
+        var BranchId = encodeURIComponent($("#txtBranchId").val());
+        var FromTime = encodeURIComponent($("#txtFromTime").val());
+        var ToTime = encodeURIComponent($("#txtToTime").val());
+        var txtDate = encodeURIComponent($("#txtDate").val());
+
+        // Get selected GradeIds
+        var GradeIds = [];
+        for (var option of document.getElementById('ddlGradeId').options) {
+            if (option.selected) {
+                GradeIds.push(option.value);
+            }
+        }
+        var GradeId = encodeURIComponent(GradeIds.join(',')); // Join array into a string
+
+        // Construct the URL
+        var url = `@Url.Action("DownloadExcelFile", "Reports_Attendance_ContractorVSLine")?BranchId=${BranchId}&CmpId=${CmpId}&FromTime=${FromTime}&ToTime=${ToTime}&GradeId=${GradeId}&txtDate=${txtDate}`;
+
+        // Make AJAX request to download the Excel file
+        $.ajax({
+            url: url,
+            method: 'GET',
+            xhrFields: {
+                responseType: 'blob' // Set the response type to blob
+            },
+            success: function (data) {
+                debugger;
+                if (data.size == 0) {
+                    Swal.fire({
+                        icon: 'error',
+                        text: 'Record Not Found',
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup();
+                            popup.classList.remove('swal2-show');
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake');
+                            });
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake');
+                            }, 500);
+                            return false;
+                        }
+                    });
+                    $(".Userloaderbg").css("display", "none");
+                    return false;
+                }
+
+                // Format date for filename
+                var formattedDate = convertDateFormat(txtDate);
+
+                // Create a Blob from the response data
+                var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                var url = window.URL.createObjectURL(blob);
+
+                // Create a temporary anchor element to initiate the download
+                var anchorElement = document.createElement('a');
+                anchorElement.href = url;
+                anchorElement.download = `ContractorVSLine(${formattedDate}).xlsx`;
+                anchorElement.click();
+
+                // Clean up
+                window.URL.revokeObjectURL(url);
+                $(".Userloaderbg").css("display", "none");
+            },
+            error: function (xhr, status, error) {
+                console.error('Error downloading file:', error);
+                // Hide loader in case of error
+                $(".Userloaderbg").css("display", "none");
+            }
+        });
+    }
+</script>
+
+@*<script>
+    //use for add regex function
+    jQuery.validator.addMethod(
+    "regex",
+     function (value, element, regexp) {
+         if (regexp.constructor != RegExp)
+             regexp = new RegExp(regexp);
+         else if (regexp.global)
+             regexp.lastIndex = 0;
+         return this.optional(element) || regexp.test(value);
+     }, "erreur expression reguliere"
+  );
+
+    $('#formEmployeeWiseReport').validate({
+        rules: {
+            CmpId: {
+                required: true,
+            },
+            BranchId: {
+                required: true,
+            },
+            EmployeeId: {
+                required: true,
+            },
+            Month: {
+                required: true,
+            },
+        },
+        messages: {
+            CmpId: {
+                required: "Company name is required",
+            },
+            BranchId: {
+                required: "Business unit is required",
+            },
+            EmployeeId: {
+                required: "Employee is required",
+            },
+            Month: {
+                required: "Month is required",
+            },
+        },
+    });
+
+    var form = $("#formEmployeeWiseReport");
+    form.validate();
+    function funEmployeeWiseReport() {
+        debugger;
+        form.valid();
+        if (form.valid() == false) {
+
+            return false;
+        }
+        $(".Userloaderbg").css("display", "flex");
+        $("#formEmployeeWiseReport").submit();
+    }
+</script>*@

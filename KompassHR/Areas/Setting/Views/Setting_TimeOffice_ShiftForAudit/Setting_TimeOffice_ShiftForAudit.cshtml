@@ -1,0 +1,509 @@
+﻿@model KompassHR.Areas.Setting.Models.Setting_TimeOffice.Atten_Shifts_Audit
+@{
+    ViewBag.Title = "Setting_TimeOffice_ShiftForAudit";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+<style>
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 13px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    .Error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 11px;
+    }
+
+    .tblAddData td:nth-child(1) {
+        display: none;
+    }
+
+    .tblAddData td:nth-child(1) {
+        text-align: left;
+        width: auto;
+    }
+
+    .tblAddData td:nth-child(2) {
+        text-align: left;
+        width: 315px;
+    }
+
+    .tblAddData td:nth-child(3) {
+        text-align: left;
+        width: 130px;
+    }
+
+    #tblShiftList input[type="text"] {
+        height: 22px; /* Adjust the height as needed */
+    }
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+    /* Set fixed width for the table */
+    #tblBodyShiftList {
+        table-layout: fixed; /* Enforce fixed layout */
+        width: 100%; /* Or specify a fixed width, e.g., 800px */
+        border-collapse: collapse; /* Prevent extra spacing between cells */
+    }
+
+        /* Set fixed widths for table columns */
+        #tblBodyShiftList th,
+        #tblBodyShiftList td {
+            width: 25%; /* Divide equally among 4 columns, adjust as needed */
+            overflow: hidden; /* Prevent content from overflowing */
+            text-overflow: ellipsis; /* Add ellipsis for overflowing text */
+            white-space: nowrap; /* Prevent wrapping of text */
+        }
+
+        /* Add border for better visibility */
+        #tblBodyShiftList th,
+        #tblBodyShiftList td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+    /* Style the error message */
+    #errorMessage {
+        font-size: 11px;
+        color: red;
+        margin-top: 10px;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Shift For Audit
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("ESS_AdminDashboard_Dashboard", "ESS_AdminDashboard_Dashboard", new { id = 32, ScreenId = 121, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Setting_TimeOffice_Menu", "Setting_TimeOffice_Menu", new { id = 5, ScreenId =51, area = "Setting" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Settings">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                 <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Shift For Audit </h4>
+                 
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Define shift change manual here!
+                    </p>
+                </div>
+                <div class="panel-body" data-scrollbar="false">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "Setting_TimeOffice_ShiftForAudit", new { area = "Setting" })' id="SaveShiftForAudit" method="post">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Company Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.ShiftsAuditIdCmpId, new SelectList(ViewBag.CompanyName, "Id", "Name"), "--Select--", new { id = "ddlCompanyName", @class = "form-select", autocomplete = "off", @required = "required" })
+                                                @Html.HiddenFor(model => model.ShiftsAuditId_Encrypted, new { @id = "ShiftsAuditId_Encrypted" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Business Unit
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.ShiftsAuditBranchId, new SelectList(ViewBag.BusinessUnit, "Id", "Name"), "--Select--", new { @class = "form-control", @id = "ddlShiftsAuditBranchId" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr class="mt-0">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2">
+                                            </label>
+                                            <div class="col-md-5">
+                                                <table class="table table-bordered align-middle tblAddData" id="tblShiftList" style="width: 100%;">
+                                                    <thead style="text-align: center;">
+                                                        <tr style="background-color: lightgray; border: 1px solid lightslategray;">
+                                                            <th hidden class="text-nowrap ">ShiftId</th>
+                                                            <th style="border: 1px solid lightslategray;" class="text-nowrap ">Shift Name</th>
+                                                            <th style="border: 1px solid lightslategray;" class="text-nowrap ">Shift Type</th>
+                                                            <th style="border: 1px solid lightslategray;" class="text-nowrap ">Percentage</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="tblBodyShiftList"></tbody>
+                                                    <tfoot>
+                                                        <tr>
+                                                            <th style="border: 1px solid lightslategray;" colspan="2" class="text-nowrap">Total Percentage</th>
+                                                            <th style="border: 1px solid lightslategray;" colspan="2" class="text-nowrap">
+                                                                <input id="lblTotalPercentage" class="form-control" readonly="readonly" type="text" style="background-color: #eee;" />
+                                                                <span id="_errorMessage" class="Error"></span>
+                                                            </th>
+
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="button" id="btnSubmit" class="btn btn-primary btn-sm">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                        <a href="@Url.Action("GetList", "Setting_TimeOffice_ShiftForAudit", new { area = "Setting" })">
+                                                            <button type="button" class="btn btn-danger btn-sm" id="btnPunchMissingList">
+                                                                <i class="fa-solid fa-share-from-square"></i> List
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- END panel -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        debugger;
+        $("#ddlCompanyName").select2();
+        $("#ddlShiftsAuditBranchId").select2();
+        $('title').html("Shift for audit");
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        // return false
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+
+
+        $("#ddlCompanyName").on("change", function () {
+            $("#ddlShiftsAuditBranchId").find("option").remove();
+            var CmpId = $("#ddlCompanyName").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetBusinessUnit", "Setting_TimeOffice_WFH")',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    if (data !=null) {
+                        $("#ddlShiftsAuditBranchId").append("<option value=''>--Select--</option>");
+                        $.each(data, function(i, p) {
+                            $("#ddlShiftsAuditBranchId").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                        });
+                    }
+                }
+            })
+        });
+
+        $("#ddlShiftsAuditBranchId").on("change", function () {
+            debugger;
+            // Clear table rows except for headers
+            $('#tblShiftList tr').not(function () { return !!$(this).has('th').length; }).remove();
+
+            var BranchId = $("#ddlShiftsAuditBranchId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetShiftList", "Setting_TimeOffice_ShiftForAudit")',
+                data: { BranchId: BranchId },
+                success: function (data) {
+                    debugger;
+
+                    if (data != null) {
+                        var table = document.getElementById("tblBodyShiftList");
+                        var totalPercentage = 0; // Initialize total
+
+                        // Loop through the data and populate the table while calculating the total
+                        $.each(data, function (index, value) {
+                            var rowCount = table.rows.length;
+                            var row = table.insertRow(rowCount);
+
+                            // Insert cells and values
+                            row.insertCell(0).innerHTML = "" + value[0].Value + "";
+                            row.insertCell(1).innerHTML = "" + value[1].Value + "";
+                            row.insertCell(2).innerHTML = "" + value[2].Value + "";
+                            row.insertCell(3).innerHTML =
+                                '<input id="txtPercentage' + index + '" type="text" name="Percentage" autocomplete="off" class="form-control" value="' + value[3].Value + '" onkeyup="updateTotalPercentage(this)">  <span id="errorMessage' + index + '" class="Error"></span>';
+
+                            // Accumulate the total percentage as integers
+                            totalPercentage += parseInt(value[3].Value) || 0;
+                        });
+
+                        // Update the total percentage
+                        $('#lblTotalPercentage').val(totalPercentage);
+                    }
+                }
+            });
+        });
+
+        // Function to dynamically update the total
+        function updateTotalPercentage() {
+            debugger;
+            var total = 0;
+
+            // Iterate over all text inputs and calculate the total as integers
+            $('#tblBodyShiftList input[type="text"]').each(function () {
+                total += parseInt($(this).val()) || 0;
+            });
+
+            // Update the total percentage
+            $('#lblTotalPercentage').val(total);
+        }
+
+
+    });//ready function
+
+    function updateTotalPercentage(input) {
+        var table = document.getElementById("tblBodyShiftList");
+        var rowCount = table.rows.length;
+        var total = 0;
+        var isValid = true;
+
+        // Validate if the input contains only numeric or float values
+        if (!/^\d+(\.\d+)?$/.test(input.value) && input.value !== "") {
+            input.value = "0";
+            isValid = false;
+        }
+
+        // Loop through all rows to calculate the total after input is validated
+        for (var i = 0; i < rowCount; i++) {
+            var LblValue = table.rows.item(i).cells;
+            var ValueAmount = LblValue[3].firstChild.value;
+            var AmountB = parseFloat(ValueAmount) || 0;
+            total += AmountB;
+        }
+
+        // If input is valid, update the total
+        if (isValid || input.value === "0") {
+            $('#lblTotalPercentage').val(total);
+
+            // Check if the total exceeds 100
+            if (total > 100) {
+                $("#lblTotalPercentage").css("border", "1px solid red");
+                $("#_errorMessage").html("Total percentage should not exceed 100%").css("color", "red");
+            } else {
+                $("#lblTotalPercentage").css("border", "");
+                $("#_errorMessage").html("");
+            }
+        }
+    }
+</script>
+
+<script>
+    //use for add regex function
+    jQuery.validator.addMethod(
+        "regex",
+         function(value, element, regexp) {
+             if (regexp.constructor != RegExp)
+                 regexp = new RegExp(regexp);
+             else if (regexp.global)
+                 regexp.lastIndex = 0;
+             return this.optional(element) || regexp.test(value);
+         },"erreur expression reguliere"
+      );
+    $("#SaveShiftForAudit").validate({
+        rules: {
+            CmpId:{
+                required: true,
+            },
+            ShiftsAuditBranchId:{
+                required: true,
+            },
+        },
+        messages: {
+            CmpId:{
+                required: "Company name is required",
+            },
+            ShiftsAuditBranchId:{
+                required: "Business unit is required",
+            },
+        }
+    });
+
+    var form = $("#SaveShiftForAudit");
+    form.validate();
+    $("#btnSubmit").click(function () {
+        debugger;
+        form.valid();
+        if(form.valid()==false)
+        {
+            return false;
+        }
+        $("#SelectAll").prop("checked", false);
+        var TotalPercentage=Number($("#lblTotalPercentage").val());
+        if (TotalPercentage>100)
+        {
+            var Message="Total percentage should not exceed 100%";
+            var Icon="error";
+            if (Message != null) {
+                if (Message != "") {
+                    Swal.fire({
+                        icon: Icon,
+                        text: Message,
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup()
+                            popup.classList.remove('swal2-show')
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake')
+                            })
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake')
+                            }, 500)
+                            return false
+                        }
+                    })
+                    return false;
+                }
+            }
+        }
+        $(".Userloaderbg").css("display", "flex");
+        var ObjShiftAudit = [];
+        $('#tblBodyShiftList tr').each(function () {
+            var row = $(this); // Get the current row
+            var data = {
+                ShiftsAuditShiftId: row.find('td').eq(0).text(), // Get the value from the first cell
+                Percentage: row.find('td').eq(3).find('input').val(), // Get the value from the input in the fourth cell
+            };
+            ObjShiftAudit.push(data);
+        });
+        
+        var CmpId=$("#ddlCompanyName").val();
+        var BusinessUnit=$("#ddlShiftsAuditBranchId").val();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("SaveUpdate", "Setting_TimeOffice_ShiftForAudit")',
+            data: JSON.stringify({ ObjShiftAudit: ObjShiftAudit, CmpId: CmpId, BusinessUnit: BusinessUnit}),
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            success: function (response) {
+                debugger;
+                var data = JSON.parse(response);
+                var Message1 = data.Message;
+                var Icon1 = data.Icon;
+                if (data != null) {
+                    if (Message1 != null) {
+                        Swal.fire({
+                            icon: Icon1,
+                            text: Message1,
+                            allowOutsideClick: () => {
+                                const popup = Swal.getPopup()
+                                popup.classList.remove('swal2-show')
+                                setTimeout(() => {
+                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                })
+                                setTimeout(() => {
+                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                }, 500)
+                                return false
+                            }
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                window.location.href = '@Url.Action("Setting_TimeOffice_ShiftForAudit", "Setting_TimeOffice_ShiftForAudit")';
+                            } else if (
+                                /* Read more about handling dismissals below */
+                                result.dismiss === Swal.DismissReason.cancel
+                            ) {
+
+                            }
+                        })
+                    }
+                }
+            }
+        });
+
+    });
+</script>

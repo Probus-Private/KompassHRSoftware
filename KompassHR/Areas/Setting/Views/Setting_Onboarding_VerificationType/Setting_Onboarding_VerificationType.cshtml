@@ -1,0 +1,238 @@
+﻿@model KompassHR.Areas.Setting.Models.Setting_Onboarding.Mas_Verification
+
+@{
+    ViewBag.Title = "Setting_Onboarding_VerificationType";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+
+
+<style>
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+</style>
+
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Verification Type
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("ESS_AdminDashboard_Dashboard", "ESS_AdminDashboard_Dashboard", new { id = 32, ScreenId = 121, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Setting_Onboarding_Menu", "Setting_Onboarding_Menu", new { id = 3, ScreenId = 19, area = "Setting" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Settings">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                 <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                     Verification type
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Define verification type here!
+                    </p>
+                </div>
+                <div class="panel-body" >
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "Setting_Onboarding_VerificationType", new { area = "Setting" })' id="SaveVerficationType" method="post" data-parsley-validate="">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Verification Type Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-10">
+                                                @Html.TextBoxFor(model => model.VerificationName, new { @class = "form-control", name = "VerificationName", @id = "txtVerificationName", type = "text",autocomplete="Off" })
+                                                @Html.HiddenFor(model => model.VerificationID_Encrypted)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-15px align-items-center">
+                                    <label class="form-label col-form-label col-md-2"> </label>
+                                    <div class="col-md-2 ">
+                                        @Html.CheckBoxFor(model => model.IsMandatory, new { @id = "chkIsMandatory" })
+                                        <label class="form-check-label form-label">
+                                            Is Mandatory
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="button" id="btnSubmit"
+                                                                class="btn btn-primary btn-sm">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+
+                                                        <a href="@Url.Action("GetList", "Setting_Onboarding_VerificationType", new { area = "Setting" })">
+                                                                <button type="button" class="btn btn-danger btn-sm" id="btnGetVerificationList">
+                                                                    <i class="fa-solid fa-share-from-square"></i> List
+                                                                </button>
+                                                            </a>
+
+</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- END panel -->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        // return false
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+    });
+</script>
+
+<script>
+
+    $("#formReset").click(function () {
+        $("#SaveVerficationType")[0].reset();
+    })
+</script>
+
+<script>
+    //use for add regex function
+    jQuery.validator.addMethod(
+    "regex",
+     function(value, element, regexp) {
+         if (regexp.constructor != RegExp)
+             regexp = new RegExp(regexp);
+         else if (regexp.global)
+             regexp.lastIndex = 0;
+         return this.optional(element) || regexp.test(value);
+     },"erreur expression reguliere"
+  );
+
+    $('#SaveVerficationType').validate({
+        rules: {
+            VerificationName: {
+                required: true,               
+            }
+        },
+        messages: {
+            VerificationName: {
+                required:"Verification type name is required",               
+            },
+        }
+
+    });
+
+    var form = $("#SaveVerficationType");
+    form.validate();
+    $("#btnSubmit").click(function () {
+        form.valid();
+        if(form.valid()==false)
+        {
+            return false;
+        }
+        var VerificationName=$("#txtVerificationName").val();
+        var VerificationID_Encrypted=$("#VerificationID_Encrypted").val();
+
+        $.ajax({
+            url: '@Url.Action("IsVerificationTypeExists", "Setting_Onboarding_VerificationType")',
+            //url:"IsVerificationTypeExists",
+            method:"get",
+            data:{VerificationName:VerificationName,VerificationID_Encrypted:VerificationID_Encrypted},
+            success:function(response){
+                debugger;
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon=="error") {
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                        }
+                    }
+                }
+                else{
+                    $("#SaveVerficationType").submit();
+
+                }
+            }
+        });
+
+    });
+
+</script>
+
+

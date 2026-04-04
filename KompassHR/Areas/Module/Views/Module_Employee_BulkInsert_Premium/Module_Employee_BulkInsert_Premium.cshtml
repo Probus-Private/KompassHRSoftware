@@ -1,0 +1,721 @@
+﻿@model KompassHR.Areas.Module.Models.Module_Employee.Module_Employee_BulkInsert_Premium
+@{
+    ViewBag.Title = "Module_Employee_BulkInsert_Premium";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+
+<style>
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+
+    /*table Style End*/
+    label.error, .Error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+
+    /*.tblInnerAddData td:nth-child(1) {
+        display: none;
+    }*/
+    .dataTables_scrollBody::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+        margin-top: 20px;
+    }
+
+    .dataTables_scrollBody::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .dataTables_scrollBody::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+        height: 10px;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Bulk Insert
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_Contractor_Menu", "ESS_Contractor_Menu",  new { id = 27,ScreenId=307, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">Bulk Insert<b></b> </h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("Module_Employee_BulkInsert_Premium", "Module_Employee_BulkInsert_Premium", new { area = "Module" })' id="SaveBulkInsert" method="post" enctype="multipart/form-data" }>
+                                @*<div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">
+                                                Company Name
+                                                <span class="important"></span>
+                                            </label>
+                                            <div class="col-md-7">
+                                                @Html.DropDownListFor(model => model.CompanyName, new SelectList(ViewBag.ComapnyName, "Id", "Name"), "--Select--", new { id = "txtCmpId", name = "CmpID", @class = "form-select", autocomplete = "off", onChange = "ChangeConpany()" })
+                                            </div>
+                                            @*<div class="col-md-2">
+                                                    <button type="button" class="btn btn-primary" id="btnApplyCompanyName">Apply</button>
+                                                </div>*
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">
+                                                Business Unit
+                                                <span class="important"></span>
+                                            </label>
+                                            <div class="col-md-7">
+                                                @Html.DropDownListFor(model => model.BranchName, new SelectList(ViewBag.BranchName, "Id", "Name"), "--Select--", new { id = "txtBranchId", name = "BranchId", @class = "form-select", autocomplete = "off" })
+                                            </div>
+                                            @*<div class="col-md-2">
+                                                    <button type="button" class="btn btn-primary" id="btnApplyBusinessUnit">Apply</button>
+                                                </div>*
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr />*@
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">
+                                                Choose File
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-7">
+                                                <input type="file" name="AttachFile" class="form-control" id="txtAttachFile" onchange="ResetFile()" />
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button" class="btn btn-warning" id="btnChooseFile">Import</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <hr />
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="panel panel-inverse" data-sortable-id="index-1">
+                                            <div style="overflow-y:auto; overflow-x:auto">
+                                                <div class="panel-body">
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <a href="@Url.Content("~/assets/BulkUpload/Bulk_Insert_Template_Premium.xlsx")">
+                                                                <button type="button" class="btn btn-primary btn-sm  mb-10px">
+                                                                    <i class="fa-solid fa-file-excel"></i> &nbsp; Download Template
+                                                                </button>
+                                                            </a>
+                                                            @*<button id="btnTest" type="button" class="btn btn-primary btn-sm mb-10px">
+                                                                <i class="fa-solid fa-file-excel"></i> &nbsp; For Test
+                                                            </button>*@
+                                                            <div class="table-scroll div1">
+                                                                <div class="table-wrap">
+                                                                    <table class="table table-bordered table-hover mb-0 text-dark align-middle tblAddData TabledataBulkClass" id="Tabledata">
+                                                                        <thead class="table-active " style="background-color: rgba(233, 236, 239, 1) !important;">
+                                                                            <tr>
+                                                                                @if (ViewBag.count != null)
+                                                                                {
+                                                                                    <th class="fixed-side">Action</th>
+                                                                                    <th class="fixed-side1">SrNo.</th>
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    <th>SrNo.</th>
+                                                                                }
+                                                                                <th class="fixed-side2">Company Name</th>
+                                                                                <th class="fixed-side3">Business Unit</th>
+                                                                                <th class="fixed-side4">Contractor Name</th>
+                                                                                <th class="fixed-side5">Salutation</th>
+                                                                                <th class="fixed-side6">Employee Name</th>
+                                                                                <th class="fixed-side7">Employe No</th>
+                                                                                <th class="fixed-side8">Employee CardNo</th>
+                                                                                <th class="fixed-side17">Designation</th>
+                                                                                @*<th class="fixed-side23">Sub Unit</th>*@
+                                                                                <th class="fixed-side9">Aadhar No</th>
+                                                                                <th class="fixed-side9">Name As Per Aadhar</th>
+                                                                                <th class="fixed-side10">Mobile No (Optional)</th>
+                                                                                <th class="fixed-side11">Gender</th>
+                                                                                <th class="fixed-side12">Birth Date</th>
+                                                                                <th class="fixed-side13">Marital Status</th>
+                                                                                <th class="fixed-side14">Highest Qualification</th>
+                                                                                <th class="fixed-side24">Joining Date</th>
+                                                                                <th class="fixed-side26">Shift Group </th>
+                                                                                <th class="fixed-side27">Shift Rule </th>
+                                                                                <th class="fixed-side27">Canteen Applicable</th>
+                                                                                <th class="fixed-side28">Pincode (Optional)</th>
+                                                                                <th class="fixed-side29">State Name (Optional)</th>
+                                                                                <th class="fixed-side30-">District Name (Optional)</th>
+                                                                                <th class="fixed-side31">Taluka Name (Optional)</th>
+                                                                                <th class="fixed-side32">P/O Name (Optional)</th>
+                                                                                <th class="fixed-side33">City Name (Optional)</th>
+                                                                                <th class="fixed-side34">Postel Address (Optional)</th>
+                                                                                <th class="fixed-side34">Pay Type</th>
+                                                                                <th class="fixed-side34">Rate</th>
+                                                                                <th class="fixed-side34">Attendance Bonus</th>
+                                                                                <th class="fixed-side34">Account No.</th>
+                                                                                <th class="fixed-side34">Bank Name</th>
+                                                                                <th class="fixed-side34">IFSC Code</th>
+
+
+                                                                                @*<th class="fixed-side15">Department</th>
+                                                                                    <th class="fixed-side16">Sub Department</th>
+                                                                                    <th class="fixed-side16">Manpower Category</th>
+
+                                                                                    <th class="fixed-side18">Grade</th>
+                                                                                    <th class="fixed-side19">Critical Stage Applicable</th>
+                                                                                    <th class="fixed-side20">Critical Stage Category</th>
+                                                                                    <th class="fixed-side21">Line Master </th>
+                                                                                    <th class="fixed-side22">Assessment Level </th>
+                                                                                    <th class="fixed-side25">I Weekly off</th>
+                                                                                    <th class="fixed-side30">PF No (Optional)</th>
+                                                                                    <th class="fixed-side28">Father/Mother/Spouse Relation</th>
+                                                                                    <th class="fixed-side29">Father/Mother/Spouse Name</th>
+                                                                                    <th class="fixed-side30">UAN No</th>
+                                                                                    <th class="fixed-side29">ESIC No (Optional)</th>
+                                                                                    <th class="fixed-side30">Relation/Nominee1 (Optional)</th>
+                                                                                    <th class="fixed-side30">Relation/Nominee Name (Optional)</th>
+                                                                                *@
+
+
+
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody id="tblTableBodyBulkInsert">
+                                                                            @if (ViewBag.GetExceldata != null)
+                                                                            {
+                                                                                foreach (var d in ViewBag.GetExceldata)
+                                                                                {
+                                                                                    <tr>
+                                                                                        <td class="text-center">
+                                                                                            <i class="fa fa-trash-can fa-xl text-danger btnRemoveRow" style="cursor:pointer;"></i>
+                                                                                        </td>
+
+                                                                                        <td class="fixed-side">
+                                                                                            @*@Html.TextBoxFor(Model => Model.SrNo, new { @class = "form-control", @Value = d.SrNo, @id = "SrNo" })*@
+                                                                                            <span name="SrNo" class="SrNo">@d.SrNo</span>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.CompanyName, new { @class = "form-control", @Value = d.CompanyName, id = "CompanyName", name = "CompanyName", @style = "width:220px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.BranchName, new { @class = "form-control", @Value = d.BranchName, id = "BranchName", name = "BranchName", @style = "width:150px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.ContractorName, new { @class = "form-control", @Value = d.ContractorName, id = "ContractorName", name = "ContractorName", @style = "width:200px" })
+                                                                                        </td>
+
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.Salutation, new { @class = "form-control", @Value = d.Salutation, id = "Solutation", name = "Solutation" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.EmployeeName, new { @class = "form-control", @Value = d.EmployeeName, id = "EmployeeName", name = "EmployeeName", @style = "width:220px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.EmployeeNo, new { @class = "form-control", @Value = d.EmployeeNo, id = "EmployeNo", name = "EmployeNo", Maxlength = 10, type = "text", @style = "width:120px", oninput = "this.value = this.value.toUpperCase()" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.EmployeeCardNo, new { @class = "form-control", @Value = d.EmployeeCardNo, id = "EmployeeCardNo", name = "EmployeeCardNo", Maxlength = 10, type = "text", @style = "width:120px", oninput = "this.value = this.value.toUpperCase()" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.Designation, new { @class = "form-control", @Value = d.Designation, id = "Designation", name = "Designation", @style = "width:220px" })
+                                                                                        </td>
+                                                                                        @*<td>
+                                                                                                @Html.TextBoxFor(Model => Model.SubUnit, new { @class = "form-control", @Value = d.SubUnit, id = "SubUnit", name = "SubUnit", @style = "width:120px" })
+                                                                                            </td>*@
+
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.AadhaarNo, new { @class = "form-control", @Value = d.AadhaarNo, id = "AadharNo", name = "AadharNo", @style = "width:120px", MaxLength = 12, onkeypress = " return numbervalidate(event)" })
+                                                                                            <span id='validationMessage_' style='color: red;'></span>
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.NameAsPerAadhaar, new { @class = "form-control", @Value = d.NameAsPerAadhaar, id = "NameAsPerAadhaar", name = "NameAsPerAadhaar", @style = "width:120px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.PrimaryMobile, new { @class = "form-control", @Value = d.PrimaryMobile, id = "PrimaryMobileNo", name = "PrimaryMobileNo", @style = "width:120px", MaxLength = 10, onkeypress = " return numbervalidate(event)" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.Gender, new { @class = "form-control", @Value = d.Gender, id = "Gender", name = "Gender", @style = "width:120px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.BirthDate, new { @class = "form-control", @Value = d.BirthDate, id = "BirthDate", name = "BirthDate", @style = "width:120px", type = "date" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.MaritalStatus, new { @class = "form-control", @Value = d.MaritalStatus, id = "MaritalStatus", name = "MaritalStatus", @style = "width:120px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.HighestQualification, new { @class = "form-control", @Value = d.HighestQualification, id = "HighestQualification", name = "HighestQualification", @style = "width:120px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.JoiningDate, new { @class = "form-control", @Value = d.JoiningDate, id = "JoiningDate", name = "JoiningDate", @style = "width:120px", type = "date" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.ShiftGroup, new { @class = "form-control", @Value = d.ShiftGroup, id = "ShiftGroup", name = "ShiftGroup", @style = "width:120px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.ShiftRule, new { @class = "form-control", @Value = d.ShiftRule, id = "ShiftRule", name = "ShiftRule", @style = "width:120px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.CanteenApplicable, new { @class = "form-control", @Value = d.CanteenApplicable, id = "CanteenApplicable", name = "CanteenApplicable", @style = "width:120px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.Pincode, new { @class = "form-control", @Value = d.Pincode, id = "Pincode", name = "Pincode", @style = "width:200px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.StateName, new { @class = "form-control", @Value = d.StateName, id = "StateName", name = "StateName", @style = "width:200px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.DistrictName, new { @class = "form-control", @Value = d.DistrictName, id = "DistrictName", name = "DistrictName", @style = "width:200px" })
+                                                                                        </td>
+
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.TalukaName, new { @class = "form-control", @Value = d.TalukaName, id = "TalukaName", name = "TalukaName", @style = "width:200px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.POName, new { @class = "form-control", @Value = d.POName, id = "POName", name = "POName", @style = "width:200px" })
+                                                                                        </td>
+
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.CityName, new { @class = "form-control", @Value = d.CityName, id = "CityName", name = "CityName", @style = "width:200px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.PostalAddress, new { @class = "form-control", @Value = d.PostalAddress, id = "PostalAddress", name = "PostalAddress", @style = "width:200px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.PayType, new { @class = "form-control", @Value = d.PayType, id = "PayType", name = "PayType", @style = "width:200px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.Rate, new { @class = "form-control", @Value = d.Rate, id = "Rate", name = "Rate", @style = "width:200px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.AttendanceBonus, new { @class = "form-control", @Value = d.AttendanceBonus, id = "AttendanceBonus", name = "AttendanceBonus", @style = "width:200px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.AccountNo, new { @class = "form-control", @Value = d.AccountNo, id = "AccountNo", name = "AccountNo", @style = "width:200px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.BankName, new { @class = "form-control", @Value = d.BankName, id = "BankName", name = "BankName", @style = "width:200px" })
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            @Html.TextBoxFor(Model => Model.IFSCCode, new { @class = "form-control", @Value = d.IFSCCode, id = "IFSCCode", name = "IFSCCode", @style = "width:200px" })
+                                                                                        </td>
+
+
+
+
+
+                                                                                        @*<td>
+                                                                                                @Html.TextBoxFor(Model => Model.Department, new { @class = "form-control", @Value = d.Department, id = "Department", name = "Department", @style = "width:220px" })
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                @Html.TextBoxFor(Model => Model.SubDepartment, new { @class = "form-control", @Value = d.SubDepartment, id = "SubDepartment", name = "SubDepartment", @style = "width:220px" })
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                @Html.TextBoxFor(Model => Model.ManpowerCategory, new { @class = "form-control", @Value = d.ManpowerCategory, id = "ManpowerCategory", name = "ManpowerCategory", @style = "width:220px" })
+                                                                                            </td>
+
+                                                                                            <td>
+                                                                                                @Html.TextBoxFor(Model => Model.Grade, new { @class = "form-control", @Value = d.Grade, id = "Grade", name = "Grade", @style = "width:150px" })
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                @Html.TextBoxFor(Model => Model.CriticalStageApplicable, new { @class = "form-control", @Value = d.CriticalStageApplicable, id = "CriticalStageApplicable", name = "CriticalStageApplicable", @style = "width:120px" })
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                @Html.TextBoxFor(Model => Model.CriticalStageCategory, new { @class = "form-control", @Value = d.CriticalStageCategory, id = "CriticalStageCategory", name = "CriticalStageCategory", @style = "width:120px" })
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                @Html.TextBoxFor(Model => Model.LineMaster, new { @class = "form-control", @Value = d.LineMaster, id = "LineMaster", name = "LineMaster", @style = "width:120px" })
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                @Html.TextBoxFor(Model => Model.AssessmentLevel, new { @class = "form-control", @Value = d.AssessmentLevel, id = "AssessmentLevel", name = "AssessmentLevel", @style = "width:120px" })
+                                                                                            </td>
+
+                                                                                            <td>
+                                                                                                @Html.TextBoxFor(Model => Model.WeeklyOff, new { @class = "form-control", @Value = d.WeeklyOff, id = "WeeklyOff", name = "WeeklyOff", @style = "width:120px" })
+                                                                                            </td>
+
+                                                                                            <td>
+                                                                                                @Html.TextBoxFor(Model => Model.PFNo, new { @class = "form-control", @Value = d.PFNo, id = "PFNo", name = "PFNo", @style = "width:120px" })
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                @Html.TextBoxFor(Model => Model.RelationType, new { @class = "form-control", @Value = d.RelationType, id = "RelationType", name = "RelationType", @style = "width:200px" })
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                @Html.TextBoxFor(Model => Model.RelationName, new { @class = "form-control", @Value = d.RelationName, id = "RelationName", name = "RelationName", @style = "width:150px" })
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                @Html.TextBoxFor(Model => Model.UANNo, new { @class = "form-control", @Value = d.UANNo, id = "UANNo", name = "UANNo", @style = "width:120px", MaxLength = 12, onkeypress = " return numbervalidate(event)" })
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                @Html.TextBoxFor(Model => Model.ESICNo, new { @class = "form-control", @Value = d.ESICNo, id = "ESICNo", name = "ESICNo", @style = "width:120px" })
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                @Html.TextBoxFor(Model => Model.NomineeRelation, new { @class = "form-control", @Value = d.NomineeRelation, id = "NomineeRelation", name = "NomineeRelation", @style = "width:200px" })
+                                                                                            </td>
+                                                                                            <td>
+                                                                                                @Html.TextBoxFor(Model => Model.NomineeName, new { @class = "form-control", @Value = d.NomineeName, id = "NomineeName", name = "NomineeName", @style = "width:200px" })
+                                                                                            </td>*@
+
+
+
+                                                                                        @*<td>
+                                                                                                @Html.TextBoxFor(Model => Model.RateBasic, new { @class = "form-control", @Value = d.RateBasic, id = "RateBasic", name = "RateBasic", @style = "width:200px" })
+                                                                                            </td>*@
+
+
+
+                                                                                    </tr>
+                                                                                }
+                                                                            }
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- END table-responsive -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <button type="button" id="btnEmployeeSubmit"
+                                                            class="btn btn-primary btn-sm">
+                                                        <i class="fa-solid fa-floppy-disk"></i>  Submit
+                                                    </button>
+
+                                                    <a href="@Url.Action("ESS_Contractor_Menu", "ESS_Contractor_Menu", new { area = "ESS" })">
+                                                        <button type="button" class="btn btn-danger btn-sm">
+                                                            <i class="fa-solid fa-share-from-square fa-rotate-180"></i> Back
+                                                        </button>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#txtCmpId").select2();
+        $("#txtBranchId").select2();
+    });
+</script>
+
+<script>
+    $(document).on("click", ".btnRemoveRow", function () {
+        $(this).closest("tr").remove(); // delete row
+        $("#tblTableBodyBulkInsert tr").each(function (i) {
+            $(this).find(".SrNo").text(i + 1);
+        });
+    });
+</script>
+
+
+
+<script>
+    function ChangeConpany() {
+        debugger;
+        $("#txtBranchId").find("option").remove();
+        var CmpId = $("#txtCmpId").val();
+        $.ajax({
+            type: 'GET',
+            dataType: 'JSON',
+            contentType: "application/json; charset=utf-8",
+            url: "@Url.Action("GetBusinessUnit", "Module_Employee_BulkInsert_Premium")",
+            data: { CmpId: CmpId },
+            success: function (data) {
+                debugger;
+                if (data != null) {
+                    var data1 = data.data;
+                    $("#txtBranchId").append("<option value=''>--Select--</option>");
+                    $.each(data1, function (i, p) {
+                        $("#txtBranchId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                    });
+                }
+            }
+        })
+    }
+</script>
+<script>
+    $("#btnChooseFile").click(function () {
+        debugger;
+        $('#tblTableBodyBulkInsert').not(function () { return !!$(this).has('th').length; }).remove();
+        $("#SaveBulkInsert").submit();
+    })
+</script>
+
+
+<script>
+    // Save Code Script
+    $("#btnEmployeeSubmit").click(function () {
+        //$(".Userloaderbg").css("display", "flex");
+        debugger;
+        var tbldata = [];
+        var hasError = false;
+
+        $("#Tabledata tbody tr").each(function () {
+            if (hasError) return false;
+            var row = $(this);
+            var tblRowData = {};
+
+            // Collect data into the model explicitly
+            var employee = {
+                //SrNo: parseInt(row.find("td input[name='SrNo']").val() || 0),
+                SrNo: parseInt(row.find("td span[name='SrNo']").text() || 0),
+                CompanyName: row.find("td input[name='CompanyName']").val().trim(),
+                BranchName: row.find("td input[name='BranchName']").val().trim(),
+                ContractorName: row.find("td input[name='ContractorName']").val().trim(),
+                Salutation: row.find("td input[name='Salutation']").val().trim(),
+                EmployeeName: row.find("td input[name='EmployeeName']").val().trim(),
+                EmployeeNo: row.find("td input[name='EmployeeNo']").val().trim(),
+                EmployeeCardNo: row.find("td input[name='EmployeeCardNo']").val().trim(),
+                Designation: row.find("td input[name='Designation']").val().trim(),
+
+                AadhaarNo: row.find("td input[name='AadhaarNo']").val().trim(),
+                NameAsPerAadhaar: row.find("td input[name='NameAsPerAadhaar']").val().trim(),
+                PrimaryMobile: row.find("td input[name='PrimaryMobile']").val().trim(),
+                Gender: row.find("td input[name='Gender']").val().trim(),
+                BirthDate: row.find("td input[name='BirthDate']").val().trim(),
+                MaritalStatus: row.find("td input[name='MaritalStatus']").val().trim(),
+                HighestQualification: row.find("td input[name='HighestQualification']").val().trim(),
+                JoiningDate: row.find("td input[name='JoiningDate']").val().trim(),
+                ShiftGroup: row.find("td input[name='ShiftGroup']").val().trim(),
+                ShiftRule: row.find("td input[name='ShiftRule']").val().trim(),
+                CanteenApplicable: parseInt(row.find("td input[name='CanteenApplicable']").val() || 0),
+                Pincode: row.find("td input[name='Pincode']").val().trim(),
+                StateName: row.find("td input[name='StateName']").val().trim(),
+                DistrictName: row.find("td input[name='DistrictName']").val().trim(),
+                TalukaName: row.find("td input[name='TalukaName']").val().trim(),
+                POName: row.find("td input[name='POName']").val().trim(),
+                CityName: row.find("td input[name='CityName']").val().trim(),
+                PostalAddress: row.find("td input[name='PostalAddress']").val().trim(),
+                PayType: row.find("td input[name='PayType']").val().trim(),
+                Rate: parseFloat(row.find("td input[name='Rate']").val() || 0),
+                AttendanceBonus: row.find("td input[name='AttendanceBonus']").val().trim(),
+                AccountNo: row.find("td input[name='AccountNo']").val().trim(),
+                BankName: row.find("td input[name='BankName']").val().trim(),
+                IFSCCode: row.find("td input[name='IFSCCode']").val().trim()
+
+
+                //SubUnit: row.find("td input[name='SubUnit']").val().trim(),
+                //Department: row.find("td input[name='Department']").val().trim(),
+                //SubDepartment: row.find("td input[name='SubDepartment']").val().trim(),
+                //ManpowerCategory: row.find("td input[name='ManpowerCategory']").val().trim(),
+                //Grade: row.find("td input[name='Grade']").val().trim(),
+                //CriticalStageApplicable: row.find("td input[name='CriticalStageApplicable']").val().trim(),
+                //CriticalStageCategory: row.find("td input[name='CriticalStageCategory']").val().trim(),
+                //LineMaster: row.find("td input[name='LineMaster']").val().trim(),
+                //AssessmentLevel: row.find("td input[name='AssessmentLevel']").val().trim(),
+                //WeeklyOff: row.find("td input[name='WeeklyOff']").val().trim(),
+                //PFNo: row.find("td input[name='PFNo']").val().trim(),
+                //RelationType: row.find("td input[name='RelationType']").val().trim(),
+                //RelationName: row.find("td input[name='RelationName']").val().trim(),
+                //UANNo: row.find("td input[name='UANNo']").val().trim(),
+                //ESICNo: row.find("td input[name='ESICNo']").val().trim(),
+                //NomineeRelation: row.find("td input[name='NomineeRelation']").val().trim(),
+                //NomineeName: row.find("td input[name='NomineeName']").val().trim(),
+                //RateBasic: parseFloat(row.find("td input[name='RateBasic']").val() || 0)
+
+
+
+            };
+
+            //Validate required fields
+            if (!employee.EmployeeNo || !employee.EmployeeCardNo || !employee.AadhaarNo) {
+                showError(`EmployeeNo, EmployeeCardNo, and AadhaarNo are compulsory in Sr.No. ${employee.SrNo}`);
+                hasError = true;
+                return false;
+            }
+
+            tbldata.push(employee);
+        });
+
+        if (hasError || tbldata.length === 0) {
+            if (!hasError) showError("Import a file");
+            return false;
+        }
+        debugger;
+        //console.log(tbldata);
+
+        // AJAX call
+        $.ajax({
+            url: '@Url.Action("SaveUpdate", "Module_Employee_BulkInsert_Premium")',
+            method: "POST",
+            contentType: 'application/json',
+            data: JSON.stringify({ tbldata: tbldata, CmpId: $("#txtCmpId").val(), BranchId: $("#txtBranchId").val() }),
+            success: function (response) {
+                $(".Userloaderbg").css("display", "none");
+                if (response.Icon === "success") {
+                    // ✅ Success case
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success',
+                        text: response.Message,
+                        allowOutsideClick: false
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.reload();
+                        }
+                    });
+                } else {
+                    // ❌ Error case
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: response.Message
+                    });
+                }
+                handleResponse(response);
+            },
+            error: function () {
+                $(".Userloaderbg").css("display", "none");
+                showError("Something went wrong while saving the data.");
+            }
+        });
+    });
+
+    function showError(message) {
+        $(".Userloaderbg").css("display", "none");
+        Swal.fire({ icon: "error", text: message, allowOutsideClick: false });
+    }
+
+    function formatDate(dateStr) {
+        var parts = dateStr.split("/");
+        if (parts.length === 3) return parts[2] + "-" + parts[1] + "-" + parts[0];
+        return dateStr;
+    }
+</script>
+
+
+
+
+@*<script>
+
+    $("#btnTest").on("click", function () {
+        debugger;
+        $.ajax({
+            url: '@Url.Action("SendNotification", "Module_Employee_BulkInsert_Premium")',
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            data: JSON.stringify({
+                Title: "This is Title",
+                Body: "This is Body...",
+                NotifyEmpId: 5068,
+                CreatedBy: "Test",
+                RequestType: "Leave"
+            }),
+            success: function (response) {
+                console.log("✅ Success:", response);
+                alert("Notification sent successfully!");
+            },
+            error: function (xhr, status, error) {
+                console.error("❌ Error:", error);
+                alert("Failed: " + xhr.responseText);
+            }
+        });
+
+        
+
+        //var settings = {
+        //    url: "http://localhost:5260/api/SendNotification",
+        //    method: "POST",
+        //    data: JSON.stringify({
+        //        "Title": "This is Title",
+        //        "Body": "This is Body...",
+        //        "NotifyEmpId": 5068,
+        //        "CreatedBy": "Test",
+        //        "RequestType": "Leave"
+        //    })
+        //};
+
+        //$.ajax(settings)
+        //    .done(function (response) {
+        //        debugger;
+        //        alert('ok');
+        //        console.log("Success Response:", response);
+        //        alert("API call success!");
+        //    })
+        //    .fail(function (xhr, status, error) {
+        //        console.error("Error:", error);
+        //        alert("API call failed! " + error);
+        //    });
+    });
+
+</script>*@

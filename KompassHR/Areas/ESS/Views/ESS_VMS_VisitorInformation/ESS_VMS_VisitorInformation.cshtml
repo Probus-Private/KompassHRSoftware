@@ -1,0 +1,810 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_VMS.Visitor_Tra_Master
+@{
+    ViewBag.Title = "ESS_VMS_VisitorInformation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/select-picker/dist/picker.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select-picker/dist/picker.min.js"></script>
+
+<script src="~/scripts/webcam.js"></script>
+
+<style>
+    .fa-share-from-square {
+        transform: rotate(180deg);
+    }
+
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    #my_camera {
+        Width: 100% !important;
+        height: 100% !important;
+    }
+
+        #my_camera video {
+            Width: 100% !important;
+            height: 100% !important;
+        }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .select2.select2-container {
+        width: 100% !important;
+    }
+
+    /*CameraImgCss*/
+    #imsgFile {
+        width: 100% !important;
+    }
+</style>
+
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Visitor Information
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_VMS_Menu", "ESS_VMS_Menu",  new { id = 10,ScreenId=184, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Visitor Information - @ViewBag.AddUpdateTitle </h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Add visitor information here !
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "ESS_VMS_VisitorInformation", new { area = "ESS" })' id="SaveVisitorInformation" method="post" enctype="multipart/form-data">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3"> Doc No. <span class="important">*</span></label>
+                                            <div class="col-md-9">
+                                                @Html.TextBoxFor(model => Model.DocNo, new { @class = "form-control mb-5px", @id = "txtDocNo", Value = @ViewBag.DocNo, @readonly = "readonly", @style = "background-color:#eee" })
+                                                @Html.HiddenFor(model => model.VisitorId_Encrypted)
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3"> Appiontment No </label>
+                                            <div class="col-md-9">
+                                                @Html.TextBoxFor(model => Model.VisitorAppointmentID, new { @class = "form-control mb-5px", @id = "VisitorAppointmentID", @readonly = "readonly", @style = "background-color:#eee" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3"> Host Name <span class="important">*</span></label>
+                                            <div class="col-md-9">
+                                                @Html.DropDownListFor(model => model.HostEmployeeId, new SelectList(ViewBag.GetEmployeeName, "Id", "Name"), "--Select--", new { id = "txtHostEmployeeId", name = "HostEmployeeId", @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3"> Department Name </label>
+                                            <div class="col-md-9">
+                                                @Html.TextBoxFor(model => model.DepartmentId, new { id = "txtDepartmentId", name = "DepartmentId", @class = "form-control", Readonly = "true", @Value = ViewBag.GetDepartment })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3"> Visitor Type <span class="important">*</span></label>
+                                            <div class="col-md-9">
+                                                @Html.DropDownListFor(model => model.VisitorType, new SelectList(ViewBag.VisitorType, "Id", "Name"), "--Select--", new { id = "txtVisitorType", name = "VisitorType", @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3 ">
+                                                Visitor Mobile No
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-7 col-10">
+                                                @Html.TextBoxFor(model => model.MobileNo, new { @name = "MobileNo", @class = "form-control", @id = "txtMobileNo", Type = "text", autocomplete = "Off", Maxlength = 10, onkeypress = " return numbervalidate(event)" })
+                                            </div>
+                                            <div class="col-md-2 col-2">
+                                                <button type="button" class="btn btn-primary btn-sm" id="btnSearch">
+                                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">Visitor Name <span class="important">*</span></label>
+                                            <div class="col-md-9">
+                                                @Html.TextBoxFor(model => model.VisitorName, new { @name = "VisitorName", @class = "form-control", @id = "txtVisitorName", Type = "text", autocomplete = "Off", oninput = "this.value = this.value.toUpperCase()", })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">
+                                                No Of Visitor
+                                            </label>
+                                            <div class="col-md-9">
+                                                @Html.TextBoxFor(model => model.Additional, new { @name = "Additional", @class = "form-control", @id = "txtAdditional", Type = "number", autocomplete = "Off", onkeypress = "return event.charCode >=48" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3"> Badge No </label>
+                                            <div class="col-md-9">
+                                                @Html.TextBoxFor(model => model.Batchno, new { @name = "Batchno", @class = "form-control", @id = "txtBatchno", Type = "text", autocomplete = "Off" })
+                                                @Html.ValidationMessageFor(model => model.Batchno, "", new { @class = "help-block", id = "ErrorBatchno", @style = "color:red" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">Purpose<span class="important">*</span></label>
+                                            <div class="col-md-9">
+                                                @Html.DropDownListFor(model => model.VisitorPurposeId, new SelectList(ViewBag.GetPurposeName, "Id", "Name"), "--Select--", new { id = "txtVisitorPurposeId", name = "VisitorPurposeId", @class = "form-control" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3"> Company Name<span class="important">*</span></label>
+                                            <div class="col-md-9">
+                                                @Html.TextBoxFor(model => model.CompanyName, new { @name = "CompanyName", @class = "form-control", @id = "txtCompanyName", Type = "text", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">Vehicle No </label>
+                                            <div class="col-md-9">
+                                                @Html.TextBoxFor(model => model.VechileNo, new { @name = "VechileNo", @class = "form-control", @id = "txtVechileNo", Type = "text", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">Identity Proof </label>
+                                            <div class="col-md-9">
+                                                @Html.DropDownListFor(model => model.VisitorIdendtityId, new SelectList(ViewBag.GetVerificationName, "Id", "Name"), "--Select--", new { id = "txtVisitorIdendtityId", name = "VisitorIdendtityId", @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3"> Document No </label>
+                                            <div class="col-md-9">
+                                                @Html.TextBoxFor(model => model.DocumentNo, new { @name = "DocumentNo", @class = "form-control", @id = "txtDocumentNo", Type = "text", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">Address</label>
+                                            <div class="col-md-9">
+                                                @Html.TextAreaFor(model => model.Address, new { @name = "Address", @class = "form-control", @id = "txtAddress", Type = "text", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">Remark</label>
+                                            <div class="col-md-9">
+                                                @Html.TextAreaFor(model => model.Remark, new { @name = "Address", @class = "form-control", @id = "txtRemark", Type = "text", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12 col-lg-6">
+                                        <div class="row mb-15px">
+                                            <div class="col-md-12 col-lg-3"></div>
+                                            <div class="col-md-12 col-lg-9">
+                                                <div id="my_camera"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 col-lg-6">
+                                        <div class="row mb-15px">
+                                            <div class="col-md-12 col-lg-9">
+                                                <div id="canvasShow" name="PhotoPath"></div>
+                                                @Html.HiddenFor(model => model.PhotoPath, new { id = "PhotoPath", name = "PhotoPath" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-3">
+                                    </div>
+                                    <div class="col-md-4">
+
+                                    </div>
+                                    <div class="col-md-4">
+
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <div class="col-md-3">
+                                            </div>
+                                            <br>
+                                            <div class="col-md-6">
+                                                <button type="button" class="btn btn-success btnpress  mb-10px" id="btnOpenCamera" onclick="OpenCamera()">
+                                                    Open Camera
+                                                </button>
+                                                <br>
+                                                <button type="button" class="btn btn-success btnpress  mb-10px" id="btnCapture" onclick="take_snapshot()">
+                                                    Capture Photo
+                                                </button>
+
+                                                <button type="button" class="btn btn-success btnpress  mb-10px" id="btnRetake" onclick="remove_snapshot()">
+                                                    <i class="fa-solid fa-rotate-right"></i>
+                                                    Clear Photo
+                                                </button>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="button" id="btnSubmit" class="btn btn-primary btn-sm" value="Submit">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                        <a href="@Url.Action("ESS_VMS_VisitorEntry", "ESS_VMS_VisitorEntry", new { id=10 , ScreenId=188 , area = "ESS" })">
+                                                            <button type="button" class="btn btn-danger btnpress btn-sm">
+                                                                <i class="fa-solid fa-share-from-square"></i>  Back
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+<script>
+    // Prevent back button
+    window.history.pushState(null, null, window.location.href);
+    window.onpopstate = function () {
+        window.history.go(1);
+    };
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        $("#txtHostEmployeeId").select2();
+        $("#txtVisitorIdendtityId").select2();
+        $("#txtVisitorPurposeId").select2();
+        $("#txtVisitorType").select2();
+
+        $("#btnCapture").hide();
+        $("#btnRetake").hide();
+        $("#my_camera").hide();
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                });
+            }
+        }
+        var HostEmployeeId = @Html.Raw(Json.Encode(TempData["HostEmployeeId"]));
+        var VisitorType = @Html.Raw(Json.Encode(TempData["VisitorType"]));
+        $("#txtHostEmployeeId").val(HostEmployeeId);
+        $("#txtVisitorType").val(VisitorType);
+
+        $("#txtHostEmployeeId").change(function(){
+            debugger;
+            var EmployeeId =$("#txtHostEmployeeId").val();
+            $.ajax({
+                url: '@Url.Action("GetDepartment", "ESS_VMS_VisitorInformation")',
+                method: "Get",
+                data: { EmployeeId: EmployeeId },
+                success: function (response) {
+                    debugger;
+                    //console.log(response);
+                    //var DepartmentName =response[0].Value;
+                    $("#txtDepartmentId").val(response);
+                }
+            });
+        });
+
+
+        $('#txtBatchno').on('change', function() {
+            debugger;
+            $("#ErrorBatchno").html("");
+            var Batchno =$("#txtBatchno").val();
+            $.ajax({
+                url: '@Url.Action("MacthBatchNo", "ESS_VMS_VisitorInformation")',
+                //url: "MacthBatchNo",
+                method: "GET",
+                data: { Batchno: Batchno },
+                success: function (response) {
+                    debugger;
+                    if (response==false)
+                    {
+                        $("#ErrorBatchno").html("");
+                    }
+                    else{
+                        $("#ErrorBatchno").html("This No already given to another person");
+                    }
+
+                }
+            });
+        });
+
+    });//ready function
+
+    function OpenCamera() {
+        debugger;
+        Webcam.set({
+            width: 320,
+            height: 240,
+            image_format: 'jpeg',
+            jpeg_quality: 90
+        });
+        Webcam.attach('#my_camera');
+        $("#my_camera").show();
+        $("#btnCapture").show();
+        $("#btnRetake").show();
+        $("#btnOpenCamera").hide();
+    }
+
+
+    function take_snapshot() {
+        //take snapshot and get image data
+        $("#divSelfie").show();
+        $('#results').show();
+        Webcam.snap(function (data_uri) {
+            //display results in page
+            document.getElementById('canvasShow').innerHTML = '<img src="' + data_uri + '" id="imsgFile"/>';
+            $("#PhotoPath").val(data_uri);
+        });
+    }
+
+    function  remove_snapshot(){
+        debugger;
+        $('#imsgFile').removeAttr('src');
+
+    }
+
+    function numbervalidate(key) {
+        var presskeys = (key.which) ? key.which : key.presskeys;
+        if (!(presskeys == 8 || presskeys == 46) && (presskeys < 48 || presskeys > 57)) {
+            return false;
+        }
+    }
+
+
+    //use for add regex function
+    jQuery.validator.addMethod(
+  "regex",
+   function(value, element, regexp) {
+       if (regexp.constructor != RegExp)
+           regexp = new RegExp(regexp);
+       else if (regexp.global)
+           regexp.lastIndex = 0;
+       return this.optional(element) || regexp.test(value);
+   },"erreur expression reguliere"
+);
+
+
+    $("#SaveVisitorInformation").validate({
+        rules: {
+            HostEmployeeId: {
+                required: true,
+
+            },
+            MobileNo: {
+                required: true,
+
+            },
+            VisitorName: {
+                required: true,
+            },
+            //Batchno: {
+            //    required: true,
+            //},
+            VisitorPurposeId: {
+                required: true,
+            },
+            CompanyName: {
+                required: true,
+            },
+            VisitorName: {
+                required: true,
+            },
+        },
+        messages: {
+            HostEmployeeId: {
+                required: "Host name is required",
+            },
+            MobileNo: {
+                required: "Mobile no is required",
+
+            },
+            VisitorName: {
+                required: "Visitor name is required",
+            },
+            //Batchno: {
+            //    required: "Badge no is required",
+            //},
+            VisitorPurposeId: {
+                required: "Purpose name is required",
+            },
+            CompanyName: {
+                required: "Company name is required",
+            },
+        }
+    });
+
+    var form = $("#SaveVisitorInformation");
+    form.validate();
+    $("#btnSubmit").click(function () {
+        debugger;
+        form.valid();
+        if (form.valid() == false) {
+            return false;
+        }
+        //var ErrorBatchno =$("#ErrorBatchno").html();
+        //if (ErrorBatchno!="")
+        //{
+        //    $("#ErrorBatchno").html("This No already given to another person");return false;
+        //}
+        //else{
+        //    $("#ErrorBatchno").html("");
+        //}
+
+        var imageData = $("#PhotoPath").val();
+        //if (imageData) {
+        // Image data is already in base64 format
+        var formData = {
+            DocNo: $("#txtDocNo").val(),
+            VisitorName: $("#txtVisitorName").val(),
+            HostEmployeeId: $("#txtHostEmployeeId").val(),
+            MobileNo: $("#txtMobileNo").val(),
+            VisitorAppointmentID: $("#VisitorAppointmentID").val(),
+            VisitorTypeId: $("#txtVisitorType").val(),
+            Additional: $("#txtAdditional").val(),
+            Batchno: $("#txtBatchno").val(),
+            VisitorPurposeId: $("#txtVisitorPurposeId").val(),
+            CompanyName: $("#txtCompanyName").val(),
+            VechileNo: $("#txtVechileNo").val(),
+            Address: $("#txtAddress").val(),
+            Temperature: $("#txtTemperature").val(),
+            VisitorIdendtityId: $("#txtVisitorIdendtityId").val(),
+            DocumentNo: $("#txtDocumentNo").val()
+        };
+        $(".Userloaderbg").css("display", "flex");
+        $.ajax({
+            url: '@Url.Action("SaveUpdate", "ESS_VMS_VisitorInformation")',
+            method: "Post",
+            data: { VisitorMaster: formData ,imageData:imageData },
+            success: function (response) {
+                debugger;
+                $(".Userloaderbg").css("display", "none");
+                if (response.Icon =="success") {
+                    @*var url = '@Url.Action("ESS_VMS_VisitorEntry", "ESS_VMS_VisitorEntry")
+                    window.location.href = url;*@
+
+                    var VisitorId_Encrypted= response.GetVisitorId_Encrypted;
+                    if(VisitorId_Encrypted!=null)
+                    {
+                        var Origin="Form";
+                        var url = '@Url.Action("VisitorPassInvoice", "ESS_VMS_Menu")?VisitorId_Encrypted=' + VisitorId_Encrypted+'&Origin='+Origin;
+                        window.location.href = url;
+                    }
+                }
+                else{
+                    if (response.Message != null) {
+                        if (response.Icon !=null) {
+                            Swal.fire({
+                                icon: response.Icon,
+                                text: response.Message,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+        });
+    });
+
+
+        $("#btnSearch").click(function () {
+            debugger;
+            var MobileNo=$("#txtMobileNo").val();
+            if(MobileNo=="")
+            {
+                var Message ="Please enter a mobile number";
+                var Icon = "error";
+                if (Message != null) {
+                    if (Message != null) {
+                        Swal.fire({
+                            icon: Icon,
+                            text: Message,
+                            allowOutsideClick: () => {
+                                const popup = Swal.getPopup()
+                                popup.classList.remove('swal2-show')
+                                setTimeout(() => {
+                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                })
+                                setTimeout(() => {
+                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                }, 500)
+                                return false
+                            }
+                        });
+                    }
+                }
+            }
+            else{
+                $.ajax({
+                    type: "GET",
+                    url: '@Url.Action("GetVisitorDetails", "ESS_VMS_VisitorInformation")',
+                    data: {MobileNo:MobileNo},
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "text",
+                    success: function (data) {
+                        debugger;
+                        if(data=="")
+                        {
+                            var Message ="Record not found";
+                            var Icon = "error";
+                            if (Message != null) {
+                                if (Message != null) {
+                                    Swal.fire({
+                                        icon: Icon,
+                                        text: Message,
+                                        allowOutsideClick: () => {
+                                            const popup = Swal.getPopup()
+                                            popup.classList.remove('swal2-show')
+                                            setTimeout(() => {
+                                                popup.classList.add('animate__animated', 'animate__headShake')
+                                            })
+                                            setTimeout(() => {
+                                                popup.classList.remove('animate__animated', 'animate__headShake')
+                                            }, 500)
+                                            return false
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                        else{
+                            console.log(data);
+                            debugger;
+                            var VisitorDetails=JSON.parse(data);
+                            var VisitorName=VisitorDetails[0].Value;
+                            var PurposeId=VisitorDetails[1].Value;
+                            var AdditionPerson=VisitorDetails[2].Value;
+                            var VisitorCompany=VisitorDetails[3].Value;
+                            var Address=VisitorDetails[4].Value;
+
+
+                            $("#txtVisitorName").val(VisitorName);
+                            $("#txtVisitorPurposeId").val(PurposeId);
+                            $("#txtAdditional").val(AdditionPerson);
+                            $("#txtCompanyName").val(VisitorCompany);
+                            $("#txtAddress").val(Address);
+                        }
+                    }
+                })
+            }
+        });
+</script>
+
+

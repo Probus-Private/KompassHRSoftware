@@ -1,0 +1,644 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_Marketplace.MarketPlace_Post
+@{
+    ViewBag.Title = "ESS_Marketplace_Marketplace";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+<style>
+    .blue-text {
+        color: blue;
+    }
+
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    .div1 td:nth-child(1) {
+        position: sticky;
+        left: 0;
+    }
+
+    .div1 td:nth-child(2) {
+        position: sticky;
+        left: 62px;
+    }
+
+    .fixed-side {
+        position: sticky;
+        left: 0;
+    }
+
+    .fixed-side1 {
+        position: sticky;
+        left: 62px;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+</style>
+
+<style>
+    .info-card {
+        border-radius: 12px;
+        padding: 15px 20px;
+        height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+    }
+
+        .info-card .icon {
+            font-size: 24px;
+            margin-right: 15px;
+        }
+
+        .info-card .text-content {
+            flex: 1;
+        }
+
+        .info-card .title {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .info-card .number a {
+            font-size: 20px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .info-card .description {
+            font-size: 12px;
+        }
+
+    .bg-soft-blue {
+        background-color: #e8f1fa;
+        color: #004085;
+    }
+
+    .bg-soft-green {
+        background-color: #e6f4ea;
+        color: #155724;
+    }
+
+    .bg-soft-yellow {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+
+    .info-card a {
+        color: inherit;
+    }
+</style>
+
+
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Market Place Post
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_MarketPlace_Menu", "ESS_MarketPlace_Menu", new {id =14, ScreenId=202, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">Market Place Post - @ViewBag.AddUpdateTitle</h4>
+                    @*<div class="panel-heading-btn">
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                        </div>*@
+                </div>
+
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Add your products details and connect with potential buyer's here!
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row mb-4">
+                        <!-- Monthly Limit Post -->
+                        <div class="col-md-4 col-sm-6 mb-3">
+                            <div class="info-card bg-soft-blue">
+                                <div class="icon"><i class="fa fa-archive"></i></div>
+                                <div class="text-content">
+                                    <div class="title">Monthly Limit Post</div>
+                                    <div class="number">
+                                        <a>
+                                            @ViewBag.GetTotalPostCount
+                                        </a>
+                                    </div>
+                                    <div class="description">Total posts allowed this month</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Post -->
+                        <div class="col-md-4 col-sm-6 mb-3">
+                            <div class="info-card bg-soft-green">
+                                <div class="icon"><i class="fa fa-globe"></i></div>
+                                <div class="text-content">
+                                    <div class="title">Post</div>
+                                    <div class="number">
+                                        <a>
+                                            @ViewBag.EmployeePostCount
+                                        </a>
+                                    </div>
+                                    <div class="description">Posts submitted this month</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Balance -->
+                        <div class="col-md-4 col-sm-6 mb-3">
+                            <div class="info-card bg-soft-yellow">
+                                <div class="icon"><i class="fa fa-archive"></i></div>
+                                <div class="text-content">
+                                    <div class="title">Balance</div>
+                                    <div class="number">
+                                        <a>
+                                            @ViewBag.RemainingCount
+                                        </a>
+                                    </div>
+                                    <div class="description">Remaining posts this month</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form action="/ESS/ESS_Marketplace_Marketplace/SaveUpdate" id="SaveMarketPlace" method="post" enctype="multipart/form-data">
+                                @Html.HiddenFor(model => model.Photo1)
+                                @Html.HiddenFor(model => model.Photo2)
+                                @Html.HiddenFor(model => model.Photo3)
+                                <div class="row mb-15px">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Doc No.
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.DocNo, new { id = "txtDocNo", name = "DocNo", @class = "form-control", @readonly = "readonly", type = "text", Value = TempData["DocNo"], style = "background-color: #e9ecef; color: #495057;" })
+                                                @Html.HiddenFor(model => model.MarketPlacePostID_Encrypted)
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Doc Date
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.DocDate, new { id = "dateDocDate", name = "DocDate", @class = "form-control", type = "date", @readonly = "readonly", style = "background-color: #e9ecef; color: #495057;" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Market Place Category
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-10">
+                                                @Html.DropDownListFor(model => model.MarketPlaceCategoryID, new SelectList(ViewBag.GetMarketCategory, "MarketPlaceCategoryID", "MarketPlaceCategory"), "--Select--", new { id = "MarketPlaceCategoryID1", name = "MarketPlaceCategoryID1", @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-15px">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Title
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-10">
+                                                @Html.TextBoxFor(model => model.MarketPlacePostTitle, new { id = "MarketPlacePostTitle", name = "MarketPlacePostTitle", @class = "form-control", type = "text" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Description
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-10">
+                                                @Html.TextAreaFor(model => model.MarketPlacePostDesciption, new { id = "MarketPlacePostDesciption", name = "MarketPlacePostDesciption", @class = "form-control", type = "text" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-15px">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Price
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.MarketPlacePostPrice, new { id = "MarketPlacePostPrice", name = "MarketPlacePostPrice", @class = "form-control", type = "number", onkeypress = "return event.charCode >=48" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Contact No.
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.ContactNo, new { id = "ConcatNo", name = "ContactNo", @class = "form-control", type = "number", maxlength = "10", onkeypress = "return (event.charCode != 8 && event.charCode == 0 || (event.charCode >= 48 && event.charCode <= 57))", oninput = "this.value = this.value.slice(0, 10)", @Value = @ViewBag.GetContactNo })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-15px">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Photo 1
+                                            </label>
+                                            <div class="col-md-8">
+                                                <input class="form-control"
+                                                       type="file"
+                                                       name="Photo1"
+                                                       id="Photo1"
+                                                       accept="image/jpeg, image/jpg, image/png"
+                                                       onchange="validateFileType(this)" />
+                                                <span class="text-danger" id="Photo1Error" style="font-size: 12px;"></span>
+                                                @if (!string.IsNullOrEmpty(ViewBag.Photo1FileName))
+                                                {
+                                                    <small class="form-text text-muted">Current file: @ViewBag.Photo1FileName</small>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        @if (!string.IsNullOrEmpty(ViewBag.Photo1FileName))
+                                        {
+                                            <button type="button" class="btn btn-info" onclick="viewFile('@ViewBag.Photo1FileName', '@TempData["p_Id"]')">
+                                                <i class="fas fa-eye"></i> View Photo
+                                            </button>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="row mb-15px">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Photo 2
+                                            </label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" type="file" name="Photo2" id="Photo2" accept=".jpg,.jpeg,.png" onchange="validateFileType(this)" />
+                                                <span class="text-danger" id="Photo2Error" style="font-size: 12px;"></span>
+
+                                                @if (!string.IsNullOrEmpty(ViewBag.Photo2FileName))
+                                                {
+                                                    <small class="form-text text-muted">Current file: @ViewBag.Photo2FileName</small>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        @if (!string.IsNullOrEmpty(ViewBag.Photo2FileName))
+                                        {
+                                            <button type="button" class="btn btn-info" onclick="viewFile('@ViewBag.Photo2FileName', '@TempData["p_Id"]', '@ViewBag.Filepath')">
+                                                <i class="fas fa-eye"></i> View Photo
+                                            </button>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="row mb-15px">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Photo 3
+                                            </label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" type="file" name="Photo3" id="Photo3" accept=".jpg,.jpeg,.png" onchange="validateFileType(this)" />
+                                                <span class="text-danger" id="Photo3Error" style="font-size: 12px;"></span>
+
+                                                @if (!string.IsNullOrEmpty(ViewBag.Photo3FileName))
+                                                {
+                                                    <small class="form-text text-muted">Current file: @ViewBag.Photo3FileName</small>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        @if (!string.IsNullOrEmpty(ViewBag.Photo3FileName))
+                                        {
+                                            <button type="button" class="btn btn-info" onclick="viewFile('@ViewBag.Photo3FileName', '@TempData["p_Id"]', '@ViewBag.Filepath')">
+                                                <i class="fas fa-eye"></i> View Photo
+                                            </button>
+                                        }
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="submit" id="SubmitBtn" class="btn btn-primary btn-sm">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                        <button type="button" id="btnGetList" class="btn btn-danger btn-sm">
+                                                            <i class="fa-solid fa-share-from-square"></i> List
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function millisecTodate(milliDate) {
+        var date = new Date(milliDate);
+        var mnth = ("0" + (date.getMonth() + 1)).slice(-2);
+        var day = ("0" + date.getDate()).slice(-2);
+        var ddmmyyyy = [date.getFullYear(), mnth, day].join("-");
+        return ddmmyyyy;
+    }
+
+    function convertDate(data) {
+        var getdate = parseInt(data.replace("/Date(", "").replace(")/", ""));
+        var date = millisecTodate(getdate);
+        return date;
+    }
+    function viewFile(fileName, postId) {
+        debugger;
+        var url = '/ESS/ESS_Marketplace_Marketplace/ViewFile?postId=' + encodeURIComponent(postId) + '&fileName=' + encodeURIComponent(fileName);
+        window.open(url, '_blank');
+    }
+
+
+    function validateFileType(input) {
+        const allowedExtensions = ['jpg', 'jpeg', 'png'];
+        const file = input.files[0];
+        const inputId = input.id;
+        const errorSpanId = inputId + "Error"; // e.g., Photo1Error
+
+        // Clear previous error
+        document.getElementById(errorSpanId).textContent = "";
+
+        if (file) {
+            const fileExtension = file.name.split('.').pop().toLowerCase();
+            if (!allowedExtensions.includes(fileExtension)) {
+                document.getElementById(errorSpanId).textContent = "Only JPG, JPEG, and PNG files are allowed.";
+                input.value = ''; // Clear file input
+            }
+        }
+    }
+
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#MarketPlaceCategoryID1").select2();
+
+        $("#btnGetList").click(function () {
+            var url='@Url.Action("GetList", "ESS_Marketplace_Marketplace", new { area = "ESS" })';
+            window.location.href = url;
+        });
+
+        var date = new Date();
+        var dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().split("T")[0];
+        $("#dateDocDate").val(dateString);
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        if (Message != null) {
+            Swal.fire({
+                icon: Icon,
+                text: Message,
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup();
+                    popup.classList.remove('swal2-show');
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake');
+                    });
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake');
+                    }, 500);
+                    return false;
+                }
+            });
+        }
+
+        $("#formReset").click(function () {
+            $("#SaveMarketPlace")[0].reset();
+        });
+
+        @*var DocDate = @Html.Raw(Json.Encode(TempData["DocDate"]));
+        if (DocDate == "") {
+            var date = new Date();
+            var dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().split("T")[0];
+            $("#dateDocDate").val(dateString);
+        } else {
+            var convertedDate = convertDate(DocDate);
+            $("#dateDocDate").val(convertedDate);
+        }*@
+    });
+
+    jQuery.validator.addMethod(
+        "regex",
+        function(value, element, regexp) {
+            if (regexp.constructor != RegExp)
+                regexp = new RegExp(regexp);
+            else if (regexp.global)
+                regexp.lastIndex = 0;
+            return this.optional(element) || regexp.test(value);
+        },
+        "Invalid input"
+    );
+
+    $('#SaveMarketPlace').validate({
+        rules: {
+            DocDate: {
+                required: true,
+            },
+            MarketPlaceCategoryID: {
+                required: true,
+            },
+            MarketPlacePostTitle: {
+                required: true,
+            },
+            MarketPlacePostDesciption: {
+                required: true,
+            },
+            ContactNo: {
+                required: true,
+            },
+        },
+        messages: {
+            DocDate: {
+                required: "Doc Date is required",
+            },
+            MarketPlaceCategoryID: {
+                required: "Category name is required",
+            },
+            MarketPlacePostTitle: {
+                required: "Title is required",
+            },
+            MarketPlacePostDesciption: {
+                required: "Description is required",
+            },
+            ContactNo: {
+                required: "Contact number is required"
+            },
+        },
+    });
+</script>

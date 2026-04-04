@@ -1,0 +1,384 @@
+﻿@model KompassHR.Areas.Setting.Models.Setting_FacilityAndSafety.FacilitySafety_Master
+@{
+    ViewBag.Title = "Setting_FacilityAndSafety_FacilityAndSafety";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+<style>
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+    .Error{
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <!-- BEGIN breadcrumb -->
+    <ol class="breadcrumb float-xl-end">
+        <li class="breadcrumb-item"><a href="/ESS/ESS_AdminDashboard_Dashboard/ESS_AdminDashboard_Dashboard">Dashboard</a></li>
+        <li class="breadcrumb-item active"><a href="/Setting/Setting_FacilityAndSafety_Menu/Setting_FacilityAndSafety_menu">Facility & Safety Menu</a></li>
+    </ol>
+    <!-- END breadcrumb -->
+    <!-- BEGIN page-header -->
+    <h1 class="page-header"> Facility & Safety </h1>
+    <!-- END page-header -->
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                 <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Facility & Safety - <b>@ViewBag.AddUpdateTitle</b>  </h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Add incident record details here!
+
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action="/Setting/Setting_FacilityAndSafety_FacilityAndSafety/SaveUpdate" id="SaveFacilityAndSafety" method="post" enctype="multipart/form-data">
+                                <div class="row mb-15px">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Doc No.
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.DocNo, new { @class = "form-control", name = "DocNo", type = "text", id = "txtDocNo", autocomplete = "Off", @readonly = "readonly", Value = @ViewBag.DocNo.DocNo })
+                                                @Html.HiddenFor(model => model.FacilityID_Encrypted, new { id = "FacilityID_Encrypted" })
+                                                @Html.HiddenFor(model => model.FacilityID)
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Doc Date
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.DocDate, new { @class = "form-control", type = "date", id = "dateDocDate", autocomplete = "Off", Name = "DocDate" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Category
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-10">
+                                                @Html.DropDownListFor(model => model.FacilitySafetyCategoryID, new SelectList(ViewBag.GetFamilyCategory, "Id", "Name"), "--Select--", new { id = "ddlFacilitySafetyCategoryID", @class = "form-select", autocomplete = "off", name = "FacilitySafetyCategoryID" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Description
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-10">
+                                                @Html.TextAreaFor(model => model.Description, new { @class = "form-control", type = "text", id = "txtDescription", autocomplete = "Off", Name = "Description" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row ">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Attachment 1
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                <input type="file" name="FilePathPhoto1" class="form-control" id="FilePathPhoto1" onchange="ResetFile()" />
+                                                <span id="ErrorFilePathPhoto1" class="Error"></span>
+                                                <label class="form-label col-form-label col-md-8" id="lblFileName1">@TempData["FileName1"]</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Attachment 2
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                <input type="file" name="FilePathPhoto2" class="form-control" id="FilePathPhoto2" onchange="ResetFile()" />
+                                                <label class="form-label col-form-label col-md-8" id="lblFileName2">@TempData["FileName2"]</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row ">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Attachment 3
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                <input type="file" name="FilePathPhoto3" class="form-control" id="FilePathPhoto3" onchange="ResetFile()" />
+                                                <label class="form-label col-form-label col-md-8" id="lblFileName3">@TempData["FileName3"]</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @*<div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Attachment 4
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    <input type="file" name="AnnouncementFile" class="form-control" id="AnnouncementFile" onchange="ResetFile()" />
+                                                    <label class="form-label col-form-label col-md-8" id="lblFileName">@TempData["FileName"]</label>
+                                                </div>
+                                            </div>
+                                        </div>*@
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="submit" id="btnSubmit"
+                                                                class="btn btn-primary btn-sm">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                        <button type="button"
+                                                                class="btn btn-danger btn-sm" id="btnGetFacilityAndSafetyList" onclick="GetFacilityAndSafetyList()">
+                                                            <i class="fa-solid fa-share-from-square"></i>
+                                                            List
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+<script>
+
+    //use for add regex function
+    jQuery.validator.addMethod(
+  "regex",
+   function(value, element, regexp) {
+       if (regexp.constructor != RegExp)
+           regexp = new RegExp(regexp);
+       else if (regexp.global)
+           regexp.lastIndex = 0;
+       return this.optional(element) || regexp.test(value);
+   },"erreur expression reguliere"
+);
+
+
+    $("#SaveFacilityAndSafety").validate({
+        rules: {
+            DocDate:{
+                required: true,
+            },
+            FacilitySafetyCategoryID: {
+                required: true,
+            },
+            Description: {
+                required: true,
+                regex: /^[a-zA-Z ]+$/,
+            },
+            //FilePathPhoto1: {
+            //    required: true,
+            //},
+        },
+        messages: {
+            DocDate:{
+                required: "Please select doc. date",
+            },
+            FacilitySafetyCategoryID: {
+                required: "Facility and safety category name is required",
+            },
+            Description: {
+                required: true,
+                required: "Description is required",
+            },
+            //FilePathPhoto1: {
+            //    required: "Please upload atleast one photo",
+            //},
+        }
+    });
+    
+</script>
+
+<script>
+ $(document).ready(function () {
+
+     $("#btnGetFacilityAndSafetyList").click(function () {
+         var url = '@Url.Action("GetList", "Setting_FacilityAndSafety_FacilityAndSafety")';
+         window.location.href = url;
+     });
+
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+
+                        return false
+                    }
+                });
+            }
+        }
+
+        
+//<<==============================File Update=============================================>>
+        function ResetFile()
+        {
+            let allowedExtension = ['image/jpeg', 'image/jpg', 'image/png'];
+            let type1 = document.getElementById('FilePathPhoto1').files[0].type;
+            let type2 = document.getElementById('FilePathPhoto2').files[0].type;
+            let type3 = document.getElementById('FilePathPhoto3').files[0].type;
+
+            if(allowedExtension.indexOf(type1)>-1|| allowedExtension.indexOf(type2)>-1||allowedExtension.indexOf(type3)>-1)
+            {
+            }else{
+                alert('File type should be jpeg/jpg/png')
+                document.getElementById("FilePathPhoto1").value = null;
+                document.getElementById("FilePathPhoto2").value = null;
+                document.getElementById("FilePathPhoto3").value = null;
+            }
+            $("#lblFileName1").text('');
+            $("#lblFileName2").text('');
+            $("#lblFileName3").text('');
+        }
+//<<==============================File Update=============================================>>
+
+     var Doc = @Html.Raw(Json.Encode(TempData["DocDate"]));
+     if(Doc =="")
+     {
+
+     }
+     else
+     {
+         var DocDate =  convertDate(Doc);
+         $("#dateDocDate").val(DocDate);
+     }
+
+     var date = new Date();
+     var dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000 )).toISOString().split("T")[0];
+     $("#dateDocDate").val(dateString)
+
+     $("#formReset").click(function () {
+         $("#SaveFacilityAndSafety")[0].reset()
+     });
+ });//Ready Funcation
+</script>
+
+<script>
+    function millisecTodate(milliDate) {
+        var date = new Date(milliDate);
+        var mnth = ("0" + (date.getMonth() + 1)).slice(-2);
+        var day = ("0" + date.getDate()).slice(-2);
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        hours = hours < 10 ? '0'+hours : hours;
+        minutes = minutes < 10 ? '0'+minutes : minutes;
+        var ddmmyyyy = [date.getFullYear(), mnth,day].join("-");
+        return ddmmyyyy;
+    }
+
+    function convertDate(data) {
+        var getdate = parseInt(data.replace("/Date(", "").replace(")/", ""));
+        var date = millisecTodate(getdate);
+        return date;
+    }
+
+
+    var form = $("#SaveFacilityAndSafety");
+    form.validate();
+    $("#btnSubmit").click(function () {
+        debugger;
+
+        form.valid();
+        if(form.valid()==false)
+        {
+            debugger;
+            $("#dateDocDate").removeClass("error");
+            return false;
+        }
+
+        var lblFileName1 = $("#lblFileName1").text();
+        var lblFileName2 = $("#lblFileName2").text();
+        var lblFileName3 = $("#lblFileName3").text();
+        if(lblFileName1=="" && lblFileName2=="" && lblFileName3=="" && $("#FilePathPhoto1")[0].files.length ==0 && $("#FilePathPhoto2")[0].files.length ==0 && $("#FilePathPhoto3")[0].files.length ==0)
+        {
+            $("#ErrorFilePathPhoto1").html("Please upload atleast one photo");
+            return false;
+        }
+        else{
+            $("#ErrorFilePathPhoto1").html("");
+        }
+    });
+
+</script>

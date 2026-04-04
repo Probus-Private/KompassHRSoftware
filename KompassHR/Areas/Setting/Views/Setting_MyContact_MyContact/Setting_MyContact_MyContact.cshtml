@@ -1,0 +1,351 @@
+﻿@model KompassHR.Areas.Setting.Models.MyContact.Mas_MyContact
+@{
+    ViewBag.Title = "Setting_MyContact_MyContact";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+
+<style>
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <!-- BEGIN breadcrumb -->
+    <ol class="breadcrumb float-xl-end">
+        <li class="breadcrumb-item"><a href="/ESS/ESS_AdminDashboard_Dashboard/ESS_AdminDashboard_Dashboard">Dashboard</a></li>
+        <li class="breadcrumb-item active"><a href="/Setting/Setting_MyContact_Menu/Setting_MyContact_Menu">MyContact Menu</a></li>
+    </ol>
+    <!-- END breadcrumb -->
+    <!-- BEGIN page-header -->
+    <h1 class="page-header"> My Contact </h1>
+    <!-- END page-header -->
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                 <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> My Contact - <b>@ViewBag.AddUpdateTitle</b>  </h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Add my contact details here!
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action="/Setting/Setting_MyContact_MyContact/SaveUpdate" id="SaveMyContact" method="post">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Contact Category
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-10">
+                                                @Html.DropDownListFor(model => model.ContactCategoryID, new SelectList(ViewBag.GetContactCategoryName, "Id", "Name"), "--Select--", new { id = "ddlContactCategoryID", @class = "form-select", autocomplete = "off", name = "ContactCategoryID" })
+                                                @Html.HiddenFor(model => model.MyContactId_Encrypted, new { id = "MyContactId_Encrypted" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Person Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-10">
+                                                @Html.TextBoxFor(model => model.PersonName, new { @class = "form-control", type = "text", id = "txtPersonName", autocomplete = "Off", Name = "PersonName" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Company Name
+                                            </label>
+                                            <div class="col-md-10">
+                                                @Html.TextBoxFor(model => model.CompanyName, new { @class = "form-control", type = "text", id = "txtCompanyName", autocomplete = "Off", Name = "CompanyName" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Designation
+                                            </label>
+                                            <div class="col-md-10">
+                                                @Html.TextBoxFor(model => model.Designation, new { @class = "form-control", type = "text", id = "Designation", autocomplete = "Off", Name = "Designation" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Email
+                                            </label>
+                                            <div class="col-md-10">
+                                                @Html.TextBoxFor(model => model.EmailID, new { @class = "form-control", type = "text", id = "txtEmailID", autocomplete = "Off", Name = "EmailID" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-15px">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Contact No
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.ContactNo, new { @class = "form-control", type = "number", onkeypress = "return event.charCode >=48", id = "txtContactNo", autocomplete = "Off", Name = "ContactNo" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                WhatsApp No
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.WhatsAppNo, new { @class = "form-control", type = "number", onkeypress = "return event.charCode >=48", id = "txtWhatsAppNo", autocomplete = "Off", Name = "WhatsAppNo" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row ">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Address
+                                            </label>
+                                            <div class="col-md-10">
+                                                @Html.TextAreaFor(model => model.Address, new { @class = "form-control", type = "text", id = "txtAddress", autocomplete = "Off", Name = "Address" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                            </label>
+                                            <div class="col-md-8 ">
+                                                @Html.CheckBoxFor(model => model.OpenToAll)
+                                                &nbsp;
+                                                <label class="form-label">
+                                                    Open To all
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="submit" id="btnSubmit"
+                                                                class="btn btn-primary btn-sm">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                        <button type="button"
+                                                                class="btn btn-danger btn-sm" id="btnGetContactList">
+                                                            <i class="fa-solid fa-share-from-square"></i>
+                                                            List
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        $("#btnGetContactList").click(function () {
+            var url = '@Url.Action("GetList", "Setting_MyContact_MyContact")';
+            window.location.href = url;
+        });
+            debugger;
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+
+                        return false
+                    }
+                });
+            }
+        }
+
+        $("#formReset").click(function () {
+            $("#SaveMyContact")[0].reset()
+        });
+    });//Ready Function
+</script>
+
+<script>
+    //use for add regex function
+    jQuery.validator.addMethod(
+  "regex",
+   function(value, element, regexp) {
+       if (regexp.constructor != RegExp)
+           regexp = new RegExp(regexp);
+       else if (regexp.global)
+           regexp.lastIndex = 0;
+       return this.optional(element) || regexp.test(value);
+   },"erreur expression reguliere"
+);
+
+    $("#SaveMyContact").validate({
+        rules: {
+            ContactCategoryID: {
+                required: true,
+            },
+            PersonName: {
+                required: true,
+                regex: /^[a-zA-Z ]+$/,
+            },
+
+            ContactNo: {
+                required: true,
+            },
+            WhatsAppNo: {
+                required: true,
+            },
+        },
+        messages: {
+            ContactCategoryID: {
+                required: "Contact category name is required",
+            },
+            PersonName: {
+                required: "Person name is required",
+                regex: "Enter olny alphabate.",
+            },
+            ContactNo: {
+                required: "Contact number is required",
+            },
+            WhatsAppNo: {
+                required: "WhatsApp number is required",
+            },
+        }
+    });
+    var form = $("#SaveMyContact");
+    form.validate();
+    $("#btnSubmit").click(function () {
+        debugger;
+        form.valid();
+        if(form.valid()==false)
+        {
+            return false;
+        }
+        debugger;
+        var ContactNo=$("#txtContactNo").val();
+        var MyContactId_Encrypted=$("#MyContactId_Encrypted").val();
+        $.ajax({
+            url:"IsContactExists",
+            method:"get",
+            data:{ContactNo:ContactNo,MyContactId_Encrypted:MyContactId_Encrypted},
+            success:function(response){
+                debugger;
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon=="error") {
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                        }
+                    }
+                }
+                else{
+                    $("#SaveMyContact").submit();
+
+                }
+            }
+        });
+
+    });
+</script>

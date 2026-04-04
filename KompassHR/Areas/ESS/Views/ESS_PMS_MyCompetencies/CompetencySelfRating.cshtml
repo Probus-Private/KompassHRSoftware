@@ -1,0 +1,585 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_PMS.PMS_EmployeeCompetency
+
+@{
+    ViewBag.Title = "CompetencySelfRating";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/summernote/dist/summernote-lite.css" rel="stylesheet" />
+<script src="~/assets/plugins/summernote/dist/summernote-lite.min.js"></script>
+
+<style>
+        .competency-form .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0f3d66;
+            padding: 8px 12px;
+            margin-bottom: 18px;
+            border-left: 5px solid #0d6efd;
+            border-radius: 6px;
+            background: linear-gradient(to right, #eaf2ff, #ffffff);
+            box-shadow: inset 0 0 4px rgba(13,110,253,.15);
+        }
+
+
+        .competency-form .card-custom {
+            background: #ffffff;
+            border: 1px solid #bcd0f7; /* soft blue border */
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(13,110,253,0.06);
+            margin-bottom: 30px;
+        }
+
+
+        .competency-form .card {
+            background: #ffffff;
+            border: 1px solid #d4d7dd;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+        }
+
+        .competency-form h5 {
+            font-weight: 700;
+            font-size: 15px;
+            color: #1f2d3d;
+            margin-bottom: 15px;
+        }
+
+        .competency-form .form-control-static {
+            background: #f1f6ff;
+            border: 1px solid #d0defc;
+            padding: 9px 12px;
+            border-radius: 6px;
+            color: #0f2b4c;
+            font-weight: 600;
+        }
+
+        /* Labels inside the form */
+        .competency-form .form-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 5px;
+        }
+
+        /* Input fields */
+        .competency-form .form-control {
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: 14px;
+            transition: border-color .25s, box-shadow .25s;
+        }
+
+            .competency-form .form-control:focus {
+                border-color: #0f3d66;
+                box-shadow: 0 0 0 3px rgba(15, 61, 102, 0.18);
+            }
+
+        /* Description box */
+        .competency-form .description-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 12px;
+            border-radius: 6px;
+        }
+
+        /* Buttons */
+        /*.competency-form .btn-primary {
+            background: #0f3d66 !important;
+            border: none;
+            padding: 8px 18px;
+            font-size: 13px;
+            border-radius: 8px;
+        }
+
+            .competency-form .btn-primary:hover {
+                background: #0c2f4f !important;
+            }
+
+        .competency-form .btn-danger {
+            background: #e11d48 !important;
+            border: none;
+            padding: 8px 18px;
+            font-size: 13px;
+            border-radius: 8px;
+        }
+
+            .competency-form .btn-danger:hover {
+                background: #be123c !important;
+            }*/
+
+        /* Rating + Remark spacing */
+        .competency-form .row {
+            margin-bottom: 10px;
+        }
+
+        /* Make only this section look premium */
+        .competency-form .panel-body {
+            background: #ffffff !important;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .Tooltip {
+            position: relative;
+        }
+
+            .Tooltip button {
+                width: 35px;
+            }
+
+            .Tooltip:hover .Tooltip-text {
+                display: flex;
+                position: absolute;
+            }
+
+            .Tooltip .Tooltip-text {
+                z-index: 1;
+                min-width: 45px;
+                max-width: fit-content;
+                background-color: black;
+                color: #fff;
+                top: 40px;
+                right: -18px;
+                padding: 5px 8px;
+                border-radius: 6px;
+                display: none;
+                justify-content: center;
+                position: absolute;
+                margin-right: 10px;
+            }
+
+                .Tooltip .Tooltip-text::after {
+                    content: "";
+                    position: absolute;
+                    top: -20px;
+                    right: 20px;
+                    border-width: 10px;
+                    border-style: solid;
+                    border-color: transparent transparent black transparent;
+                }
+
+        .ListBtn {
+            font-size: 10px !important;
+            padding: 5px 8px !important;
+            border: 1px solid lightgray !important;
+        }
+
+        tr td {
+            padding: 4px !important;
+            font-weight: 600;
+        }
+
+        .table-striped > tbody > tr:nth-of-type(odd) > * {
+            --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+        }
+
+        .table-wrap::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+            background-color: #F5F5F5;
+            border-radius: 10px;
+        }
+
+        .table-wrap::-webkit-scrollbar {
+            width: 6px;
+            height: 10px;
+            background-color: #F5F5F5;
+        }
+
+        .table-wrap::-webkit-scrollbar-thumb {
+            background-color: #777;
+            border-radius: 10px;
+        }
+
+        label.error {
+            text-align: left;
+            height: 25px;
+            color: red;
+            font-size: 12px;
+        }
+
+        .error {
+            text-align: left;
+            height: 35px;
+        }
+
+        .table-wrap {
+            width: 100%;
+            overflow: auto;
+        }
+
+        .table-scroll table {
+            width: 100%;
+            margin: auto;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .table-scroll th, .table-scroll td {
+            padding: 5px 10px;
+            border: 1px solid lightgray;
+            background: #fff;
+            white-space: nowrap;
+            vertical-align: top;
+        }
+
+        .table-scroll th {
+            background-color: rgba(233, 236, 239, 1) !important;
+        }
+
+        .note-editable {
+            border: groove;
+            font-size: 16px;
+        }
+
+        .important {
+            color: #dc3545;
+        }
+
+        /* Updated styles for layout, textbox, and heading */
+        /*.header-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1a3c34;
+            letter-spacing: 0.5px;
+        }*/
+
+        /*.panel-heading {
+            background: linear-gradient(90deg, #007bff, #0056b3);
+            border-radius: 8px 8px 0 0;
+            padding: 15px;
+        }*/
+
+        /*.panel-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #fff;
+        }*/
+
+        /*.form-label {
+            font-weight: 500;
+            color: #1a3c34;
+            font-size: 0.95rem;
+        }*/
+
+        /*.form-control, .form-select {
+            border-radius: 6px;
+            border: 1px solid #ced4da;
+            padding: 10px;
+            font-size: 0.9rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }*/
+
+        /*.form-control:focus, .form-select:focus {
+                border-color: #007bff;
+                box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+            }
+
+        .input-group-text {
+            background: #f8f9fa;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            color: #555;
+        }*/
+
+        /*.btn-primary, .btn-danger {
+            border-radius: 6px;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: background 0.3s;
+        }*/
+
+        /*.btn-primary {
+            background: #007bff;
+        }
+
+            .btn-primary:hover {
+                background: #0056b3;
+            }*/
+
+        /*.btn-danger {
+            background: #dc3545;
+        }
+
+            .btn-danger:hover {
+                background: #b02a37;
+            }
+
+        /* Fix for overlapping plus button and textbox */
+        /*.input-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-select {
+            flex-grow: 1;
+        }
+
+        .Tooltip.btn-sm {
+            flex-shrink: 0;
+            margin-left: 10px;
+        }*/
+</style>
+
+<div id="content" class="app-content">
+    <div class="row mb-3">
+        <div class="col-md-12 d-flex justify-content-between align-items-center">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Competency Self Rating
+            </h1>            <nav aria-label="breadcrumb">
+                                 <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                                     <li style="margin-right: 10px;">
+                                         <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                                             <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                                         </a>
+                                     </li>
+                                     <li>
+                                         <a href="@Url.Action("ESS_PMS_Compentency", "ESS_PMS_Compentency", new { id = 11, ScreenId = 826, area = "ESS" })">
+                                             <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Settings">
+                                         </a>
+                                     </li>
+                                 </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"];">
+                    <h4 class="panel-title">Competency Self Rating - @ViewBag.AddUpdateTitle</h4>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Rate your competency!
+                    </p>
+                </div>
+
+                <div class="panel-body" style="padding: 1.5rem;">
+
+                    @foreach (var d in ViewBag.GetList)
+                    {
+                        <form role="form" class="competency-form" id="SaveSelfRating"
+                              action="@Url.Action("SaveUpdate", "ESS_PMS_MyCompetencies", new { area = "ESS" })"
+                              method="post">
+
+                            <!-- HIDDEN VALUES -->
+                            <input type="hidden" name="CompetencyId" value="@d.CompetencyId" />
+                            <input type="hidden" name="CompetencyMappingId" value="@d.CompetencyMappingId" />
+
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <div class="card-custom" style="border:1px solid #ccc; padding:15px; border-radius:6px;">
+                                        <h5 class="section-title">Competency Information</h5>
+
+                                        <div class="row mb-2">
+                                            <div class="col-md-4">
+                                                <label class="form-label fw-bold">Competency Type</label>
+                                                <p class="form-control-static">@d.CompetencyType</p>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <label class="form-label fw-bold">Category</label>
+                                                <p class="form-control-static">@d.Category</p>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <label class="form-label fw-bold">Designation</label>
+                                                <p class="form-control-static">@d.DesignationName</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-2">
+                                            <div class="col-md-8">
+                                                <label class="form-label fw-bold">Competency Name</label>
+                                                <p class="form-control-static">@d.CompetencyName</p>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <label class="form-label fw-bold">Weightage</label>
+                                                <p class="form-control-static">@d.Weightage</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-2">
+                                            <div class="col-md-12">
+                                                <label class="form-label fw-bold">Description</label>
+                                                <div style="background:#f7f7f7; padding:10px; border-radius:5px; border:1px solid #ddd;">
+                                                    @Html.Raw(d.CompetencyDescription)
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="card-custom" style="border:1px solid #ccc; padding:15px; border-radius:6px;">
+                                        <h5 class="section-title">Self Rating</h5>
+
+                                        <div class="row mb-3">
+                                            <div class="col-md-4">
+                                                <label class="form-label fw-bold">Rating (Out of @d.Weightage)</label>
+                                                @Html.TextBoxFor(model => model.SelfRating, new { id = "txtSelfRating", @class = "form-control", placeholder = "Enter your rating", name = "SelfRating",type="number", max = "@d.Weightage", min = "0" })
+                                                @Html.HiddenFor(model => model.CompetencyMappingId, new { id = "txtCompetencyMappingId", @class = "form-control",name = "CompetencyMappingId",Value= @d.CompetencyMappingId})
+
+
+                                                @*<input type="number"
+                                                       class="form-control"
+                                                       name="SelfRating"
+                                                       max="@d.Weightage"
+                                                       min="0"
+                                                       placeholder="Enter your rating" />*@
+                                            </div>
+
+                                            <div class="col-md-8">
+                                                <label class="form-label fw-bold">Remark</label>
+                                                @Html.TextAreaFor(model => model.Remark, new { id = "txtRemark", @class = "form-control", placeholder = "Write your remark...", name = "Remark", rows = "3" })
+
+                                                @*<textarea class="form-control"
+                                                          name="Remark"
+                                                          rows="3"
+                                                          placeholder="Write your remark..."></textarea>*@
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- BUTTONS -->
+                            @*<div class="row">
+                                <div class="col-md-12 text-end">
+                                    <div class="BtnBx" style="margin-top: 1rem;">
+                                        <button type="button" id="btnSubmit" class="btn btn-primary btn-sm">
+                                            <i class="fa-solid fa-floppy-disk"></i> Save
+                                        </button>
+                                        <button type="button" id="btnGetList" class="btn btn-danger btn-sm">
+                                            <i class="fa-solid fa-list"></i> List
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>*@
+
+                            <div class="row">
+                                <div class="col-md-12 text-end">
+                                    <div class="BtnBx" style="margin-top: 1rem;">
+                                        <button type="button" id="btnSubmit" class="btn btn-primary btn-sm">
+                                            <i class="fa-solid fa-floppy-disk"></i> Save
+                                        </button>
+                                        <button type="button" id="btnGetList" class="btn btn-danger btn-sm">
+                                            <i class="fa-solid fa-list"></i> List
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $("#btnGetList").click(function () {
+        var url = '@Url.Action("ESS_PMS_MyCompetencies", "ESS_PMS_MyCompetencies", new { area = "ESS" })';
+        window.location.href = url;
+    });
+
+    $(document).ready(function () {
+                var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                });
+            }
+        }
+
+    });
+
+
+    $("#SaveSelfRating").validate({
+        rules: {
+            SelfRating: {
+                required: true,
+            },
+            Remark: {
+                required: true,
+            },
+        },
+        messages: {
+            SelfRating: {
+                required: "Please Enter Salf Rating",
+            },
+            Remark: {
+                required: "Please Enter Remark",
+            },
+        },
+        errorPlacement: function (error, element) {
+            if (element.attr("id") === "acceptTerms") {
+                error.insertAfter(element.next("label"));
+            } else {
+                error.insertAfter(element);
+            }
+        }
+
+    });
+    var form = $("#SaveSelfRating");
+    form.validate();
+    $("#btnSubmit").click(function (e) {
+        e.preventDefault();   // ⛔ stop default submit
+
+        // Validate form first
+        if (!form.valid()) {
+            return false;
+        }
+
+        // SweetAlert confirmation
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Once submitted, you will not be able to edit your ratings.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#1e3a8a",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, Submit",
+            cancelButtonText: "Cancel"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $("#SaveSelfRating").submit();   // ✅ submit only if confirmed
+            }
+        });
+    });
+
+</script>

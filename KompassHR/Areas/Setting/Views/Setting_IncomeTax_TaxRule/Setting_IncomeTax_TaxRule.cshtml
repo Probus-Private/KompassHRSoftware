@@ -1,0 +1,1273 @@
+﻿@model KompassHR.Areas.Setting.Models.Setting_IncomeTax.IncomeTax_Rule
+@{
+    ViewBag.Title = "Setting_IncomeTax_TaxRule";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+
+<style>
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    .formBx {
+        border: 1px solid #ced4da;
+        padding: 0.5rem 0.5rem;
+        margin-bottom: 15px;
+        padding-top: 15px;
+    }
+
+    h6 {
+        margin-top: -20px;
+        padding: 0 10px;
+    }
+
+    mark {
+        background-color: #fff;
+        font-size: 15px;
+        padding: 0 5px;
+    }
+
+
+    .table {
+        --bs-table-striped-bg: rgba(0, 0, 255, 0.02);
+    }
+
+    .text-nowrap {
+        font-size: 12px;
+    }
+
+    tbody tr td {
+        font-size: 12px;
+        padding: 4px !important;
+    }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Tax Rule
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("ESS_AdminDashboard_Dashboard", "ESS_AdminDashboard_Dashboard", new { id = 32, ScreenId = 121, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Setting_IncomeTax_Menu", "Setting_IncomeTax_Menu", new { id = 9, ScreenId =74, area = "Setting" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Settings">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                 <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Tax Rule Setting - @ViewBag.AddUpdateTitle</h4>
+                 
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Define year wise Tax rule settings here!
+
+                    </p>
+                </div>
+                <div class="panel-body" style="height: 100% !important;">
+                    <form role="form" action='@Url.Action("SaveUpdate", "Setting_IncomeTax_TaxRule", new { area = "Setting" })' id="SaveTaxRule" method="post" data-parsley-validate="">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row mb-15px">
+                                    <label class="form-label col-form-label col-md-2">
+                                        Financial Year
+                                        <span class="important">*</span>
+                                    </label>
+                                    <div class="col-md-10">
+                                        @Html.DropDownListFor(model => model.IncomeTaxRule_FyearId,new SelectList(ViewBag.GetFinancialYear, "TaxFyearId", "TaxYear"),"--Select--", new { id = "ddlIncomeTaxRuleFyearId", @class = "form-control", autocomplete = "off", name = "IncomeTaxRule_FyearId" })
+                                        @Html.HiddenFor(model => model.IncomeTaxRule_Encrypted,new { id= "IncomeTaxRule_Encrypted" })
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <hr class="mt-0">
+                        <h4 class="text-red">
+                            Exemptions U/s 10
+                        </h4>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h5 class="text-start bg-cyan text-white p-2 mb-0">HRA Setting</h5>
+                                <div class="formBx">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="formBx">
+                                                <h6><mark> Metro Setting </mark></h6>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="row mb-10px">
+                                                            <div class="col-md-4">
+                                                                @Html.TextBoxFor(model => model.HRA_Metro_Percentage, new { @name = "HRA_Metro_Percentage", @class = "form-control", id = "txtHRA_Metro_Percentage", autocomplete = "Off", @style = "text-align:right", type = "number" })
+                                                                @*<input type="text" class="form-control"
+                                                                    placeholder="50">*@
+                                                            </div>
+                                                            <label class="form-label col-form-label col-md-4">
+                                                                % of Salary for HRA
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <div class="row mb-10px">
+                                                            <label class="form-label col-form-label col-md-4">
+                                                                Rent Paid Minus
+                                                            </label>
+                                                            <div class="col-md-4">
+                                                                @Html.TextBoxFor(model => model.HRA_Metro_Minus, new { @name = "HRA_Metro_Minus", @class = "form-control", id = "txtHRA_Metro_Minus", autocomplete = "Off", @style = "text-align:right", type = "number" })
+                                                                @*<input type="text" class="form-control"
+                                                                    placeholder="10">*@
+                                                            </div>
+                                                            <label class="form-label col-form-label col-md-4">
+                                                                % of Salary for HRA
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="formBx">
+                                                <h6><mark>Non-Metro Setting</mark></h6>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="row mb-10px">
+                                                            <div class="col-md-4">
+                                                                @Html.TextBoxFor(model => model.HRA_NoNMetro_Percentage, new { @name = "HRA_NoNMetro_Percentage", @class = "form-control", id = "txtHRA_NoNMetro_Percentage", autocomplete = "Off", @style = "text-align:right", type = "number" })
+                                                                @*<input type="text" class="form-control"
+                                                                    placeholder="40">*@
+                                                            </div>
+                                                            <label class="form-label col-form-label col-md-4">
+                                                                % of Salary for HRA
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-12">
+                                                        <div class="row mb-10px">
+                                                            <label class="form-label col-form-label col-md-4">
+                                                                Rent Paid Minus
+                                                            </label>
+                                                            <div class="col-md-4">
+                                                                @Html.TextBoxFor(model => model.HRA_NoNMetro_Minus, new { @name = "HRA_NoNMetro_Minus", @class = "form-control", type = "number", id = "txtHRA_NoNMetro_Minus", autocomplete = "Off", @style = "text-align:right" })
+                                                                @*<input type="text" class="form-control"
+                                                                    placeholder="10">*@
+                                                            </div>
+                                                            <label class="form-label col-form-label col-md-4">
+                                                                % of Salary for HRA
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="formBx">
+                                                <h6><mark>HRA Calculation (Monthly / Yearly)</mark></h6>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="row mb-15px">
+                                                            <label class="form-label col-form-label col-md-4">
+                                                                Calculation
+                                                            </label>
+                                                            <div class="col-md-4">
+                                                                @Html.DropDownListFor(model => model.HRA_Calculation_Monthly_Yearly, new List<SelectListItem> {
+                                                    new SelectListItem { Text = "Monthly", Value = "true"},
+                                                    new SelectListItem { Text = "Yearly", Value = "false"}
+                                                }, "--Select--", new { id = "ddlHRA_Calculation_Monthly_Yearly", @class = "form-select", autocomplete = "off", name = "HRA_Calculation_Monthly_Yearly" })
+                                                                @*<select class="form-select">
+                                                                        <option class="form-control" selected>
+                                                                            --Select--
+                                                                        </option>
+                                                                        <option class="form-control">
+                                                                            Monthly
+                                                                        </option>
+                                                                        <option class="form-control">
+                                                                            Yearly
+                                                                        </option>
+                                                                    </select>*@
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="formBx">
+                                                <h6><mark>HRA PAN Limit</mark></h6>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="row mb-15px">
+                                                            <label class="form-label col-form-label col-md-4">
+                                                                Maximum Amount Rs.
+                                                            </label>
+                                                            <div class="col-md-4">
+                                                                @Html.TextBoxFor(model => model.HRA_PanLimit, new { @name = "HRA_PanLimit", @class = "form-control", id = "txtHRA_PanLimit", autocomplete = "Off", @style = "text-align:right", type = "number" })
+                                                                @*<input type="text" class="form-control">*@
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h5 class="text-start bg-cyan text-white p-2 mb-0">Child Education Setting</h5>
+                                <div class="formBx">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="formBx">
+                                                <h6><mark>Child Education Allowance</mark></h6>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="row mb-15px">
+                                                            <label class="form-label col-form-label col-md-1">
+                                                                Rs.
+                                                            </label>
+                                                            <div class="col-md-2">
+                                                                @Html.TextBoxFor(model => model.ChildEducation_Allowance, new { @name = "ChildEducation_Allowance", @class = "form-control", id = "txtChildEducation_Allowance", autocomplete = "Off", @style = "text-align:right", type = "number" })
+                                                                @*<input type="text" class="form-control"
+                                                                    value="500">*@
+                                                            </div>
+                                                            <label class="form-label col-form-label col-md-5">
+                                                                Per Month for Maximum
+                                                            </label>
+                                                            <div class="col-md-2">
+                                                                @Html.TextBoxFor(model => model.ChildEducation_NoOfChildren, new { @name = "ChildEducation_NoOfChildren", @class = "form-control", id = "txtChildEducation_NoOfChildren", autocomplete = "Off", @style = "text-align:right", type = "number" })
+                                                                @*<input type="text" class="form-control"
+                                                                    value="2">*@
+                                                            </div>
+                                                            <label class="form-label col-form-label col-md-1">
+                                                                Children
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="formBx">
+                                                <h6><mark>Child Hostel Allowance</mark></h6>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="row mb-15px">
+                                                            <label class="form-label col-form-label col-md-1">
+                                                                Rs.
+                                                            </label>
+                                                            <div class="col-md-2">
+                                                                @Html.TextBoxFor(model => model.ChildHostel_Allowance, new { @name = "ChildHostel_Allowance", @class = "form-control", id = "txtChildHostel_Allowance", autocomplete = "Off", @style = "text-align:right", type = "number" })
+                                                                @*<input type="text" class="form-control"
+                                                                    value="500">*@
+                                                            </div>
+                                                            <label class="form-label col-form-label col-md-5">
+                                                                Per Month for Maximum
+                                                            </label>
+                                                            <div class="col-md-2">
+                                                                @Html.TextBoxFor(model => model.ChildHostel_NoOfChildren, new { @name = "ChildHostel_NoOfChildren", @class = "form-control", id = "txtChildHostel_NoOfChildren", autocomplete = "Off", @style = "text-align:right", type = "number" })
+                                                                @*<input type="text" class="form-control"
+                                                                    value="2">*@
+                                                            </div>
+                                                            <label class="form-label col-form-label col-md-1">
+                                                                Children
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5 class="text-start bg-cyan text-white p-2 mb-0">
+                                    Handicap Employee Setting
+                                </h5>
+                                <div class="formBx">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="formBx">
+                                                <h6><mark>Conveyance for Handicap Employee </mark></h6>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="row mb-15px">
+                                                            <label class="form-label col-form-label col-md-4">
+                                                                Maximum Amount Rs.
+                                                            </label>
+                                                            <div class="col-md-4">
+                                                                @Html.TextBoxFor(model => model.Conveyance_Handicap_Amount, new { @name = "Conveyance_Handicap_Amount", @class = "form-control", id = "txtConveyance_Handicap_Amount", autocomplete = "Off", @style = "text-align:right", type = "number" })
+                                                                @*<input type="text" class="form-control"
+                                                                    value="3200">*@
+                                                            </div>
+                                                            <label class="form-label col-form-label col-md-4">
+                                                                Per Month
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <h5 class="text-start bg-cyan text-white p-2 mb-0">
+                                    Leave Salary Setting
+                                </h5>
+                                <div class="formBx">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="formBx">
+                                                <h6><mark>Leave Salary (Leave Encashment) </mark></h6>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="row mb-15px">
+                                                            <label class="form-label col-form-label col-md-4">
+                                                                Maximum Amount Rs.
+                                                            </label>
+                                                            <div class="col-md-3">
+                                                                @Html.TextBoxFor(model => model.LeaveSalary_Amount, new { @name = "LeaveSalary_Amount", @class = "form-control", id = "txtLeaveSalary_Amount", autocomplete = "Off", @style = "text-align:right", type = "number" })
+                                                                @*<input type="text" class="form-control"
+                                                                    value="300000">*@
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h5 class="text-start bg-cyan text-white p-2 mb-0">Gratuity Setting</h5>
+                                <div class="formBx">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="formBx">
+                                                <h6><mark>Type A</mark></h6>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="row mb-10px">
+                                                            <label class="form-label col-form-label col-md-9">
+                                                                A. Covered Under Gratuity Act Maximum Amount Rs.
+                                                            </label>
+                                                            <div class="col-md-3">
+                                                                @Html.TextBoxFor(model => model.Gratuity_Coverd_Amount, new { @name = "Gratuity_Coverd_Amount", @class = "form-control", id = "txtGratuity_Coverd_Amount", autocomplete = "Off", @style = "text-align:right", type = "number" })
+                                                                @*<input type="text" class="form-control"
+                                                                    value="200000">*@
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-10px">
+                                                            <label class="form-label col-form-label col-md-12 text-red">
+                                                                Last Drawn Basic Salary x 15/26 x No. of Years
+                                                                of Services <br>
+                                                                (Simple Round For Years) <br>
+                                                                5 Yrs 6 Months = 6 Years <br>
+                                                                5 Yrs 5 Months = 5 Years <br>
+                                                            </label>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="formBx">
+                                                <h6><mark>Type B</mark></h6>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="row mb-10px">
+                                                            <label class="form-label col-form-label col-md-9">
+                                                                B.Not Covered Under Gratuity Act Maximum Amount
+                                                                Rs.
+                                                            </label>
+                                                            <div class="col-md-3">
+                                                                @Html.TextBoxFor(model => model.Gratuity_NotCoverd_Amount, new { @name = "Gratuity_Notcoverd_Amount", @class = "form-control", id = "txtGratuity_Notcoverd_Amount", autocomplete = "Off", @style = "text-align:right", type = "number" })
+                                                                @*<input type="text" class="form-control"
+                                                                    value="200000">*@
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-10px">
+                                                            <label class="form-label col-form-label col-md-12 text-red">
+                                                                Last Drawn Basic Salary x 15/30 x No. of Years
+                                                                of Services <br>
+                                                                (Only Fully Completed Years) <br>
+                                                                5 Yrs 6 Months = 5 Years <br>
+                                                                5 Yrs 5 Months = 5 Years <br>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="mt-0">
+
+                        <h4 class="text-red">
+                            Deducation U/s Chapter VI A
+                        </h4>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h5 class="text-start bg-cyan text-white p-2 mb-0">80C Setting</h5>
+                                <div class="formBx">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="formBx">
+                                                <h6><mark> 80DDB - Treatment of Specified Disease</mark></h6>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="row mb-10px">
+                                                            <label class="form-label col-form-label col-md-7">
+                                                                Normal Citizen
+                                                            </label>
+
+                                                            <div class="col-md-5">
+                                                                @Html.TextBoxFor(model => model.TaxRule80DDB_NormalCitizen_Amount, new { @name = "TaxRule80DDB_NormalCitizen_Amount", @class = "form-control", id = "txtTaxRule80DDB_NormalCitizen_Amount", autocomplete = "Off", @style = "text-align:right", type = "number" })
+                                                                @*<input type="text" class="form-control"
+                                                                    value="40000">*@
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-10px">
+                                                            <label class="form-label col-form-label col-md-7">
+                                                                Seninor Citizen
+                                                            </label>
+                                                            <div class="col-md-5">
+                                                                @Html.TextBoxFor(model => model.TaxRule80DDB_SeniorCitizen_Amount, new { @name = "TaxRule80DDB_SeniorCitizen_Amount", @class = "form-control", id = "txtTaxRule80DDB_SeniorCitizen_Amount", autocomplete = "Off", @style = "text-align:right", type = "number" })
+                                                                @*<input type="text" class="form-control"
+                                                                    value="100000">*@
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="formBx">
+                                                <h6><mark>80U - Physical Handicap</mark></h6>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="row mb-10px">
+                                                            <label class="form-label col-form-label col-md-7">
+                                                                Severe
+                                                            </label>
+                                                            <div class="col-md-5">
+                                                                @Html.TextBoxFor(model => model.TaxRule80U_Physical_Handicap_Severe_Amount, new { @name = "TaxRule80U_Physical_Handicap_Severe_Amount", @class = "form-control", id = "txtTaxRule80U_Physical_Handicap_Severe_Amount", autocomplete = "Off", @style = "text-align:right", type = "number" })
+                                                                @*<input type="text" class="form-control"
+                                                                    value="125000">*@
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-10px">
+                                                            <label class="form-label col-form-label col-md-7">
+                                                                Non-Severe
+                                                            </label>
+                                                            <div class="col-md-5">
+                                                                @Html.TextBoxFor(model => model.TaxRule80U_Physical_Handicap_Nonsevere_Amount, new { @name = "TaxRule80U_Physical_Handicap_Nonsevere_Amount", @class = "form-control", id = "txtTaxRule80U_Physical_Handicap_Nonsevere_Amount", autocomplete = "Off", @style = "text-align:right", type = "number" })
+                                                                @*<input type="text" class="form-control"
+                                                                    value="125000">*@
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="formBx">
+                                                <h6><mark> 80D - Medical Insurance</mark></h6>
+
+                                                <table class="table table-bordered align-middle" id="TableMedical"
+                                                       data-scrollbar="true" style="width: 100%;">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="text-nowrap"></th>
+                                                            <th class="text-nowrap">Self, Family, Children</th>
+                                                            <th class="text-nowrap">Parents</th>
+                                                            <th class="text-nowrap"> Deducation U/s 80D</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td class="text-nowrap">
+                                                                <label class="form-label">
+                                                                    Individual And Parents Below 60 Years
+                                                                </label>
+                                                            </td>
+                                                            <td class="text-nowrap">
+                                                                @Html.TextBoxFor(model => model.TaxRule80D_ParentsBelow60_Self_Family_Children, new { @name = "TaxRule80D_ParentsBelow60_Self_Family_Children", @class = "form-control", id = "txtTaxRule80D_ParentsBelow60_Self_Family_Children", autocomplete = "Off", @style = "text-align:right", type = "number" })
+                                                                @*<input type="text" class="form-control"
+                                                                    value="40000">*@
+                                                            </td>
+                                                            <td class="text-nowrap">
+                                                                @Html.TextBoxFor(model => model.TaxRule80D_ParentsBelow60_Parents, new { @name = "TaxRule80D_ParentsBelow60_Parents", @class = "form-control", id = "txtTaxRule80D_ParentsBelow60_Parents", autocomplete = "Off", @style = "text-align:right", type = "number" })
+                                                                @*<input type="text" class="form-control"
+                                                                    value="40000">*@
+                                                            </td>
+                                                            <td class="text-nowrap">
+                                                                @Html.TextBoxFor(model => model.TaxRule80D_ParentsBelow60_Deduction80D, new { @name = "TaxRule80D_ParentsBelow60_Deduction80D", @class = "form-control", id = "txtTaxRule80D_ParentsBelow60_Deduction80D", autocomplete = "Off", @style = "text-align:right", type = "number" })
+                                                                @*<input type="text" class="form-control"
+                                                                    value="40000">*@
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-nowrap">
+                                                                <label class="form-label">
+                                                                    Individual And Family Below 60 Years But
+                                                                    Parents Above
+                                                                    60 Years
+                                                                </label>
+                                                            </td>
+                                                            <td class="text-nowrap">
+                                                                @Html.TextBoxFor(model => model.TaxRule80D_Below60_ParentsAbove60_Self_Family_Children, new { @name = "TaxRule80D_Below60_ParentsAbove60_Self_Family_Children", @class = "form-control", id = "txtTaxRule80D_Below60_ParentsAbove60_Self_Family_Children", autocomplete = "Off", @style = "text-align:right", type = "number" })
+                                                                @*<input type="text" class="form-control"
+                                                                    value="40000">*@
+                                                            </td>
+                                                            <td class="text-nowrap">
+                                                                @Html.TextBoxFor(model => model.TaxRule80D_Below60_ParentsAbove60_Parents, new { @name = "TaxRule80D_Below60_ParentsAbove60_Parents", @class = "form-control", id = "txtTaxRule80D_Below60_ParentsAbove60_Parents", autocomplete = "Off", @style = "text-align:right", type = "number" })
+                                                                @*<input type="text" class="form-control"
+                                                                    value="40000">*@
+                                                            </td>
+                                                            <td class="text-nowrap">
+                                                                @Html.TextBoxFor(model => model.TaxRule80D_Below60_ParentsAbove60_Deduction80D, new { @name = "TaxRule80D_Below60_ParentsAbove60_Deduction80D", @class = "form-control", id = "txtTaxRule80D_Below60_ParentsAbove60_Deduction80D", autocomplete = "Off", @style = "text-align:right", type = "number" })
+                                                                @*<input type="text" class="form-control"
+                                                                    value="40000">*@
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="text-nowrap">
+                                                                <label class="form-label ">
+                                                                    Both Individual, Parents and Family Above 60
+                                                                    Years
+                                                                </label>
+                                                            </td>
+                                                            <td class="text-nowrap">
+                                                                @Html.TextBoxFor(model => model.TaxRule80D_BothAbove60_Self_Family_Children, new { @class = "form-control rnt", id = "txtPreviousEmployerProfessionalTax", autocomplete = "Off", name = "PreviousEmployerProfessionalTax", @style = "text-align:right", type = "number" })
+                                                                @*<input type="text" class="form-control"
+                                                                    value="40000">*@
+                                                            </td>
+                                                            <td class="text-nowrap">
+                                                                @Html.TextBoxFor(model => model.TaxRule80D_BothAbove60_Parents, new { @class = "form-control rnt", id = "txtTaxRule80D_BothAbove60_Parents", autocomplete = "Off", name = "TaxRule80D_BothAbove60_Parents", @style = "text-align:right" })
+                                                                @*<input type="text" class="form-control"
+                                                                    value="40000">*@
+                                                            </td>
+                                                            <td class="text-nowrap">
+                                                                @Html.TextBoxFor(model => model.TaxRule80D_BothAbove60_DeductionUnder80D, new { @class = "form-control rnt", id = "txtTaxRule80D_BothAbove60_DeductionUnder80D", autocomplete = "Off", name = "TaxRule80D_BothAbove60_DeductionUnder80D", @style = "text-align:right", type = "number" })
+                                                                @*<input type="text" class="form-control"
+                                                                    value="40000">*@
+                                                            </td>
+                                                        </tr>
+
+                                                        <tr>
+                                                            <td class="text-nowrap">
+                                                                <label class="form-label">
+                                                                    Preventive Health Checkup
+                                                                </label>
+                                                            </td>
+                                                            <td class="text-nowrap">
+                                                                @Html.TextBoxFor(model => model.TaxRule80D_BothAbove60_DeductionUnder80D_HealthCheckup, new { @class = "form-control rnt", id = "txtTaxRule80D_BothAbove60_DeductionUnder80D_HealthCheckup", autocomplete = "Off", name = "TaxRule80D_BothAbove60_DeductionUnder80D_HealthCheckup", @style = "text-align:right", type = "number" })
+                                                                @*<input type="text" class="form-control"
+                                                                    value="40000">*@
+                                                            </td>
+                                                            <td></td>
+                                                            <td></td>
+                                                        </tr>
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="formBx">
+                                                <h6><mark>80C</mark></h6>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="row mb-10px">
+                                                            <label class="form-label col-form-label col-md-7">
+                                                                Maximum Amount Rs.
+                                                            </label>
+                                                            <div class="col-md-5">
+                                                                @Html.TextBoxFor(model => model.TaxRule80C_Amount, new { @class = "form-control rnt", id = "txtTaxRule80C_Amount", autocomplete = "Off", name = "TaxRule80C_Amount", @style = "text-align:right", type = "number" })
+                                                                @*<input type="text" class="form-control"
+                                                                    value="150000">*@
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="formBx">
+                                                <h6><mark>80CCD (1B) - NPS</mark></h6>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="row mb-10px">
+                                                            <label class="form-label col-form-label col-md-7">
+                                                                Maximum Amount Rs.
+                                                            </label>
+                                                            <div class="col-md-5">
+                                                                @Html.TextBoxFor(model => model.TaxRule80CCD_1B_NPS_Amount, new { @class = "form-control rnt", id = "txtTaxRule80CCD_1B_NPS_Amount", autocomplete = "Off", name = "TaxRule80CCD_1B_NPS_Amount", @style = "text-align:right", type = "number" })
+                                                                @*<input type="text" class="form-control"
+                                                                    value="50000">*@
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="formBx">
+                                                        <h6><mark>80TTA - Interest Income</mark></h6>
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                <div class="row mb-10px">
+                                                                    <label class="form-label col-form-label col-md-7">
+                                                                        Maximum Amount Rs.
+                                                                    </label>
+                                                                    <div class="col-md-5">
+                                                                        @Html.TextBoxFor(model => model.TaxRule80TTA_Amount, new { @class = "form-control rnt", id = "txtTaxRule80TTA_Amount", autocomplete = "Off", name = "TaxRule80TTA_Amount", @style = "text-align:right", type = "number" })
+                                                                        @*<input type="text" class="form-control"
+                                                                            value="10000">*@
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-12">
+                                                    <div class="formBx">
+                                                        <h6><mark>80TTB - Interest Income</mark></h6>
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                <div class="row">
+                                                                    <label class="form-label col-form-label col-md-7">
+                                                                        Maximum Amount Rs.
+                                                                    </label>
+                                                                    <div class="col-md-5">
+                                                                        @Html.TextBoxFor(model => model.TaxRule80TTB_Amount, new { @class = "form-control rnt", id = "txtTaxRule80TTB_Amount", autocomplete = "Off", name = "TaxRule80TTB_Amount", @style = "text-align:right", type = "number" })
+                                                                        @*<input type="text" class="form-control"
+                                                                            value="50000">*@
+                                                                    </div>
+                                                                    <label class="form-label text-red col-form-label">
+                                                                        Applicable Only To Senior Citizens
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="formBx">
+                                                        <h6><mark>80DD - Handicap Dependant</mark></h6>
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                <div class="row mb-10px">
+                                                                    <label class="form-label col-form-label col-md-7">
+                                                                        Severe
+                                                                    </label>
+                                                                    <div class="col-md-5">
+                                                                        @Html.TextBoxFor(model => model.TaxRule80DD_Handicap_SevereAmount, new { @class = "form-control rnt", id = "txtTaxRule80DD_Handicap_SevereAmount", autocomplete = "Off", name = "TaxRule80DD_Handicap_SevereAmount", @style = "text-align:right", type = "number" })
+                                                                        @*<input type="text" class="form-control"
+                                                                            value="125000">*@
+                                                                    </div>
+                                                                </div>
+                                                                <div class="row">
+                                                                    <label class="form-label col-form-label col-md-7">
+                                                                        Non-Severe
+                                                                    </label>
+                                                                    <div class="col-md-5">
+                                                                        @Html.TextBoxFor(model => model.TaxRule80DD_Handicap_NonSevereAmount, new { @class = "form-control rnt", id = "txtTaxRule80DD_Handicap_NonSevereAmount", autocomplete = "Off", name = "TaxRule80DD_Handicap_NonSevereAmount", @style = "text-align:right", type = "number" })
+                                                                        @*<input type="text" class="form-control"
+                                                                            value="75000">*@
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-12">
+                                                    <div class="formBx">
+                                                        <h6>
+                                                            <mark>
+                                                                80EEB - Interest On Electric Vehicle
+                                                                Loan
+                                                            </mark>
+                                                        </h6>
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                <div class="row">
+                                                                    <label class="form-label col-form-label col-md-7">
+                                                                        Maximum Amount Rs.
+                                                                    </label>
+                                                                    <div class="col-md-5">
+                                                                        @Html.TextBoxFor(model => model.TaxRule80EEB_Interest_OnElecticVechile, new { @class = "form-control rnt", id = "txtTaxRule80EEB_Interest_OnElecticVechile", autocomplete = "Off", name = "TaxRule80EEB_Interest_OnElecticVechile", @style = "text-align:right", type = "number" })
+                                                                        @*<input type="text" class="form-control"
+                                                                            value="150000">*@
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="formBx">
+                                                <h6><mark>80EE </mark></h6>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="row mb-10px">
+                                                            <label class="form-label col-form-label col-md-7">
+                                                                80EE Eligible Limit
+                                                            </label>
+                                                            <div class="col-md-5">
+                                                                @Html.TextBoxFor(model => model.TaxRule80EE_Limit, new { @class = "form-control rnt", id = "txtTaxRule80EE_Limit", autocomplete = "Off", name = "TaxRule80EE_Limit", @style = "text-align:right", type = "number" })
+                                                                @*<input type="text" class="form-control"
+                                                                    value="50000">*@
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-10px">
+                                                            <label class="form-label col-form-label col-md-7">
+                                                                Loan Section Amount Limit
+                                                            </label>
+                                                            <div class="col-md-5">
+                                                                @Html.TextBoxFor(model => model.TaxRule80EE_Loan_Maxamount, new { @class = "form-control rnt", id = "txtTaxRule80EE_Loan_Maxamount", autocomplete = "Off", name = "TaxRule80EE_Loan_Maxamount", @style = "text-align:right", type = "number" })
+                                                                @*<input type="text" class="form-control"
+                                                                    value="3500000">*@
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <label class="form-label col-form-label col-md-7">
+                                                                Stamp Duty Value of House Properly Limit
+                                                            </label>
+                                                            <div class="col-md-5">
+                                                                @Html.TextBoxFor(model => model.TaxRule80EE_PropertyValues, new { @class = "form-control rnt", id = "txtTaxRule80EE_PropertyValues", autocomplete = "Off", name = "TaxRule80EE_PropertyValues", @style = "text-align:right", type = "number" })
+                                                                @*<input type="text" class="form-control"
+                                                                    value="5000000">*@
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <div class="formBx">
+                                                <h6><mark>80EEA </mark></h6>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="row mb-10px">
+                                                            <label class="form-label col-form-label col-md-7">
+                                                                80EEA Eligible Limit
+                                                            </label>
+                                                            <div class="col-md-5">
+                                                                @Html.TextBoxFor(model => model.TaxRule80EEA_Limit, new { @class = "form-control rnt", id = "txtTaxRule80EEA_Limit", autocomplete = "Off", name = "TaxRule80EEA_Limit", @style = "text-align:right", type = "number" })
+                                                                @*<input type="text" class="form-control"
+                                                                    value="150000">*@
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <label class="form-label col-form-label col-md-7">
+                                                                Stamp Duty Value of House Properly Limit
+                                                            </label>
+                                                            <div class="col-md-5">
+                                                                @Html.TextBoxFor(model => model.TaxRule80EEA_PropertyValues, new { @class = "form-control rnt", id = "txtTaxRule80EEA_PropertyValues", autocomplete = "Off", name = "TaxRule80EEA_PropertyValues", @style = "text-align:right", type = "number" })
+                                                                @*<input type="text" class="form-control"
+                                                                    value="4500000">*@
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h5 class="text-start bg-cyan text-white p-2 mb-0">Housing Loan Setting</h5>
+                                <div class="formBx">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="formBx">
+                                                <h6><mark> Housing Loan Interest</mark></h6>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="row mb-10px">
+                                                            <label class="form-label col-form-label col-md-7">
+                                                                Captial is Borrowed On or After April 1, 1999
+                                                                For Acquring or Constructing A Properly
+                                                            </label>
+
+                                                            <div class="col-md-5">
+                                                                @Html.TextBoxFor(model => model.Housingloan_After_1999, new { @class = "form-control rnt", id = "txtHousingloan_After_1999", autocomplete = "Off", name = "Housingloan_After_1999", @style = "text-align:right", type = "number" })
+                                                                @*<input type="text" class="form-control"
+                                                                    value="200000">*@
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-10px">
+                                                            <label class="form-label col-form-label col-md-7">
+                                                                Captial is Borrowed On or Before April 1, 1999
+                                                                For Acquring or Constructing A Properly
+                                                            </label>
+                                                            <div class="col-md-5">
+                                                                @Html.TextBoxFor(model => model.Housingloan_Before_1999, new { @class = "form-control rnt", id = "txtHousingloan_Before_1999", autocomplete = "Off", name = "Housingloan_Before_1999", @style = "text-align:right", type = "number" })
+                                                                @*<input type="text" class="form-control"
+                                                                    value="30000">*@
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-10px">
+                                                            <label class="form-label col-form-label col-md-7">
+                                                                Repair or Renewal of House Properly
+                                                            </label>
+                                                            <div class="col-md-5">
+                                                                @Html.TextBoxFor(model => model.Housingloan_RepairOrRenewal, new { @class = "form-control rnt", id = "txtHousingloan_RepairOrRenewal", autocomplete = "Off", name = "Housingloan_RepairOrRenewal", @style = "text-align:right", type = "number" })
+                                                                @*<input type="text" class="form-control"
+                                                                    value="30000">*@
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="formBx">
+                                                        <h6><mark>Income from Let Out Property</mark></h6>
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                <div class="row mb-10px">
+                                                                    <label class="form-label col-form-label col-md-7">
+                                                                        Income from Let Out House Property
+                                                                        Standard Deducation %
+                                                                    </label>
+                                                                    <div class="col-md-5">
+                                                                        @Html.TextBoxFor(model => model.IncomefromLetOutHouseProperty_StandardEducation, new { @class = "form-control rnt", id = "txtIncomefromLetOutHouseProperty_StandardEducation", autocomplete = "Off", name = "IncomefromLetOutHouseProperty_StandardEducation", @style = "text-align:right", type = "number" })
+                                                                        @*<input type="text" class="form-control"
+                                                                            value="30">*@
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="formBx">
+                                                        <h6>
+                                                            <mark>
+                                                                Max Limit For Set Off House Properly
+                                                                Loss
+                                                            </mark>
+                                                        </h6>
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                <div class="row mb-10px">
+                                                                    <label class="form-label col-form-label col-md-7">
+                                                                        Maximum Amount Rs.
+                                                                    </label>
+                                                                    <div class="col-md-5">
+                                                                        @Html.TextBoxFor(model => model.HPLoss_Maxamount, new { @class = "form-control rnt", id = "txtHPLoss_Maxamount", autocomplete = "Off", name = "HPLoss_Maxamount", @style = "text-align:right", type = "number" })
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="mt-0">
+                        <h4 class="text-red">
+                            Deducation U/s Form 16
+                        </h4>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h5 class="text-start bg-cyan text-white p-2 mb-0">16 Setting</h5>
+                                <div class="formBx">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="formBx">
+                                                <h6><mark> Standard Deducation </mark></h6>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="row mb-10px">
+                                                            <label class="form-label col-form-label col-md-7">
+                                                                (Old Regime)  Maximum Amount Rs.
+                                                            </label>
+                                                            <div class="col-md-5">
+                                                                @Html.TextBoxFor(model => model.StandardEducation_OldRegime_Amount, new { @class = "form-control rnt", id = "txtStandardEducation_OldRegime_Amount", autocomplete = "Off", name = "StandardEducation_OldRegime_Amount", @style = "text-align:right", type = "number" })
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-10px">
+                                                            <label class="form-label col-form-label col-md-7">
+                                                                (New Regime)  Maximum Amount Rs.
+                                                            </label>
+                                                            <div class="col-md-5">
+                                                                @Html.TextBoxFor(model => model.StandardEducation_NewRegime_Amount, new { @class = "form-control rnt", id = "txtStandardEducation_NewRegime_Amount", autocomplete = "Off", name = "StandardEducation_NewRegime_Amount", @style = "text-align:right", type = "number" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="formBx">
+                                                        <h6><mark>Professional Tax</mark></h6>
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                <div class="row mb-10px">
+                                                                    <label class="form-label col-form-label col-md-7">
+                                                                        Maximum Amount Rs.
+                                                                    </label>
+                                                                    <div class="col-md-5">
+                                                                        @Html.TextBoxFor(model => model.ProfessionalTax_Amount, new { @class = "form-control rnt", id = "txtProfessionaltax_Amount", autocomplete = "Off", name = "Professionaltax_Amount", @style = "text-align:right", type = "number" })
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="mt-0">
+                        <h4 class="text-red">
+                            Tax Rebate
+                        </h4>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h5 class="text-start bg-cyan text-white p-2 mb-0">Tax Rebate - Old Regime/New Regime</h5>
+                                <div class="formBx">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="formBx">
+                                               
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="row mb-10px">
+                                                            <label class="form-label col-form-label col-md-7">
+                                                                Old Regime
+                                                            </label>
+                                                            <div class="col-md-5">
+                                                                @Html.TextBoxFor(model => model.TaxRule_Rabate_OldRegime, new { @class = "form-control rnt", id = "txtTaxRule_Rabate_OldRegime", autocomplete = "Off", name = "txtTaxRule_Rabate_OldRegime", @style = "text-align:right", type = "number" })
+                                                            </div>
+                                                        </div>                                                      
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="formBx">
+                                                        
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                <div class="row mb-10px">
+                                                                    <label class="form-label col-form-label col-md-7">
+                                                                        New Regime
+                                                                    </label>
+                                                                    <div class="col-md-5">
+                                                                        @Html.TextBoxFor(model => model.TaxRule_Rabate_NewRegime, new { @class = "form-control rnt", id = "txtTaxRule_Rabate_NewRegime", autocomplete = "Off", name = "TaxRule_Rabate_NewRegime", @style = "text-align:right", type = "number" })
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="LastShortLeaveBx">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="BtnBx">
+                                            <div>
+                                                <button type="button" id="btnSubmit"
+                                                        class="btn btn-primary btn-sm">
+                                                    <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                </button>
+                                                <a href="@Url.Action("GetList", "Setting_IncomeTax_TaxRule", new { area = "Setting" })">
+                                                    <button type="button" id="btnGetTaxRuleList" class="btn btn-danger btn-sm">
+                                                        <i class="fa-solid fa-share-from-square"></i> List
+                                                    </button>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- END panel -->
+    </div>
+</div>
+
+
+<script>
+
+    //Ready function
+    $(document).ready(function () {
+        var HRA_Calculation_Monthly_Yearly = @Html.Raw(Json.Encode(TempData["HRA_Calculation_Monthly_Yearly"]));
+        if (HRA_Calculation_Monthly_Yearly == true) {
+            $("#ddlHRA_Calculation_Monthly_Yearly").val("Yearly");
+        }
+        else if(HRA_Calculation_Monthly_Yearly == false) {
+            $("#ddlHRA_Calculation_Monthly_Yearly").val("Monthly");
+        }
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        // return false
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+
+        var GetToDate = @Html.Raw(Json.Encode(TempData["ToDate"]));
+        var GetFromDate = @Html.Raw(Json.Encode(TempData["FromDate"]));
+        if (GetFromDate==null)
+        {
+            const today = new Date();
+
+            // Set the first day of the current month
+            const firstDayOfCurrentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+
+            // Format the date as 'YYYY-MM-DD'
+            const formattedDate = formatToYYYYMMDD(firstDayOfCurrentMonth);
+
+            // Set the #txtFromDate value
+            $('#txtFromDate').val(formattedDate);
+            $('#txtToDate').val("2999-12-31");
+        }
+        else{
+            $('#txtFromDate').val(GetFromDate);
+            $('#txtToDate').val(GetToDate);
+            $('#txtFromDate').attr('readonly',true);
+            $('#txtToDate').attr('readonly',true);
+            $('#txtFromDate').css('background-color', '#e9ecef');
+            $('#txtToDate').css('background-color', '#e9ecef');
+        }
+
+    });
+    //Ready Function
+
+    $('#txtFromDate').on('change', function () {
+        // Get the selected date from the input
+        const selectedDate = new Date($(this).val());
+
+        // Adjust the date to the first day of the selected month
+        const firstDayOfMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
+
+        // Format the adjusted date as 'YYYY-MM-DD'
+        const formattedDate = formatToYYYYMMDD(firstDayOfMonth);
+
+        // Update the value of #txtFromDate
+        $(this).val(formattedDate);
+    });
+
+    // Helper function to format a Date object as 'YYYY-MM-DD'
+    function formatToYYYYMMDD(date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // 0-based index
+        const day = String(date.getDate()).padStart(2, '0'); // Always '01' here
+        return `${year}-${month}-${day}`;
+    }
+</script>
+<script>
+    //use for add regex function
+    jQuery.validator.addMethod(
+  "regex",
+   function(value, element, regexp) {
+       if (regexp.constructor != RegExp)
+           regexp = new RegExp(regexp);
+       else if (regexp.global)
+           regexp.lastIndex = 0;
+       return this.optional(element) || regexp.test(value);
+   },"erreur expression reguliere"
+);
+
+    $("#SaveTaxRule").validate({
+        rules: {
+            IncomeTaxRule_FyearId: {
+                required: true,
+            },
+
+        },
+        messages: {
+            IncomeTaxRule_FyearId: {
+                required: "Please select financial year",
+            },
+
+        },
+
+    });
+    //IsValidation Check
+    var form = $("#SaveTaxRule");
+    form.validate();
+    $("#btnSubmit").click(function () {
+       
+        debugger;
+        form.valid();
+        if(form.valid()==false)
+        {
+            //$("#dateToDate").removeClass('error');
+            return false;
+        }
+        var IncomeTaxRuleFyearId=$("#ddlIncomeTaxRuleFyearId").val();
+        var IncomeTaxRule_Encrypted=$("#IncomeTaxRule_Encrypted").val();
+        $.ajax({
+            url: "@Url.Action("IsTaxRuleExists", "Setting_IncomeTax_TaxRule")",
+            method:"get",
+            data:{IncomeTaxRuleFyearId:IncomeTaxRuleFyearId,IncomeTaxRule_Encrypted:IncomeTaxRule_Encrypted},
+            success:function(response){
+                debugger;
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon=="error") {
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                        }
+                    }
+                }
+                else{
+                    $("#SaveTaxRule").submit();
+
+                }
+            }
+        });
+
+    });
+</script>

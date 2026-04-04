@@ -1,0 +1,542 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_Training.Training_TrainingTrainer
+
+@{
+    ViewBag.Title = "ESS_Training_TrainingTrainer";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+
+<style>
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    .card-row-title {
+        color: #e63c3c;
+        font-size: 18px;
+        font-weight: 600;
+        text-transform: capitalize;
+        border-bottom: #009ce7 1px solid;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                External Trainer
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_Training_SubMenu", "ESS_Training_SubMenu",  new { id = 38,ScreenId=568, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading">
+                    <h4 class="panel-title">External Trainer - <Span>@ViewBag.AddUpdateTitle</Span></h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Add external trainer details here!
+                    </p>
+                </div>
+
+                <div class="panel-body" data-scrollbar="true">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "ESS_Training_TrainingTrainer", new { area = "ESS" })' id="Trainer" method="post" enctype="multipart/form-data">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Trainer Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-10">
+                                                @Html.TextBoxFor(model => model.TrainerName, new { @class = "form-control", name = "TrainerName", @id = "txtTrainerName", autocomplete = "Off", @maxlength = 70 })
+                                                @Html.HiddenFor(model => model.TrainerId_Encrypted, new { @class = "form-control", id = "TrainerIdEncrypted" })
+                                                @Html.HiddenFor(model => model.TrainerId, new { @class = "form-control", id = "TrainerId" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Mobile No.
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.MobileNo, new { @class = "form-control", name = "MobileNo", id = "txtMobileNo", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                WhatsApp No.
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.WhatappsNo, new { @class = "form-control", name = "WhatappsNo", id = "txtWhatappsNo", autocomplete = "Off", @maxlength = 30 })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Email Id
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.EmailId, new { @class = "form-control", name = "EmailId", id = "txtEmail", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Specialization
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.Specialization, new { @class = "form-control", type = "text", name = "Specialization", id = "txtSpecialization", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Total Experience
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.TotalExperience, new { @class = "form-control", type = "text", name = "TotalExperience", id = "txtTotalExperience", autocomplete = "Off", @maxlength = 10 })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                    </div>
+                                </div>
+                                <div class="row mb-10px">
+                                    <div class="col-md-12">
+                                        <div class="card-row-title">
+                                            Contract Details
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">From Month
+                                                <span class="important">*</span></label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.FromMonth, new { @class = "form-control", name = "FromMonth", type = "Month", id = "txtfromMonth", required = "required" })
+                                                @Html.ValidationMessage("FromMonth", "", new { @class = "help-block", id = "ErrortxtFromMonth", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">To Month
+                                                <span class="important">*</span></label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.ToMonth, new { @class = "form-control", name = "ToMonth", type = "Month", id = "txtToMonth", required = "required" })
+                                                @Html.ValidationMessage("ToMonth", "", new { @class = "help-block", id = "ErrortxtToMonth", @style = "color:red" })
+                                                <span id="monthError" style="color:red; display:none;">Please select a valid To Month.</span>
+                                               </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Contract duration(In Month)
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.ContractDuration, new { @class = "form-control", type = "text", name = "ContractDuration", id = "txtContractDuration", autocomplete = "Off", @maxlength = 10 })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                No.of training to be conducted
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.NoOfTrainingConducted, new { @class = "form-control", type = "text", name = "NoOfTrainingConducted", id = "txtNoOfTrainingConducted", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                LinkedIn Profile
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.LinkedinProfile, new { @class = "form-control", type = "text", name = "LinkedinProfile", id = "txtLinkedinProfile", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Upload Photo
+                                            </label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" type="file" onchange="ResetFile()" name="PhotoPath" id="PhotoPath"  accept=".jpg,.jpeg,.png,.pdf" />
+                                                @Html.ValidationMessageFor(model => model.PhotoPath, null, new { @class = "help-block", @id = "ErrorPhotoPath", @style = "color:red" })
+                                                <label class="form-label col-form-label col-md-8" id="fileUploadFile-lbltext">@TempData["FileName"]</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                              
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="button" id="btnsubmit"
+                                                                class="btn btn-primary btn-sm">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                        <a href="@Url.Action("GetList", "ESS_Training_TrainingTrainer", new { area = "ESS" })">
+                                                            <button type="button" class="btn btn-danger btn-sm" id="btnTrainer">
+                                                                <i class="fa-solid fa-share-from-square"></i> List
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {debugger
+        var FromMonth = @Html.Raw(Json.Encode(TempData["FromMonth"]));
+        $("#txtfromMonth").val(FromMonth);
+
+        var ToMonth = @Html.Raw(Json.Encode(TempData["ToMonth"]));
+        $("#txtToMonth").val(ToMonth);
+    });
+</script>
+<script>
+    $(document).ready(function () {
+
+        $("#formReset").click(function () {
+            $("#Trainer")[0].reset();
+        });
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        // return false
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+
+    });// Ready end
+
+    $("#btnTrainer").click(function () {
+        debugger;
+        var url = '@Url.Action("GetList", "ESS_Prime_TrainerProfile")';
+        window.location.href = url;
+    });
+</script>
+
+<script>
+    //use for add regex function
+    jQuery.validator.addMethod(
+    "regex",
+     function(value, element, regexp) {
+         if (regexp.constructor != RegExp)
+             regexp = new RegExp(regexp);
+         else if (regexp.global)
+             regexp.lastIndex = 0;
+         return this.optional(element) || regexp.test(value);
+     },"erreur expression reguliere"
+  );
+
+    $('#Trainer').validate({
+        rules: {
+            TrainerName: {
+                required: true,
+            },
+            MobileNo: {
+                required:true,
+            },
+            EmailId:{
+                required:true,
+                email:true,
+            },
+            WhatappsNo: {
+                required:true,
+            },
+            Specialization: {
+                required:true,
+            },
+            TotalExperience: {
+                required:true,
+            },
+            NoOfTrainingConducted: {
+                required:true,
+            },
+            FromMonth: {
+                required:true,
+            },
+            ToMonth: {
+                required:true,
+            },
+            ContractDuration: {
+                required:true,
+            },
+        },
+        messages: {
+            TrainerName: {
+                required:"Trainer name is required.",
+            },
+            MobileNo: {
+                number: "Please enter at least 10 digits",
+                required:"Mobile number is required.",
+            },
+            EmailId: {
+                required:"Email Id is required.",
+                email:"Please enter valid EmailId."
+            },
+            WhatappsNo: {
+                number: "Please enter at least 10 digits.",
+                required:"WhatApps No. number is required.",
+                minlength: "Please enter 10 digits WhatApps no.",
+                maxlength: "Please enter 10 digits WhatApps no.",
+            },
+            Specialization: {
+                required:"Specialization is required.",
+            },
+            TotalExperience: {
+                required:"Total Experience is required."
+            },
+            NoOfTrainingConducted: {
+                required:"No.Of Training Conducted is required.",
+            },
+            FromMonth: {
+                required:"From Month is required.",
+            },
+            ToMonth: {
+                required:"To Month is required.",
+            },
+            ContractDuration: {
+                required:"Contract Duration is required."
+            },
+        },
+    });
+
+    var form = $("#Trainer");
+    form.validate();
+    $("#btnsubmit").click(function () {
+        debugger;
+
+        form.valid();
+        if(form.valid()==false)
+        {
+            $("#txtEstablishedDate").removeClass("error");
+            return false;
+        }
+        var TrainerName=$("#txtTrainerName").val();
+        var TrainerId_Encrypted =$("#TrainerIdEncrypted").val();
+        var TrainerId =$("#TrainerId").val();
+        var MobileNo=$("#txtMobileNo").val();
+        var WhatappsNo=$("#txtWhatappsNo").val();
+        $.ajax({
+            url:"IsTrainerExists",
+            method:"get",
+            data:{TrainerName:TrainerName,MobileNo:MobileNo,WhatappsNo:WhatappsNo,TrainerId_Encrypted:TrainerId_Encrypted,TrainerId:TrainerId},
+            success:function(response){
+                debugger;
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon=="error") {
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                        }
+                    }
+                }
+                else{
+                    $("#Trainer").submit();
+                }
+            }
+        });
+
+    });
+</script>
+
+<script>
+    function ResetFile()
+    {
+        let allowedExtension = ['image/jpeg', 'image/jpg', 'image/png','application/pdf'];
+        let type = document.getElementById('fileupload').files[0].type;
+
+        if(allowedExtension.indexOf(type)>-1)
+        {
+        }else{
+            Swal.fire({
+                icon: "error",
+                text: "File type should be jpeg/jpg/png/pdf",
+            })
+            document.getElementById("fileUploadFile").value = null;
+        }
+
+        $("#lblFileName").text('');
+    }
+</script>
+<script>
+    function calculateContractDuration(fromMonthValue, toMonthValue) {
+        if (!fromMonthValue || !toMonthValue) return "";
+
+        const fromDate = new Date(fromMonthValue + "-01");
+        const toDate = new Date(toMonthValue + "-01");
+
+        if (toDate < fromDate) return "Invalid range";
+
+        const fromYear = fromDate.getFullYear();
+        const fromMonth = fromDate.getMonth(); // 0-based
+        const toYear = toDate.getFullYear();
+        const toMonth = toDate.getMonth();
+
+        const totalMonths = (toYear - fromYear) * 12 + (toMonth - fromMonth) + 1;
+
+        return totalMonths + " Month" + (totalMonths !== 1 ? "s" : "");
+    }
+
+    $(document).ready(function () {
+        $('#txtfromMonth, #txtToMonth').on('change', function () {
+            const fromMonthVal = $('#txtfromMonth').val();
+            const toMonthVal = $('#txtToMonth').val();
+            const duration = calculateContractDuration(fromMonthVal, toMonthVal);
+            $('#txtContractDuration').val(duration);
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const fromMonth = document.getElementById("txtfromMonth");
+        const toMonth = document.getElementById("txtToMonth");
+        const errorSpan = document.getElementById("monthError");
+
+        function validateMonthRange() {
+            if (!fromMonth.value || !toMonth.value) return;
+
+            const from = new Date(fromMonth.value + "-01");
+            const to = new Date(toMonth.value + "-01");
+
+            if (to < from) {
+                errorSpan.style.display = "inline";
+                //toMonth.classList.add("is-invalid");
+            } else {
+                errorSpan.style.display = "none";
+                //toMonth.classList.remove("is-invalid");
+            }
+        }
+
+        toMonth.addEventListener("change", validateMonthRange);
+        fromMonth.addEventListener("change", validateMonthRange); // Optional: to revalidate if FromMonth changes
+    });
+</script>
+

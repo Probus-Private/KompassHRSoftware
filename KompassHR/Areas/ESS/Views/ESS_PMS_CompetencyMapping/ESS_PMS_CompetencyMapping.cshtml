@@ -1,0 +1,276 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_PMS.PMS_CompentencyMapping
+
+@{
+    ViewBag.Title = "ESS_PMS_CompetencyMapping";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+<style>
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+</style>
+
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Competency Mapping
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_PMS_Compentency", "ESS_PMS_Compentency", new { id = 11, ScreenId = 826, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Settings">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">Competency Mapping - @ViewBag.AddUpdateTitle</h4>
+
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Add Competency Mapping here!
+                    </p>
+                </div>
+
+                <div class="panel-body" data-scrollbar="false">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form"
+                                  action='@Url.Action("SaveUpdate", "ESS_PMS_CompetencyMapping", new { area = "ESS" })'
+                                  id="SaveCompetencyMapping"
+                                  method="post"
+                                  data-parsley-validate="true">
+
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label text-dark fw-semibold">
+                                            Role <span class="text-danger">*</span>
+                                        </label>
+                                        @Html.DropDownListFor(model => model.DesignationID, new SelectList(ViewBag.DesignationList, "Id", "Name"), "--Select--", new { @class = "form-control", name = "DesignationID", id = "txtDesignationID" })
+                                        @Html.Hidden("CompetencyMappingId_Encrypted", "", new { id = "CompetencyMappingId_Encrypted" })
+                                        @Html.HiddenFor(model => model.PMS_YearId, new { id = "PMS_YearId", Value = @ViewBag.Year })
+
+
+                                         </div>
+
+                                    <div class="col-md-6">
+                                        <label class="form-label text-dark fw-semibold">
+                                            Competency <span class="text-danger">*</span>
+                                        </label>
+                                        @Html.DropDownListFor(model => model.CompetencyID, new SelectList(ViewBag.CompetencyList, "Id", "Name"), "--Select--", new { @class = "form-control", name = "CompetencyID", id = "txtCompetencyID" })
+                                    </div>
+                                </div>
+
+                                <div class="row mb-4">
+                                    @*<div class="col-md-6">
+                                        <label class="form-label text-dark fw-semibold">
+                                            Weightage <span class="text-danger">*</span>
+                                        </label>
+                                        @Html.TextBoxFor(model => model.Weightage, new
+                                   {
+                                       @class = "form-control",
+                                       @placeholder = "Enter description",
+                                       @id = "txtWeightage",
+                                       autocomplete = "off"
+                                   })
+                                    </div>*@
+                                    <div class="col-md-12">
+                                        <label class="form-label text-dark fw-semibold">
+                                            Description <span class="text-danger">*</span>
+                                        </label>
+                                        @Html.TextAreaFor(model => model.Description, new
+                                   {
+                                       @class = "form-control",
+                                       @placeholder = "Enter description",
+                                       @id = "txtDescription",
+                                       autocomplete = "off"
+                                   })
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="button" id="btnSubmit" class="btn btn-primary btn-sm">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                        <a href="@Url.Action("GetList", "ESS_PMS_CompetencyMapping", new { area = "ESS" })">
+                                                            <button type="button" class="btn btn-danger btn-sm" id="btnDocumentCategory">
+                                                                <i class="fa-solid fa-share-from-square"></i> List
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        $("#txtDesignationID").select2();
+        $("#txtCompetencyID").select2();
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        // return false
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+
+    });//ready Funcation
+
+    jQuery.validator.addMethod(
+  "regex",
+   function(value, element, regexp) {
+       if (regexp.constructor != RegExp)
+           regexp = new RegExp(regexp);
+       else if (regexp.global)
+           regexp.lastIndex = 0;
+       return this.optional(element) || regexp.test(value);
+   },"erreur expression reguliere"
+);
+
+    $('#SaveCompetencyMapping').validate({
+        rules: {
+            DesignationID: {
+                required: true,
+            },
+            CompetencyID: {
+                required: true,
+            },
+            Weightage: {
+                required: true,
+            },
+            Description: {
+                required: true,
+            },
+        },
+        messages: {
+            DesignationID: {
+                required: "Designation is required",
+            },
+            CompetencyID: {
+                required: " Competency is required",
+            },
+            Weightage: {
+                required: "Weightage is required",
+            },
+            Description: {
+                required: "Description is required",
+            },
+        },
+    });
+
+
+    var form = $("#SaveCompetencyMapping");
+    form.validate();
+    $("#btnSubmit").click(function () {
+        form.valid();
+        if(form.valid()==false)
+        {
+            return false;
+        }
+        debugger;
+        var DesignationId=$("#txtDesignationID").val();
+        var CompetencyId=$("#txtCompetencyID").val();
+        var CompetencyMappingId_Encrypted=$("#CompetencyMappingId_Encrypted").val();
+        var Pms_YearId= @ViewBag.Year;
+        $.ajax({
+            url: '@Url.Action("IsValidation", "ESS_PMS_CompetencyMapping")',
+            method:"get",
+            data:{DesignationId:DesignationId,CompetencyId:CompetencyId,CompetencyMappingId_Encrypted:CompetencyMappingId_Encrypted,Pms_YearId:Pms_YearId},
+            success:function(response){
+                debugger;
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon=="error") {
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                        }
+                    }
+                }
+                else{
+                    $("#SaveCompetencyMapping").submit();
+
+                }
+            }
+        });
+
+    });
+</script>

@@ -1,0 +1,868 @@
+﻿@model KompassHR.Areas.Reports.Models.DailyAttendanceReportFilter
+@{
+    ViewBag.Title = "ESS_TimeOffice_OTApproval";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+
+<style>
+    .dataTables_scrollBody::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+        margin-top: 0px;
+    }
+
+    .dataTables_scrollBody::-webkit-scrollbar:vertical {
+        width: 10px !important;
+    }
+
+    .dataTables_scrollBody::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .dataTables_scrollBody::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+        height: 10px;
+    }
+
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    label.error, .Error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    .div1 th:nth-child(1) {
+        position: sticky !important;
+        left: 0;
+    }
+
+    .div1 th:nth-child(2) {
+        position: sticky !important;
+        left: 80px !important;
+    }
+
+    .fixed-side0 {
+        position: sticky !important;
+        left: 0;
+        z-index:1;
+    }
+    .fixed-side1 {
+        position: sticky !important;
+        left: 80px !important;
+        z-index:1;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        /*background-color: rgba(233, 236, 239, 1) !important;*/
+        background-color: rgba(233, 236, 239, 0.7) !important;
+    }
+
+    /*th:nth-child(1), td:nth-child(1) {
+        width: 100px; /* Set the width for the first column *
+    }*/
+
+    #tblOTApprovalList td:nth-child(2){
+        display: none;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                OT Approval List 
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_TimeOffice_Menu", "ESS_TimeOffice_Menu", new {id = 5, ScreenId=150, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="panel panel-inverse" data-sortable-id="index-1">
+                    <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                        <h4 class="panel-title">OT Approval List</h4>
+                        <div class="panel-heading-btn">
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                        </div>
+                    </div>
+                    <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                        <p class="pb-0">
+                            Plant HR either approves or rejects the OT request. If approved, the employee is notified, and the overtime hours are logged for payroll processing. If rejected, the employee receives an explanation for the decision.
+                        </p>
+                    </div>
+                    <div class="panel-body" style="max-height: fit-content;">
+                        <div class="row justify-content-center">
+
+                            <div class="row justify-content-center">
+                                <form role="form" action='@Url.Action("ESS_TimeOffice_OTApproval", "ESS_TimeOffice_OTApproval", new { area = "ESS" })' id="SaveOTApproval" method="post">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Company Name
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.CmpId, new SelectList(ViewBag.CompanyName, "Id", "Name"), new { @class = "form-select", name = "CompanyName", id = "ddlCmpId" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Business Unit
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.BranchId, new SelectList(ViewBag.BranchName, "Id", "Name"), new { @class = "form-select", type = "text", name = "BranchId", id = "ddlBranchId" })
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Department Name
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.DepartmentId, new SelectList(ViewBag.DepartmentName, "Id", "Name"), "All", new { @class = "form-select", name = "DepartmentId", id = "ddlDepartmentId" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Sub Department Name
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.SubDepartmentId, new SelectList(ViewBag.SubDepartmentName, "Id", "Name"), "All", new { @class = "form-select", type = "text", name = "SubDepartmentId", id = "ddlSubDepartmentId" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Designation Name
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.DesignationId, new SelectList(ViewBag.DesignationName, "Id", "Name"), "All", new { @class = "form-select", name = "DesignationId", id = "ddlDesignationId" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Grade Name
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.GradeId, new SelectList(ViewBag.GradeName, "Id", "Name"), "All", new { @class = "form-select", type = "text", name = "GradeId", id = "ddlGradeId" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Line Master
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.LineId, new SelectList(ViewBag.LineName, "Id", "Name"), "All", new { @class = "form-select", name = "LineId", id = "ddlLineId" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Contractor Name
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.ContractorId, new SelectList(ViewBag.GetContractorName, "Id", "Name"), "All", new { @class = "form-select", name = "EmployeeID", id = "ddlContractorId" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    From Date
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.FromDate, new { @class = "form-control", name = "FromDate", type = "date", id = "FromDate" })
+                                                    <span id="ErrorFromDate" class="Error"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    To Date
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.ToDate, new { @class = "form-control", name = "ToDate", type = "date", id = "ToDate" })
+                                                    <span id="ErrorToDate" class="Error"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Sub Unit Name
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.SubUnitId, new SelectList(ViewBag.SubUnitName, "Id", "Name"), "All", new { @class = "form-select", name = "SubUnitId", id = "ddlSubUnitId" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <div class="col-md-2">
+                                                    <button type="button" onclick="OTApproval()" class="btn btn-sm btn-success">Show</button>
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <hr class="mt-15px">
+                        <div class="row">
+                            <div class="table-scroll div1">
+                                <div class="table-wrap">
+                                    <table class="table table-bordered table" id="tblOTApprovalList" style="width: 100%;">
+                                        <thead class="table-active horizontal-scroll" style="background-color: rgba(233, 236, 239, 1) !important;">
+                                            <tr class="trheading">
+                                                <th class="fixed-side0" style="border-color:black !important;background-color:#eee; z-index:3">
+                                                    ALL <input type="checkbox" class="form-check-input" data-checked="all-checkbox" id="SelectAll" onchange="checkAll(this)" />
+                                                </th>
+                                                <th class="fixed-sideHidden" hidden style="border-color:black !important;z-index:3">EmployeeId</th>
+                                                <th class="fixed-side1" style="border-color:black !important;z-index:3">Employee Name</th>
+                                                <th class="fixed-side2" style="border-color:black !important;">Employee No. </th>
+                                              
+                                                <th class="text-nowrap" style="border-color:black !important;">Joining Date</th>
+                                                <th class="text-nowrap" style="border-color:black !important;">Gender</th>
+                                                <th class="text-nowrap" style="border-color:black !important;">Contractor Name</th>
+                                                <th class="text-nowrap" style="border-color:black !important;">Grade Name</th>
+                                                <th class="text-nowrap" style="border-color:black !important;">Line Name</th>
+                                                @*<th class="text-nowrap" style="border-color:black !important;">Shift</th>*@
+                                                <th class="text-nowrap" style="border-color:black !important;">Attendance Date</th>
+                                                <th class="text-nowrap" style="border-color:black !important;">In Time </th>
+                                                <th class="text-nowrap" style="border-color:black !important;">Out Time </th>
+                                                
+                                                <th class="text-nowrap" style="border-color:black !important;">Duration </th>
+                                                <th class="text-nowrap" style="border-color:black !important;">Calculated OT(HRS) </th>
+                                                <th class="text-nowrap" style="border-color:black !important;">Actual OT (HRS)</th>
+                                                <th class="text-nowrap" style="border-color:black !important;">Reamrk</th>
+                                                <th class="fixed-sideHidden" hidden >InOutID</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tblOTApprovalBody">
+                                            @foreach (var d in ViewBag.OTApprovalList)
+                                            {
+                                                <tr>
+                                                    <td class="fixed-side0 text-center" style="background-color:white !important;background-color:#eee !important; border-color:black !important;">
+                                                        <input type="checkbox" id="txtDesignationId" class="chk chkDesignation" />
+                                                    </td>
+                                                    <td class="fixed-sideHidden" style="background-color:white !important; border-color:black !important; min-width:270px;" hidden>@d.EmployeeId</td>
+                                                    <td class="fixed-side1" style="background-color:white !important; border-color:black !important; min-width:270px;">@d.EmployeeName</td>
+                                                    <td class="text-nowrap text-center" style="background-color:white !important; border-color:black !important;">@d.Employeeno</td>
+                                                    <td class="text-nowrap text-center" style="background-color:white !important; border-color:black !important;">@d.JoiningDate</td>
+                                                    <td class="text-nowrap text-center" style="background-color:white !important; border-color:black !important;">@d.Gender</td>
+                                                    <td class="text-nowrap text-center" style="background-color:white !important; border-color:black !important;">@d.ContractorName</td>
+                                                    <td class="text-nowrap text-center" style="background-color:white !important; border-color:black !important;">@d.GradeName</td>
+                                                    <td class="text-nowrap text-center" style="background-color:white !important; border-color:black !important;">@d.LineName</td>
+                                                    @*<td class="text-nowrap" style="background-color:white !important; border-color:black !important;">@d.Shift</td>*@
+                                                    <td class="text-nowrap text-center" style="background-color:white !important; border-color:black !important;">@d.AttendanceDate</td>
+                                                    <td class="text-nowrap text-center" style="background-color:white !important; border-color:black !important;">@d.InOutIntime</td>
+                                                    <td class="text-nowrap text-center" style="background-color:white !important; border-color:black !important;">@d.InOutOutTime</td>
+                                                    
+                                                    <td class="text-nowrap" style="background-color:white !important; border-color:black !important;">@d.Duration</td>
+                                                    <td class="text-nowrap text-center" style="background-color:white !important; border-color:black !important;">@d.CalculatedOTHrs</td>
+                                                    <td class="text-nowrap">
+                                                        <input type="text" placeholder="HH:MM" class="form-control" id="txtActualOTHrs" name="ActualOTHrs" onchange="validateTimeInput(this)" value="@d.ActualOTHrs" style="width:100px; height:23px; text-align: center; background-color:white !important; border-color:black !important;">
+                                                        <span class="Error" id="ErrortxtActualOTHrs" style="display:none"></span>
+                                                    </td>
+                                                    <td class="text-nowrap">
+                                                        <input type="text" class="form-control" id="txtRemark" name="Remark" value="@d.Remark" style="width:100px; height:23px; background-color:white !important; border-color:black !important;" maxlength="100">
+                                                    </td>
+                                                    <td class="fixed-sideHidden" style="background-color:white !important; border-color:black !important; min-width:270px;" hidden>@d.InOutID</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                    <br />
+                                    <span id="tblRowCount"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-20px">
+                            <div class="LastShortLeaveBx">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="BtnBx">
+                                            <div>
+                                                <button type="button" class="btn btn-sm btn-primary " id="btnAllApprove" onclick="AllApproveReject()">
+                                                    <i class="fa-solid fa-floppy-disk"></i> Approve
+                                                </button>
+                                               
+                                                    <button type="button" class="btn btn-sm btn-success" onclick="window.location.href='@Url.Action("Pending_OTList", "ESS_TimeOffice_OTApproval")'">Pending List</button>
+                                             
+                                                <a href="@Url.Action("OTApproved_List", "ESS_TimeOffice_OTApproval", new { area = "ESS" })">
+                                                    <button type="button" class="btn btn-danger btn-sm">
+                                                        <i class="fa-solid fa-share-from-square"></i> List
+                                                    </button>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        $(document).on('change', '#txtActualOTHrs', function() {
+            debugger;
+            var currentRow=$(this).closest("tr");
+            var CalculateOT =currentRow.find("td:eq(13)").html();
+            var ObjActualOTHrs= currentRow.find('#txtActualOTHrs').val();
+
+            var timeParts = ObjActualOTHrs.split(':');
+            var hours = parseInt(timeParts[0]);
+            var minutes = parseInt(timeParts[1]);
+            var ResultActualOT = hours * 60 + minutes;
+
+            var timeParts1 = CalculateOT.split(':');
+            var hours1 = parseInt(timeParts1[0]);
+            var minutes1 = parseInt(timeParts1[1]);
+            var Hourse = hours1 * 60;
+            var ResultCalculateOT  =  Hourse + minutes1;
+            if (ResultActualOT > ResultCalculateOT) {
+                currentRow.find('#txtActualOTHrs').css('color', 'red');
+                currentRow.find('#ErrortxtActualOTHrs').css('display', 'flex');
+                currentRow.find('#ErrortxtActualOTHrs').html("Not Greater");
+                return false;
+            } else {
+                currentRow.find('#txtActualOTHrs').css('color', 'black');
+                currentRow.find('#ErrortxtActualOTHrs').css('display', 'none');
+                currentRow.find('#ErrortxtActualOTHrs').html("");
+            }
+
+        });
+
+        $("#ddlBranchId").select2();
+        $("#ddlCmpId").select2();
+        $("#ddlDepartmentId").select2();
+        $("#ddlSubDepartmentId").select2();
+        $("#ddlDesignationId").select2();
+        $("#ddlLineId").select2();
+        $("#ddlGradeId").select2();
+        $("#ddlContractorId").select2();
+        $("#ddlSubUnitId").select2();
+
+        var CheckEmptyDate = document.getElementById('FromDate').value;
+        if(CheckEmptyDate =="")
+        {
+            document.getElementById('FromDate').value = SetTodaysDate;
+            document.getElementById('ToDate').value = SetTodaysDate;
+        }
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                });
+            }
+        }
+
+        //var today = new Date();
+        //// Calculate one day before
+        //var oneDayBefore = new Date(today);
+        //oneDayBefore.setDate(oneDayBefore.getDate() - 1);
+        //// Format the date to YYYY-MM-DD
+        //var formattedDate = oneDayBefore.toISOString().split('T')[0];
+        //// Set the maximum date for the input field
+        //document.getElementById("FromDate").setAttribute("max", formattedDate);
+
+          $("#ddlCmpId").on("change", function () {
+            debugger;
+            $("#ddlBranchId").find("option").remove();
+            var CmpId = $("#ddlCmpId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetBusinessUnit", "ESS_TimeOffice_OTApproval")',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    debugger;
+                    if (data != null) {
+                        $.each(data, function (i, p) {
+                            $("#ddlBranchId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                }
+            })
+        });
+
+
+        $("#ddlBranchId").on("change", function () {
+            debugger;
+            $("#ddlLineId").find("option").remove();
+            $("#ddlEmployeeID").find("option").remove();
+            var CmpId = $("#ddlCmpId").val();
+            var UnitBranchId = $("#ddlBranchId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetUnit", "ESS_TimeOffice_OTApproval")',
+                data: { CmpId: CmpId, UnitBranchId: UnitBranchId },
+                success: function (data) {
+                    debugger;
+                    if (data == false) {
+                        $("#ddlLineId").find("option").remove();
+
+                        $("#ddlLineId").append("<option value=''>All </option>");
+                        $("#ddlSubUnitId").find("option").remove();
+                        $("#ddlSubUnitId").append("<option value=''>All </option>");
+                    }
+                    else {
+
+                        var LineMaster = data.List_LineMaster;
+                        var GetUnitName = data.GetUnitName;
+
+                        debugger;
+                        if (LineMaster != null) {
+                            $("#ddlLineId").append("<option value=''>All </option>");
+                            $.each(LineMaster, function (i, p) {
+                                $("#ddlLineId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+                        }
+                        if (GetUnitName != null) {
+                            // $("#ddlSubUnitId").append("<option value=''>All </option>");
+                            $.each(GetUnitName, function (i, p) {
+                                $("#ddlSubUnitId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+                        }
+                    }
+                }
+            })
+        });
+
+        $("#ddlDepartmentId").on("change", function () {
+            debugger;
+            $("#ddlSubDepartmentId").find("option").remove();
+            var DepartmentId = $("#ddlDepartmentId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetSubDepartment", "ESS_TimeOffice_OTApproval")',
+                data: { DepartmentId: DepartmentId },
+                success: function (data) {
+                    debugger;
+                    if (data == false) {
+                        $("#ddlSubDepartmentId").find("option").remove();
+                        $("#ddlSubDepartmentId").append("<option value=''>All </option>");
+                    }
+                    else {
+                        if (data != null) {
+                            $("#ddlSubDepartmentId").append("<option value=''>All </option>");
+                            $.each(data, function (i, p) {
+                                $("#ddlSubDepartmentId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+                        }
+                    }
+                }
+            })
+        });
+
+
+
+        $('#tblOTApprovalList').DataTable({
+            //dom: 'Bfrtip',
+            scrollY: 300,
+            scrollCollapse: true,
+            paging: false,
+            scrollX: true,
+            searching: true, // Enable searching
+            //select:true,
+
+        });
+    });
+
+</script>
+
+<script>
+    function validateTimeInput(input) {
+        debugger;
+        var regex = /^([01][0-9]|2[0-3]):[0-5][0-9]$/; // Regular expression for HH:MM format
+        if (!regex.test(input.value)) 
+        {
+            var time = input.value;
+            var timeStr = time.toString(); // Convert to string
+            var hours = timeStr.slice(0, -2); // Get the first part for hours
+            var minutes = timeStr.slice(-2); // Get the last two digits for minutes
+            var formattedTime = hours + ':' + minutes; // Combine with colon
+            input.value=formattedTime;
+        }
+        
+       
+        if (!regex.test(input.value)) {
+            var Message = "Please enter time in HH:MM";
+            var Icon = "error";
+            if (Message != null) {
+                if (Message != null) {
+                    Swal.fire({
+                        icon: Icon,
+                        text: Message,
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup()
+                            popup.classList.remove('swal2-show')
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake')
+                            })
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake')
+                            }, 500000)
+                            return false
+                        }
+                    });
+                }
+            }
+            input.value = ""; // Clear the input field if the format is incorrect
+        }
+    }
+
+
+    //use for add regex function
+    jQuery.validator.addMethod(
+    "regex",
+     function (value, element, regexp) {
+         if (regexp.constructor != RegExp)
+             regexp = new RegExp(regexp);
+         else if (regexp.global)
+             regexp.lastIndex = 0;
+         return this.optional(element) || regexp.test(value);
+     }, "erreur expression reguliere"
+  );
+
+    $('#SaveOTApproval').validate({
+        rules: {
+            CmpId: {
+                required: true,
+            },
+            BranchId: {
+                required: true,
+            },
+            //FromDate: {
+            //    required: true,
+            //},
+
+        },
+        messages: {
+            CmpId: {
+                required: "Company name is required",
+            },
+            BranchId: {
+                required: "Business unit is required",
+            },
+            //FromDate: {
+            //    required: "Date is required",
+            //},
+        },
+    });
+
+    var form = $("#SaveOTApproval");
+    form.validate();
+    function OTApproval() {
+        debugger;
+        form.valid();
+        if (form.valid() == false) {
+
+            return false;
+        }
+
+        $(".Userloaderbg").css("display", "flex");
+        $("#SaveOTApproval").submit();
+    }
+
+    //Select All Checkboxes
+    function checkAll(ele) {
+        var checkboxes = document.getElementsByTagName('input');
+        if (ele.checked) {
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].type == 'checkbox') {
+                    checkboxes[i].checked = true;
+                }
+            }
+        } else {
+            for (var i = 0; i < checkboxes.length; i++) {
+                console.log(i)
+                if (checkboxes[i].type == 'checkbox') {
+                    checkboxes[i].checked = false;
+                }
+            }
+        }
+    }
+
+    function AllApproveReject() {
+        debugger;
+        
+       
+        var hasError =true;
+        var RecordList = new Array();
+        $("#tblOTApprovalBody").find(':checkbox:checked').each(function (i) {
+            var data = {};
+            debugger;
+            var currentRow = $(this).closest("tr");
+            data.EmployeeID =currentRow.find("td:eq(1)").html();
+            data.InOutID =currentRow.find("td:eq(16)").html();
+            var ObjActualOTHrs= ActualOTHrs = currentRow.find('#txtActualOTHrs').val();
+            currentRow.find('#ErrortxtActualOTHrs').css('display', 'flex');
+            var CheckError = currentRow.find("#ErrortxtActualOTHrs").html();
+            if(CheckError!="")
+            {
+                currentRow.find('#txtActualOTHrs').css('color', 'red').focus();
+                hasError = false;
+                return false;
+            }
+            else
+            {
+                currentRow.find('#txtActualOTHrs').css('color', ''); // Reset color
+            }
+            var timeParts = ObjActualOTHrs.split(':');
+            var hours = parseInt(timeParts[0]);
+            var minutes = parseInt(timeParts[1]);
+            // Converting hours into minutes and adding the minutes
+            data.ActualOTHrs  = hours * 60 + minutes;
+            data.Remark = currentRow.find('#txtRemark').val();
+            RecordList.push(data);
+        });
+        if (RecordList.length == 0) {
+            debugger;
+            Swal.fire({
+                icon: "error",
+                text: "Select atleast one record",
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup()
+                    popup.classList.remove('swal2-show')
+                    return false;
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                    })
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                    }, 500)
+                    window.location.reload();
+                    return false
+                }
+            });
+            return false;
+        }
+
+        if(hasError==false)
+        {
+            return false;
+        }
+
+        
+        
+        $(".Userloaderbg").css("display", "flex");
+        var GetDate=$("#FromDate").val();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("MultipleApproveRejectRequest", "ESS_TimeOffice_OTApproval")',
+            //url: "MultipleApproveRejectRequest",
+            data: JSON.stringify({ RecordList: RecordList,GetDate:GetDate }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            success: function (data) {
+                debugger;
+                $(".Userloaderbg").css("display", "none");
+                var datas = JSON.parse(data);
+                if (datas != null) {
+                    //$('#tblInbox').load();
+                    Swal.fire({
+                        icon: datas.Icon,
+                        text: datas.Message,
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup()
+                            popup.classList.remove('swal2-show')
+                            return false;
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake')
+                            })
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake')
+                            }, 500)
+                            //window.location.reload();
+                            return false
+                        }
+                    }).then(function () {
+                        window.location.reload();
+                        @*var url = '@Url.Action("ESS_TimeOffice_OTApproval", "ESS_TimeOffice_OTApproval")';
+                        window.location.href = url;*@
+                    });
+                }
+            }
+        });
+    }
+</script>

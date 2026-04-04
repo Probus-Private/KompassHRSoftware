@@ -1,0 +1,296 @@
+﻿
+@{
+    ViewBag.Title = "ESS_EmployeeReview_Menu";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+
+<style>
+   
+    .box {
+        width: 130px;
+        height: 130px;
+        backdrop-filter: blur(25px) saturate(00%);
+        background-color: rgba(255, 255, 255, 1);
+        border-radius: 12px;
+        border: 3px solid rgba(255, 255, 255, 1);
+        margin: 5px;
+        box-shadow: inset 0 15px 25px rgba(0, 0, 0, 0.03), inset 0px -15px 25px rgba(0, 0, 0, 0.03), 0 15px 25px rgba(0, 0, 0, 0.05);
+        padding: 25px 0px;
+        font-family: 'Montserrat', sans-serif;
+        position: relative;
+        z-index: 0;
+    }
+
+        .box:hover {
+            /* BORDER:2PX SOLID #666; */
+            border: 2px solid #007bff;
+            cursor: pointer;
+            transform: translateY(-4px);
+        }
+
+
+        .box .info i {
+            font-size: 22px;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 15px;
+            color: #007bff;
+        }
+
+        .box :hover.INFO i,
+        .box:hover .info h7 {
+            COLOR: #000;
+        }
+
+        .box .info h7 {
+            font-size: 12px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            font-weight: 900 !important;
+            text-transform: capitalize;
+            margin-bottom: 2px;
+            padding: 0 10px;
+            color: #444;
+        }
+
+    .Col-md-2 {
+        margin: 10px 0;
+    }
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <!-- BEGIN breadcrumb -->
+    <ol class="breadcrumb float-xl-end">
+        <li class="breadcrumb-item"><a href="/Dashboard/Dashboard/Dashboard">Dashboard</a></li>
+     
+    </ol>
+    <!-- END breadcrumb -->
+    <!-- BEGIN page-header -->
+    <h1 class="page-header">Work Force </h1>
+    <!-- END page-header -->
+    @*Start New UI*@
+    <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+        <p class="pb-0">
+            
+        </p>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-lg-12 col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">@*@i.SET_MODULES.FormName*@</h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="panel-body" style="max-height: fit-content;">
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <div class="row">
+                                @foreach (var item in ViewBag.GetUserMenuList)
+                                {
+                                    <div class="col-md-1-5 col-6 d-flex ">
+                                        <a href="@Url.Action(item.ViewName.ToString(), item.ControllerName.ToString(), new { area = item.AreaName.ToString(), id = item.ModuleID, ScreenId = item.ScreenId })" style="text-decoration:none !important;">
+                                            <div class="box">
+                                                <div class="info">
+                                                    <i class="@item.Icon"></i>
+                                                    <h7><b>@item.ScreenDisplayMenuName</b></h7>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*End New UI*@
+
+    <!--
+    -->
+    <div class="row">  
+        <div class="col-md-6">
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Employee Review </h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default"
+                           data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <!-- BEGIN table-responsive -->
+                    <table class="table table-bordered align-middle" id="fixed-header" style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th class="text-nowrap text-center">Review Date</th>
+                                <th class="text-nowrap text-center">Review Count</th>
+                                <th class="text-nowrap text-center">Show</th>                               
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var d in ViewBag.ReviewList)
+                            {
+
+                                <tr>
+                                    <td class="text-nowrap text-center">@d.NextReviewDate</td>
+                                    <td class="text-nowrap text-center">@d.CountReview_Employee</td>
+                                    <td class="text-center">
+                                        <a href="#ReviewEmployeeName" data-bs-toggle="modal">
+                                            <button type="button" onclick="EmployeeDetails('@d.NextReviewDate')" id="btnShow"
+                                                    class="btn btn-success btnpress ListBtn">
+                                                <i class="fa-solid fa-pencil-alt"></i>
+                                            </button>
+                                        </a>
+                                    </td>                                                                   
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <!-- END table-responsive -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- END #app -->
+<!-- ================== BEGIN core-js ================== -->
+<script src="/ColorAssets/js/app.min.js"></script>
+<script src="/ColorAssets/js/vendor.min.js"></script>
+<!-- ================== END core-js ================== -->
+<!-- ================== BEGIN page-js ================== -->
+<script src="/ColorAssets/plugins/bootstrap-datepicker/dist/js/bootstrap-datepicker.js"></script>
+<script src="/ColorAssets/js/demo/dashboard.js"></script>
+<!-- ================== END page-js ================== -->
+<!-- #modal-dialog -->
+<div class="modal fade" id="ReviewEmployeeName" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-black text-white">
+                <h4 class="modal-title">Employee Review</h4>
+                <div class="panel-heading-btn">
+                    <a href="javascript:;" class="btn btn-icon btn-danger" data-bs-dismiss="modal"
+                       aria-hidden="true" id="CloseModel">
+                        <i class="fa fa-xmark"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="modal-body">
+                <!-- BEGIN panel -->
+
+                <div class="modal-body-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="table table-bordered align-middle" id="fixed-header" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th class="text-nowrap ">Employee Name</th>
+                                        <th class="text-nowrap ">Department Name</th>
+                                        <th class="text-nowrap ">Designation Name</th>
+                                        <th class="text-nowrap ">Mobile No</th>
+                                        <th class="text-nowrap ">Last Review Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tblEmployeeDetails" >                                    
+                                                            
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- END panel -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>   
+
+  
+    function EmployeeDetails(NextReviewDate) {
+        debugger;
+        $('#tblEmployeeDetails tr').not(function () { return !!$(this).has('th').length; }).remove();
+        $.ajax({
+            url: "@Url.Action("EmployeeDetials")",           
+            method: "get",
+            data: { NextReviewDate: NextReviewDate },
+            //contentType: "application/json; charset=utf-8",
+           // dataType: "text",
+            success: function (data) {                
+                debugger;
+               // var datas = JSON.parse(data);
+                if (data != null) {
+                    for (var i = 0; i <= data.length - 1; i++) {
+                        var table = document.getElementById("tblEmployeeDetails");
+                        var rowCount = table.rows.length;
+                        var row = table.insertRow(rowCount);
+                        var count = $('#tblEmployeeDetails tr').length;
+                        var Setdata = data[i];
+                        row.insertCell(0).innerHTML = "" + Setdata[0].Value + "";
+                        row.insertCell(1).innerHTML = "" + Setdata[1].Value + "";
+                        row.insertCell(2).innerHTML = "" + Setdata[2].Value + "";
+                        row.insertCell(3).innerHTML = "" + Setdata[3].Value + "";
+                        row.insertCell(4).innerHTML = "" + Setdata[4].Value + "";
+                    }
+                }
+
+            }
+        });
+
+    }
+
+    $("#CloseModel").click(function () {
+        $('#tblEmployeeDetails tr').not(function () { return !!$(this).has('th').length; }).remove();
+    })
+
+</script>
+
+
+
+

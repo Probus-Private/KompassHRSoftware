@@ -1,0 +1,363 @@
+﻿@model KompassHR.Areas.Module.Models.Module_Payroll.Payroll_MinimumWagesRate
+@{
+    ViewBag.Title = "Module_Payroll_MinimumWagesRate";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+
+<style>
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Minimum Wage Category
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Module_Payroll_Menu", "Module_Payroll_Menu", new {id = 6, ScreenId=159, area = "Module" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="panel panel-inverse" data-sortable-id="index-1">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">Minimum Wage Category</h4>
+                        <div class="panel-heading-btn">
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                        </div>
+                    </div>
+                    <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                        <p class="pb-0">
+
+                        </p>
+                    </div>
+                    <div class="panel-body" style="max-height: fit-content;">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <form role="form" action='@Url.Action("SaveUpdate", "Module_Payroll_MinimumWagesRate", new { area = "Module" })' id="FormMinimumWageCategory" method="post">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Company Name
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.CmpId, new SelectList(ViewBag.CompanyName, "Id", "Name"), new { @class = "form-select", name = "CompanyName", id = "ddlCmpId" })
+                                                    @Html.HiddenFor(model => model.MinimumWageRatetId_Encrypted, new { id = "MinimumWageRatetId_Encrypted" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Business Unit <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.BranchId, new SelectList(ViewBag.BranchName, "Id", "Name"), "--Select--", new { @class = "form-select", type = "text", name = "BranchId", id = "ddlBranchId" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Wage Category <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.WageCategoryId, new SelectList(ViewBag.WageCategory ?? Enumerable.Empty<SelectListItem>(), "Id", "Name"), "--Select--", new { @class = "form-select", name = "WageCategoryId", id = "ddlWageCategoryId" })
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6">
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Basic <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.Basic, new { @class = "form-control", id = "txtBasic", name= "Basic", autocomplete = "Off", type = "text", step = "1" })
+                                                    <span class="important" id="errorBasic"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    DA <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.DA, new { @class = "form-control", id = "txtDA", name = "DA", autocomplete = "Off", type = "text", step = "1" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    From Date <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.FromDate, new { @class = "form-control", id = "txtFromDate", name = "FromDate", autocomplete = "Off", type = "date" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    To Date <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.ToDate, new { @class = "form-control", id = "txtToDate", name = "ToDate", autocomplete = "Off", type = "date", readOnly = "readonly", style = "background-color:#eee" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="LastShortLeaveBx">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="BtnBx">
+                                                        <div>
+                                                            <button type="button" id="btnSubmit" class="btn btn-primary btn-sm">
+                                                                <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                            </button>
+                                                            <a href="@Url.Action("GetList", "Module_Payroll_MinimumWagesRate", new { area = "Module" })">
+                                                                <button type="button" class="btn btn-danger btn-sm" id="btnGetStatutoryESICCodeList">
+                                                                    <i class="fa-solid fa-share-from-square"></i> List
+                                                                </button>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {debugger
+        $("#ddlCmpId").select2();
+        $("#ddlBranchId").select2();
+        $("#WageCategoryId").select2();
+      var AddUpdateTitle = @Html.Raw(Json.Encode(ViewBag.AddUpdateTitle));
+
+        if (AddUpdateTitle === "Add") {
+
+            document.getElementById('txtToDate').value = "2999-12-31";
+
+        } else {
+
+            var FromDate = @Html.Raw(Json.Encode(TempData["FromDate"]));
+            var Todate = @Html.Raw(Json.Encode(TempData["Todate"]));
+
+            document.getElementById('txtFromDate').value = FromDate;
+            document.getElementById('txtToDate').value = Todate;
+        }
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        if (Message && Icon) {
+            Swal.fire({
+                icon: Icon,
+                text: Message,
+                allowOutsideClick: false // Disable outside clicks
+            }).then(() => {
+                window.location.reload();
+            });
+        }
+
+        $("#ddlCmpId").on("change", function () {
+            $("#ddlBranchId").find("option").remove();
+            $("#ddlEmployeeId").find("option").remove();
+            var CmpId = $("#ddlCmpId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetBusinessUnit", "Module_Payroll_MinimumWagesRate")',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    debugger;
+                    if (data.Branch != null) {
+                        $("#ddlBranchId").append("<option value=''>--Select--</option>");
+                        $.each(data.Branch, function (i, p) {
+                            $("#ddlBranchId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        });
+    });
+</script>
+
+
+<script>
+    //use for add regex function
+    jQuery.validator.addMethod(
+  "regex",
+   function (value, element, regexp) {
+       if (regexp.constructor != RegExp)
+           regexp = new RegExp(regexp);
+       else if (regexp.global)
+           regexp.lastIndex = 0;
+       return this.optional(element) || regexp.test(value);
+   }, "erreur expression reguliere"
+);
+
+    $("#FormMinimumWageCategory").validate({
+        rules: {
+            BranchId: {
+                required: true,
+            },
+            WageCategoryId: {
+                required: true,
+            },
+            Basic: {
+                required: true,
+            },
+            DA: {
+                required: true,
+            },
+
+        },
+        messages: {
+            BranchId: {
+                required: "Business unit  is required",
+            },
+            WageCategoryId: {
+                required: "Wage Category is required",
+            },
+            Basic: {
+                required: "Basic is required",
+            },
+            DA: {
+                required: "DA is required",
+            },
+
+        }
+    });
+
+    var form = $("#FormMinimumWageCategory");
+    form.validate();
+    $("#btnSubmit").click(function () {
+        debugger;
+        form.valid();
+        if (form.valid() == false) {
+            return false;
+        }
+        var MinimumWageRatetId_Encrypted = $("#MinimumWageRatetId_Encrypted").val();
+        var CmpId = $("#ddlCmpId").val();
+        var BranchId = $("#ddlBranchId").val();
+        var WageCategoryId = $("#ddlWageCategoryId").val();
+        var Basic = $("#txtBasic").val();
+        var DA = $("#txtDA").val();
+        $.ajax({
+            url: '@Url.Action("IsMinimumWageRateExists", "Module_Payroll_MinimumWagesRate")',
+            method: "Get",
+            data: {
+                MinimumWageRatetId_Encrypted: MinimumWageRatetId_Encrypted,
+                CmpId:CmpId,
+                BranchId:BranchId,
+                WageCategoryId:WageCategoryId,
+                Basic:Basic,
+                DA:DA
+            },
+            success: function (response) {
+                debugger;
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon === "error" && Message1) {
+                    Swal.fire({
+                        icon: Icon1,
+                        text: Message1,
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup();
+                            popup.classList.remove('swal2-show');
+                            setTimeout(() => popup.classList.add('animate__animated', 'animate__headShake'), 0);
+                            setTimeout(() => popup.classList.remove('animate__animated', 'animate__headShake'), 500);
+                            return false;
+                        }
+                    });
+                }
+                else {
+                    $("#FormMinimumWageCategory").submit();
+                }
+            }
+        });
+    });
+
+    var form = $("#FormMinimumWageCategory");
+    form.validate();
+
+    $(document).on('input', '#txtBasic', function () {
+        // allow only digits
+        this.value = this.value.replace(/[^0-9.]/g, '');
+
+        // do not allow value to be exactly "0"
+        if (this.value === "0") {
+            ("#errorBasic").text="Basic not allowed 0";
+            this.value = "";
+        }
+    });
+
+    $(document).on('input', '#txtDA', function () {
+        this.value = this.value.replace(/[^0-9.]/g, '');
+    });
+</script>

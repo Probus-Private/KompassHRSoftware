@@ -1,0 +1,667 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_TimeOffice.AttendanceRegu_Atten_InOut
+@{
+    ViewBag.Title = "ESS_UpdateLineManpowerDesignationMapping";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+<!-- Scripts and Styles -->
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+
+<style>
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error, .Error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    .div1 td:nth-child(1) {
+        position: sticky;
+        left: 0;
+    }
+
+    .div1 td:nth-child(2) {
+        position: sticky;
+        left: 62px;
+    }
+
+    .fixed-side {
+        position: sticky;
+        left: 0;
+    }
+
+    .fixed-side1 {
+        position: sticky;
+        left: 62px;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Update Line/Manpower Designation
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new {area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_ManpowerAllocation_Menu", "ESS_ManpowerAllocation_Menu", new { id = 35, ScreenId =278, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Settings">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">Update Line/Manpower Designation </h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+
+                <div class="panel-body">
+                    <form role="form" action='@Url.Action("GetInOutData", "ESS_UpdateLineManpowerDesignationMapping", new { area = "ESS" })' id="SaveLetter" method="post" data-parsley-validate="">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row mb-15px">
+                                    <label class="form-label col-form-label col-md-4">
+                                        Company Name
+                                        <span class="important">*</span>
+                                    </label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.CmpId, new SelectList(ViewBag.CompanyName, "Id", "Name"), "--Select--", new { id = "ddlCmpID", @class = "form-control select2", name = "CmpId" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row mb-15px">
+                                    <label class="form-label col-form-label col-md-4">
+                                        Business Unit
+                                        <span class="important">*</span>
+                                    </label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.InOutBranchId, new SelectList(ViewBag.GetBranchName, "Id", "Name"), "--Select--", new { id = "ddlBranchId", @class = "form-select", name = "InOutBranchId" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">                            
+                            <div class="col-md-6">
+                                <div class="row mb-15px">
+                                    <label class="form-label col-form-label col-md-4">
+                                        From Date
+                                        <span class="important">*</span>
+                                    </label>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(model => model.InOutFromDate, new { id = "Date", @class = "form-select", name = "InOutFromDate", type = "date" })
+                                    </div>
+                                    
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="row mb-15px">
+                                    <label class="form-label col-form-label col-md-4">
+                                        To Date
+                                        <span class="important">*</span>
+                                    </label>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(model => model.InOutToDate, new { id = "Date", @class = "form-select", name = "InOutToDate", type = "date" })
+                                    </div>                                   
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row mb-15px">
+                                    <label class="form-label col-form-label col-md-4">
+                                        Employee Name
+                                        <span class="important">*</span>
+                                    </label>
+                                    <div class="col-md-6">
+                                        @Html.DropDownListFor(model => model.InOutEmployeeId, new SelectList(ViewBag.GetEmployeeList, "Id", "Name"), "--All--", new { id = "EmployeeId", @class = "form-select", name = "EmployeeId" })
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button" id="btnshow" class="btn btn-primary btn-sm mb-10px">
+                                            Show
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>                            
+                        </div>
+
+
+
+                        <hr />
+                        <div class="row">
+                            <div class="col-md-12">
+                                <!-- BEGIN table-responsive -->
+                                <div class="table-scroll div1">
+                                    <div class="table-wrap">
+                                        <table class="table table-bordered align-middle TablePageRemovePagination" id="fixed-header" style="width: 100%;">
+                                            <thead class="table-active horizontal-scroll" style="background-color: rgba(233, 236, 239, 1) !important;">
+                                                <tr class="text-center">
+                                                    <th class="text-nowrap">Employee Name</th>
+                                                    <th class="text-nowrap">Employee No</th>
+                                                    <th class="text-nowrap">Date</th>
+                                                    <th class="text-nowrap">Contractor</th>
+                                                    <th class="text-nowrap">Status</th>
+                                                    <th class="text-nowrap">Designation</th>
+                                                    <th class="text-nowrap">Line</th>
+                                                    <th class="text-nowrap">Category</th>
+                                                    <th class="text-nowrap" hidden></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var item in ViewBag.List)
+                                                {
+                                                    <tr data-empid="@item.Employeeid" data-inoutid="@item.InOutID">
+                                                        <td>@item.EmployeeName</td>
+                                                        <td>@item.EmployeeNo</td>
+                                                        <td>@item.InOutDate.ToString("dd/MMM/yyyy")</td>
+                                                        <td>@item.ContractorName</td>
+                                                        <td>@item.Status</td>
+                                                        <td>
+                                                            <select class="form-select Designation" style="width:100%;">
+                                                                <option value="">--All--</option>
+                                                                @foreach (var d in ViewBag.GetDesignationList)
+                                                                {
+                                                                    var selected = d.Id.ToString() == (item.DesignationId?.ToString() ?? "") ? "selected" : "";
+                                                                    <option value="@d.Id" @selected>@d.Name</option>
+                                                                }
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <select name="InOut_EmpLineId_@item.Employeeid" class="form-select Line" style="width:100%;">
+                                                                <option value="">--All--</option>
+                                                                @foreach (var l in ViewBag.GetLineList)
+                                                                {
+                                                                    var selected = l.Id.ToString() == (item.LineId?.ToString() ?? "") ? "selected" : "";
+                                                                    <option value="@l.Id" @selected>@l.Name</option>
+                                                                }
+                                                            </select>
+                                                        </td>
+                                                        <td>
+                                                            <select name="InOut_EmpCategoryId_@item.Employeeid" class="form-select Category" style="width:100%;">
+                                                                <option value="">--All--</option>
+                                                                @foreach (var c in ViewBag.GetCategoryList)
+                                                                {
+                                                                    var selected = c.Id.ToString() == (item.KPISubCategoryId?.ToString() ?? "") ? "selected" : "";
+                                                                    <option value="@c.Id" @selected>@c.Name</option>
+                                                                }
+                                                            </select>
+                                                        </td>
+                                                        <td hidden>@item.InOutID_Encrypted</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="LastShortLeaveBx">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="BtnBx">
+                                            <div>
+                                                <button type="button" id="btnSubmit" class="btn btn-primary btn-sm" onclick="funSave()">
+                                                    <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                </button>
+
+                                                @*<a href="@Url.Action("GetList", "ESS_UpdateLineManpowerDesignationMapping", new { area = "ESS" })">
+                                                    <button type="button" class="btn btn-danger btn-sm" id="btnDesignationGetList">
+                                                        <i class="fa-solid fa-share-from-square"></i> List
+                                                    </button>
+                                                </a>*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        debugger
+        $("#ddlCmpID").select2();
+        $("#ddlBranchId").select2();
+        $("#EmployeeId").select2();
+        $(".Designation").select2();
+        $(".Line").select2();
+        $(".Category").select2();
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        if (Message != null && Icon != null) {
+            Swal.fire({
+                icon: Icon,
+                text: Message,
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup();
+                    popup.classList.remove('swal2-show');
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake');
+                    });
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake');
+                    }, 500);
+                    return false;
+                }
+            });
+        }
+
+        $("#ddlCmpID").on("change", function () {
+            var CmpId = $("#ddlCmpID").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetBusinessUnit", "ESS_UpdateLineManpowerDesignationMapping", new { area = "ESS" })',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    $("#ddlBranchId").empty().append("<option value=''>--Select--</option>");
+
+                    if (data.BranchName != null) {
+                        $.each(data.BranchName, function (i, p) {
+                            $("#ddlBranchId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('GetBusinessUnit AJAX error:', status, error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to load business units.'
+                    });
+                }
+            });
+        });
+
+        $("#ddlBranchId").on("change", function () {
+            var BranchId = $("#ddlBranchId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetEmployees", "ESS_UpdateLineManpowerDesignationMapping", new { area = "ESS" })',
+                data: { BranchId: BranchId },
+                success: function (data) {
+                    $("#EmployeeId").empty().append("<option value=''>--All--</option>");
+                    if (data.GetEmployeeList != null) {
+                        $.each(data.GetEmployeeList, function (i, p) {
+                            $("#EmployeeId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('GetEmployee AJAX error:', status, error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Failed to load employees.'
+                    });
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+
+    //use for add regex function
+    jQuery.validator.addMethod(
+  "regex",
+   function(value, element, regexp) {
+       if (regexp.constructor != RegExp)
+           regexp = new RegExp(regexp);
+       else if (regexp.global)
+           regexp.lastIndex = 0;
+       return this.optional(element) || regexp.test(value);
+   },"erreur expression reguliere"
+);
+
+    $("#SaveLetter").validate({
+        rules: {
+            CmpId: {
+                required: true,
+            },
+            InOutBranchId: {
+                required: true,
+            },
+            //EmployeeId: {
+            //    required: true,
+            //},
+            InOutDate: {
+                required: true,
+            },
+        },
+        messages: {
+            CmpId: {
+                required: "Please select company",
+            },
+            InOutBranchId: {
+                required: "Please select branch",
+            },
+            //EmployeeId: {
+            //    required: "Please select employee",
+            //},
+
+            InOutDate: {
+                required: "Please select date",
+            },
+        },
+
+    });
+    //IsValidation Check
+    var form = $("#SaveLetter");
+    form.validate();
+
+
+    $("#btnshow").click(function(){
+        debugger
+        form.valid();
+        if(form.valid()==false)
+        {
+            return false;
+        }
+        else{
+            $("#SaveLetter").submit();
+        }
+    });
+</script>
+
+
+<script>
+
+
+    $(document).ready(function(){
+        debugger
+        $(document).on("change", "select.Designation, select.Line, select.Category", function () {
+            console.log("Changed:", $(this).attr("name"), "=", $(this).val());
+            $(this).closest("tr").attr("data-changed", "true");
+        });
+
+
+        $("#btnSubmit").click(function (e) {
+            debugger
+          //  e.preventDefault();
+
+            var employeeData = [];
+
+            $("#fixed-header tbody tr[data-changed='true']").each(function () {
+                debugger
+                var empId = $(this).data("empid");
+                var designation = $(this).find("select.Designation").val();
+                var line = $(this).find("select.Line").val();
+                var category = $(this).find("select.Category").val();
+                var inOutId = $(this).data("inoutid");
+
+                employeeData.push({
+                    InOutEmployeeId: empId,
+                    InOut_EmpDesignationId: designation,
+                    InOut_EmpLineId: line,
+                    InOut_EmpCategoryId: category,
+                    InOutID:inOutId
+                });
+            });
+
+            if (employeeData.length==0)
+            {
+                var Message="Select atleast one employee";
+                var Icon="error";
+                if (Message != null) {
+                    if (Message != null) {
+                        Swal.fire({
+                            icon: Icon,
+                            text: Message,
+                            allowOutsideClick: () => {
+                                const popup = Swal.getPopup()
+                                popup.classList.remove('swal2-show')
+                                setTimeout(() => {
+                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                })
+                                setTimeout(() => {
+                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                }, 500)
+
+                                return false
+                            }
+                        })
+                        return false;
+                    }
+                }
+            }
+
+            $.ajax({
+                url: '@Url.Action("SaveUpdate", "ESS_UpdateLineManpowerDesignationMapping")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(employeeData),
+                success: function (response) {
+                    debugger;
+                    // var data = JSON.parse(response);
+                    var data = response;
+                    var Message = data.Message;
+                    var Icon = data.Icon;
+                    if (data != null) {
+
+                        $(".Userloaderbg").css("display", "none");
+                        if (Message != null) {
+                            Swal.fire({
+                                icon: Icon,
+                                text: Message,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = '@Url.Action("ESS_UpdateLineManpowerDesignationMapping", "ESS_UpdateLineManpowerDesignationMapping")';
+                                } else if (
+
+                                    result.dismiss === Swal.DismissReason.cancel
+                                ) {
+
+                                }
+                            })
+                        }
+                    }
+
+                    // location.reload();
+                }
+            });
+
+            });
+        //});
+
+
+
+
+    });
+</script>
+
+@*<script>
+        $(document).ready(function(){
+
+
+            $("#btnSubmit").click(function (e) {
+                debugger
+                var employeeData = [];
+
+                $("#fixed-header tbody tr").each(function () {
+                    var empId = $(this).find("td:last").text().trim(); // hidden EmployeeId
+                    var designation = $(this).find("select.Designation").val();
+                    var line = $(this).find("select.Line").val();
+                    var category = $(this).find("select.Category").val();
+
+                    employeeData.push({
+                        InOutEmployeeId: empId,
+                        InOut_EmpDesignationId: designation,
+                        InOut_EmpLineId: line,
+                        InOut_EmpCategoryId: category
+                    });
+                });
+
+                console.log(employeeData);
+
+
+                $.ajax({
+                    url: '@Url.Action("SaveUpdate", "ESS_UpdateLineManpowerDesignationMapping")',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(employeeData),
+                    success: function (response) {
+                        debugger
+                        alert("Saved successfully!");
+                    },
+                    error: function () {
+                        alert("Error while saving!");
+                    }
+                });
+            });
+        });
+
+    </script>*@

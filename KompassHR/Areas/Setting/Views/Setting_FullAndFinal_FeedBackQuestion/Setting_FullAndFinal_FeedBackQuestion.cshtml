@@ -1,0 +1,729 @@
+﻿@model KompassHR.Areas.Setting.Models.Setting_FullAndFinal.FNF_Questions
+@{
+    ViewBag.Title = "Setting_FullAndFinal_FeedBackQuestion";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+<style>
+    /* CSS to hide elements */
+    .hidden {
+        display: none;
+    }
+</style>
+
+<style>
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    .card-row-title {
+        color: #e63c3c;
+        font-size: 18px;
+        font-weight: 600;
+        text-transform: capitalize;
+        border-bottom: #009ce7 1px solid;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Feedback Question
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("ESS_AdminDashboard_Dashboard", "ESS_AdminDashboard_Dashboard", new { id = 32, ScreenId = 121, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Setting_FullAndFinal_Menu", "Setting_FullAndFinal_Menu", new { id = 7, ScreenId =68, area = "Setting" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Settings">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                 <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">Feedback Question - <b>@ViewBag.AddUpdateTitle</b></h4>
+                  
+                </div> <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Add feedback questionnaire here!
+                    </p>
+                </div>
+                <div class="panel-body" data-scrollbar="false">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "Setting_FullAndFinal_FeedBackQuestion", new { area = "Setting" })' id="SaveUpdate" method="post">
+                                <div class="row mb-10px">
+                                    <div class="col-md-12">
+                                        <div class="card-row-title">
+                                            For Specific Department And Designation
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                            </label>
+                                            <label class="form-label col-form-label col-md-4">
+                                                @Html.CheckBoxFor(model => model.SpecificDepartment, new { id = "chkSpecDept" })
+                                                Is Specific Department
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Department
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.DepartmentID, new SelectList(ViewBag.GetDepartmentName, "Id", "Name"), "--ALL--", new { id = "ddlQuestionsDepartmentID", @class = "form-select", autocomplete = "off", name = "DepartmentID", @disabled = "disabled" })
+                                                @Html.HiddenFor(model => model.FeedbackID, new { id = "txtFeedbackID" })
+                                                @Html.HiddenFor(model => model.FeedbackID_Encrypted, new { id = "FeedbackID_Encrypted" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Designation
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.DesignationID, new SelectList(ViewBag.GetDesignationName, "Id", "Name"), "--ALL--", new { id = "ddlQuestionsDesignationID", @class = "form-select", autocomplete = "off", name = "DesignationID", @disabled = "disabled" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-10px">
+                                    <div class="col-md-12">
+                                        <div class="card-row-title">
+                                            Feedbcack Question
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Question Type
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.QuestionTypeID, new List<SelectListItem>{
+
+                                                                        new SelectListItem {Text ="Single Choice", Value="1"},
+                                                                         new SelectListItem {Text ="Multiple Choice", Value="2"},
+                                                                         new SelectListItem {Text ="Input", Value="3"},
+                                                                      },
+                                               new { @class = "form-select", id = "txtQuestionType", type = "text", name = "QuestionTypeID", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                FeedBack For
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.FeedbackFor, new List<SelectListItem>{
+
+                                                                        new SelectListItem {Text ="Employee", Value="Employee"},
+                                                                         new SelectListItem {Text ="Manager", Value="Manager"},
+                                                                         new SelectListItem {Text ="HR", Value="HR"},
+                                                                      },
+                                               new { @class = "form-control", id = "txtFeedbackFor", type = "text", name = "FeedbackFor", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-15px">
+                                    <label class="form-label col-form-label col-md-2">
+                                        Question
+                                        <span class="important">*</span>
+                                    </label>
+                                    <div class="col-md-10">
+                                        @Html.TextBoxFor(model => model.Question, new { @class = "form-control", type = "text", id = "txtQuestion", autocomplete = "Off", name = "Question" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+
+                                </div>
+                                <div class="row mb-15px">
+                                    <label class="form-label col-form-label col-md-2" id="lblOptions">
+                                        Options
+                                        <span class="important">*</span>
+                                    </label>
+                                    <div class="col-md-10">
+                                        @Html.TextBoxFor(model => model.Options, new { @class = "form-control", type = "text", id = "txtOptions", autocomplete = "Off", name = "Options" })
+                                        <label class="form-label col-form-label col-md-2" id="lblerror" style="display: none; color: red;">Option Is Required</label>
+                                        <label class="form-label col-form-label col-md-8" id="lblErrorDuplicate" style="display: none; color: red;">Option Exists In Table</label>
+                                    </div>
+                                </div>
+                                <div class="row mb-15px">
+                                    <label class="form-label col-form-label col-md-2">
+                                    </label>
+                                    <label class="form-label col-form-label col-md-2">
+                                        @Html.CheckBoxFor(model => model.IsActive, new { id = "chkIsActive", name = "IsActive", @checked = "checked" })
+                                        &nbsp;   Is Active
+                                    </label>
+                                    <div class="col-md-12">
+                                        <div class="BtnBx">
+                                            <div>
+                                                <button type="button" id="btnAdd"
+                                                        class="btn btn-primary btn-sm">
+                                                    <i class="fa-solid fa-plus"></i> Add
+                                                </button>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="table-scroll div1">
+                                    <div class="table-wrap">
+                                        <table class="table table-bordered align-middle " id="data-table-combine"
+                                               style="width: 100%;">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-nowrap" style="width: 80px;">Delete</th>
+                                                    <th class="text-nowrap" style="width: 80px;">Sr. No</th>
+                                                    <th class="text-nowrap">Options</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tblBodyOptions"></tbody>
+                                        </table>
+                                        <label class="form-label col-form-label col-md-2" id="lbltblerror" style="display: none; color: red;">Enter Options</label>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="button" id="btnSubmit"
+                                                                class="btn btn-primary btn-sm">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                        <a href="@Url.Action("GetList", "Setting_FullAndFinal_FeedBackQuestion", new { area = "Setting" })">
+                                                            <button type="button" class="btn btn-danger btn-sm" id="btnGetFeedbackList">
+                                                                <i class="fa-solid fa-share-from-square"></i> List
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#ddlQuestionsDesignationID").select2();
+        $("#ddlQuestionsDepartmentID").select2();
+        $("#txtQuestionType").select2();
+        $("#chkIsActive").prop("checked",true);
+        var Options =@Html.Raw(Json.Encode(ViewBag.GetOptions));
+        debugger;
+        if (Options != null) {
+            var table = document.getElementById("tblBodyOptions");
+
+            // Loop through the Options array
+            for (var i = 0; i < Options.length; i++) { // Use '<' instead of '<=' to avoid accessing undefined element
+
+                // Insert a new row at the end of the table body
+                var row = table.insertRow(table.rows.length);
+
+                // Insert delete button cell
+                var deleteButtonCell = row.insertCell(0);
+                deleteButtonCell.innerHTML = '<center><a href="javascript:void(0);" type="button" onclick="deleteRow(this)" id="btnDelete" style="cursor:pointer;">' +
+                    '<i class="fa-solid fa-trash-alt text-danger fa-lg"></i></a></center>';
+
+                // Insert the option value cells
+                row.insertCell(1).innerHTML = Options[i][0].Value; // Value from first column of Options array
+                row.insertCell(2).innerHTML = Options[i][1].Value; // Value from second column of Options array
+            }
+        }
+
+
+
+        debugger;
+        $("#btnGetFeedbackList").click(function () {
+            var url = '@Url.Action("GetList", "Setting_FullAndFinal_FeedBackQuestion")';
+            window.location.href = url;
+        });
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                });
+            }
+        }
+
+        $("#formReset").click(function () {
+            $("#SaveUpdate")[0].reset()
+        })
+
+        $("#txtQuestionType").on("change", function () {
+            debugger;
+            var dropdownValue = document.getElementById("txtQuestionType").value;
+
+            // Get the elements to show/hide
+            var inputSection = document.getElementById("txtOptions");
+            var tableSection = document.getElementById("tblBodyOptions");
+            var inputLabel = document.getElementById("lblOptions");
+            var addButton = document.getElementById("btnAdd");
+            var table = document.getElementById("data-table-combine");
+
+            if (dropdownValue == 3) {
+                inputSection.classList.add("hidden");
+                tableSection.classList.add("hidden");
+                inputLabel.classList.add("hidden");
+                addButton.classList.add("hidden");
+                table.classList.add("hidden");
+            } else if (dropdownValue == 2) {
+                inputSection.classList.remove("hidden");
+                tableSection.classList.remove("hidden");
+                inputLabel.classList.remove("hidden");
+                addButton.classList.remove("hidden");
+                table.classList.remove("hidden");
+            } else if (dropdownValue == 1) {
+                inputSection.classList.remove("hidden");
+                tableSection.classList.remove("hidden");
+                inputLabel.classList.remove("hidden");
+                addButton.classList.remove("hidden");
+                table.classList.remove("hidden");
+            } else {
+                inputSection.classList.remove("hidden");
+                tableSection.classList.remove("hidden");
+                inputLabel.classList.remove("hidden");
+                addButton.classList.remove("hidden");
+                table.classList.remove("hidden");
+            }
+
+        })
+
+    })
+
+    function deleteRow(button) {
+        debugger;
+        var row = button.closest("tr"); // Find the row closest to the clicked button
+        row.remove();  // Remove the row when the button is clicked
+        adjustSerialNumbers();
+    }
+    function adjustSerialNumbers() {
+
+        var rows = document.getElementById("tblBodyOptions").rows;  // Get all rows in the table
+
+        // Loop through the rows and update serial numbers
+        for (var i = 0; i <= rows.length; i++) {
+            rows[i].cells[1].textContent = i + 1;
+            if(rows.length>0){
+                srno = i + 1;// Set new SRNO based on the index
+            }
+            else{
+                srno=1;
+            }
+        }
+    }
+</script>
+
+<script>
+    var srno=0;
+
+    //var addButton = $("#btnAdd");
+    //addButton.validate();
+    $("#btnAdd").click(function () {
+        debugger;
+        var option = document.getElementById("txtOptions").value;
+        var error = document.getElementById("lblerror");
+        if(option==""){
+            error.style.display = "block";
+        }
+        else{
+            error.style.display = "none";
+        }
+        form.valid();
+        if(form.valid()==false)
+        {
+            return false;
+        }
+
+        var inputData = document.getElementById("txtOptions").value;
+
+        // If the input box is not empty
+        if (inputData.trim() !== "") {
+            // Get the table body
+            var tableBody = document.getElementById("tblBodyOptions");
+            var rows = tableBody.getElementsByTagName("tr");
+            var isDuplicate = false;
+
+            // Check for duplicates
+            for (var i = 0; i < rows.length; i++) {
+
+                var cellValue = rows[i].cells[2].textContent.trim(); // Assuming the data is in the third column (index 2)
+                if (cellValue === inputData) {
+                    isDuplicate = true;
+                    break;
+                }
+            }
+            var DuplicateError = document.getElementById("lblErrorDuplicate");
+            if (isDuplicate) {
+                DuplicateError.style.display = "block";
+                return;
+            }
+            else{
+                DuplicateError.style.display = "none";
+
+            }
+
+            var ClearanceTitle = $('#txtClearanceTitle').val();
+
+            // Create a new row
+            var newRow = tableBody.insertRow();
+
+            // Insert delete button cell
+            var deleteButtonCell = newRow.insertCell(0);
+            deleteButtonCell.innerHTML = '<center><a href="javascript:void(0);" type="button" onclick="deleteRow(this)" id="btnDelete" style="cursor:pointer;">' +
+                '<i class="fa-solid fa-trash-alt text-danger fa-lg"></i></a></center>';
+            // Create a new cell and insert the input data into it
+            // Create cells for other columns
+            var cell1 = newRow.insertCell(1);
+            var cell2 = newRow.insertCell(2);
+            //var cell3 = newRow.insertCell(3);
+
+            // Add the input values to their respective columns
+            srno++;
+            cell1.textContent = srno;
+            cell2.textContent = inputData;
+
+            // cell3.textContent =
+            // srno++;
+            document.getElementById("txtOptions").value = "";
+            adjustSerialNumbers();
+
+        }
+    });
+
+
+</script>
+<script>
+    function checkOption(){
+
+    }
+</script>
+<script>
+    //use for add regex function
+    jQuery.validator.addMethod(
+  "regex",
+   function(value, element, regexp) {
+       if (regexp.constructor != RegExp)
+           regexp = new RegExp(regexp);
+       else if (regexp.global)
+           regexp.lastIndex = 0;
+       return this.optional(element) || regexp.test(value);
+   },"erreur expression reguliere"
+);
+
+    $('#SaveUpdate').validate({
+
+        rules: {
+            QuestionTypeID: {
+                required: true,
+            },
+            Question: {
+                required: true,
+            },
+            DesignationID:{
+                required: true,
+            },
+            DepartmentID:{
+                required: true,
+            },
+            //Options:{
+            //    required: true,
+            //},
+            //IsActive:{
+            //    required: true,
+            //},
+        },
+        messages: {
+            QuestionTypeID: {
+                required: "Question Type Is Required",
+            },
+            Question: {
+                required: "Question Is Required",
+            },
+            DesignationID:{
+                required: "Designation Is Required",
+            },
+            DepartmentID:{
+                required: "Department Is Required",
+            },
+            //Options:{
+            //    required: "Options Is Required",
+            //},
+            //IsActive:{
+            //    required: "Required",
+            //},
+        },
+    });
+
+
+    var form = $("#SaveUpdate");
+    form.validate();
+    $("#btnSubmit").click(function () {
+        debugger;
+        form.valid();
+        if(form.valid()==false)
+        {
+            return false;
+        }
+        var Question=$("#txtQuestion").val();
+        var FeedbackID=Number($("#txtFeedbackID").val());
+        var FeedbackID_Encrypted=$("#FeedbackID_Encrypted").val();
+        var DeptID = Number($('select#ddlQuestionsDepartmentID option:selected').val());
+        var DesgID = Number($('select#ddlQuestionsDesignationID option:selected').val());
+        var Type=Number($('#txtQuestionType').val());
+        var FeedbackFor=$("#txtFeedbackFor").val();
+
+        document.getElementById('txtOptions').value = ' ';
+        var SpecialDept = Boolean($('#chkSpecDept').prop('checked'));
+        var IsActive = Boolean($('#chkIsActive').prop('checked'));
+        //var SpecialDept=$("#chkSpecDept").val();
+        //var IsActive=$("#chkIsActive").val();
+
+        $.ajax({
+            url: '@Url.Action("IsQuestionExists", "Setting_FullAndFinal_FeedBackQuestion")',
+            method:"get",
+            data:{Question:Question,FeedbackID_Encrypted:FeedbackID_Encrypted},
+            success:function(response){
+                debugger;
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon=="error") {
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                        }
+                    }
+                }
+
+                else{
+                    if(Type!=3){
+                        var FeedbackID_Encrypted= $("#FeedbackID_Encrypted").val();
+
+                        var table = document.getElementById("tblBodyOptions");
+                        var rowCount = table.rows.length;
+                        var Task = new Array();
+
+                        for (i = 0; i <= rowCount-1; i++) {
+                            var data = {};
+                            data.Options = table.rows[i].cells[2].innerHTML;
+                            Task.push(data);
+                        }
+                        debugger;
+                        var error = document.getElementById("lbltblerror");
+                        if(rowCount<=0){
+                            error.style.display="block";
+                        }
+                        else{
+                            $.ajax({
+                                type: "POST",
+                                url: '@Url.Action("SaveUpdate", "Setting_FullAndFinal_FeedBackQuestion")',
+                                data: JSON.stringify({Task: Task,Question:Question,DeptID:DeptID,DesgID:DesgID,Type:Type,FeedbackID_Encrypted:FeedbackID_Encrypted,FeedbackID:FeedbackID,SpecificDepartment:SpecialDept,IsActive:IsActive,FeedbackFor:FeedbackFor}),
+                                contentType: "application/json; charset=utf-8",
+                                dataType: "json",
+                                success: function (response)
+                                {
+                                    debugger;
+                                    var Message1 = response.Message;
+                                    var Icon1 = response.Icon;
+                                    if (response !=null) {
+                                        if (Message1 != null) {
+                                            Swal.fire({
+                                                icon: Icon1,
+                                                text: Message1,
+                                                allowOutsideClick: () => {
+                                                    const popup = Swal.getPopup()
+                                                    popup.classList.remove('swal2-show')
+                                                    setTimeout(() => {
+                                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                                    })
+                                                    setTimeout(() => {
+                                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                                    }, 500)
+                                                    return false
+                                                }
+                                            }).then((result) => {
+                                                if (result.isConfirmed) {
+                                                    window.location.href = '@Url.Action("Setting_FullAndFinal_FeedBackQuestion", "Setting_FullAndFinal_FeedBackQuestion")';
+                                                } else if (
+                                                    /* Read more about handling dismissals below */
+                                                    result.dismiss === Swal.DismissReason.cancel
+                                                ) {
+
+                                                }
+                                            })
+                                        }
+                                        // location.reload();
+                                    }
+                                }
+                            });
+                        }
+
+
+                    }
+                    else{
+                        var FeedbackID_Encrypted= $("#FeedbackID_Encrypted").val();
+                        // $("#SaveUpdate").submit();
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("SaveUpdate", "Setting_FullAndFinal_FeedBackQuestion")',
+                            data: JSON.stringify({Task: Task,Question:Question,DeptID:DeptID,DesgID:DesgID,Type:Type,FeedbackID_Encrypted:FeedbackID_Encrypted,FeedbackID:FeedbackID,SpecificDepartment:SpecialDept,IsActive:IsActive,FeedbackFor:FeedbackFor}),
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "JSON",
+                            success: function (response)
+                            {
+                                debugger;
+
+                                var Message1 = response.Message;
+                                var Icon1 = response.Icon;
+                                if (response !=null) {
+                                    if (Message1 != null) {
+                                        Swal.fire({
+                                            icon: Icon1,
+                                            text: Message1,
+                                            allowOutsideClick: () => {
+                                                const popup = Swal.getPopup()
+                                                popup.classList.remove('swal2-show')
+                                                setTimeout(() => {
+                                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                                })
+                                                setTimeout(() => {
+                                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                                }, 500)
+                                                return false
+                                            }
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                window.location.href = '@Url.Action("Setting_FullAndFinal_FeedBackQuestion", "Setting_FullAndFinal_FeedBackQuestion")';
+                                            } else if (
+                                                /* Read more about handling dismissals below */
+                                                result.dismiss === Swal.DismissReason.cancel
+                                            ) {
+
+                                            }
+                                        })
+                                    }
+                                    // location.reload();
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
+    });
+</script>
+
+
+<script>
+    $("#chkSpecDept").on("change", function () {
+        debugger;
+        // Check if the checkbox is checked
+        var Checkval = $('#chkSpecDept').is(":checked");
+
+
+        if (Checkval) {
+            // Enable the dropdowns
+            $("#ddlQuestionsDepartmentID").prop("disabled",false);
+            $("#ddlQuestionsDesignationID").prop("disabled",false);
+
+        } else {
+            // Disable the dropdowns
+            $("#ddlQuestionsDepartmentID").prop("disabled",false)
+            $("#ddlQuestionsDesignationID").prop("disabled",false)
+            $('#ddlQuestionsDepartmentID').val("");
+            $('#ddlQuestionsDesignationID').val("");
+            $("#ddlQuestionsDepartmentID").prop("disabled",true);
+            $("#ddlQuestionsDesignationID").prop("disabled",true);
+            $("#ddlQuestionsDepartmentID").trigger('change');
+            $("#ddlQuestionsDesignationID").trigger('change');
+        }
+    })
+</script>
+
+
+
+<script>
+
+</script>
+
+

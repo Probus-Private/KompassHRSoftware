@@ -1,0 +1,404 @@
+﻿
+@model KompassHR.Areas.Module.Models.Module_Payroll.PayrollBonus
+
+@{
+    ViewBag.Title = "Module_Payroll_Bonus";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+
+<style>
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    .card-row-title {
+        color: #e63c3c;
+        font-size: 18px;
+        font-weight: 600;
+        text-transform: capitalize;
+        border-bottom: #009ce7 1px solid;
+    }
+
+    .note-editable {
+        border: groove;
+        font-size: 16px;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Payroll Bonus
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Module_Payroll_Menu", "Module_Payroll_Menu",  new {id =6, ScreenId=159, area = "Module" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading">
+                    <h4 class="panel-title">Payroll Bonus- @ViewBag.AddUpdateTitle</h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Payroll Bonus
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "Module_Payroll_Bonus", new { area = "Module" })' id="SavePayrollBonus" method="post">
+                                @Html.HiddenFor(model => model.BonusId_Encrypted, new { id = "txtBonusId_Encrypted" })
+                                @Html.HiddenFor(model => model.BonusId, new { id = "txtAttendanceCycleId" })
+                              
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Company Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-7">
+                                                @Html.DropDownListFor(model => model.CmpId, new SelectList(ViewBag.CompanyName, "Id", "Name"), "Select", new { id = "ddlCmpId", @class = "form-select", autocomplete = "off", name = "CmpId" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Business Unit
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-7">
+                                                @Html.DropDownListFor(model => model.BranchId, new SelectList(ViewBag.BranchName, "Id", "Name"), "Select", new { id = "ddlBranchId", @class = "form-select", autocomplete = "off", name = "BranchId" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Employee Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-7">
+                                                @Html.DropDownListFor(model => model.BonusEmpId, new SelectList(ViewBag.EmployeeName, "Id", "Name"), "Select", new { id = "ddlBonusEmpId", @class = "form-select", autocomplete = "off", name = "BonusEmpId" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Finantial Year
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-7">
+                                                @Html.DropDownListFor(model => model.FinantialYear, new SelectList(ViewBag.FinantialYear, "Id", "Name"), "Select", new { id = "ddlFinantialYear", @class = "form-select", autocomplete = "off", name = "FinantialYear" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Amount
+                                                <span class="important">*</span>
+
+                                            </label>
+                                            <div class="col-md-7">
+                                                @Html.TextBoxFor(model => model.Amount,new { id = "txtAmmount", @class = "form-control text-end", autocomplete = "off", name = "Amount" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Remark
+                                                @*<span class="important">*</span>*@
+                                            </label>
+                                            <div class="col-md-7">
+                                                @Html.TextBoxFor(model => model.Remark, new { id = "txtRemark", @class = "form-control", autocomplete = "off", name = "Remark" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="button" id="btnSubmit"
+                                                                class="btn btn-primary btn-sm">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                        <a href="@Url.Action("GetList", "Module_Payroll_Bonus", new { area = "Module" })">
+                                                            <button type="button" class="btn btn-danger btn-sm" id="btnDesignationGetList">
+                                                                <i class="fa-solid fa-share-from-square"></i> List
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        debugger;
+        $("#ddlCmpId").select2();
+        $("#ddlBranchId").select2();
+        $("#ddlBonusEmpId").select2();
+        $("#ddlFinantialYear").select2();
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        if (Message) {
+            Swal.fire({
+                icon: Icon,
+                text: Message,
+                allowOutsideClick: false
+            }).then(() => {
+                window.location.reload();
+            });
+        }
+
+        var Action="@ViewBag.AddUpdateTitle";
+        debugger
+        if(Action=="Update")
+        {
+            var Fyear=@Html.Raw(Json.Encode(TempData["FinantialYear"]));
+            $("#ddlFinantialYear").val(Fyear).trigger("change");
+        }
+
+        $("#ddlCmpId").on("change", function () {
+            debugger
+            $("#ddlBranchId").empty();
+            $("#ddlBonusEmpId").empty();
+
+            var CmpId = $("#ddlCmpId").val();
+
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("GetBusinessUnit", "Module_Payroll_Bonus")',
+                data: { CmpId: CmpId },
+                success: function (data) {
+
+                    if (data && data.Branch) {
+                        $("#ddlBranchId").append("<option value=''>All</option>");
+                        $.each(data.Branch, function (i, p) {
+                            $("#ddlBranchId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+
+                    if (data && data.EmployeeName) {
+                        $("#ddlBonusEmpId").append("<option value=''>All</option>");
+                        $.each(data.EmployeeName, function (i, p) {
+                            $("#ddlBonusEmpId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                }
+            });
+        });
+
+
+
+        $("#ddlBranchId").on("change", function () {
+            debugger;
+            $("#ddlBonusEmpId").find("option").remove();
+            var BranchId = $("#ddlBranchId").val()||null;
+            var CmpId = $("#ddlCmpId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetEmployeeName", "Module_Payroll_Bonus")',
+                data: { CmpId: CmpId, BranchId: BranchId },
+                success: function (data) {
+                    if (data != null) {
+                        $("#ddlBonusEmpId").append("<option value=''>All</option>");
+                        //$.each(data, function (i, p) {
+                        //    $("#ddlBonusEmpId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        //});
+                        $.each(data.EmployeeName, function (i, p) {   // <-- fixed here
+                            $("#ddlBonusEmpId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        });
+
+
+    });
+</script>
+
+<script>
+
+    $("#SavePayrollBonus").validate({
+
+        rules: {
+            CmpId:
+                {
+                required: true,
+                },
+            BranchId:
+                {
+                required: true,
+                },
+            BonusEmpId:
+                {
+                    required: true,
+                },
+            Amount:{
+                required:true,
+            },
+            FinantialYear:
+                {
+                required:true,
+            }
+
+
+        },
+        messages: {
+
+            CmpId: {
+                required: "Select the Company Name",
+            },
+            BranchId: {
+                required: "Select the Branch Name",
+            },
+            BonusEmpId: {
+                required: "Select Employee Name",
+            },
+            Amount:{
+                required:"Please Enter Amount",
+            },
+            FinantialYear:
+             {
+                 required:"select a Financial Year",
+             }
+
+        },
+        errorPlacement: function (error, element) {
+            if (element.hasClass("select2-hidden-accessible")) {
+                // Insert error after Select2's container
+                error.insertAfter(element.next('.select2'));
+            } else {
+                error.insertAfter(element);
+            }
+        },
+
+    });
+
+
+    var form = $("#SavePayrollBonus");
+    form.validate();
+    $("#btnSubmit").click(function () {
+        debugger;
+
+        form.valid();
+        if (form.valid() == false) {
+            return false;
+        }
+
+        var BonusId_Encrypted = $("#txtBonusId_Encrypted").val();
+        var CmpId = $("#ddlCmpId").val();
+        var BranchId = $("#ddlBranchId").val();
+        var BonusEmpId=$("#ddlBonusEmpId").val();
+        var FinantialYear=$("#ddlFinantialYear").val();
+
+        $.ajax({
+            url: '@Url.Action("IsExists", "Module_Payroll_Bonus")',
+            method: "get",
+            data:
+                {
+                    BonusId_Encrypted: BonusId_Encrypted,
+                    CmpId:CmpId,
+                    BranchId:BranchId,
+                    BonusEmpId:BonusEmpId,
+                    FinantialYear:FinantialYear
+                },
+         
+            success: function (response) {
+                debugger;
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon == "error") {
+                    if (Message1 != null) {
+                        Swal.fire({
+                            icon: Icon1,
+                            text: Message1,
+                            allowOutsideClick: false
+                        }).then(() => {
+                            const p = Swal.getPopup();
+                            p.classList.add('animate__headShake');
+                            setTimeout(() => p.classList.remove('animate__headShake'), 500);
+                        });
+                    }
+                }
+                else
+                {
+                    debugger;
+                    $("#SavePayrollBonus").submit();
+                }
+            }
+        });
+    });
+</script>
+
+

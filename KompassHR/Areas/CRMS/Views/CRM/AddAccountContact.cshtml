@@ -1,0 +1,503 @@
+﻿
+@{
+    ViewBag.Title = "AddAccountContact";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+
+<style>
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+
+    .hidden-column {
+        display: none;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row">
+        @*<div class="col-12">
+            <button type="button" class="btn btn-danger d-lg-block m-b-15" onclick="location.href='@Url.Action("AccountList", "CRM")'" style="float:right;"><i class="fa fa-arrow-left"></i>&nbsp;Back</button>
+        </div>*@
+        <ol style="list-style: none; padding: 0; margin: 0; ">
+            <li style="float:right; margin-right: 15px;">
+                <a href="@Url.Action("AccountList", "CRM",  new {area = "CRMS" })">
+                    <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                </a>
+            </li>
+        </ol>
+    </div>
+    <br />
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading">
+                    <h4 class="panel-title"> Add Account Contact -</b></h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default"
+                           data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <form role="form" action="/CRMS/CRM/SaveLeadContact" id="SaveLeadContact" method="post" data-parsley-validate="">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="mb-2" for="email">Company Name:<span class="text-danger">*</span></label>
+                                @Html.DropDownList("ACCMAIN_Fid", new SelectList(ViewBag.CompanyList, "Fid", "CompanyName"), "Select", new { @class = "form-control form-select", name = "ACCMAIN_Fid", Id = "txtACCMAIN_Fid" })
+                                @Html.Hidden("isredirect", "", new { @class = "form-control", name = "isredirect", Value = "Account" })
+                                @Html.Hidden("Encrypted_Id", "", new { id = "ACCCONTACT_EncryptedId" })
+
+
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-2 mb-3">
+                                <label class="mb-2" for="fullname">Country Code:<span class="text-danger">*</span></label> &nbsp;
+                                @Html.DropDownList("CountryCode",
+                    new SelectList(ViewBag.CountryCodeList, "CountryCode", "CountryCode"),
+                    "--Select--",
+                    new { @class = "form-control form-select", id = "txtCountryCode", required = "required" })
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label class="mb-2" for="fullname">Contact No:<span class="text-danger">*</span> </label>
+                                @Html.TextBox("MobileNo", "", new { @class = "form-control", name = "MobileNo", id = "txtMobileNo", autocomplete = "Off", onkeypress = "return AllowNumbersOnly(event);", maxlength = "10", minlength = "10" })
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label class="mb-2" for="email">Whatapp No:<span class="text-danger">*</span></label>
+                                @Html.TextBox("WhatsAppNo", "", new { @class = "form-control", name = "WhatsAppNo", id = "txtWhatsAppNo", autocomplete = "Off", onkeypress = "return AllowNumbersOnly(event);" })
+                            </div>
+
+                            <div class="col-md-2 d-flex justify-content-md-center align-items-center">
+                                @Html.CheckBox("Check1")
+                                <label class="mb-2 ms-2"><small>Same as Contact</small></label>
+                            </div>
+                       
+                         </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="mb-2" for="fullname">Contact Person:<span class="text-danger">*</span></label>
+                                @Html.TextBox("ContactPerson", "", new { @class = "form-control", name = "ContactPerson", id = "txtContactPerson", autocomplete = "Off", onkeypress = "return AllowAlphabetOnly(event);" })
+
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="mb-2" for="fullname">Department :<span class="text-danger">*</span></label>
+                                @Html.DropDownList("Department", new SelectList(ViewBag.DepartmentList, "Fid", "Department"), "Select", new { @class = "form-control form-select", name = "Department", Id = "txtDepartment" })
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="mb-2" for="email">Designation :<span class="text-danger">*</span></label>
+                                @Html.DropDownList("Designation", new SelectList(ViewBag.DesignationList, "Fid", "Designation"), "Select", new { @class = "form-control form-select", name = "Designation", Id = "txtDesignation" })
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label class="mb-2" for="email">Email Id:<span class="text-danger">*</span></label>
+                                @Html.TextBox("EmailId", "", new { @class = "form-control", name = "EmailId", id = "txtEmailId", autocomplete = "Off" })
+                                @Html.ValidationMessage("EmailId", new { @class = "help-block", id = "ErrortxtEmailId", @style = "color:red" })
+                            </div>
+
+                        </div>
+
+
+                        @*<div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="mb-2" for="email">LinkedIn Id:</label>
+                                @Html.TextBox("LinkedInProfile", "", new { @class = "form-control", name = "LinkedInProfile", id = "LinkedInProfile", autocomplete = "Off" })
+                                @Html.ValidationMessage("LinkedInProfile", new { @class = "help-block", id = "ErrorLinkedInProfile", @style = "color:red" })
+                            </div>
+                        </div>*@
+                        <div class="row align-items-end">
+                            <div class="col-md-6 mb-3">
+                                <label class="mb-2" for="LinkedInProfile">LinkedIn Id:</label>
+                                @Html.TextBox("LinkedInProfile", "", new { @class = "form-control", name = "LinkedInProfile", id = "LinkedInProfile", autocomplete = "Off" })
+                                @Html.ValidationMessage("LinkedInProfile", new { @class = "help-block", id = "ErrorLinkedInProfile", @style = "color:red" })
+                            </div>
+
+                            <div class="col-auto mb-3">
+                                <button type="button" class="btn btn-primary" style="height:38px;" id="btnLinkedInPreview">
+                                    Preview
+                                </button>
+                            </div>
+                        </div>
+
+                        <br />
+                        <div class="row" align="center">
+                            <div class="LastShortLeaveBx">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="BtnBx">
+                                            <div>
+                                                <button type="button" id="ContactSubmit"
+                                                        class="btn btn-primary btnpress">
+                                                    <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                </button>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                    <br />
+                    <div class="row">
+                        <div class="col-12 overflow-auto">
+                            <table id="tableCriteria1" class="table table-striped table-bordered align-middle table-responsive">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Contact Person</th>
+                                        <th>Department</th>
+                                        <th>Designation</th>
+                                        <th>CountryCode</th>
+                                        <th>Mobile No</th>
+                                        <th>Email</th>
+                                        <th hidden>DepartmentId</th>
+                                        <th hidden>DesignationId</th>
+                                        <th>Whatsapp No</th>
+                                        <th hidden>ContactEncryptedId</th>
+                                        <th hidden>LinkedIn</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#txtEmailId').change(function (event) {
+        $('#ErrortxtEmailId').html("");
+        var txtEmailId = document.getElementById('txtEmailId').value;
+
+        if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(txtEmailId)) {
+            return true;
+        }
+        else {
+            $('#ErrortxtEmailId').html("Please Enter Valid E-mail ID");
+            $('#txtEmailId').val("");
+            $('#txtEmailId').focus();
+            return false;
+        }
+    });
+
+    $("#btnLinkedInPreview").click(function () {
+        debugger
+        var linkedInUrl = $("#LinkedInProfile").val().trim();
+
+        if (linkedInUrl === "") {
+            Swal.fire({
+                icon: "warning",
+                text: "Please enter LinkedIn profile link"
+            });
+            return;
+        }
+        if (!linkedInUrl.startsWith("http://") && !linkedInUrl.startsWith("https://")) {
+            linkedInUrl = "https://www.linkedin.com/in/" + linkedInUrl;
+        }
+        window.open(linkedInUrl, "_blank");
+    });
+
+</script>
+
+<script>
+    $("#Check1").change(function () {
+        debugger
+        var ContactNoId = document.getElementById("txtMobileNo").value;
+        var WhatsApp = document.getElementById("txtWhatsAppNo").value;
+        if (this.checked) {
+            $("#txtWhatsAppNo").val($("#txtMobileNo").val());
+        }
+        else
+            $("#txtWhatsAppNo").val('');
+    });
+
+
+    function confirmDelete(url) {
+        debugger
+        Swal.fire({
+            title: 'Are you sure you want to delete this?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, keep it'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                debugger
+                window.location.href = url;
+
+            }
+        });
+    }
+
+
+
+
+    $("#tableCriteria1").on('click', '.btnselect', function () {
+        debugger;
+        var table = document.getElementById("tableCriteria1");
+        var rowCount = table.rows.length;
+        var currentRow = $(this).closest("tr");
+        var DepartmentId = currentRow.find("td:eq(7)").text();
+        var DesignationId = currentRow.find("td:eq(8)").text();
+        var Email = currentRow.find("td:eq(6)").text();
+        var MobileNo = currentRow.find("td:eq(5)").text();
+        var CountryCode = currentRow.find("td:eq(4)").text();
+        var WhatsappNo = currentRow.find("td:eq(9)").text();
+        var ContactPerson = currentRow.find("td:eq(1)").text();
+        var EncryptedId = currentRow.find("td:eq(10)").text();
+        var LinkedInProfile = currentRow.find("td:eq(11)").text();
+
+        $('#txtContactPerson').val(ContactPerson);
+        $('#txtDepartment').val(DepartmentId);
+        $('#txtDesignation').val(DesignationId);
+        $('#txtEmailId').val(Email);
+        $('#txtMobileNo').val(MobileNo);
+        $('#txtWhatsAppNo').val(WhatsappNo);
+        $('#ACCCONTACT_EncryptedId').val(EncryptedId);
+        $('#txtCountryCode').val(CountryCode);
+        $('#LinkedInProfile').val(LinkedInProfile);
+        $('#txtDesignation').change();
+        $('#txtDepartment').change();
+        $('#txtCountryCode').change();
+
+    });
+
+
+
+    $(document).ready(function () {
+        $("#txtACCMAIN_Fid").change(function () {
+
+            $("#txtMobileNo").val(null);
+            $("#txtWhatsAppNo").val(null);
+            $("#txtContactPerson").val(null);
+            $("#txtDepartment").val(null).trigger('change');
+            $("#txtCountryCode").val(null).trigger('change');
+            $("#txtDesignation").val(null).trigger('change');
+            $("#txtEmailId").val(null);
+            $("#ACCCONTACT_EncryptedId").val(null);
+            $("#LinkedInProfile").val(null);
+            $("#Check1").prop("checked", false);
+
+            $('#txtDepartment').change();
+            $('#txtCountryCode').change(); debugger
+            $.ajax({
+                type: "get",
+                url: 'GetConPerson',
+                data: { txtACCMAIN_Fid: $(this).val() },
+                success: function (response) {
+                    debugger
+
+                    $("#tableCriteria1").find('tr:not(:first)').remove();
+                    var Obj = response.ACCContactList;
+                    var table = document.getElementById("tableCriteria1");
+
+                    $.each(Obj, function (Key, item) {
+                        debugger
+                        var rowCount = table.rows.length;
+                        var row = table.insertRow(rowCount);
+                        var count = $('#tableCriteria1 tr').length;
+                        //console.log(count);
+                        var valueObj = {};
+                        $.each(item, function (index, element) {
+                            debugger
+                            valueObj[element.Key] = element.Value;
+                        });
+                        var Acc_Encrypted_Id = $("#Acc_EncryptedId").val();
+                        row.insertCell(0).innerHTML = `<center><a href="#" onclick="confirmDelete('${DeleteContact(valueObj.Contact_EncryptedId)}')"><i class="fa fa-trash" style="color:red;"></i></a>&nbsp;<a href="#" title="edit"><i class="fa fa-pen-to-square btnselect"></i></a></center>`;
+                        row.insertCell(1).innerHTML = (valueObj.ContactPerson || '');
+                        row.insertCell(2).innerHTML = (valueObj.Department || '');
+                        row.insertCell(3).innerHTML = (valueObj.Designation || '');
+                        row.insertCell(4).innerHTML = (valueObj.CountryCode || '');
+                        row.insertCell(5).innerHTML = (valueObj.MobileNo || '');
+                        row.insertCell(6).innerHTML = (valueObj.EmailId || '');
+                        row.insertCell(7).innerHTML = (valueObj.DepartmentId || '');
+                        row.insertCell(8).innerHTML = (valueObj.DesignationId || '');
+                        row.insertCell(9).innerHTML = (valueObj.WhatsappNo || '');
+                        row.insertCell(10).innerHTML = (valueObj.Contact_EncryptedId || '');
+                        row.insertCell(11).innerHTML = (valueObj.LinkedInProfile || '');
+                        row.cells[7].classList.add("hidden-column");
+                        row.cells[8].classList.add("hidden-column");
+                        row.cells[10].classList.add("hidden-column");
+                        row.cells[11].classList.add("hidden-column");
+                    });
+
+                        function DeleteContact(ContactEncryptedId,Acc_Encrypted_Id) {
+
+                            return '@Url.Action("DeleteContact", "CRM", new { EncryptedId = "__Contact_ENCRYPTED_ID__", Identity = "AccountList" })'
+                                .replace('__Contact_ENCRYPTED_ID__', ContactEncryptedId);
+                        }
+
+                },
+                error: function (xhr, status, error) {
+                    debugger
+
+                    if (xhr.status == 500) {
+                        Swal.fire({
+                            icon: "error",
+                            text: xhr.statusText,
+                            allowOutsideClick: () => {
+                                const popup = Swal.getPopup()
+                                popup.classList.remove('swal2-show')
+                                setTimeout(() => {
+                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                })
+                                setTimeout(() => {
+                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                }, 500)
+                                return false;
+                            }
+                        });
+                    }
+                    else {
+                        window.location.href = '/Home/Logout';
+                    }
+                }
+            });
+
+        });
+    })
+
+
+    $("#SaveLeadContact").validate({
+        rules: {
+            ACCMAIN_Fid:{
+                required: true
+            },
+            ContactPerson: {
+                required: true
+            },
+            Designation: {
+                required: true
+            },
+            Department: {
+                required: true
+            },
+            EmailId: {
+                required: true,
+                email: true
+
+
+            },
+            MobileNo: {
+                required: true
+            },
+            WhatsAppNo: {
+                required: true
+            }
+        },
+        messages: {
+            ACCMAIN_Fid:{
+                required: "Company Name is required"
+            },
+            ServiceCategory: {
+                required: "Service Category is required"
+            },
+            Designation: {
+                required: "Designation is required"
+            },
+            Department: {
+                required: "Department is required"
+            },
+            EmailId: {
+                required: "EmailId is required",
+                regex: " Please enter valid email id"
+            },
+            MobileNo: {
+                required: "Contact No is required"
+            },
+            WhatsAppNo: {
+                required: "WhatsAppNo is required"
+            }
+        }
+    });
+
+    var formContact = $("#SaveLeadContact");
+    $("#ContactSubmit").click(function () {
+        debugger
+        if (formContact.valid()) {
+            var formData = formContact.serialize();
+            $.ajax({
+                type: "POST",
+                url: formContact.attr('action'), 
+                data: formData,
+                success: function (response) {
+                    debugger
+                    var Message1 = response.Message;
+                    var Icon1 = response.Icon;
+                    if (Icon1 == "success") {
+                        if (Message1 != null && Icon1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup();
+                                    popup.classList.remove('swal2-show');
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake');
+                                    });
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake');
+                                    }, 500);
+                                }
+                            }).then(() => {
+                                window.location.href = '@Url.Action("AccountList", "CRM")';
+                            });
+                        }
+                    }
+                    else {
+                        Swal.fire({
+                            icon: Icon1,
+                            text: Message1,
+                            allowOutsideClick: () => {
+                                const popup = Swal.getPopup();
+                                popup.classList.remove('swal2-show');
+                                setTimeout(() => {
+                                    popup.classList.add('animate__animated', 'animate__headShake');
+                                });
+                                setTimeout(() => {
+                                    popup.classList.remove('animate__animated', 'animate__headShake');
+                                }, 500);
+                            }
+                        });
+                    }
+
+                }
+            })
+        }
+        else
+        {
+            return false;
+        }
+    });
+
+</script>
+
+

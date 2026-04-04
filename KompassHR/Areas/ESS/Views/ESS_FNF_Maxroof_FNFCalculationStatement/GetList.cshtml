@@ -1,0 +1,1534 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_FNF.FNF_EmployeeResignation
+
+@{
+    ViewBag.Title = "GetList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    bool isMaker = ViewBag.FNFMakerId != null;
+    bool isChecker = ViewBag.FNFCheckerId != null;
+    bool isAccount = ViewBag.AccountId != null;
+
+    bool showAll = isMaker && isChecker && isAccount;
+
+    // Default active tab based on role
+    string activeTab = "";
+
+    if (isMaker || showAll)
+    {
+        activeTab = "tabFNFEmployeeList";
+    }
+    else if (isChecker || showAll)
+    {
+        activeTab = "tabCheckerFNFPendingList";
+    }
+    else if (isAccount || showAll)
+    {
+        activeTab = "tabAccountFNFPendingList";
+    }
+    else
+    {
+        activeTab = "";
+    }
+}
+
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+
+<style>
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    .status-badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 12px; /* rounded corners */
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .status-approved-bg {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .status-pending-bg {
+        background-color: #fff3cd; /* light yellow */
+        color: #856404; /* dark yellow */
+    }
+
+    .status-reject-bg {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+</style>
+
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                FNF Calculation
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_FNF_Menu", "ESS_FNF_Menu",  new { id = 7,ScreenId=168, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- END page-header -->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading">
+                    <h4 class="panel-title">FNF Calculation-List</h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <style>
+                    .nav-tabs .nav-link.active {
+                        background-color: #eee !important; /* Background for selected tab */
+                        color: #000000 !important; /* Text color for selected tab */
+                        font-weight: bold;
+                        border-color: #ddd #ddd #fff;
+                    }
+                </style>
+                @{
+                    var headerColor = Session["HeaderColor"] != null ? Session["HeaderColor"].ToString() : "#49b6d6";
+                    var headerTextColor = Session["HeaderTextColor"] != null ? Session["HeaderTextColor"].ToString() : "#ffffff";
+                }
+
+                <div class="row">
+                    @if (isMaker)
+                    {
+                        <div class="col-md-12">
+                            <button type="button" class="btn btn-danger btn-sm mb-10px" onclick="FNFCalculationRejectedList()">
+                                &nbsp; Cheker Reject List (<span id="fnfRejectCount">@((TempData["FNFRejectCount"]))</span>)
+                            </button>
+                        </div>
+                    }
+                    <div class="col-md-12">
+                        <!-- BEGIN tabs -->
+                        <ul class="nav nav-tabs nav-tabs-inverse nav-justified"
+                            style="background-color:#49b6d6" ; color:@headerTextColor">
+
+                            @if (isMaker || showAll)
+                            {
+                                <li class="nav-item">
+                                    <a href="#tabFNFEmployeeList"
+                                       data-bs-toggle="tab"
+                                       class="nav-link @(activeTab == "tabFNFEmployeeList" ? "active" : "")">
+                                        <i class="fa fa-newspaper fa-lg me-5px"></i>
+                                        Pending FNF Calculations (<span>@((TempData["FNFPendingCount"]))</span>)
+                                    </a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a href="#tabFNFCalculationDoneList"
+                                       data-bs-toggle="tab"
+                                       class="nav-link @(activeTab == "tabFNFCalculationDoneList" ? "active" : "")">
+                                        <i class="fa fa-scroll fa-lg me-5px"></i>
+                                        Completed FNF Calculations (<span>@((TempData["FNFCompleteCount"]))</span>)
+                                    </a>
+                                </li>
+                            }
+
+                            @if (isChecker || showAll)
+                            {
+                                <li class="nav-item">
+                                    <a href="#tabCheckerFNFPendingList"
+                                       data-bs-toggle="tab"
+                                       class="nav-link @(activeTab == "tabCheckerFNFPendingList" ? "active" : "")">
+                                        <i class="fa fa-scroll fa-lg me-5px"></i>
+                                        Checker Approval (<span>@((TempData["CheckerFNFPendingCount"]))</span>)
+                                    </a>
+                                </li>
+                            }
+
+                            @if (isAccount || showAll)
+                            {
+                                <li class="nav-item">
+                                    <a href="#tabAccountFNFPendingList"
+                                       data-bs-toggle="tab"
+                                       class="nav-link @(activeTab == "tabAccountFNFPendingList" ? "active" : "")">
+                                        <i class="fa fa-scroll fa-lg me-5px"></i>
+                                        Account Approval (<span>@((TempData["AccountFNFPendingCount"]))</span>)
+                                    </a>
+                                </li>
+                            }
+
+                            @if (isMaker || isChecker || isAccount || showAll)
+                            {
+                                <li class="nav-item">
+                                    <a href="#tabCheckerAccountFNFApproveRejectList"
+                                       data-bs-toggle="tab"
+                                       class="nav-link @(activeTab == "tabCheckerAccountFNFApproveRejectList" ? "active" : "")">
+                                        <i class="fa fa-scroll fa-lg me-5px"></i>
+                                        Approve List (<span>@((TempData["Maker_checker_Account_ApproveRejectcount"]))</span>)
+                                    </a>
+                                </li>
+                            }
+
+
+                        </ul>
+                        <!-- Tab Content -->
+                        <div class="tab-content panel rounded-0 rounded-bottom mb-20px" data-sortable-id="index-3">
+                            <!-- Calendar List -->
+                            <div class="tab-pane fade @(activeTab == "tabFNFEmployeeList" ? "show active" : "")" id="tabFNFEmployeeList">
+                                <div class="h-500px p-3" data-scrollbar="true">
+                                    <div class="table-scroll">
+                                        <div class="table-wrap">
+                                            <table class="table table-bordered align-middle TablePage2" id="tbl3" style="width: 100%;">
+                                                <thead class="text-center">
+                                                    <tr>
+                                                        <th class="text-nowrap text-center">
+                                                            Add
+                                                        </th>
+                                                        <th class="text-nowrap text-center">
+                                                            Action
+                                                        </th>
+                                                        <th class="text-nowrap text-center">Employee Name</th>
+                                                        <th class="text-nowrap text-center">Employee No</th>
+                                                        <th class="text-nowrap text-center">Department Name</th>
+                                                        <th class="text-nowrap text-center">Designation Name</th>
+                                                        <th class="text-nowrap text-center">Grade Name</th>
+                                                        <th class="text-nowrap text-center">Date Of Joining</th>
+                                                        <th class="text-nowrap text-center">Resignation Type</th>
+                                                        <th class="text-nowrap text-center">Resignation Date</th>
+                                                        <th class="text-nowrap text-center">Reason</th>
+                                                        <th class="text-nowrap text-center">Notice Period Days</th>
+                                                        <th class="text-nowrap text-center">Last Working Date</th>
+                                                        <th class="text-nowrap text-center">Relieving Date</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var d in ViewBag.GetFNFPendingList)
+                                                    {
+                                                        <tr>
+                                                            <td class="text-center">
+                                                                <a onclick="AddFNFCalculation(@d.EmployeeId,@d.ResignId)" id="btnAdd" style="display:inline-flex; align-items:center;justify-content:center; width:26px; height:26px; background-color:#007bff;  color: white;border-radius: 50%; cursor: pointer;text-decoration: none;">
+                                                                    <i class="fa-solid fa-plus"></i>
+                                                                </a>
+                                                            </td>
+                                                            <td class="text-center">
+                                                                <a onclick="UpdateNoticePeriod(@d.EmployeeId,@d.ResignId,'@d.ResignationDate','@d.LastWorkingDate','@d.RelievingDate')" id="btnUpdate" style="display:inline-flex; align-items:center;justify-content:center; width:26px; height:26px; background-color:#007bff;  color: white;border-radius: 50%; cursor: pointer;text-decoration: none;">
+                                                                    <i class="fa-solid fa-pen-to-square fa-lg text-Dark"></i>
+                                                                </a>
+                                                            </td>
+                                                            <td class="text-nowrap">@d.EmployeeName</td>
+                                                            <td class="text-nowrap">@d.EmployeeNo</td>
+                                                            <td class="text-nowrap">@d.Department</td>
+                                                            <td class="text-nowrap">@d.Designation</td>
+                                                            <td class="text-nowrap">@d.Grade</td>
+                                                            <td class="text-nowrap">@d.DOJ</td>
+                                                            <td class="text-nowrap">@d.ResignationType</td>
+                                                            <td class="text-nowrap">@d.ResignationDate</td>
+                                                            <td class="text-nowrap">@d.Reason</td>
+                                                            <td class="text-nowrap">@d.NoticePeriod</td>
+                                                            <td class="text-nowrap">@d.LastWorkingDate</td>
+                                                            <td class="text-nowrap">@d.RelievingDate</td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- FNFCalculationDoneList -->
+                            <div class="tab-pane fade @(activeTab == "tabFNFCalculationDoneList" ? "show active" : "")" id="tabFNFCalculationDoneList">
+                                <div class="h-500px p-3" data-scrollbar="true">
+                                    <div class="table-scroll">
+                                        <div class="table-wrap">
+                                            <table class="table table-bordered align-middle TablePage2" id="tbl3" style="width: 100%;">
+                                                <thead class="text-center">
+                                                    <tr>
+                                                        <th class="fixed-side">Delete</th>
+                                                        <th class="fixed-side text-center">Print</th>
+                                                        <th class="fixed-side text-center">Send Approval</th>
+                                                        <th class="text-nowrap text-center">Employee Name</th>
+                                                        <th class="text-nowrap text-center">Employee No</th>
+                                                        <th class="text-nowrap text-center">Department Name</th>
+                                                        <th class="text-nowrap text-center">Designation Name</th>
+                                                        <th class="text-nowrap text-center">Grade Name</th>
+                                                        <th class="text-nowrap text-center">Date Of Joining</th>
+                                                        <th class="text-nowrap text-center">Resignation Type</th>
+                                                        <th class="text-nowrap text-center">Resignation Date</th>
+                                                        <th class="text-nowrap text-center">Last Working Date</th>
+                                                        <th class="text-nowrap text-center">Relieving Date</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @if (ViewBag.GetFNFCompleteList != null)
+                                                    {
+                                                        foreach (var d in ViewBag.GetFNFCompleteList)
+                                                        {
+                                                            <tr>
+                                                                <td class="text-center">
+                                                                    <a onclick="DeleteFNFCalculation('@d.FNFCald')" id="btnDelete" style="cursor:pointer;">
+                                                                        <i class="fa-solid fa-trash-alt text-danger fa-lg"></i>
+                                                                    </a>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <i class="fa-solid fa-print text-success fa-lg" style="cursor: pointer;"
+                                                                       onclick="ViewStatement('@d.FNFEmployeeId','@d.ResignationId')"></i>
+                                                                </td>
+                                                                @if (!d.IsSendForApproval)
+                                                                {
+                                                                    <td class="text-center">
+                                                                        <i class="fa-solid fa-paper-plane text-primary fa-lg"
+                                                                           style="cursor: pointer;"
+                                                                           onclick="SendToApproval('@d.FNFCald')">
+                                                                        </i>
+                                                                    </td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-center">
+                                                                        <i class="fa-solid fa-paper-plane fa-lg text-secondary"
+                                                                           style="opacity: 0.4; cursor: not-allowed;">
+                                                                        </i>
+                                                                    </td>
+                                                                }
+
+                                                                <td class="text-nowrap">@d.EmployeeName</td>
+                                                                <td class="text-nowrap">@d.EmployeeNo</td>
+                                                                <td class="text-nowrap">@d.Department</td>
+                                                                <td class="text-nowrap">@d.Designation</td>
+                                                                <td class="text-nowrap">@d.Grade</td>
+                                                                <td class="text-nowrap">@d.DOJ</td>
+                                                                <td class="text-nowrap">@d.ResignationType</td>
+                                                                <td class="text-nowrap">@d.ReginationDate</td>
+                                                                <td class="text-nowrap">@d.LastWorkingDate</td>
+                                                                <td class="text-nowrap">@d.RelievingDate</td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- FNFCalculationDoneList -->
+                            <div class="tab-pane fade @(activeTab == "tabCheckerFNFPendingList" ? "show active" : "")" id="tabCheckerFNFPendingList">
+                                <div class="h-500px p-3" data-scrollbar="true">
+                                    <div class="table-scroll">
+                                        <div class="table-wrap">
+                                            <table class="table table-bordered align-middle TablePage2" id="tbl3" style="width: 100%;">
+                                                <thead class="text-center">
+                                                    <tr>
+                                                        <th style="text-align: center; justify-content: center;">ALL <input type="checkbox" class="form-check-input" data-checked="all-checkbox" id="SelectAll" onchange="checkAll(this)" /></th>
+                                                        <th class="fixed-side">View</th>
+                                                        <th class="fixed-side text-center">Print</th>
+                                                        <th class="text-nowrap text-center">Employee Name</th>
+                                                        <th class="text-nowrap text-center">Employee No</th>
+                                                        <th class="text-nowrap text-center">Department Name</th>
+                                                        <th class="text-nowrap text-center">Designation Name</th>
+                                                        <th class="text-nowrap text-center">Grade Name</th>
+                                                        <th class="text-nowrap text-center">Date Of Joining</th>
+                                                        <th class="text-nowrap text-center">Resignation Type</th>
+                                                        <th class="text-nowrap text-center">Resignation Date</th>
+                                                        <th class="text-nowrap text-center">Last Working Date</th>
+                                                        <th class="text-nowrap text-center">Relieving Date</th>
+                                                        <th class="text-nowrap text-center">Maker Name</th>
+                                                        <th class="text-nowrap text-center">Maker Date</th>
+                                                        <th class="text-nowrap text-center">Maker Remark</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tbodyApproveReject">
+                                                    @if (ViewBag.GetCheckerFNFPendingList != null)
+                                                    {
+                                                        foreach (var d in ViewBag.GetCheckerFNFPendingList)
+                                                        {
+                                                            <tr>
+                                                                <td>
+                                                                    <span class="d-flex justify-content-center">
+                                                                        <input type="checkbox" class="form-check-input" data-checked="email-checkbox" value="@d.FNFCald" id="tblCheckbox">
+                                                                    </span>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <a onclick="ViewForApproval('@d.FNFCald','@d.FNFEmployeeId','@d.ResignationId','Checker')" id="btnDelete" style="cursor:pointer;">
+                                                                        <i class="fa-solid fa-eye text-warning fa-lg"></i>
+                                                                    </a>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <i class="fa-solid fa-print text-success fa-lg" style="cursor: pointer;"
+                                                                       onclick="ViewStatement('@d.FNFEmployeeId','@d.ResignationId')"></i>
+                                                                </td>
+
+                                                                <td class="text-nowrap">@d.EmployeeName</td>
+                                                                <td class="text-nowrap">@d.EmployeeNo</td>
+                                                                <td class="text-nowrap">@d.Department</td>
+                                                                <td class="text-nowrap">@d.Designation</td>
+                                                                <td class="text-nowrap">@d.Grade</td>
+                                                                <td class="text-nowrap">@d.JoiningDate</td>
+                                                                <td class="text-nowrap">@d.ResignationType</td>
+                                                                <td class="text-nowrap">@d.ReginationDate</td>
+                                                                <td class="text-nowrap">@d.LastWorkingDate</td>
+                                                                <td class="text-nowrap">@d.RelievingDate</td>
+                                                                <td class="text-nowrap">@d.MakerName</td>
+                                                                <td class="text-nowrap">@d.EmployeeMakerDate</td>
+                                                                @if (!string.IsNullOrEmpty(d.EmployeeMakerRemark))
+                                                                {
+                                                                    <td class="text-start text-center">
+                                                                        <input type="hidden" id="hiddenRemark_@d.ResignationId" value="@d.EmployeeMakerRemark" />
+                                                                        <i class="fa-solid fa-receipt fa-lg" onclick="Remark(encodeURIComponent(document.getElementById('hiddenRemark_@d.ResignationId').value))" style="cursor:pointer; color: #ff5b57;"></i>
+                                                                    </td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-start text-center"></td>
+                                                                }
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @if (isChecker)
+                                {
+                                    <div class="row mb-20px">
+                                        <div class="LastShortLeaveBx">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="BtnBx">
+                                                        <div>
+                                                            <button type="button" class="btn btn-primary btn-sm" id="btnAllApprove" onclick="AllApproveReject('Approved')">
+                                                                <i class="fa-solid fa-floppy-disk"></i> Approve
+                                                            </button>
+
+                                                            <button href="#modal-dialogForHoldReject1" onclick="OpenModule()" type="button" class="btn btn-success btn-sm" id="btnmodal-dialog1" value="Rejected">Reject</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                            <!-- FNFCalculationDoneList -->
+                            <div class="tab-pane fade @(activeTab == "tabAccountFNFPendingList" ? "show active" : "")" id="tabAccountFNFPendingList">
+                                <div class="h-500px p-3" data-scrollbar="true">
+                                    <div class="table-scroll">
+                                        <div class="table-wrap">
+                                            <table class="table table-bordered align-middle TablePage2" id="tbl3" style="width: 100%;">
+                                                <thead class="text-center">
+                                                    <tr>
+                                                        <th class="fixed-side">View</th>
+                                                        <th class="fixed-side text-center">Print</th>
+                                                        <th class="text-nowrap text-center">Employee Name</th>
+                                                        <th class="text-nowrap text-center">Employee No</th>
+                                                        <th class="text-nowrap text-center">Department Name</th>
+                                                        <th class="text-nowrap text-center">Designation Name</th>
+                                                        <th class="text-nowrap text-center">Grade Name</th>
+                                                        <th class="text-nowrap text-center">Date Of Joining</th>
+                                                        <th class="text-nowrap text-center">Resignation Type</th>
+                                                        <th class="text-nowrap text-center">Resignation Date</th>
+                                                        <th class="text-nowrap text-center">Last Working Date</th>
+                                                        <th class="text-nowrap text-center">Maker Name</th>
+                                                        <th class="text-nowrap text-center">Maker Date</th>
+                                                        <th class="text-nowrap text-center">Maker Remark</th>
+                                                        <th class="text-nowrap text-center">Checker Status</th>
+                                                        <th class="text-nowrap text-center">Checker Name</th>
+                                                        <th class="text-nowrap text-center">Checker Date</th>
+                                                        <th class="text-nowrap text-center">Checker Remark</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @if (ViewBag.GetAccountFNFPendingList != null)
+                                                    {
+                                                        foreach (var d in ViewBag.GetAccountFNFPendingList)
+                                                        {
+                                                            <tr>
+                                                                <td class="text-center">
+                                                                    <a onclick="ViewForApproval('@d.FNFCald','@d.FNFEmployeeId','@d.ResignationId','Account')" id="btnDelete" style="cursor:pointer;">
+                                                                        <i class="fa-solid fa-eye text-warning fa-lg"></i>
+                                                                    </a>
+                                                                </td>
+                                                                <td class="text-center">
+                                                                    <i class="fa-solid fa-print text-success fa-lg" style="cursor: pointer;"
+                                                                       onclick="ViewStatement('@d.FNFEmployeeId','@d.ResignationId')"></i>
+                                                                </td>
+
+                                                                <td class="text-nowrap">@d.EmployeeName</td>
+                                                                <td class="text-nowrap">@d.EmployeeNo</td>
+                                                                <td class="text-nowrap">@d.Department</td>
+                                                                <td class="text-nowrap">@d.Designation</td>
+                                                                <td class="text-nowrap">@d.Grade</td>
+                                                                <td class="text-nowrap">@d.JoiningDate</td>
+                                                                <td class="text-nowrap">@d.ResignationType</td>
+                                                                <td class="text-nowrap">@d.ReginationDate</td>
+                                                                <td class="text-nowrap">@d.LastWorkingDate</td>
+                                                                <td class="text-nowrap">@d.MakerName</td>
+                                                                <td class="text-nowrap">@d.EmployeeMakerDate</td>
+                                                                @*<td class="text-nowrap">@d.EmployeeMakerRemark</td>*@
+                                                                @if (!string.IsNullOrEmpty(d.EmployeeMakerRemark))
+                                                                {
+                                                                    <td class="text-start text-center">
+                                                                        <input type="hidden" id="hiddenRemark_@d.ResignationId" value="@d.EmployeeMakerRemark" />
+                                                                        <i class="fa-solid fa-receipt fa-lg" onclick="Remark(encodeURIComponent(document.getElementById('hiddenRemark_@d.ResignationId').value))" style="cursor:pointer; color: #ff5b57;"></i>
+                                                                    </td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-start text-center"></td>
+                                                                }
+                                                                <td class="text-center">
+                                                                    <span class="status-badge
+                                                                        @(d.EmployeeCheckerStatus == "Approved" ? "status-approved-bg" :
+                                                                          d.EmployeeCheckerStatus == "Pending"  ? "status-pending-bg"  :
+                                                                                                                   "status-reject-bg")">
+                                                                        @d.EmployeeCheckerStatus
+                                                                    </span>
+                                                                </td>
+                                                                <td class="text-nowrap">@d.CheckerName</td>
+                                                                <td class="text-nowrap">@d.EmployeeCheckerDate</td>
+                                                                @*<td class="text-nowrap">@d.EmployeeCheckerRemark</td>*@
+                                                                @if (!string.IsNullOrEmpty(d.EmployeeCheckerRemark))
+                                                                {
+                                                                    <td class="text-start text-center">
+                                                                        <input type="hidden" id="hiddenRemark_@d.ResignationId" value="@d.EmployeeCheckerRemark" />
+                                                                        <i class="fa-solid fa-receipt fa-lg" onclick="Remark(encodeURIComponent(document.getElementById('hiddenRemark_@d.ResignationId').value))" style="cursor:pointer; color: #ff5b57;"></i>
+                                                                    </td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-start text-center"></td>
+                                                                }s
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- tabCheckerAccountFNFApproveRejectList -->
+                            <div class="tab-pane fade @(activeTab == "tabCheckerAccountFNFApproveRejectList" ? "show active" : "")" id="tabCheckerAccountFNFApproveRejectList">
+                                <div class="h-500px p-3" data-scrollbar="true">
+                                    <div class="table-scroll">
+                                        <div class="table-wrap">
+                                            <table class="table table-bordered align-middle TablePage2" id="tbl3" style="width: 100%;">
+                                                <thead class="text-center">
+                                                    <tr>
+                                                        @if (isChecker)
+                                                        {
+                                                            <th class="fixed-side text-center">Cancel</th>
+                                                        }
+                                                        <th class="fixed-side text-center">Print</th>
+                                                        <th class="fixed-side text-center">Origin</th>
+                                                        <th class="text-nowrap text-center">Employee Name</th>
+                                                        <th class="text-nowrap text-center">Employee No</th>
+                                                        <th class="text-nowrap text-center">Department Name</th>
+                                                        <th class="text-nowrap text-center">Designation Name</th>
+                                                        <th class="text-nowrap text-center">Grade Name</th>
+                                                        <th class="text-nowrap text-center">Date Of Joining</th>
+                                                        <th class="text-nowrap text-center">Resignation Date</th>
+                                                        <th class="text-nowrap text-center">Last Working Date</th>
+                                                        <th class="text-nowrap text-center">Maker Name</th>
+                                                        <th class="text-nowrap text-center">Maker Date</th>
+                                                        <th class="text-nowrap text-center">Maker Remark</th>
+                                                        <th class="text-nowrap text-center">Checker Status</th>
+                                                        <th class="text-nowrap text-center">Checker Name</th>
+                                                        <th class="text-nowrap text-center">Checker Date</th>
+                                                        <th class="text-nowrap text-center">Checker Remark</th>
+                                                        <th class="text-nowrap text-center">Account Status</th>
+                                                        <th class="text-nowrap text-center">Account Name</th>
+                                                        <th class="text-nowrap text-center">Account Date</th>
+                                                        <th class="text-nowrap text-center">Account Remark</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @if (ViewBag.GetCheckerAccountApproveRejectList != null)
+                                                    {
+                                                        foreach (var d in ViewBag.GetCheckerAccountApproveRejectList)
+                                                        {
+                                                            <tr>
+                                                                @if (isChecker)
+                                                                {
+                                                                    <td class="text-center">
+                                                                        <a onclick="CancelFNF('@d.FNFCald')" style="cursor:pointer; text-decoration:none;">
+                                                                            <i class="fa-solid fa-xmark"
+                                                                               style="color:red; font-size:20px;"></i>
+                                                                        </a>
+                                                                    </td>
+                                                                }
+                                                                <td class="text-center">
+                                                                    <i class="fa-solid fa-print text-success fa-lg" style="cursor: pointer;"
+                                                                       onclick="ViewStatement('@d.FNFEmployeeId','@d.ResignationId')"></i>
+                                                                </td>
+                                                                <td class="text-nowrap">@d.Type</td>
+                                                                <td class="text-nowrap">@d.EmployeeName</td>
+                                                                <td class="text-nowrap">@d.EmployeeNo</td>
+                                                                <td class="text-nowrap">@d.Department</td>
+                                                                <td class="text-nowrap">@d.Designation</td>
+                                                                <td class="text-nowrap">@d.Grade</td>
+                                                                <td class="text-nowrap">@d.JoiningDate</td>
+                                                                <td class="text-nowrap">@d.ReginationDate</td>
+                                                                <td class="text-nowrap">@d.LastWorkingDate</td>
+                                                                <td class="text-nowrap">@d.EmployeeMaker</td>
+                                                                <td class="text-nowrap">@d.EmployeeMakerDate</td>
+                                                                @*<td class="text-nowrap">@d.EmployeeMakerRemark</td>*@
+                                                                @if (!string.IsNullOrEmpty(d.EmployeeMakerRemark))
+                                                                {
+                                                                    <td class="text-start text-center">
+                                                                        <input type="hidden" id="hiddenRemark_@d.ResignationId" value="@d.EmployeeMakerRemark" />
+                                                                        <i class="fa-solid fa-receipt fa-lg" onclick="Remark(encodeURIComponent(document.getElementById('hiddenRemark_@d.ResignationId').value))" style="cursor:pointer; color: #ff5b57;"></i>
+                                                                    </td>
+
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-start text-center"></td>
+                                                                }
+                                                                <td class="text-center">
+                                                                    <span class="status-badge
+                                                                        @(d.EmployeeCheckerStatus == "Approved" ? "status-approved-bg" : d.EmployeeCheckerStatus == "Pending"  ? "status-pending-bg"  : "status-reject-bg")">
+                                                                        @d.EmployeeCheckerStatus
+                                                                    </span>
+                                                                </td>
+                                                                <td class="text-nowrap">@d.EmployeeChecker</td>
+                                                                <td class="text-nowrap">@d.EmployeeCheckerDate</td>
+                                                                @*<td class="text-nowrap">@d.EmployeeCheckerRemark</td>*@
+                                                                @if (!string.IsNullOrEmpty(d.EmployeeCheckerRemark))
+                                                                {
+                                                                    <td class="text-start text-center">
+                                                                        <input type="hidden" id="hiddenRemark_@d.ResignationId" value="@d.EmployeeCheckerRemark" />
+                                                                        <i class="fa-solid fa-receipt fa-lg" onclick="Remark(encodeURIComponent(document.getElementById('hiddenRemark_@d.ResignationId').value))" style="cursor:pointer; color: #ff5b57;"></i>
+                                                                    </td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-start text-center"></td>
+                                                                }
+                                                                <td class="text-center">
+                                                                    <span class="status-badge
+                                                                        @(d.EmployeeAccountStatus == "Approved" ? "status-approved-bg" : d.EmployeeAccountStatus == "Pending"  ? "status-pending-bg"  :"status-reject-bg")">
+                                                                        @d.EmployeeAccountStatus
+                                                                    </span>
+                                                                </td>
+
+                                                                <td class="text-nowrap">@d.EmployeeAccount</td>
+                                                                <td class="text-nowrap">@d.EmployeeAccountDate</td>
+                                                                @*<td class="text-nowrap">@d.EmployeeAccountRemark</td>*@
+                                                                @if (!string.IsNullOrEmpty(d.EmployeeAccountRemark))
+                                                                {
+                                                                    <td class="text-start text-center">
+                                                                        <input type="hidden" id="hiddenRemark_@d.ResignationId" value="@d.EmployeeAccountRemark" />
+                                                                        <i class="fa-solid fa-receipt fa-lg" onclick="Remark(encodeURIComponent(document.getElementById('hiddenRemark_@d.ResignationId').value))" style="cursor:pointer; color: #ff5b57;"></i>
+                                                                    </td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-start text-center"></td>
+                                                                }
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                       
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+<!-- Modal for Date and Time Selection -->
+<div class="modal fade" id="NoticePeriodChangeModel" tabindex="-1" aria-labelledby="NoticePeriodChangeModelLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-black text-white">
+                <h4 class="modal-title">Change - Notice Period </h4>
+                <div class="panel-heading-btn">
+                    <a href="javascript:;" class="btn btn-icon btn-danger CloseModelHistory" data-bs-dismiss="modal"
+                       aria-hidden="true" id="CloseModelHistory">
+                        <i class="fa fa-xmark"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="modal-body">
+                <form role="form" action='@Url.Action("UpdateNoticePeriod", "ESS_FNF_Maxroof_FNFCalculationStatement", new { area = "ESS" })' id="UpdateEmployeeResignation" method="post">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row mb-15px">
+                                <label class="form-label col-form-label col-md-4">
+                                    Notice Period Type<span class="important">*</span>
+                                </label>
+                                <div class="col-md-8">
+                                    @Html.DropDownListFor(model => model.NoticePeriodType, new List<SelectListItem>{
+                                                new SelectListItem { Text = "ByPolicy", Value = "ByPolicy"},
+                                                    new SelectListItem { Text = "Month", Value = "Month"},
+                                                    new SelectListItem { Text = "Days", Value = "Days"},
+                                                }, new { id = "ddlNoticePeriodType", @class = "form-select", autocomplete = "off", name = "NoticePeriodType" })
+                                    @Html.HiddenFor(model => model.FnfEmployeeId, new { @class = "form-control", id = "FnfEmployeeId" })
+                                    @Html.HiddenFor(model => model.FnfId, new { @class = "form-control", id = "FnfId" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6" id="divNoticePeriodValue" style="display:none;">
+                            <div class="row mb-15px">
+                                <label class="form-label col-form-label col-md-4">
+                                    Notice Period Value <span class="important">*</span>
+                                </label>
+                                <div class="col-md-8">
+                                    @Html.DropDownListFor(model => model.NoticePeriodMonthDays, new SelectList(ViewBag.NoticePeriodMonthDays ?? new List<SelectListItem>(),
+                                                "Name", "Name"), new { id = "ddlNoticePeriodValue", @class = "form-select", name = "NoticePeriodMonthDays", autocomplete = "off" })
+                                    <span id="ErrorddlNoticePeriodValue" class="Error" style="color:red"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row mb-15px">
+                                <label class="form-label col-form-label col-md-4">
+                                    Resignation Date<span class="important">*</span>
+                                </label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.ResignationDate, new { @class = "form-control", name = "ResignationDate", type = "date", id = "txtResignationDate", autocomplete = "Off", @readonly = "readonly" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row mb-15px">
+                                <label class="form-label col-form-label col-md-4">
+                                    Relieving Date<span class="important">*</span>
+                                </label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.RelievingDate, new { @class = "form-control", name = "RelievingDate", type = "date", id = "RelievingDate", autocomplete = "Off" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row mb-15px">
+                                <label class="form-label col-form-label col-md-4">
+                                    Last Working Date<span class="important">*</span>
+                                </label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.LastWorkingDate, new { @class = "form-control", name = "LastWorkingDate", type = "date", id = "LastWorkingDate", autocomplete = "Off" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row mb-15px">
+                                <label class="form-label col-form-label col-md-4">
+                                    Notice Period End Date <span class="important">*</span>
+                                </label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.NoticePeriodEndDate, new { @class = "form-control", name = "NoticePeriodEndDate", type = "date", id = "txtNoticePeriodEndDate", autocomplete = "Off" })
+                                    <span id="errNoticePeriodEndDate" style="color:red"></span>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" id="btnUpdateNoticePeriod" class="btn btn-primary btn-sm">
+                            <i class="fa-solid fa-floppy-disk"></i> Save
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- #Start modal-dialog -->
+<div class="modal fade" id="FNFRejectListModel" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-black text-white">
+                <h4 class="modal-title" id="EmployeeListTitle"></h4>
+                <div class="panel-heading-btn">
+                    <a href="javascript:;" class="btn btn-icon btn-danger CloseModelHistory" data-bs-dismiss="modal" aria-hidden="true" id="CloseModelHistory">
+                        <i class="fa fa-xmark"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="modal-body" style="height: 500px; overflow-y: auto;">
+                <!-- BEGIN panel -->
+                <div class="modal-body-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <div class="table-scroll">
+                                                <div class="table-wrap">
+                                                    <table class="table table-bordered table-hover mb-0 table-wrap align-middle" id="tblEmployeeLog">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="text-nowrap text-center">
+                                                                    Update
+                                                                </th>
+                                                                <th class="text-nowrap text-center">Origin</th>
+                                                                <th class="text-nowrap text-center">Employee Name</th>
+                                                                <th class="text-nowrap text-center">Department </th>
+                                                                <th class="text-nowrap text-center">Designation </th>
+                                                                <th class="text-nowrap text-center">Grade Name</th>
+                                                                <th class="text-nowrap text-center">Joining Date</th>
+                                                                <th class="text-nowrap text-center">Resignation Date</th>
+                                                                <th class="text-nowrap text-center">Last Working Date</th>
+                                                                <th class="text-nowrap text-center">Notice Period end Date</th>
+                                                                <th class="text-nowrap text-center">Maker Name</th>
+                                                                <th class="text-nowrap text-center">Maker Date</th>
+                                                                <th class="text-nowrap text-center">Maker Remark</th>
+                                                                <th class="text-nowrap text-center">Checker Status</th>
+                                                                <th class="text-nowrap text-center">Checker Name</th>
+                                                                <th class="text-nowrap text-center">Checker Date</th>
+                                                                <th class="text-nowrap text-center">Checker Remark</th>
+                                                                <th class="text-nowrap text-center">Account Status</th>
+                                                                <th class="text-nowrap text-center">Account Name</th>
+                                                                <th class="text-nowrap text-center">Account Date</th>
+                                                                <th class="text-nowrap text-center">Account Remark</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="tbodyFnfRejectList"></tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- END panel -->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- #Start modal-dialog -->
+<div class="modal fade" id="modal_basic3" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-black text-white">
+                <h4 class="modal-title">Remark</h4>
+                <div class="panel-heading-btn">
+
+                </div>
+            </div>
+            <div class="modal-body">
+                <!-- BEGIN panel -->
+                <div class="modal-body-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <div id="txtRemark"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- END panel -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnCancel" class="btn btn-success btnpress" onclick="dismissModal('modal_basic3')">
+                    <i class="fa-solid fa-floppy-disk"> </i> Ok
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #End modal-dialog -->
+
+<script>
+    $(document).ready(function () {
+        $('title').html("FNF Calculation");
+        var getddlPType = $("#ddlNoticePeriodType").val();
+        if (getddlPType === "ByPolicy")
+        {
+            $("#divNoticePeriodValue").hide();
+        }
+        if (getddlPType === "Month" || getddlPType === "Days")
+        {
+            $("#divNoticePeriodValue").show();
+        }
+        else
+        {
+            $("#divNoticePeriodValue").hide();
+        }
+
+
+        $("#ddlNoticePeriodType").on("change", function (e, selectedValue) {debugger
+            var val = $(this).val();
+            $("#ddlNoticePeriodValue").empty();
+            if (val === "ByPolicy") {
+                $("#divNoticePeriodValue").hide();
+                return;
+            }
+            $("#divNoticePeriodValue").show();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                url: '@Url.Action("GetNoticePeriodMonthDays", "ESS_FNF_Maxroof_FNFCalculationStatement")',
+                data: { NoticePeriodType: val },
+                success: function (data) {
+                    $("#ddlNoticePeriodValue").append("<option value=''>--Select--</option>");
+                    $.each(data.NoticePeriodMonthDays, function (i, p) {
+                        $("#ddlNoticePeriodValue").append("<option value='" + p.Name + "'>" + p.Name + "</option>");
+                    });
+                    if (selectedValue) {
+                        selectedValue = $.trim(selectedValue.toString());
+                        $("#ddlNoticePeriodValue").val(selectedValue);
+                        if ($("#ddlNoticePeriodValue").val() !== selectedValue) {
+                            $("#ddlNoticePeriodValue option").filter(function () {
+                                return $.trim($(this).text()) === selectedValue;
+                            }).prop("selected", true);
+                        }
+                        $("#ddlNoticePeriodValue").trigger("change");
+                    }
+                }
+            });
+        });
+    });
+
+    var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+    var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+    debugger;
+
+    if (Message != null) {
+        if (Icon != null) {
+            Swal.fire({
+                icon: Icon,
+                text: Message,
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup()
+                    popup.classList.remove('swal2-show')
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                    })
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                    }, 500)
+                }
+            }).then(function() {
+                window.location.reload();
+            });
+        }
+    }
+</script>
+
+<script>
+    function AddFNFCalculation(EmployeeId, ResignId) {
+        debugger;
+        var baseUrl = '@Url.Action("ESS_FNF_Maxroof_FNFCalculationStatement", "ESS_FNF_Maxroof_FNFCalculationStatement")';
+
+        var url = baseUrl
+                  + "?FNFCal_EmployeeId=" + encodeURIComponent(EmployeeId)
+                  + "&ResignationId=" + encodeURIComponent(ResignId);
+        window.location.href = url;
+    }
+
+
+    function DeleteFNFCalculation(FNFCald) {debugger;
+        const DeleteButtons = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        DeleteButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+            allowOutsideClick: () => {
+                const popup = Swal.getPopup()
+                popup.classList.remove('swal2-show')
+                setTimeout(() => {
+                    popup.classList.add('animate__animated', 'animate__headShake')
+                })
+                setTimeout(() => {
+                    popup.classList.remove('animate__animated', 'animate__headShake')
+                }, 500)
+                return false
+            }
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '@Url.Action("Delete", "ESS_FNF_Maxroof_FNFCalculationStatement")?FNFCald=' + FNFCald;
+
+            } else if (
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+
+            }
+        })
+    }
+
+
+
+    function CancelFNF(FNFCald) {debugger;
+        const DeleteButtons = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        DeleteButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, cancel it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+            allowOutsideClick: () => {
+                const popup = Swal.getPopup()
+                popup.classList.remove('swal2-show')
+                setTimeout(() => {
+                    popup.classList.add('animate__animated', 'animate__headShake')
+                })
+                setTimeout(() => {
+                    popup.classList.remove('animate__animated', 'animate__headShake')
+                }, 500)
+                return false
+            }
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '@Url.Action("CancelFNF", "ESS_FNF_Maxroof_FNFCalculationStatement")?FNFCald=' + FNFCald;
+
+            } else if (
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+
+            }
+        })
+    }
+
+    function ViewStatement(FNFCal_EmployeeId, ResignationId) {
+        debugger;
+
+        var url = '@Url.Action("PreViewStatement", "ESS_FNF_Maxroof_FNFCalculationStatement")'
+            + '?FNFCal_EmployeeId=' + encodeURIComponent(FNFCal_EmployeeId)
+            + '&ResignationId=' + encodeURIComponent(ResignationId);
+
+        window.location.href = url;
+    }
+
+    function SendToApproval(FNFCald) {
+
+        const SendButtons = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        SendButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Send it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+            allowOutsideClick: () => {
+                const popup = Swal.getPopup()
+                popup.classList.remove('swal2-show')
+                setTimeout(() => {
+                    popup.classList.add('animate__animated', 'animate__headShake')
+                })
+                setTimeout(() => {
+                    popup.classList.remove('animate__animated', 'animate__headShake')
+                }, 500)
+                return false
+            }
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '@Url.Action("SendToApproval", "ESS_FNF_Maxroof_FNFCalculationStatement")?FNFCald=' + FNFCald;
+
+            } else if (
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+
+            }
+        })
+    }
+    function ViewForApproval(FNFCald,EmployeeId, ResignId,Process) {
+        debugger;
+        var baseUrl = '@Url.Action("ViewForCheckerAccountApproval", "ESS_FNF_Maxroof_FNFCalculationStatement")';
+
+        var url = baseUrl
+                   + "?FNFCald=" + encodeURIComponent(FNFCald)
+                  + "&FNFCal_EmployeeId=" + encodeURIComponent(EmployeeId)
+                  + "&ResignationId=" + encodeURIComponent(ResignId)
+         + "&Process=" + encodeURIComponent(Process);
+
+        window.location.href = url;
+    }
+</script>
+
+<script>
+    function UpdateNoticePeriod(EmployeeId, ResignId,ResignationDate,LastWorkingDate,RelievingDate) {debugger
+        $.ajax({
+            type: 'GET',
+            dataType: 'JSON',
+            url: '@Url.Action("GetNoticePeriodDays", "ESS_FNF_Maxroof_FNFCalculationStatement")',
+            data: { EmployeeId: EmployeeId },
+            success: function (data) {
+
+                if (data && data.info && data.info.length > 0) {debugger
+
+                    var obj = {};
+                    data.info.forEach(function (item) {
+                        obj[item.Key] = item.Value;
+                    });
+
+                    $("#ddlNoticePeriodType").val(obj.NoticePeriodType);
+                    $("#ddlNoticePeriodType").trigger("change", [obj.NoticePeriodDays]);
+                    $("#ddlNoticePeriodValue").val(obj.NoticePeriodDays);
+
+                    var dateStr = obj.NoticePeriodEndDate;
+                    var parsedDate = new Date(dateStr.replace(/(\d{2})\/(\w{3})\/(\d{4})/, '$1 $2 $3'));
+                    var yyyy = parsedDate.getFullYear();
+                    var MM = ("0" + (parsedDate.getMonth() + 1)).slice(-2);
+                    var dd = ("0" + parsedDate.getDate()).slice(-2);
+                    var finalDate = `${yyyy}-${MM}-${dd}`;
+
+                    var dateStr1 = ResignationDate;
+                    var parsedDate1 = new Date(dateStr1.replace(/(\d{2})\/(\w{3})\/(\d{4})/, '$1 $2 $3'));
+                    var yyyy = parsedDate1.getFullYear();
+                    var MM = ("0" + (parsedDate1.getMonth() + 1)).slice(-2);
+                    var dd = ("0" + parsedDate1.getDate()).slice(-2);
+                    var finalDate1 = `${yyyy}-${MM}-${dd}`;
+
+                    var dateLastWorkingDate = LastWorkingDate;
+                    var parsedLastWorkingDate = new Date(dateLastWorkingDate.replace(/(\d{2})\/(\w{3})\/(\d{4})/, '$1 $2 $3'));
+                    var yyyy = parsedLastWorkingDate.getFullYear();
+                    var MM = ("0" + (parsedLastWorkingDate.getMonth() + 1)).slice(-2);
+                    var dd = ("0" + parsedLastWorkingDate.getDate()).slice(-2);
+                    var finalLastWorkingDate = `${yyyy}-${MM}-${dd}`;
+
+                    var dateRelievingDate = RelievingDate;
+                    var parsedRelievingDate = new Date(dateRelievingDate.replace(/(\d{2})\/(\w{3})\/(\d{4})/, '$1 $2 $3'));
+                    var yyyy = parsedRelievingDate.getFullYear();
+                    var MM = ("0" + (parsedRelievingDate.getMonth() + 1)).slice(-2);
+                    var dd = ("0" + parsedRelievingDate.getDate()).slice(-2);
+                    var finalRelievingDate = `${yyyy}-${MM}-${dd}`;
+
+                    $("#txtNoticePeriodEndDate").val(finalDate);
+                    $("#txtResignationDate").val(finalDate1);
+                    $("#RelievingDate").val(finalRelievingDate);
+                    $("#LastWorkingDate").val(finalLastWorkingDate);
+                    $("#FnfEmployeeId").val(EmployeeId);
+                    $("#FnfId").val(ResignId);
+                } else {
+                    $("#ddlNoticePeriodType").val("");
+                    $("#ddlNoticePeriodValue").val("");
+                }
+
+                $('#NoticePeriodChangeModel').modal('show');
+            },
+            error: function () {
+                alert("Error while loading notice period details.");
+            }
+        });
+    }
+
+    $("#ddlNoticePeriodType, #ddlNoticePeriodValue").on("change", function () {debugger
+
+        var resignationDate = $("#txtResignationDate").val();
+        var noticeType = $("#ddlNoticePeriodType").val();
+        var noticeValue = parseInt($("#ddlNoticePeriodValue").val());
+
+        if (!resignationDate || isNaN(noticeValue)) return;
+
+        var relDate = new Date(resignationDate);
+
+        // --- MONTH TYPE ---
+        if (noticeType === "Month") {debugger
+
+            let year = relDate.getFullYear();
+            let month = relDate.getMonth() + noticeValue; // Add months
+            let day = relDate.getDate();
+
+            let temp = new Date(year, month, day);
+            if (temp.getMonth() !== (month % 12)) {
+                temp = new Date(year, month + 1, 0);
+            }
+
+            temp.setDate(temp.getDate() - 1);
+            relDate = temp;
+        }
+
+        // --- DAYS TYPE ---
+        if (noticeType === "Days") {debugger
+            relDate.setDate(relDate.getDate() + noticeValue);
+        }
+
+        // Format date: yyyy-MM-dd
+        var yyyy = relDate.getFullYear();
+        var MM = ("0" + (relDate.getMonth() + 1)).slice(-2);
+        var dd = ("0" + relDate.getDate()).slice(-2);
+
+        var finalDate = `${yyyy}-${MM}-${dd}`;
+        $("#txtNoticePeriodEndDate").val(finalDate);
+    });
+
+
+    $("#btnUpdateNoticePeriod").click(function () {
+        debugger;
+        $("#UpdateEmployeeResignation").submit();
+    });
+
+    function FNFCalculationRejectedList() {
+        $.ajax({
+            url: '@Url.Action("GetFNFCalculationRejectList", "ESS_FNF_Maxroof_FNFCalculationStatement")',
+            method: "GET",
+            success: function (data) {
+                const jsonData = JSON.parse(data);
+
+                $('#FNFRejectListModel').modal('show');
+                $('#EmployeeListTitle').text('FNF Calculation Rejected List'); // Set the modal title
+                $("#tbodyFnfRejectList").empty();
+                $.each(jsonData, function (index, item) {debugger;
+
+                    let status = item.EmployeeCheckerStatus || '';
+                    let statusHtml = status === 'Rejected' ? `<span class="status-badge status-reject-bg">${status}</span>`: status;
+                    let accountStatus = item.EmployeeAccountStatus || '';
+
+                    let accountStatusHtml =
+                        accountStatus === 'Approved'
+                            ? `<span class="status-badge status-approved-bg">${accountStatus}</span>` : accountStatus === 'Pending'
+                                ? `<span class="status-badge status-pending-bg">${accountStatus}</span>`: accountStatus ? `<span class="status-badge status-reject-bg">${accountStatus}</span>` : '';
+
+                    let makerRemarkHtml = '';
+                    if (item.EmployeeMakerRemark && item.EmployeeMakerRemark.trim() !== '') {
+                        makerRemarkHtml = `<input type="hidden" id="Remark_${item.ResignationId}" value="${encodeURIComponent(item.EmployeeMakerRemark)}" />
+                        <i class="fa-solid fa-receipt fa-lg"
+                           style="cursor:pointer; color:#ff5b57;"
+                           onclick="Remark(decodeURIComponent(document.getElementById('Remark_${item.ResignationId}').value))">
+                        </i>`; }
+
+                    let checkerRemarkHtml = '';
+                    if (item.EmployeeCheckerRemark && item.EmployeeCheckerRemark.trim() !== '') {
+                        checkerRemarkHtml = `<input type="hidden" id="makerRemark_${item.ResignationId}" value="${encodeURIComponent(item.EmployeeCheckerRemark)}" />
+                        <i class="fa-solid fa-receipt fa-lg"
+                           style="cursor:pointer; color:#ff5b57;"
+                           onclick="Remark(decodeURIComponent(document.getElementById('makerRemark_${item.ResignationId}').value))">
+                        </i>`; }
+
+
+                    var row = `<tr>
+                                <td class="text-center">
+                                  <a onclick="UpdateFNFCalculation(${item.FNFCald}, ${item.FNFEmployeeId})"id="btnUpdate" style="display:inline-flex; align-items:center; justify-content:center;
+                                              width:26px; height:26px; background-color:#007bff;color:white; border-radius:50%; cursor:pointer;
+                                              text-decoration:none;"><i class="fa-solid fa-plus"></i></a>
+                                </td>
+                                <td class="text-left">${item.Origin}</td>
+                                <td class="text-left">${item.EmployeeName}</td>
+                                <td class="text-left">${item.Department}</td>
+                                <td class="text-left">${item.Designation}</td>
+                                <td class="text-left">${item.Grade}</td>
+                                <td class="text-left">${item.JoiningDate}</td>
+                                <td class="text-left">${item.ReginationDate}</td>
+                                <td class="text-left">${item.LastWorkingDate}</td>
+                                <td class="text-left">${item.NoticePeriodEndDate}</td>
+                                <td class="text-left">${item.Makername || ''}</td>
+                                <td class="text-left">${item.EmployeeMakerDate || ''}</td>
+                                <td class="text-center"> ${makerRemarkHtml}</td>
+                                <td class="text-center">${statusHtml}</td>
+                                <td class="text-left">${item.Checkername || ''}</td>
+                                <td class="text-left">${item.EmployeeCheckerDate || ''}</td>
+                                <td class="text-center"> ${checkerRemarkHtml}</td>
+                                <td class="text-center">${accountStatusHtml}</td>
+                                <td class="text-left">${item.Accountname || ''}</td>
+                                <td class="text-left">${item.EmployeeAccountDate || ''}</td>
+                                 <td class="text-left">${item.EmployeeAccountRemark || ''}</td>
+                           </tr>`;
+                    $("#tbodyFnfRejectList").append(row);
+                });
+            }
+        });
+    }
+
+    function UpdateFNFCalculation(FNFCald,FNFEmployeeId) {
+        debugger;
+        var baseUrl = '@Url.Action("ESS_FNF_Maxroof_FNFCalculationStatement", "ESS_FNF_Maxroof_FNFCalculationStatement")';
+        var url = baseUrl + "?FNFCald=" + encodeURIComponent(FNFCald) + "&FNFCal_EmployeeId=" + encodeURIComponent(FNFEmployeeId);
+        window.location.href = url;
+    }
+</script>
+
+<script>
+    function Remark(encodedHtml)
+    {debugger;
+        $('#txtRemark').html('');
+        const Remark = decodeURIComponent(encodedHtml);
+        $('#modal_basic3').modal('show');
+        $('#modal_basic3').on('shown.bs.modal', function () {
+            $('#txtRemark').html(Remark);
+        });
+    }
+
+    function dismissModal(modalId) {
+        $('#' + modalId).modal('hide');
+    }
+</script>
+<script>
+    function AllApproveReject(Status) {
+        debugger;
+        var RecordList = new Array();
+        $("#tbodyApproveReject").find(':checkbox:checked').each(function (i) {
+            var data = {};
+            var currentRow = $(this).closest("tr");
+
+            data.FNFCald = $(this).val(); // ✅ correct
+            data.Status = Status;
+            RecordList.push(data);
+        });
+
+        if (RecordList == "") {
+            debugger;
+            Swal.fire({
+                icon: "error",
+                text: "Select atleast one record",
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup()
+                    popup.classList.remove('swal2-show')
+                    return false;
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                    })
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                    }, 500)
+                    window.location.reload();
+                    return false
+                }
+            });
+            return false;
+        }
+
+        $(".Userloaderbg").css("display", "flex");
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("MultipleApproveRejectRequest", "ESS_FNF_Maxroof_FNFCalculationStatement")",
+            data: JSON.stringify({ ObjRecordList: RecordList }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            success: function (data) {
+                debugger;
+                $(".Userloaderbg").css("display", "none");
+                var datas = JSON.parse(data);
+                if (datas != null) {
+                    //$('#tblInbox').load();
+                    Swal.fire({
+                        icon: datas.Icon,
+                        text: datas.Message,
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup()
+                            popup.classList.remove('swal2-show')
+                            return false;
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake')
+                            })
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake')
+                            }, 500)
+                            window.location.reload();
+                            return false
+                        }
+                    }).then(function () {
+                        var url = '@Url.Action("GetList", "ESS_FNF_Maxroof_FNFCalculationStatement")';
+                        window.location.href = url;
+                    });
+                }
+
+                @*var url = '@Url.Action("Inbox", "Inbox")';
+            window.location.href = url;*@
+            }
+        });
+    }
+
+
+    //Select All Checkboxes
+    function checkAll(ele) {
+        var checkboxes = document.getElementsByTagName('input');
+        if (ele.checked) {
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].type == 'checkbox') {
+                    checkboxes[i].checked = true;
+                }
+            }
+        } else {
+            for (var i = 0; i < checkboxes.length; i++) {
+                console.log(i)
+                if (checkboxes[i].type == 'checkbox') {
+                    checkboxes[i].checked = false;
+                }
+            }
+        }
+    }
+</script>

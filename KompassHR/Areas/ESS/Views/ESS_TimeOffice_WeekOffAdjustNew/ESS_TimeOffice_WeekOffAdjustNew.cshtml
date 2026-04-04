@@ -1,0 +1,771 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_TimeOffice.Atten_WeekOffAdjust
+
+@{
+    ViewBag.Title = "ESS_TimeOffice_WeekOffAdjustNew";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+<style>
+    /*.tblAddData td:nth-child(4) {
+        display: none;
+    }
+
+    .tblAddData td:nth-child(6) {
+        display: none;
+    }
+
+    .tblAddData td:nth-child(7) {
+        display: none;
+    }
+
+    .tblAddData td:nth-child(5) {
+        display: none;
+    }*/
+
+    .table {
+        --bs-table-striped-bg: rgba(0, 0, 255, 0.02);
+    }
+
+    .text-nowrap {
+        font-size: 12px;
+    }
+
+    tbody tr td {
+        font-size: 12px;
+        padding: 4px !important;
+    }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+    }
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                New Weekly Off Adjustment
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_TimeOffice_Menu", "ESS_TimeOffice_Menu", new {id = 5, ScreenId=150, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> New Weekly Off Adjustment - Add  </h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Week off adjustment typically refers to the process of making changes to an employee's scheduled days off or weekly rest days.
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("ESS_TimeOffice_WeekOffAdjustNew", "ESS_TimeOffice_WeekOffAdjustNew", new { area = "ESS" })' id="SaveWOAdjustment" method="post">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Company Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.CmpId, new SelectList(ViewBag.GetCompanyName, "Id", "Name"), new { id = "ddlCmpId", @class = "form-select", name = "CmpId" })
+                                                @Html.ValidationMessageFor(model => model.CmpId, "", new { @class = "help-block", @id = "ErrorCmpID", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Business Unit
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.WOBranchId, new SelectList(ViewBag.GetBranchName, "Id", "Name"), new { id = "ddlWOBranchId", @class = "form-select", name = "WOBranchId" })
+                                                @Html.ValidationMessageFor(model => model.WOBranchId, "", new { @class = "help-block", @id = "ErrorWOBranchId", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Sub Unit
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.SubUnitId, new SelectList(ViewBag.GetUnitList, "Id", "Name"), "All", new { @class = "form-select", name = "SubUnit", id = "ddlSubUnit" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Contractor Name
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.ContractorID, new SelectList(ViewBag.ContractorName, "Id", "Name"), "All", new { @class = "form-select", name = "ContractorID", id = "ddlContractorID" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Department Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.WODepartmentID, new SelectList(ViewBag.GetEmployeeDepartment, "Id", "Name"), "All", new { id = "ddlWODepartmentID", @class = "form-select", name = "WODepartmentID" })
+                                                @Html.ValidationMessageFor(model => model.WODepartmentID, "", new { @class = "help-block", @id = "ErrorWODepartmentID", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Employee Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.WOAdjustEmployeeId, new SelectList(ViewBag.GetEmployeeList, "Id", "Name"), "All", new { id = "ddlWOAdjustEmployeeId", @class = "form-select", autocomplete = "off", name = "WOAdjustEmployeeId" })
+                                                @Html.ValidationMessageFor(model => model.WOAdjustEmployeeId, "", new { @class = "help-block", @id = "ErrorWOAdjustEmployeeId", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Week Off Adjust Type
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.WOAdjustType,
+                                                new SelectList(new List<SelectListItem>
+                                                {
+                                                    new SelectListItem { Value = "RegularDay", Text = "Regular Day" },
+                                                    new SelectListItem { Value = "WeekOff", Text = "Week Off" },
+                                                    new SelectListItem { Value = "Public", Text = "Public" }
+                                                }, "Value", "Text"), "--Select--",
+                                                new { id = "txtWOAdjustType", name = "WOAdjustType", @class = "form-select", autocomplete = "off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Week Off Adjust Date
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-6">
+                                                @Html.TextBoxFor(model => model.WOAdjustDate, new { @class = "form-control", type = "date", id = "dateWOAdjustDate", Name = "WOAdjustDate" })
+                                                @Html.ValidationMessageFor(model => model.WOAdjustDate, "", new { @class = "help-block", @id = "ErrorWOAdjustDate", @style = "color:red" })
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button" id="btnLoadEmployee" onclick="LoadEmployee()" class="btn btn-primary btn-sm">
+                                                    <i class="fa-thin fa-user-magnifying-glass"></i>Load
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <!-- BEGIN table-responsive -->
+                                    <div class="table-scroll div1">
+                                        <div class="table-wrap">
+                                            <table class="table table-bordered align-middle" id="tblEmployeeWOAdjustHead"
+                                                   style="width: 100%;">
+                                                <thead style="background-color: rgba(233, 236, 239, 1) !important;">
+                                                    <tr class="trheading">
+                                                        <th class="text-center"><label><input type="checkbox" name="checkbox" id="chkIsMenuCheckBox" value="0" onclick="checkAllCheckboxes(this, 'Select')"> All</label></th>
+                                                        <th></th>
+                                                        <th></th>
+                                                    </tr>
+                                                    <tr class="text-center">
+                                                        <th class="text-nowrap text-center"> Select</th>
+                                                        <th class="text-nowrap text-center" "> Employee No</th>
+                                                        <th class="text-nowrap text-center" "> Employee Name </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tblEmployeeListWOAttendance">
+                                                    @foreach (var d in ViewBag.WOEmployeeLoad)
+                                                    {
+                                                        <tr>
+
+                                                            <td class="text-center">
+                                                                <input type="checkbox" id="txtEmployeeId" class="chk chkDesignation" Value="@d.EmployeeId" />
+                                                            </td>
+                                                            <td class="text-nowrap">@d.EmployeeNo</td>
+                                                            <td class="text-nowrap">@d.EmployeeName</td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="LastShortLeaveBx">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="BtnBx">
+                                                <div>
+                                                    <button type="button" id="btnSubmit"
+                                                            class="btn btn-primary btn-sm">
+                                                        <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                    </button>
+                                                    <a href="@Url.Action("GetList", "ESS_TimeOffice_WeekOffAdjustNew", new { area = "ESS" })">
+                                                        <button type="button"
+                                                                class="btn btn-danger btn-sm" id="btnGetAdjustmentList">
+                                                            <i class="fa-solid fa-share-from-square"></i>
+                                                            List
+                                                        </button>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#tblEmployeeWOAdjustHead').DataTable({
+            scrollY: 400,
+            scrollCollapse: true,
+            paging: false,
+            scrollX: true,
+            searching: true, // Enable searching
+        });
+
+        $("#ddlContractorID").select2();
+        $("#ddlOtherDeductionEmployeeId").select2();
+        $("#ddlWODepartmentID").select2();
+        $("#ddlCmpId").select2();
+        $("#ddlWOBranchId").select2();
+        $("#ddlWOAdjustEmployeeId").select2();
+        $("#ddlSubUnit").select2();
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        // return false
+                    }
+                });
+            }
+        }
+
+        $("#ddlContractorID").on("change", function () {
+            debugger;
+            $("#ddlWOAdjustEmployeeId").find("option").remove();
+            var ContractorID = $("#ddlContractorID").val();
+            var WOBranchId = $("#ddlWOBranchId").val();
+            var CmpId = $("#ddlCmpId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetEmployeeName", "ESS_TimeOffice_WeekOffAdjustNew")',
+                data: { ContractorID: ContractorID,WOBranchId:WOBranchId,CmpId:CmpId },
+                success: function (data) {
+                    if (data !=null) {
+                        $("#ddlWOAdjustEmployeeId").append("<option value=''>All </option>");
+                        $.each(data, function(i, p) {
+                            $("#ddlWOAdjustEmployeeId").append("<option value='" +  p.Id + "'>" + p.Name +"</option>");
+                        });
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        })
+
+        $("#ddlCmpId").on("change", function () {
+            debugger;
+            $("#ddlWOBranchId").find("option").remove();
+            $("#ddlWOAdjustEmployeeId").find("option").remove();
+            //  $("#ddlContractorID").find("option").remove();
+            var CmpId = $("#ddlCmpId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetBusinessUnit", "ESS_TimeOffice_WeekOffAdjustNew")',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    var BranchName=data.BranchName;
+                    var EmployeeList=data.EmployeeList;
+                    var List_SubUnit=data.List_SubUnit;
+
+                    if (BranchName !=null) {
+                        // $("#ddlWOBranchId").append("<option value=''>All </option>");
+                        $.each(BranchName, function(i, p) {
+                            $("#ddlWOBranchId").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                        });
+                    }
+                    if (EmployeeList !=null) {
+                        $("#ddlWOAdjustEmployeeId").append("<option value=''>All</option>");
+                        $.each(EmployeeList, function(i, p) {
+                            $("#ddlWOAdjustEmployeeId").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                        });
+                    }
+                        //var GetContractorDropdown=data.GetContractorDropdown;
+                        //if (GetContractorDropdown !=null) {
+                        //    $("#ddlContractorID").append("<option value=''>All </option>");
+                        //    $.each(GetContractorDropdown, function(i, p) {
+                        //        $("#ddlContractorID").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                        //    });
+                        //}
+
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        })
+
+        $("#ddlWOBranchId").on("change", function () {
+            $("#ddlWOAdjustEmployeeId").find("option").remove();
+            $("#ddlSubUnit").find("option").remove();
+            $("#ddlContractorID").find("option").remove();
+            var WOBranchId = $("#ddlWOBranchId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetEmployeeList", "ESS_TimeOffice_WeekOffAdjustNew")',
+                data: { WOBranchId: WOBranchId },
+                success: function (data) {
+                    if (data==false)
+                    {
+                        $("#ddlWOAdjustEmployeeId").append("<option value=''>All </option>");
+                        $("#ddlSubUnit").append("<option value=''>All </option>");
+                    }
+                    else{
+                        var EmployeeList=data.EmployeeList;
+                        var List_SubUnit=data.List_SubUnit;
+                        if (EmployeeList !=null) {
+                            $("#ddlWOAdjustEmployeeId").append("<option value=''>All </option>");
+                            $.each(EmployeeList, function(i, p) {
+                                $("#ddlWOAdjustEmployeeId").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                            });
+                        }
+                        if (List_SubUnit !=null) {
+                            $("#ddlSubUnit").append("<option value=''>All </option>");
+                            $.each(List_SubUnit, function(i, p) {
+                                $("#ddlSubUnit").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                            });
+                        }
+                        var GetContractorDropdown=data.GetContractorDropdown;
+                        if (GetContractorDropdown !=null) {
+                            $("#ddlContractorID").append("<option value=''>All </option>");
+                            $.each(GetContractorDropdown, function(i, p) {
+                                $("#ddlContractorID").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                            });
+                        }
+                    }
+                }
+            })
+        })
+
+        @*var WOFromDate = @Html.Raw(Json.Encode(TempData["WOFromDate"]));*@
+        var WOAdjustDate = @Html.Raw(Json.Encode(TempData["WOAdjustDate"]));
+        if(WOAdjustDate == "")
+        {
+        }
+        else
+        {
+            //var FromDate =  convertDate(WOFromDate);
+            var AdjustDate =  convertDate(WOAdjustDate);
+            //$("#dateWOFromDate").val(FromDate);
+            $("#dateWOAdjustDate").val(AdjustDate);
+        }
+    });//Ready Funcation
+
+
+    function checkAllCheckboxes(checkbox, checkboxType) {
+        var checkboxes = document.querySelectorAll('[id^="' + checkboxType + 'CheckBox"]');
+        checkboxes.forEach(function (cb) {
+            cb.checked = checkbox.checked;
+        });
+        if (checkboxType === 'Select' ) {
+
+            var typeIndex = ['Select'].indexOf(checkboxType);
+            var dynamicCheckboxes = document.querySelectorAll('#tblEmployeeListWOAttendance tr td:nth-child(' + (typeIndex + 1) + ') input[type="checkbox"]');
+            dynamicCheckboxes.forEach(function (dynamicCheckbox) {
+                dynamicCheckbox.checked = checkbox.checked;
+            });
+        }
+    }
+
+    //use for add regex function
+    jQuery.validator.addMethod(
+    "regex",
+     function (value, element, regexp) {
+         if (regexp.constructor != RegExp)
+             regexp = new RegExp(regexp);
+         else if (regexp.global)
+             regexp.lastIndex = 0;
+         return this.optional(element) || regexp.test(value);
+     }, "erreur expression reguliere"
+  );
+
+    $('#SaveWOAdjustment').validate({
+        rules: {
+            CmpId: {
+                required: true,
+            },
+            //WOBranchId: {
+            //    required: true,
+            //},
+
+            WOAdjustType: {
+                required: true,
+            },
+            WOAdjustDate: {
+                required: true,
+            },
+        },
+        messages: {
+            CmpId: {
+                required: "Company name is required",
+            },
+            //WOBranchId: {
+            //    required: "Company name is required",
+            //},
+            WOAdjustType: {
+                required: "Week Off Adjust Type is required",
+            },
+            WOAdjustDate: {
+                required: "Week off adjust date is required",
+            },
+        },
+    });
+
+    var form = $("#SaveWOAdjustment");
+    form.validate();
+    function LoadEmployee() {
+        debugger;
+        form.valid();
+        if (form.valid() == false) {
+            //$("#dateWOFromDate").removeClass("error");
+            $("#dateWOAdjustDate").removeClass("error");
+            return false;
+        }
+        $(".Userloaderbg").css("display", "flex");
+        $("#SaveWOAdjustment").submit();
+    }
+
+</script>
+
+<script>
+    $("#btnSubmit").click(function () {
+        debugger;
+        var table = $('#tblEmployeeWOAdjustHead').DataTable();
+        table.search('').draw();
+        // $(".Userloaderbg").css("display","flex");
+        var WOAdjustDate=$("#dateWOAdjustDate").val();
+        var WOFromDate=$("#dateWOAdjustDate").val();
+        var WOBranchId=$("#ddlWOBranchId").val();
+        var SubUnit=$("#ddlSubUnit").val();
+        var WOAdjustType=$("#txtWOAdjustType").val();
+        var chkIsMenuCheckBox=$("#chkIsMenuCheckBox").is(":checked");
+        if(chkIsMenuCheckBox==true)
+        {
+            $('#chkIsMenuCheckBox').prop('checked', false);
+        }
+        var Record =[];
+        $(':checkbox:checked').each(function (i) {
+            debugger;
+            var data1 = {};
+            data1.WOAdjustEmployeeId = $(this).val();
+            Record.push(data1);
+        });
+
+        if(Record.length==0)
+        {
+            $(".Userloaderbg").css("display","none");
+            var Message1="Please Select Atleast Employee";
+            var Icon1="error";
+            if (Icon1=="error") {
+                if (Message1 != null) {
+                    if (Message1 != null) {
+                        Swal.fire({
+                            icon: Icon1,
+                            text: Message1,
+                            allowOutsideClick: () => {
+                                const popup = Swal.getPopup()
+                                popup.classList.remove('swal2-show')
+                                setTimeout(() => {
+                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                })
+                                setTimeout(() => {
+                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                }, 500)
+                                return false
+                            }
+                        });
+                    }
+                }
+            }
+        }
+        //if(WOAdjustDate==dateWOFromDate)
+        //{
+        //    Swal.fire({
+        //        icon: "error",
+        //        text: "Week off from date & week off adjust date should not be same",
+        //        allowOutsideClick: () => {
+        //            const popup = Swal.getPopup()
+        //            popup.classList.remove('swal2-show')
+        //            setTimeout(() => {
+        //                popup.classList.add('animate__animated', 'animate__headShake')
+        //            })
+        //            setTimeout(() => {
+        //                popup.classList.remove('animate__animated', 'animate__headShake')
+        //            }, 500)
+        //            return false
+        //        }
+        //    });
+        //    return false;
+        //}
+        else
+        {
+            $(".Userloaderbg").css("display", "flex");
+            $.ajax({
+                type:"POST",
+                url:'@Url.Action("IsWeekOfAdjustmentExists", "ESS_TimeOffice_WeekOffAdjustNew")',
+                data:JSON.stringify({Record:Record,WOAdjustDate:WOAdjustDate,WOFromDate:WOFromDate,WOBranchId:WOBranchId,WOAdjustType:WOAdjustType}),
+                contentType: "application/json; charset=utf-8",
+                dataType: "text",
+                success:function(response){
+                    debugger;
+                    $(".Userloaderbg").css("display","none");
+                    var DATA = JSON.parse(response);
+                    var Message1 = DATA.Message;
+                    var Icon1 = DATA.Icon;
+                    if (Icon1=="error") {
+                        if (Message1 != null) {
+                            if (Message1 != null) {
+                                Swal.fire({
+                                    icon: Icon1,
+                                    text: Message1,
+                                    allowOutsideClick: () => {
+                                        const popup = Swal.getPopup()
+                                        popup.classList.remove('swal2-show')
+                                        setTimeout(() => {
+                                            popup.classList.add('animate__animated', 'animate__headShake')
+                                        })
+                                        setTimeout(() => {
+                                            popup.classList.remove('animate__animated', 'animate__headShake')
+                                        }, 500)
+                                        return false
+                                    }
+                                });
+                            }
+                        }
+                    }
+                    else
+                    {
+                        $(".Userloaderbg").css("display", "flex");
+                        debugger;
+                        var WODepartmentID = $("#ddlWODepartmentID").val();
+                        var WOAdjustDate=$("#dateWOAdjustDate").val();
+                        var CmpID=$("#ddlCmpId").val();
+                        var WOFromDate=$("#dateWOAdjustDate").val();
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("SaveUpdate", "ESS_TimeOffice_WeekOffAdjustNew")',
+                            data: JSON.stringify({Record:Record,CmpID:CmpID,WODepartmentID:WODepartmentID,WOFromDate:WOFromDate,WOAdjustDate:WOAdjustDate,WOAdjustType:WOAdjustType}),
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "text",
+                            success: function (response)
+                            {
+                                debugger;
+                                $(".Userloaderbg").css("display","none");
+                                var data =  JSON.parse(response);
+                                var Message1 = data.Message;
+                                var Icon1 = data.Icon;
+                                if (data !=null) {
+                                    if (Message1 != null) {
+                                        Swal.fire({
+                                            icon: Icon1,
+                                            text: Message1,
+                                            allowOutsideClick: () => {
+                                                const popup = Swal.getPopup()
+                                                popup.classList.remove('swal2-show')
+                                                setTimeout(() => {
+                                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                                })
+                                                setTimeout(() => {
+                                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                                }, 500)
+                                                // return false
+                                            }
+                                        }).then(function() {
+                                            debugger;
+                                            window.location.href = '@Url.Action("ESS_TimeOffice_WeekOffAdjustNew", "ESS_TimeOffice_WeekOffAdjustNew")';
+                                        });
+
+                                    }
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }
+
+    });
+</script>
+<script>
+
+    function millisecTodate(milliDate) {
+        var date = new Date(milliDate);
+        var mnth = ("0" + (date.getMonth() + 1)).slice(-2);
+        var day = ("0" + date.getDate()).slice(-2);
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        hours = hours < 10 ? '0'+hours : hours;
+        minutes = minutes < 10 ? '0'+minutes : minutes;
+        var ddmmyyyy = [date.getFullYear(), mnth,day].join("-");
+        return ddmmyyyy;
+    }
+
+    function convertDate(data) {
+        var getdate = parseInt(data.replace("/Date(", "").replace(")/", ""));
+        var date = millisecTodate(getdate);
+        return date;
+    }
+</script>

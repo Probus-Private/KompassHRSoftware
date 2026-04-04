@@ -1,0 +1,472 @@
+﻿@model KompassHR.Areas.Reports.Models.MonthWiseFilter
+@{
+    ViewBag.Title = "ESS_ClaimReimbusement_ExpenseApproval";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<style>
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    /*.div1 td:nth-child(1) {
+        position: sticky !important;
+        left: 0px !important;
+    }
+
+    .div1 td:nth-child(2) {
+        position: sticky !important;
+        left: 78px !important;
+    }
+
+    .fixed-side {
+        position: sticky !important;
+        left: 0;
+        z-index: 1;
+    }
+
+    .fixed-side1 {
+        position: sticky !important;
+        left: 78px;
+        z-index: 1;
+    }*/
+</style>
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Approval Request
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_ClaimReimbusement_Approval", "ESS_ClaimReimbusement_Approval", new {id = 8, ScreenId=175, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">Approval Request - List</h4>
+                    <div class="panel-heading-btn">
+
+                    </div>
+                </div> <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        This is the list of positions authorised by manager.
+                    </p>
+                </div>
+
+                <div class="panel-body">
+                    <div class="row justify-content-center">
+                        <form role="form">
+                            <div class="row mb-15px">
+                                <label class="form-label col-md-2 col-form-label">Month/Year</label>
+                                <div class="col-md-4">
+                                    @Html.TextBoxFor(model => model.Month, new { @class = "form-control", name = "Month", type = "month", id = "GetMonth" })
+                                </div>
+                                <div class="col-md-6">
+                                    <button type="button" class="btn btn-primary" id="btnFilter" onclick="GetFilterList()">
+                                        <i class="fa fa-filter"></i> Filter
+                                    </button>
+                                    <button type="button" class="btn btn-danger" id="btnClear" onclick="GetFilterList('Clear')">
+                                        <i class="fa fa-times"></i> Clear
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="LastShortLeaveBx">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="BtnBx">
+                                                <a href="@Url.Action("ClaimsApprovedRejectedList", "ESS_ClaimReimbusement_ExpenseApproval", new { area = "ESS" })">
+                                                    <button type="button" id="btnManualUpload" class="btn btn-primary btn-sm">
+                                                        Approved Rejected List
+                                                    </button>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="panel-body" data-scrollbar="false">
+                    <div class="row">
+
+                        <!-- BEGIN table-responsive -->
+                        <div class="table-scroll div1">
+                            <div class="table-wrap">
+                                <table class="table table-bordered table-hover mb-0 text-dark align-middle TablePage3" id="data-table-combine" style="width: 100%;">
+                                    <thead>
+                                        <tr class="trheading text-center">
+                                            <th class="fixed-side">View</th>
+                                            @*<th hidden class="fixed-side1">Update</th>*@
+                                            <th class="text-nowrap text-center">Employee Name</th>
+                                            <th class="text-nowrap text-center">Type </th>
+                                            <th class="text-nowrap text-center">Doc No. </th>
+                                            <th class="text-nowrap text-center">Doc Date </th>
+                                            <th class="text-nowrap text-center">From Date </th>
+                                            <th class="text-nowrap text-center">To Date </th>
+                                            <th class="text-nowrap text-center">Pending Science</th>
+                                            <th class="text-nowrap text-center">Claim Amount</th>
+                                            <th class="text-nowrap text-center">Approved Amount</th>
+                                            <th class="text-nowrap text-center">Status</th>
+                                            <th class="text-nowrap text-center">Description</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var d in ViewBag.ClaimApprovalList)
+                                        {
+                                            <tr>
+                                                <td class="text-center">
+                                                    <a id="btnUpdate" onclick="ViewForApprover('@d.DocId_Encrypted','@d.Type')">
+                                                        <i class="fa-solid fa-eye fa-lg" style="cursor: pointer; color:orange;"></i>
+                                                    </a>
+                                                </td>
+                                                <td class="text-nowrap">@d.EmployeeName</td>
+                                                <td class="text-nowrap">@d.Type</td>
+                                                <td class="text-nowrap">@d.DocNo</td>
+                                                <td class="text-nowrap">@d.DocDate</td>
+                                                <td class="text-nowrap">@d.FromDate</td>
+                                                <td class="text-nowrap">@d.ToDate</td>
+                                                <td class="text-nowrap">@d.PendingScience</td>
+                                                <td class="text-nowrap">@d.ClaimAmount</td>
+                                                <td class="text-nowrap">@d.ApprovedAmount</td>
+                                                <td class="text-nowrap">@d.Status</td>
+                                                <td class="text-nowrap">@d.Description</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END panel -->
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+<!-- #Start Appprove Reject Modal -dialog -->
+<div class="modal fade" id="myModalFinal" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header bg-black text-white">
+                <h4 class="modal-title"> Remark For Reject</h4>
+                <div class="panel-heading-btn">
+                    <a href="javascript:;" class="btn btn-icon btn-danger btnClear" data-bs-dismiss="modal"
+                       aria-hidden="true">
+                        <i class="fa fa-xmark"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="modal-body">
+                <!-- BEGIN panel -->
+                <div class="modal-body-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <textarea id="txtApproveRejectRemark" class="form-control" rows="4"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- END panel -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="Approved()" id="btnReject" class="btn btn-primary btn-sm">
+                    <i class="fa-solid fa-floppy-disk"> </i> Submit
+                </button>
+                <button type="button" id="btnCancel" class="btn btn-danger btnpress btnClear" data-bs-dismiss="modal">
+                    <i class="fa-solid fa-share-from-square"></i> Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #End modal-dialog -->
+
+<script>
+    $(document).ready(function () {
+        var today = new Date();
+        var yyyy = today.getFullYear();
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+        var defaultMonth = yyyy + '-' + mm;
+        var CheckEmptyDate = document.getElementById('GetMonth').value;
+        if (CheckEmptyDate == "") {
+            document.getElementById('GetMonth').value = defaultMonth;
+        }
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        if (Message && Icon) {
+            Swal.fire({
+                icon: Icon,
+                text: Message,
+                allowOutsideClick: false // Disable outside clicks
+            }).then(() => {
+                window.location.reload();
+            });
+        }
+    });
+
+    function ViewForApprover(DocId_Encrypted) {
+        debugger
+        var url = '@Url.Action("ViewForExpenseClaimRequestApprover", "ESS_ClaimReimbusement_ExpenseApproval")?DocId_Encrypted=' + DocId_Encrypted ;
+        window.location.href = url;
+
+    }
+    var Resource = "";
+    var ResourceEncrypted = "";
+    function OpenModule(ResourceId, ResourceId_Encrypted) {
+        debugger;
+        Resource = ResourceId;
+        ResourceEncrypted = ResourceId_Encrypted;
+        $("#myModalFinal").modal('show');
+    }
+
+
+    function Approved(ResourceId, ResourceId_Encrypted) {
+        debugger
+        var DocId = "";
+        var Encrypted = "";
+        var Status = "";
+        if (ResourceId_Encrypted != undefined) {
+            DocId = ResourceId;
+            Encrypted = ResourceId_Encrypted;
+            Status = "Approved";
+        }
+        else {
+            DocId = Resource;
+            Encrypted = ResourceEncrypted;
+            Status = "Rejected";
+        }
+        var Remark = "";
+        if (Status == "Rejected") {
+            Remark = $("#txtApproveRejectRemark").val();
+        }
+
+        $.ajax({
+            url: "@Url.Action("ForApprovalCandidate", "ESS_Recruitment_Menu")",
+            method: "get",
+            data: { DocId: DocId, Encrypted: Encrypted, Status: Status, Remark: Remark },
+            success: function (response) {
+                debugger;
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon == "error") {
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+
+                            $("#myModalFinal").modal('hide');
+                            $("#txtApproveRejectRemark").val("");
+                            location.reload();
+                        }
+                    }
+                }
+                else {
+                    var Message1 = response.Message;
+                    var Icon1 = response.Icon;
+                    if (response.Icon == "success") {
+                        if (Message1 != null) {
+                            if (Message1 != null) {
+                                Swal.fire({
+                                    icon: Icon1,
+                                    text: Message1,
+                                    allowOutsideClick: () => {
+                                        const popup = Swal.getPopup()
+                                        popup.classList.remove('swal2-show')
+                                        setTimeout(() => {
+                                            popup.classList.add('animate__animated', 'animate__headShake')
+                                        })
+                                        setTimeout(() => {
+                                            popup.classList.remove('animate__animated', 'animate__headShake')
+                                        }, 500)
+                                        return false
+                                    }
+                                });
+                                $("#myModalFinal").modal('hide');
+                                $("#txtApproveRejectRemark").val("");
+                                location.reload();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+</script>
+
+<script>
+    function GetFilterList(ele) {
+        debugger;
+
+        var baseUrl = '@Url.Action("ESS_ClaimReimbusement_ExpenseApproval", "ESS_ClaimReimbusement_ExpenseApproval")';
+        var url;
+
+        if (ele === "Clear") {
+            url = baseUrl;
+        }
+        else {
+            var Month = $("#GetMonth").val();
+            url = baseUrl + "?Month=" + encodeURIComponent(Month);
+        }
+
+        window.location.href = url;   // Redirect for both cases
+    }
+</script>

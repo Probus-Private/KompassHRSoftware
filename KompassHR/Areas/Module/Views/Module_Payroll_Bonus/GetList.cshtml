@@ -1,0 +1,311 @@
+﻿@model KompassHR.Areas.Module.Models.Module_Payroll.PayrollBonus
+
+@{
+    ViewBag.Title = "GetList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+
+<style>
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+</style>
+
+<div id="content" class="app-content">
+
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Payroll Bonus
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("ESS_AdminDashboard_Dashboard", "ESS_AdminDashboard_Dashboard", new { id = 32, ScreenId = 121, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Module_Payroll_Bonus", "Module_Payroll_Bonus", new { id = 6, ScreenId = 849, area = "Module" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Settings">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">Payroll Bonus</h4>
+
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        This is the list of Payroll Bonus created.
+                    </p>
+                </div>
+                <div class="panel-body" data-scrollbar="true">
+                    <div class="row">
+                        <div class="col-md-12">
+
+                            <div class="row mb-3">
+                                <div class="col-md-2">
+
+                                    <a href="@Url.Action("Module_Payroll_Bonus", "Module_Payroll_Bonus", new { area = "Module" })">
+                                        <button type="button" class="btn btn-primary btn-sm  mb-10px">
+                                            <i class="fa-solid fa-plus"></i> &nbsp; Add
+                                        </button>
+                                    </a>
+                                    </div>
+
+                                <div class="col-md-4 d-flex align-items-center">
+                                    <label class="me-2 mb-0 label-large text-nowrap">Financial Year</label>
+                                    <div class="input-group">
+                                        <div class="col-md-7">
+                                            @Html.DropDownListFor(model => model.FinantialYear, new SelectList(ViewBag.FinantialYear, "Id", "Name"), "Select", new { id = "ddlFinantialYear", @class = "form-select", autocomplete = "off", name = "FinantialYear" })
+                                        </div>
+                                        <button type="button" onclick="Show()" class="btn btn-primary btn-sm ms-2">
+                                            Show
+                                        </button>
+                                    </div>
+                                </div>
+                                </div>
+
+                           
+                                    <!-- BEGIN table-responsive -->
+                                    <div class="table-scroll div1">
+                                        <div class="table-wrap">
+                                            <table class="table table-bordered align-middle TablePage" id="fixed-header" style="width: 100%;">
+                                                <thead>
+                                                    <tr class="text-center">
+                                                        <th class="fixed-side">Update</th>
+                                                        <th class="fixed-side1">Delete</th>
+                                                        <th class="text-nowrap">Company Name</th>
+                                                        <th class="text-nowrap">Business Unit</th>
+                                                        <th class="text-nowrap">Employee Name</th>
+                                                        <th class="text-nowrap">Amount </th>
+                                                        <th class="text-nowrap">Remark </th>
+                                                        <th class="text-nowrap">Financial Year </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var d in ViewBag.ListDetails)
+                                                {
+                                                <tr>
+                                                    <td class="text-center">
+                                                        <a onclick="Update('@d.BonusId_Encrypted')" id="BtnUpdate" style="cursor:pointer">
+                                                            <i class="fa-solid fa-pen-to-square fa-lg text-Dark"></i>
+                                                        </a>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <a onclick="Delete('@d.BonusId_Encrypted')" id="btnDelete" style="cursor:pointer">
+                                                            <i class="fa-solid fa-trash-alt text-danger fa-lg"></i>
+                                                        </a>
+                                                    </td>
+                                                    <td>@d.ShortName</td>
+                                                    <td>@d.BranchName</td>
+                                                    <td>@d.EmployeeName</td>
+                                                    <td>@d.Amount</td>
+                                                    <td>@d.Remark</td>
+                                                    <td>@d.FinantialYear1</td>
+                                                    @*<td>@d.RateToDate.ToString("dd'/'MM'/'yyyy")</td>*@
+
+                                                </tr>
+                                                }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        if (Message && Icon) {
+            Swal.fire({
+                icon: Icon,
+                text: Message,
+                allowOutsideClick: false
+            }).then(() => {
+                window.location.reload();
+            });
+        }
+    });
+</script>
+
+<script>
+    function Show() {
+        var year = $("#ddlFinantialYear").val();
+
+        if (year === "" || year === null) {
+            Swal.fire("Please select a year.");
+            return;
+        }
+
+        var url = '@Url.Action("GetList", "Module_Payroll_Bonus", new { area = "Module" })' 
+                    + '?FinantialYear=' + year;
+
+        window.location.href = url;
+    }
+
+
+    function Update(BonusId_Encrypted) {debugger
+        var url = '@Url.Action("Module_Payroll_Bonus", "Module_Payroll_Bonus")?BonusId_Encrypted=' + BonusId_Encrypted;
+        window.location.href = url;
+    }
+
+    function Delete(BonusId_Encrypted) {debugger
+        const DeleteButtons = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        DeleteButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+            allowOutsideClick: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+
+                @*window.location.href = '@Url.Action("Delete", "Setting_FullAndFinal_FNFMakerChecker", new { area = "Setting" })?MakerChecker_Encrypted=' + encodeURIComponent(MakerChecker_Encrypted);*@
+                window.location.href = '@Url.Action("Delete", "Module_Payroll_Bonus")?BonusId_Encrypted=' + BonusId_Encrypted;
+            } else if (
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+            }
+        })
+    }
+</script>
+
+
+
+
+

@@ -1,0 +1,131 @@
+﻿
+@{
+    ViewBag.Title = "BusinessUnitList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+<style>
+    .location {
+        height: 35px;
+        width: 35px;
+        border-radius: 50%;
+        border: 1px solid black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding-right: 3px;
+        padding-top: 3px;
+    }
+
+    
+</style>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Business Unit</title>
+</head>
+<body>
+    <div id="content" class="app-content">
+        <div class="row" style="margin-bottom: 10px;">
+            <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+                <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                    Business Unit
+                </h1>
+                <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                    <li style="margin-right: 10px;">
+                        <a href="@Url.Action("ESS_AdminDashboard_Dashboard", "ESS_AdminDashboard_Dashboard", new { id = 32, ScreenId = 121, area = "ESS" })">
+                            <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("Setting_Prime_Menu", "Setting_Prime_Menu", new { id = 31, ScreenId = 1, area = "Setting" })">
+                            <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Settings">
+                        </a>
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="row">
+
+            @foreach (var d in ViewBag.GetBusinessUnitList)
+            {
+            <div class="col-lg-4">
+                <div class="panel panel-inverse">
+                    <div class="panel-body ">
+                        <div Class="d-flex">
+                            <span>
+                                <h4 style="font-family: Poppins, sans-serif; font-weight: 300;" class="ms-3 fw-bolder">
+                                    <i class="fa-solid fa-building fs-3 mt-2"></i>
+                                    @d.CompanyName
+                                </h4>
+                                <h5 class="ms-3">@d.BranchName</h5>
+                            </span>
+
+                        </div>
+                        <hr style="margin: 5px !important;">
+                        <div class="d-flex">
+                            <i class="fa-solid fa-location-dot fs-2"></i>
+                            <p class="ms-3 fs-5">
+                                @d.BranchAddress
+                            </p>
+                        </div>
+                        <div class="d-flex">
+                            <i class="fa-solid fa-phone fs-4"></i>
+                            <p class="ms-3 fs-5">@d.PhoneNo</p>
+                        </div>
+                        <div class="d-flex">
+                            <i class="fa-solid fa-envelope fs-4"></i>
+                            <p class="ms-3 fs-5">@d.Email</p>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="fa-solid fa-user fs-4 pe-2"></i>
+                            <h5 class="ms-2">BU-Head</h5>
+                            <p class="ms-3 fs-5 pt-2">@d.PlantHeadID</p>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <i class="fa-solid fa-user fs-4 pe-2"></i>
+                            <h5 class="ms-2">BU-HR</h5>
+                            <p class="ms-3 fs-5 pt-2">@d.HRPersonID</p>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div style="text-align: left;" class="me-auto col-8">
+                                <span>
+                                    Total Employees : <b>@d.TotalEmployee</b>
+                                </span>
+                            </div>
+
+                            @{
+                                    if (d.GMap_Coordinates != "")
+                                    {
+                                        var SetLatLong = @d.GMap_Coordinates;
+                            <div class="location col-4 px-3 me-3">
+                                <a href="https://www.google.com/maps/place/${SetLatLong}" target="_blank">
+                                    <i class="fa-solid fa-location-arrow fs-3 locationArrow"></i>
+                                </a>
+                            </div>
+                                    }
+                            @*else
+                                {
+                                    <a>
+                                        <i class="fa-solid fa-location-arrow fs-3 locationArrow"></i>
+                                    </a>
+                                }*@
+                            }
+
+                            @*<a href="@d.GMap_Coordinates">
+                                    <i class="fa-solid fa-location-arrow fs-3 locationArrow"></i>
+                                </a>*@
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+                                    }
+        </div>
+    </div>
+</body>
+</html>

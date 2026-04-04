@@ -1,0 +1,817 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_Tax.InvestmentDeclaration_HRA
+@{
+    ViewBag.Title = "Ess_Tax_DeclarationApproval";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+
+<style>
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    .div1 td:nth-child(1) {
+        position: sticky;
+        left: 0;
+    }
+
+    .div1 td:nth-child(2) {
+        position: sticky;
+        left: 62px;
+    }
+
+    .fixed-side {
+        position: sticky;
+        left: 0;
+    }
+
+    .fixed-side1 {
+        position: sticky;
+        left: 62px;
+    }
+</style>
+
+
+<div id="content" class="app-content">
+    <!-- BEGIN breadcrumb -->
+    <ol class="breadcrumb float-xl-end">
+        <li class="breadcrumb-item"><a href="@Url.Action("ESS_AdminDashboard_Dashboard", "ESS_AdminDashboard_Dashboard", new { id = 32, ScreenId=121, area = "ESS" })">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="@Url.Action("Setting_IncomeTax_Menu", "Setting_IncomeTax_Menu", new { id = 9, ScreenId=74, area = "Setting" })">Income Tax Menu</a></li>
+    </ol>
+    <!-- END breadcrumb -->
+    <!-- BEGIN page-header -->
+    <h1 class="page-header"> Deductor Details </h1>
+    <!-- END page-header -->
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Deductor Details - List</h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        This is the list of deductor details.
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("Ess_Tax_DeclarationApproval", "Ess_Tax_DeclarationApproval", new { area = "ESS" })' id="InvestmentFYear" method="post" data-parsley-validate="true">
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Financial Year<span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownList("TaxFyearId", new SelectList(ViewBag.GetTaxFyear, "Id", "Name"), "--Select--", new { id = "TaxFyearId", @class = "form-select", autocomplete = "off", name = "TaxFyearId" })
+                                                <span id="ErrorFyearId" class="Error"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Type<span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownList("Type", new List<SelectListItem> {
+                                                                            new SelectListItem { Text = "Old Regime", Value = "1" },
+                                                                            new SelectListItem { Text = "New Regime", Value = "2" },
+                                                                        }, "--Select--", new { id = "ddlType", @class = "form-select", autocomplete = "off", name = "Type" })
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="submit" class="btn btn-primary btn-sm" id="btnIncomeTaxNext">
+                                                            Show  <i class="fa-solid fa-arrow-right-long"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <hr />
+                            <div class="table-scroll div1">
+                                <div class="table-wrap">
+
+                                    @*@if (ViewBag.DeclarationApproval != null)
+                                    {
+                                        <table id="data-table-combine15" class="table table-striped table-bordered align-middle">
+                                            <thead>
+                                                @{var dynamicList = ViewBag.DeclarationApproval as List<dynamic>;}
+                                                <tr>
+                                                    @foreach (var Site in dynamicList)
+                                                    {
+                                                        foreach (var property in (IDictionary<string, object>)Site)
+                                                        {
+                                                            <th>@property.Key</th>
+                                                        }
+                                                        break;
+                                                    }
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                @foreach (var Site in dynamicList)
+                                                {
+                                                    <tr>
+                                                        @foreach (var property in (IDictionary<string, object>)Site)
+                                                        {
+                                                            if (property.Key.StartsWith("View"))
+                                                            {
+                                                                <td><i class="fa fa-eye"></i></td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td>@property.Value</td>
+                                                            }
+                                                        }
+                                                        
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                                    }*@
+
+                                                    <table class="table table-bordered align-middle" >
+                                                            <thead>
+                                                                <tr>
+                                                                    <th class="text-nowrap" hidden>InvestmentDeclarationId	</th>
+                                                                    <th class="text-nowrap" hidden>EmployeeId</th>
+                                                                    <th class="text-nowrap" hidden>InvestmentDeclarationFyearId</th>
+                                                                    <th class="text-nowrap">Company Name</th>
+                                                                    <th class="text-nowrap">Business Unit</th>
+                                                                    <th class="text-nowrap">Employee Name</th>
+                                                                    <th class="text-nowrap">Employee No</th>
+                                                                    <th class="text-nowrap">Joining Date</th>
+                                                                    <th class="text-nowrap">Gender</th>
+                                                                    <th class="text-nowrap">Age</th>                                                                    
+                                                                    <th class="text-nowrap">PAN</th>
+                                                                    <th class="text-nowrap">Aadhar No</th>
+                                                                    <th class="text-nowrap">PAN and Aadhar Link</th>
+                                                                    <th class="text-nowrap">Departmernt</th>
+                                                                    <th class="text-nowrap">Designation</th>
+                                                                    <th class="text-nowrap">Grade</th>
+                                                                    <th class="text-nowrap">Total Rent</th>
+                                                                    <th class="text-nowrap">Lanlord PAN No</th>
+                                                                    <th class="text-nowrap">View</th>
+                                                                    <th class="text-nowrap">Total declare Sec 80C</th>
+                                                                    <th class="text-nowrap">Eligible declare Sec 80C</th>
+                                                                    <th class="text-nowrap">View</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                 @foreach(var item in ViewBag.DeclarationApproval)
+                                                                {
+                                                                    <tr>
+                                                                        <td hidden>InvestmentDeclarationId	</td>
+                                                                        <td hidden>EmployeeId</td>
+                                                                        <td hidden>InvestmentDeclarationFyearId</td>
+                                                                        <td>@item.CompanyName</td>
+                                                                        <td>@item.BusinessUnit</td>
+                                                                        <td>@item.EmployeeName</td>
+                                                                        <td>@item.EmployeeNo</td>
+                                                                        <td>@item.JoiningDate</td>
+                                                                        <td>@item.Gender</td>
+                                                                        <td>@item.Age</td>                                                                        
+                                                                        <td>@item.PAN</td>
+                                                                        <td>@item.AadharNo</td>
+                                                                        <td>@item.PANandAadharLink</td>
+                                                                        <td>@item.Departmernt</td>
+                                                                        <td>@item.Designation</td>
+                                                                        <td>@item.Grade</td>
+                                                                        <td>@item.TotalHRA</td>
+                                                                        <td>@item.AprLandlordPAN</td>
+                                                                        <td class="text-nowrap text-center">                                                                            
+                                                                            <i class="fa-solid fa-eye fa-lg" id="btnViewHRA" style="cursor: pointer; color:orange;"></i>
+                                                                        </td> 
+                                                                        <td>@item.TotalDeclarationUnderSection80C</td>
+                                                                        <td>@item.EligibleDeductionUnderSection80C</td>
+                                                                        <td class="text-nowrap text-center">                                                                           
+                                                                            <i class="fa-solid fa-eye fa-lg" id="btnViewUnderSection80C" style="cursor: pointer; color:orange;"></i>
+                                                                        </td> 
+                                                                    </tr>
+                                                                }
+                                                            </tbody>
+                                                        </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END panel -->
+                        </div>
+                    </div>
+                </div>
+
+
+
+<div class="modal fade" id="HRAModal" @*tabindex="-1" aria-labelledby="HRAModalLabel" aria-hidden="true"*@ >
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-black text-white">
+                <h4 class="modal-title">House Rent Allowance</h4>
+                <div class="panel-heading-btn">
+                    <a href="javascript:;" class="btn btn-icon btn-danger CloseModelHistory" data-bs-dismiss="modal"
+                       aria-hidden="true" id="CloseModelHistory">
+                        <i class="fa fa-xmark"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="modal-body" style="overflow: auto !important;">             
+                @*<div class="panel-body" style="overflow: auto !important;">*@
+                    <form role="form" action="@Url.Action("SaveUpdate", "ESS_Tax_Investment_HouseRental", new { area = "ESS" })" id="FormSaveHouseRental" name="contact_form" method="post" onsubmit="return validate_form();">
+                        
+
+
+                        <!-- BEGIN table-responsive -->
+                        <table id="tblHouseRent" class="table table-striped table-bordered align-middle">
+                            <thead>
+                                <tr>
+                                    <th class="text-center bg-cyan text-primary" colspan="7">
+                                        <h5>House Rent</h5>
+                                    </th>
+                                </tr>
+                                <tr style="background-color: rgba(233, 236, 239, 1) !important;">
+                                    <th class="text-nowrap text-center">Month</th>
+                                    <th class="text-nowrap text-center">Rent Amount </th>
+                                    <th class="text-nowrap text-center">Metro / Non-Metro</th>
+                                    <th class="text-nowrap text-center">City Name</th>
+                                    <th class="text-nowrap text-center">Address </th>
+                                    <th class="text-nowrap text-center">Landlord Name </th>
+                                    <th class="text-nowrap text-center">Landlord PAN </th>
+
+                                </tr>
+                            </thead>
+                            <tbody class="white-background">
+                                <tr>
+                                    <td><b>April</b></td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Apr_CurrentAmt, new { @class = "form-control rnt", id = "HRA_Apr_CurrentAmt", autocomplete = "Off", name = "HRA_Apr_CurrentAmt", type = "number", @style = "text-align:right" })
+                                    </td>
+                                    <td>
+                                        @Html.DropDownListFor(model => model.HRA_Apr_Metro, new SelectList(new List<object>() {
+                                                    new {text="Non-Metro",value="Non-Metro"},
+                                                    new {text="Metro",value="Metro"},
+                                                }, "text", "value"), "--Select--", new { @class = "form-control", @id = "HRA_Apr_Metro" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Apr_Metro, "", new { @class = "help-block", @id = "ErrorAprMetro", @style = "color:red" })
+                                    </td>
+
+                                    <td>
+                                        <div hidden>
+                                            @Html.TextBoxFor(model => model.InvestmentDeclarationEmployeeId, new { @class = "form-control", id = "InvestmentDeclarationEmployeeId", autocomplete = "Off", name = "InvestmentDeclarationEmployeeId" })
+                                            @Html.TextBoxFor(model => model.InvestmentDeclaration_Encrypted, new { @class = "form-control", id = "InvestmentDeclaration_Encrypted", autocomplete = "Off", name = "InvestmentDeclaration_Encrypted" })
+                                            @Html.TextBoxFor(model => model.InvestmentDeclarationFyearId, new { @class = "form-control", id = "InvestmentDeclarationFyearId", autocomplete = "Off", name = "InvestmentDeclarationFyearId" })
+                                            @Html.TextBoxFor(model => model.InvestmentDeclarationEmployeeName, new { @class = "form-control", id = "InvestmentDeclarationEmployeeName", autocomplete = "Off", name = "InvestmentDeclarationEmployeeName" })
+                                        </div>
+                                        @Html.TextBoxFor(model => model.HRA_Apr_CityName, new { @class = "form-control", id = "txtCityName", autocomplete = "Off", name = "txtCityName" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Apr_CityName, "", new { @class = "help-block", @id = "ErrorAprCityName", @style = "color:red" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Apr_Address, new { @class = "form-control", id = "txtAddress", autocomplete = "Off", name = "txtAddress" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Apr_Address, "", new { @class = "help-block", @id = "ErrorAprAddress", @style = "color:red" })
+                                    </td>
+
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Apr_LandlordName, new { @class = "form-control", id = "txtLandlordName", autocomplete = "Off", name = "txtLandlordName" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Apr_LandlordName, "", new { @class = "help-block", @id = "ErrorAprLandlordName", @style = "color:red" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Apr_PanNo, new { @class = "form-control", id = "HRA_Apr_PanNo", autocomplete = "Off", name = "HRA_Apr_PanNo", oninput = "this.value = this.value.toUpperCase()" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Apr_PanNo, "", new { @class = "help-block", @id = "ErrorAprPanNo", @style = "color:red" })
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td><b>May</b></td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_May_CurrentAmt, new { @class = "form-control rnt", id = "HRA_May_CurrentAmt", autocomplete = "Off", name = "HRA_May_CurrentAmt", type = "number", @style = "text-align:right" })
+
+                                    </td>
+                                    <td>
+
+                                        @Html.DropDownListFor(model => model.HRA_May_Metro, new SelectList(new List<object>() {
+                                                    new {text="Non-Metro",value="Non-Metro"},
+                                                    new {text="Metro",value="Metro"},
+                                                }, "text", "value"), "--Select--", new { @class = "form-control", @id = "HRA_May_Metro" })
+                                        @Html.ValidationMessageFor(model => model.HRA_May_Metro, "", new { @class = "help-block", @id = "ErrorMayMetro", @style = "color:red" })
+                                    </td>
+
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_May_CityName, new { @class = "form-control", id = "HRA_May_CityName", autocomplete = "Off", name = "HRA_May_CityName" })
+                                        @Html.ValidationMessageFor(model => model.HRA_May_CityName, "", new { @class = "help-block", @id = "ErrorMayCityName", @style = "color:red" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_May_Address, new { @class = "form-control", id = "HRA_May_Address", autocomplete = "Off", name = "HRA_May_Address" })
+                                        @Html.ValidationMessageFor(model => model.HRA_May_Address, "", new { @class = "help-block", @id = "ErrorMayAddress", @style = "color:red" })
+                                    </td>
+
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_May_LandlordName, new { @class = "form-control", id = "HRA_May_LandlordName", autocomplete = "Off", name = "HRA_May_LandlordName" })
+                                        @Html.ValidationMessageFor(model => model.HRA_May_LandlordName, "", new { @class = "help-block", @id = "ErrorMayLandlordName", @style = "color:red" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_May_PanNo, new { @class = "form-control", id = "HRA_May_PanNo", autocomplete = "Off", name = "HRA_May_PanNo", oninput = "this.value = this.value.toUpperCase()" })
+                                        @Html.ValidationMessageFor(model => model.HRA_May_PanNo, "", new { @class = "help-block", @id = "ErrorMayPanNo", @style = "color:red" })
+                                    </td>
+
+                                </tr>
+
+                                <tr>
+                                    <td><b>June</b></td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Jun_CurrentAmt, new { @class = "form-control rnt", id = "HRA_Jun_CurrentAmt", autocomplete = "Off", name = "HRA_Jun_CurrentAmt", type = "number", @style = "text-align:right" })
+                                    </td>
+                                    <td>
+                                        @Html.DropDownListFor(model => model.HRA_Jun_Metro, new SelectList(new List<object>() {
+                                                    new {text="Non-Metro",value="Non-Metro"},
+                                                    new {text="Metro",value="Metro"},
+                                                }, "text", "value"), "--Select--", new { @class = "form-control", @id = "HRA_Jun_Metro" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Jun_Metro, "", new { @class = "help-block", @id = "ErrorJunMetro", @style = "color:red" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Jun_CityName, new { @class = "form-control", id = "HRA_Jun_CityName", autocomplete = "Off", name = "HRA_Jun_CityName" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Jun_CityName, "", new { @class = "help-block", @id = "ErrorJunCityName", @style = "color:red" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Jun_Address, new { @class = "form-control", id = "HRA_Jun_Address", autocomplete = "Off", name = "HRA_Jun_Address" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Jun_Address, "", new { @class = "help-block", @id = "ErrorJunAddress", @style = "color:red" })
+                                    </td>
+
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Jun_LandlordName, new { @class = "form-control", id = "HRA_Jun_LandlordName", autocomplete = "Off", name = "HRA_Jun_LandlordName" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Jun_LandlordName, "", new { @class = "help-block", @id = "ErrorJunLandlordName", @style = "color:red" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Jun_PanNo, new { @class = "form-control", id = "HRA_Jun_PanNo", autocomplete = "Off", name = "HRA_Jun_PanNo", oninput = "this.value = this.value.toUpperCase()" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Jun_PanNo, "", new { @class = "help-block", @id = "ErrorJunPanNo", @style = "color:red" })
+                                    </td>
+
+                                </tr>
+
+                                <tr>
+                                    <td><b>July</b></td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Jul_CurrentAmt, new { @class = "form-control rnt", id = "HRA_Jul_CurrentAmt", autocomplete = "Off", name = "HRA_Jul_CurrentAmt", type = "number", @style = "text-align:right" })
+                                    </td>
+                                    <td>
+                                        @Html.DropDownListFor(model => model.HRA_Jul_Metro, new SelectList(new List<object>() {
+                                                    new {text="Non-Metro",value="Non-Metro"},
+                                                    new {text="Metro",value="Metro"},
+                                                }, "text", "value"), "--Select--", new { @class = "form-control", @id = "HRA_Jul_Metro" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Jul_Metro, "", new { @class = "help-block", @id = "ErrorJulMetro", @style = "color:red" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Jul_CityName, new { @class = "form-control", id = "HRA_Jul_CityName", autocomplete = "Off", name = "HRA_Jul_CityName" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Jul_CityName, "", new { @class = "help-block", @id = "ErrorJulCityName", @style = "color:red" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Jul_Address, new { @class = "form-control", id = "HRA_Jul_Address", autocomplete = "Off", name = "HRA_Jul_Address" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Jul_Address, "", new { @class = "help-block", @id = "ErrorJulAddress", @style = "color:red" })
+                                    </td>
+
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Jul_LandlordName, new { @class = "form-control", id = "HRA_Jul_LandlordName", autocomplete = "Off", name = "HRA_Jul_LandlordName" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Jul_LandlordName, "", new { @class = "help-block", @id = "ErrorJulLandlordName", @style = "color:red" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Jul_PanNo, new { @class = "form-control", id = "HRA_Jul_PanNo", autocomplete = "Off", name = "HRA_Jul_PanNo", oninput = "this.value = this.value.toUpperCase()" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Jul_PanNo, "", new { @class = "help-block", @id = "ErrorJulPanNo", @style = "color:red" })
+                                    </td>
+
+                                </tr>
+
+                                <tr>
+                                    <td><b>August</b></td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Aug_CurrentAmt, new { @class = "form-control rnt", id = "HRA_Aug_CurrentAmt", autocomplete = "Off", name = "HRA_Aug_CurrentAmt", type = "number", @style = "text-align:right" })
+                                    </td>
+                                    <td>
+                                        @Html.DropDownListFor(model => model.HRA_Aug_Metro, new SelectList(new List<object>() {
+                                                    new {text="Non-Metro",value="Non-Metro"},
+                                                    new {text="Metro",value="Metro"},
+                                                }, "text", "value"), "--Select--", new { @class = "form-control", @id = "HRA_Aug_Metro" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Aug_Metro, "", new { @class = "help-block", @id = "ErrorAugMetro", @style = "color:red" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Aug_CityName, new { @class = "form-control", id = "HRA_Aug_CityName", autocomplete = "Off", name = "HRA_Aug_CityName" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Aug_CityName, "", new { @class = "help-block", @id = "ErrorAugCityName", @style = "color:red" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Aug_Address, new { @class = "form-control", id = "HRA_Aug_Address", autocomplete = "Off", name = "HRA_Aug_Address" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Aug_Address, "", new { @class = "help-block", @id = "ErrorAugAddress", @style = "color:red" })
+                                    </td>
+
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Aug_LandlordName, new { @class = "form-control", id = "HRA_Aug_LandlordName", autocomplete = "Off", name = "HRA_Aug_LandlordName" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Aug_LandlordName, "", new { @class = "help-block", @id = "ErrorAugLandlordName", @style = "color:red" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Aug_PanNo, new { @class = "form-control", id = "HRA_Aug_PanNo", autocomplete = "Off", name = "HRA_Aug_PanNo", oninput = "this.value = this.value.toUpperCase()" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Aug_PanNo, "", new { @class = "help-block", @id = "ErrorAugPanNo", @style = "color:red" })
+                                    </td>
+
+                                </tr>
+
+                                <tr>
+                                    <td><b>September</b></td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Sep_CurrentAmt, new { @class = "form-control rnt", id = "HRA_Sep_CurrentAmt", autocomplete = "Off", name = "HRA_Sep_CurrentAmt", type = "number", @style = "text-align:right" })
+                                    </td>
+                                    <td>
+                                        @Html.DropDownListFor(model => model.HRA_Sep_Metro, new SelectList(new List<object>() {
+                                                    new {text="Non-Metro",value="Non-Metro"},
+                                                    new {text="Metro",value="Metro"},
+                                                }, "text", "value"), "--Select--", new { @class = "form-control", @id = "HRA_Sep_Metro" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Sep_Metro, "", new { @class = "help-block", @id = "ErrorSepMetro", @style = "color:red" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Sep_CityName, new { @class = "form-control", id = "HRA_Sep_CityName", autocomplete = "Off", name = "HRA_Sep_CityName" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Sep_CityName, "", new { @class = "help-block", @id = "ErrorSepCityName", @style = "color:red" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Sep_Address, new { @class = "form-control", id = "HRA_Sep_Address", autocomplete = "Off", name = "HRA_Sep_Address" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Sep_Address, "", new { @class = "help-block", @id = "ErrorSepAddress", @style = "color:red" })
+                                    </td>
+
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Sep_LandlordName, new { @class = "form-control", id = "HRA_Sep_LandlordName", autocomplete = "Off", name = "HRA_Sep_LandlordName" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Sep_LandlordName, "", new { @class = "help-block", @id = "ErrorSepLandlordName", @style = "color:red" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Sep_PanNo, new { @class = "form-control", id = "HRA_Sep_PanNo", autocomplete = "Off", name = "HRA_Sep_PanNo", oninput = "this.value = this.value.toUpperCase()" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Sep_PanNo, "", new { @class = "help-block", @id = "ErrorSepPanNo", @style = "color:red" })
+                                    </td>
+
+                                </tr>
+
+                                <tr>
+                                    <td><b>October</b></td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Oct_CurrentAmt, new { @class = "form-control rnt", id = "HRA_Oct_CurrentAmt", autocomplete = "Off", name = "HRA_Oct_CurrentAmt", type = "number", @style = "text-align:right" })
+                                    </td>
+                                    <td>
+                                        @Html.DropDownListFor(model => model.HRA_Oct_Metro, new SelectList(new List<object>() {
+                                                    new {text="Non-Metro",value="Non-Metro"},
+                                                    new {text="Metro",value="Metro"},
+                                                }, "text", "value"), "--Select--", new { @class = "form-control", @id = "HRA_Oct_Metro" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Oct_Metro, "", new { @class = "help-block", @id = "ErrorOctMetro", @style = "color:red" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Oct_CityName, new { @class = "form-control", id = "HRA_Oct_CityName", autocomplete = "Off", name = "HRA_Oct_CityName" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Oct_CityName, "", new { @class = "help-block", @id = "ErrorOctCityName", @style = "color:red" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Oct_Address, new { @class = "form-control", id = "HRA_Oct_Address", autocomplete = "Off", name = "HRA_Oct_Address" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Oct_Address, "", new { @class = "help-block", @id = "ErrorOctAddress", @style = "color:red" })
+                                    </td>
+
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Oct_LandlordName, new { @class = "form-control", id = "HRA_Oct_LandlordName", autocomplete = "Off", name = "HRA_Oct_LandlordName" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Oct_LandlordName, "", new { @class = "help-block", @id = "ErrorOctLandlordName", @style = "color:red" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Oct_PanNo, new { @class = "form-control", id = "HRA_Oct_PanNo", autocomplete = "Off", name = "HRA_Oct_PanNo", oninput = "this.value = this.value.toUpperCase()" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Oct_PanNo, "", new { @class = "help-block", @id = "ErrorOctPanNo", @style = "color:red" })
+                                    </td>
+
+                                </tr>
+
+                                <tr>
+                                    <td><b>November</b></td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Nov_CurrentAmt, new { @class = "form-control rnt", id = "HRA_Nov_CurrentAmt", autocomplete = "Off", name = "HRA_Nov_CurrentAmt", type = "number", @style = "text-align:right" })
+                                    </td>
+                                    <td>
+                                        @Html.DropDownListFor(model => model.HRA_Nov_Metro, new SelectList(new List<object>() {
+                                                    new {text="Non-Metro",value="Non-Metro"},
+                                                    new {text="Metro",value="Metro"},
+                                                }, "text", "value"), "--Select--", new { @class = "form-control", @id = "HRA_Nov_Metro" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Nov_Metro, "", new { @class = "help-block", @id = "ErrorNovMetro", @style = "color:red" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Nov_CityName, new { @class = "form-control", id = "HRA_Nov_CityName", autocomplete = "Off", name = "HRA_Nov_CityName" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Nov_CityName, "", new { @class = "help-block", @id = "ErrorNovCityName", @style = "color:red" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Nov_Address, new { @class = "form-control", id = "HRA_Nov_Address", autocomplete = "Off", name = "HRA_Nov_Address" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Nov_Address, "", new { @class = "help-block", @id = "ErrorNovAddress", @style = "color:red" })
+                                    </td>
+
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Nov_LandlordName, new { @class = "form-control", id = "HRA_Nov_LandlordName", autocomplete = "Off", name = "HRA_Nov_LandlordName" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Nov_LandlordName, "", new { @class = "help-block", @id = "ErrorNovLandlordName", @style = "color:red" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Nov_PanNo, new { @class = "form-control", id = "HRA_Nov_PanNo", autocomplete = "Off", name = "HRA_Nov_PanNo", oninput = "this.value = this.value.toUpperCase()" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Nov_PanNo, "", new { @class = "help-block", @id = "ErrorNovPanNo", @style = "color:red" })
+                                    </td>
+
+                                </tr>
+
+                                <tr>
+                                    <td><b>December</b></td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Dec_CurrentAmt, new { @class = "form-control rnt", id = "HRA_Dec_CurrentAmt", autocomplete = "Off", name = "HRA_Dec_CurrentAmt", type = "number", @style = "text-align:right" })
+                                    </td>
+                                    <td>
+                                        @Html.DropDownListFor(model => model.HRA_Dec_Metro, new SelectList(new List<object>() {
+                                                    new {text="Non-Metro",value="Non-Metro"},
+                                                    new {text="Metro",value="Metro"},
+                                                }, "text", "value"), "--Select--", new { @class = "form-control", @id = "HRA_Dec_Metro" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Dec_Metro, "", new { @class = "help-block", @id = "ErrorDecMetro", @style = "color:red" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Dec_CityName, new { @class = "form-control", id = "HRA_Dec_CityName", autocomplete = "Off", name = "HRA_Dec_CityName" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Dec_CityName, "", new { @class = "help-block", @id = "ErrorDecCityName", @style = "color:red" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Dec_Address, new { @class = "form-control", id = "HRA_Dec_Address", autocomplete = "Off", name = "HRA_Dec_Address" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Dec_Address, "", new { @class = "help-block", @id = "ErrorDecAddress", @style = "color:red" })
+                                    </td>
+
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Dec_LandlordName, new { @class = "form-control", id = "HRA_Dec_LandlordName", autocomplete = "Off", name = "HRA_Dec_LandlordName" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Dec_LandlordName, "", new { @class = "help-block", @id = "ErrorDecLandlordName", @style = "color:red" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Dec_PanNo, new { @class = "form-control", id = "HRA_Dec_PanNo", autocomplete = "Off", name = "HRA_Dec_PanNo", oninput = "this.value = this.value.toUpperCase()" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Dec_PanNo, "", new { @class = "help-block", @id = "ErrorDecPanNo", @style = "color:red" })
+                                    </td>
+
+                                </tr>
+
+                                <tr>
+                                    <td><b>January</b></td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Jan_CurrentAmt, new { @class = "form-control rnt", id = "HRA_Jan_CurrentAmt", autocomplete = "Off", name = "HRA_Jan_CurrentAmt", @style = "text-align:right" })
+                                    </td>
+                                    <td>
+                                        @Html.DropDownListFor(model => model.HRA_Jan_Metro, new SelectList(new List<object>() {
+                                                    new {text="Non-Metro",value="Non-Metro"},
+                                                    new {text="Metro",value="Metro"},
+                                                }, "text", "value"), "--Select--", new { @class = "form-control", @id = "HRA_Jan_Metro" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Jan_Metro, "", new { @class = "help-block", @id = "ErrorJanMetro", @style = "color:red" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Jan_CityName, new { @class = "form-control", id = "HRA_Jan_CityName", autocomplete = "Off", name = "HRA_Jan_CityName" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Jan_CityName, "", new { @class = "help-block", @id = "ErrorJanCityName", @style = "color:red" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Jan_Address, new { @class = "form-control", id = "HRA_Jan_Address", autocomplete = "Off", name = "HRA_Jan_Address" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Jan_Address, "", new { @class = "help-block", @id = "ErrorJanAddress", @style = "color:red" })
+                                    </td>
+
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Jan_LandlordName, new { @class = "form-control", id = "HRA_Jan_LandlordName", autocomplete = "Off", name = "HRA_Jan_LandlordName" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Jan_LandlordName, "", new { @class = "help-block", @id = "ErrorJanLandlordName", @style = "color:red" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Jan_PanNo, new { @class = "form-control", id = "HRA_Jan_PanNo", autocomplete = "Off", name = "HRA_Jan_PanNo", oninput = "this.value = this.value.toUpperCase()" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Jan_PanNo, "", new { @class = "help-block", @id = "ErrorJanPanNo", @style = "color:red" })
+                                    </td>
+
+                                </tr>
+
+                                <tr>
+                                    <td><b>February</b></td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Feb_CurrentAmt, new { @class = "form-control rnt", id = "HRA_Feb_CurrentAmt", autocomplete = "Off", name = "HRA_Feb_CurrentAmt", @style = "text-align:right" })
+                                    </td>
+                                    <td>
+                                        @Html.DropDownListFor(model => model.HRA_Feb_Metro, new SelectList(new List<object>() {
+                                                    new {text="Non-Metro",value="Non-Metro"},
+                                                    new {text="Metro",value="Metro"},
+                                                }, "text", "value"), "--Select--", new { @class = "form-control", @id = "HRA_Feb_Metro" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Feb_Metro, "", new { @class = "help-block", @id = "ErrorFebMetro", @style = "color:red" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Feb_CityName, new { @class = "form-control", id = "HRA_Feb_CityName", autocomplete = "Off", name = "HRA_Feb_CityName" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Feb_CityName, "", new { @class = "help-block", @id = "ErrorFebCityName", @style = "color:red" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Feb_Address, new { @class = "form-control", id = "HRA_Feb_Address", autocomplete = "Off", name = "HRA_Feb_Address" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Feb_Address, "", new { @class = "help-block", @id = "ErrorFebAddress", @style = "color:red" })
+                                    </td>
+
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Feb_LandlordName, new { @class = "form-control", id = "HRA_Feb_LandlordName", autocomplete = "Off", name = "HRA_Feb_LandlordName" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Feb_LandlordName, "", new { @class = "help-block", @id = "ErrorFebLandlordName", @style = "color:red" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Feb_PanNo, new { @class = "form-control", id = "HRA_Feb_PanNo", autocomplete = "Off", name = "HRA_Feb_PanNo", oninput = "this.value = this.value.toUpperCase()" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Feb_PanNo, "", new { @class = "help-block", @id = "ErrorFebPanNo", @style = "color:red" })
+                                    </td>
+
+                                </tr>
+
+                                <tr>
+                                    <td><b>March</b></td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Mar_CurrentAmt, new { @class = "form-control rnt", id = "HRA_Mar_CurrentAmt", autocomplete = "Off", name = "HRA_Mar_CurrentAmt", @style = "text-align:right" })
+                                    </td>
+                                    <td>
+
+                                        @Html.DropDownListFor(model => model.HRA_Mar_Metro, new SelectList(new List<object>() {
+                                                    new {text="Non-Metro",value="Non-Metro"},
+                                                    new {text="Metro",value="Metro"},
+                                                }, "text", "value"), "--Select--", new { @class = "form-control", @id = "HRA_Mar_Metro" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Mar_Metro, "", new { @class = "help-block", @id = "ErrorMarMetro", @style = "color:red" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Mar_CityName, new { @class = "form-control", id = "HRA_Mar_CityName", autocomplete = "Off", name = "HRA_Mar_CityName" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Mar_CityName, "", new { @class = "help-block", @id = "ErrorMarCityName", @style = "color:red" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Mar_Address, new { @class = "form-control", id = "HRA_Mar_Address", autocomplete = "Off", name = "HRA_Mar_Address" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Mar_Address, "", new { @class = "help-block", @id = "ErrorMarAddress", @style = "color:red" })
+                                    </td>
+
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Mar_LandlordName, new { @class = "form-control", id = "HRA_Mar_LandlordName", autocomplete = "Off", name = "HRA_Mar_LandlordName" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Mar_LandlordName, "", new { @class = "help-block", @id = "ErrorMarLandlordName", @style = "color:red" })
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Mar_PanNo, new { @class = "form-control", id = "HRA_Mar_PanNo", autocomplete = "Off", name = "HRA_Mar_PanNo", oninput = "this.value = this.value.toUpperCase()" })
+                                        @Html.ValidationMessageFor(model => model.HRA_Mar_PanNo, "", new { @class = "help-block", @id = "ErrorMarPanNo", @style = "color:red" })
+                                    </td>
+
+                                </tr>
+
+                                <tr>
+                                    <td colspan="1">
+                                        <h3 class="text-center">Total</h3>
+                                    </td>
+                                    <td>
+                                        @Html.TextBoxFor(model => model.HRA_Total, new { @class = "form-control", id = "HRA_Total", autocomplete = "Off", name = "HRA_Total", @readonly = "readonly", @style = "text-align:right" })
+                                    </td>
+                                    <td colspan="5"><span id="ErrorTotal" class="Error"></span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!-- END table-responsive -->
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="BtnBx">
+                                    <div>
+                                        <button type="submit" id="btnSubmit" class="btn btn-primary btn-sm" onsubmit="return validate_form();">
+                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                        </button>
+                                        <button type="button" class="btn btn-danger btn-sm" id="btnBack" data-bs-toggle="modal">
+                                            <i class="fa-solid fa-share-from-square"></i> Back
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                @*</div>*@
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="saveDateTime">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    $(document).ready(function () {
+        $('#btnViewHRA').click(function () {
+            debugger
+            $('#HRAModal').modal('show');
+        });
+    });
+</script>

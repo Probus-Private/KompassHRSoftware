@@ -1,0 +1,385 @@
+﻿@{
+    ViewBag.Title = "CalenderEventView";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+@{
+    var GetDetails = ViewBag.GetCalenderEventDetails;
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+
+<style>
+    body {
+        background-color: #f9fbff;
+    }
+
+    .carousel-item img {
+        width: 100%;
+        max-height: 300px;
+        object-fit: cover;
+        border-radius: 10px;
+    }
+
+    .carousel-inner {
+        border-radius: 10px;
+    }
+
+    .event-card {
+        background: #fff;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        padding: 30px;
+    }
+
+    .tag {
+        background: #e0e0e0;
+        border-radius: 20px;
+        padding: 5px 15px;
+        margin: 5px 5px 0 0;
+        font-size: 14px;
+        display: inline-block;
+    }
+
+    .btn-custom {
+        background-color: #0d6efd;
+        color: #fff;
+    }
+
+        .btn-custom:hover {
+            background-color: #0b5ed7;
+        }
+
+    .sidebar {
+        background: #fff;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .upcoming-event {
+        margin-top: 30px;
+    }
+
+    .page-header {
+        font-size: 18px;
+        font-family: Roboto, sans-serif;
+        margin: 0;
+    }
+
+    .breadcrumb-icon img {
+        height: 24px;
+    }
+
+    @@media (max-width: 767px) {
+        .event-card,
+        .sidebar {
+            margin-top: 20px;
+        }
+
+        .d-flex.gap-3 {
+            flex-direction: column;
+            gap: 10px !important;
+        }
+
+            .d-flex.gap-3 .ms-auto {
+                margin-left: 0 !important;
+                text-align: left;
+            }
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="container mb-3">
+        <div class="d-flex justify-content-between align-items-center flex-wrap">
+            <h1 class="page-header">@(GetDetails?.TrainingCalenderName ?? "")</h1>
+            <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                <img src="~/assets/MenuImages/Home.png" alt="Home">
+            </a>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Carousel Section -->
+        <div id="eventCarousel" class="carousel slide carousel-fade mb-2" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="@TempData["BannerImage"]" class="d-block w-100" alt="Event 1">
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="row">
+            <div class="container py-1">
+                <div class="row g-4">
+                    <div class="col-xl-8 border-end-xl">
+                        <!-- Left Column: Event Card -->
+                        <div class="col-lg-12">
+                            <div class="card shadow-sm rounded-4 p-4 mb-4">
+                                <h4 class="fw-bold">@(GetDetails?.TrainingCategory ?? "") - @(GetDetails?.TrainingCalenderName ?? "")</h4>
+                                <div class="row g-4 mb-4 border p-3 rounded-3">
+                                    <!-- Location -->
+                                    <div class="col-md-6 d-flex align-items-start gap-3">
+                                        <div class="bg-primary-subtle text-primary rounded-3 p-2">
+                                            <i class="bi bi-geo-alt-fill fs-4"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1 fw-semibold">Location</h6>
+                                            <p class="mb-0 text-muted small">
+                                                @(GetDetails?.Location ?? "")
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Date & Time -->
+                                    <div class="col-md-6 d-flex align-items-start gap-3 border-start ps-md-4">
+                                        <div class="bg-primary-subtle text-primary rounded-3 p-2">
+                                            <i class="bi bi-calendar-event-fill fs-4"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-1 fw-semibold">Date & Time</h6>
+                                            <p class="mb-0 text-muted small">
+                                                @(GetDetails?.MonthYear ?? "")
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                               @functions {
+                                   public string GetLabelIfTrue(string label, bool? val)
+                                   {
+                                       return val == true ? $"{label}" : string.Empty;
+                                   }
+
+                                   public bool HasAnyIncludedItems(dynamic details)
+                                   {
+                                       return details?.Certificate == true ||
+                                              details?.CourseMaterial == true ||
+                                              details?.FoodIncluded == true ||
+                                              details?.Accommodation == true ||
+                                              details?.Travel == true;
+                                   }
+                            }
+
+                            @if (HasAnyIncludedItems(GetDetails))
+                            {
+                                <div class="d-flex flex-wrap align-items-center gap-1 mb-2">
+                                    <span style="color: blue; font-size: 0.9rem;">What's Included</span>
+                                    <div class="d-flex gap-2 ms-auto flex-wrap">
+                                        @if (GetDetails?.Certificate == true)
+                                        {
+                                            <div class="border rounded px-2 py-1 d-flex align-items-center" style="font-size: 0.75rem;">
+                                                <img src="~/assets/MenuImages/certificate.png" alt="Certificate" width="14" height="14" class="me-1" />
+                                                Certificate
+                                            </div>
+                                        }
+                                        @if (GetDetails?.CourseMaterial == true)
+                                        {
+                                            <div class="border rounded px-2 py-1 d-flex align-items-center" style="font-size: 0.75rem;">
+                                                <img src="~/assets/MenuImages/onlinecourse.png" alt="Course Material" width="14" height="14" class="me-1" />
+                                                Course Material
+                                            </div>
+                                        }
+                                        @if (GetDetails?.FoodIncluded == true)
+                                        {
+                                            <div class="border rounded px-2 py-1 d-flex align-items-center" style="font-size: 0.75rem;">
+                                                <img src="~/assets/MenuImages/fastfood.png" alt="Food" width="14" height="14" class="me-1" />
+                                                Food
+                                            </div>
+                                        }
+                                        @if (GetDetails?.Accommodation == true)
+                                        {
+                                            <div class="border rounded px-2 py-1 d-flex align-items-center" style="font-size: 0.75rem;">
+                                                <img src="~/assets/MenuImages/accomodation.png" alt="Accommodation" width="14" height="14" class="me-1" />
+                                                Accommodation
+                                            </div>
+                                        }
+                                        @if (GetDetails?.Travel == true)
+                                        {
+                                            <div class="border rounded px-2 py-1 d-flex align-items-center" style="font-size: 0.75rem;">
+                                                <img src="~/assets/MenuImages/destination.png" alt="Travel" width="14" height="14" class="me-1" />
+                                                Travel
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+
+
+
+
+
+                                <hr />
+                                <div class="d-flex flex-wrap gap-2 align-items-center">
+                                    <input type="hidden" id="hdnTrainingCalenderId" value=" @(GetDetails?.TrainingCalenderId ?? "") " />
+                                    @*<button class="btn btn-primary px-4" id="btnIntrest"></button>*@
+                                    <div class="d-flex gap-2">
+                                        <button class="btn border d-flex align-items-center" id="btnIntrest" style="border-color: #0d6efd; background-color: transparent; color: inherit;">
+                                            <i class="bi bi-heart-fill text-danger me-2"></i>
+                                            <span>Interested</span>
+                                            <span style="margin-left: 8px; color: #0d6efd;" id="spnIntrestCount"></span>
+                                        </button>
+                                    </div>
+
+                                    <button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#photoPreviewModal" title="Preview QR">
+                                        <i class="bi bi-currency-rupee bt-lg"></i> Enroll
+                                    </button>
+
+                                    @*<div class="d-flex gap-2 ms-auto">
+                                        <button class="btn btn-outline border">
+                                            <i class="bi bi-heart-fill text-danger me-2"></i> 3677
+                                        </button>
+                                        <button class="btn btn-outline border">
+                                            <i class="bi bi-share-fill text-primary me-1"></i> 4467
+                                        </button>
+                                    </div>*@
+                                </div>
+                            </div>
+                        </div>
+
+                        <h2 class="mb-3">About Training</h2>
+                        <p class="text-justify text-body-secondary mb-6 mb-xxl-8">
+                            @Html.Raw(GetDetails?.TrainingDescription ?? "")
+                        </p>
+
+                    </div>
+
+                    <!-- Right Column: Sidebar -->
+                    <div class="col-lg-4">
+                        <div class="sidebar h-100">
+                            <h6>Organized by</h6>
+                            <label class="d-block fw-semibold mb-1">
+                                @Session["CompanyName"]
+                            </label>
+
+                            @{
+                                var feesType = GetDetails?.TrainingFeesType ?? "";
+                            }
+
+                            @if (feesType == "Paid")
+                            {
+                                <div class="card shadow-sm p-1 mb-3 bg-white rounded" style="max-width: 300px;">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-primary"><i class="bi bi-calendar-event"></i> Enrollment Info</h5>
+                                        <p class="card-text mb-2">
+                                            <small class="text-muted">Enrollment Last Date:</small>
+                                            <span class="fw-semibold text-dark">
+                                                @(GetDetails?.EnrollmentLastDate?.ToString("yyyy-MM-dd") ?? "")
+                                            </span>
+                                            @*💡 You can also us*@
+                                        </p>
+                                        <p class="card-text mb-0">
+                                            <small class="text-muted">Fees:</small>
+                                            <span class="fw-semibold text-dark">₹@(GetDetails?.TrainingFeesAmount ?? "")</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Free Training</span>
+                            }
+
+
+                            <h6 class="mt-4">Location</h6>
+                            <iframe width="100%"
+                                    height="200"
+                                    frameborder="0"
+                                    style="border:0"
+                                    loading="lazy"
+                                    allowfullscreen
+                                    src="https://www.google.com/maps?q=@($"{GetDetails?.GPSLattitude},{GetDetails?.GPSLongitude}")&output=embed"></iframe>
+                            <hr />
+
+                            <h6 class="mt-4">Tags</h6>
+                            <div class="d-flex flex-wrap">
+                                <span class="tag">@(GetDetails?.TrainingCategory ?? "")</span>
+                                <span class="tag">@(GetDetails?.TrainingSubcategory ?? "") </span>
+                                <span class="tag">@(GetDetails?.TrainingCalenderName ?? "")</span>
+                            </div>
+
+                            <hr />
+                            <div class="upcoming-event mt-4">
+                                <h6>Upcoming Events</h6>
+                                <ul>
+                                    @*@foreach (var Events in ViewBag.UpcomingEvents as IEnumerable<dynamic> ?? Enumerable.Empty<dynamic>())
+                                    {
+                                        <li class="mb-3">
+                                            <p class="mb-1 fw-medium">@(Events?.TrainingCalenderName ?? "")</p>
+                                            <small class="text-muted">@Events.TrainingCategory</small>
+                                        </li>
+                                    }*@
+
+                                    @foreach (var Events in ViewBag.UpcomingEvents as IEnumerable<dynamic> ?? Enumerable.Empty<dynamic>())
+                                    {
+                                        <li class="mb-3">
+                                            <p class="mb-1 fw-medium">
+                                                <a href="@Url.Action("CalenderEventView", "ESS_Training_TrainingCalender", new { TrainingCalenderId_Encrypted = Events?.TrainingCalenderId_Encrypted })" class="text-decoration-none">
+                                                    @(Events?.TrainingCalenderName ?? "")
+                                                </a>
+                                            </p>
+                                            <small class="text-muted">@Events.TrainingCategory</small>
+                                        </li>
+                                    }
+
+                                </ul>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="photoPreviewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <!-- smaller size for QR -->
+        <div class="modal-content bg-transparent border-0 shadow-none">
+            <div class="modal-body p-0 text-center">
+                <img id="previewImage"
+                     src="data:image/png;base64,@(TempData["QRScanImage"])"
+                     alt="QR Code"
+                     class="img-fluid rounded" style="max-height: 400px;" />
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var GetIntrestCount = @Html.Raw(Json.Encode(TempData["TotalIntrestCount"]));
+        $("#spnIntrestCount").html(GetIntrestCount > 0 ? GetIntrestCount : '');
+        $("#btnIntrest").on("click", function (e) {
+            e.preventDefault();
+            //var calenderId = $(this).data("id");
+            var calenderId = $("#hdnTrainingCalenderId").val();
+
+            $.ajax({
+                url: '@Url.Action("SaveEmployeeIntrestStatus", "ESS_Training_TrainingCalender")',
+                type: 'POST',
+                data: { TrainingCalenderId: calenderId },
+                success: function (response) {
+                    debugger;
+                    var Message1 = response.Message;
+                    var Icon1 = response.Icon;
+                    var TotalCount = response.TotalCount;
+                    $("#spnIntrestCount").html(TotalCount > 0 ? TotalCount : '');
+                    //Swal.fire({
+                    //    icon: Icon1,
+                    //    text: Message1,
+                    //    allowOutsideClick: false
+                    //});
+                },
+                error: function () {
+                    alert("Something went wrong.");
+                }
+            });
+        });
+    });
+</script>

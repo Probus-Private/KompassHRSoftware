@@ -1,0 +1,634 @@
+﻿@model KompassHR.Areas.Reports.Models.MonthWiseFilter
+
+@{
+    ViewBag.Title = "Rpt_ExitManagement_FNFStatement";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    body {
+        background: #f8f9fa;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 14px;
+    }
+
+    .fnf-container {
+        background: white;
+        /*max-width: 800px;*/
+        margin: 20px auto;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        /*box-shadow: 0 0 0px 1px #333;*/
+    }
+
+    .company-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 20px;
+        margin-bottom: 5px;
+        position: relative;
+    }
+
+    .company-logo img {
+        height: 60px;
+        width: 60px;
+    }
+
+    .company-center {
+        flex: 1;
+        text-align: center;
+        margin-top: 3rem;
+    }
+
+    .company-name {
+        font-size: 22px !important;
+        font-weight: 900 !important;
+        margin: 0;
+    }
+
+    .company-address {
+        font-size: 14px !important;
+        margin-top: 3px;
+    }
+
+    .report-title {
+        text-align: center;
+        font-size: 23px;
+        font-weight: 700;
+        margin-top: 5px;
+    }
+
+    .date-line {
+        font-size: 14px;
+        white-space: nowrap;
+        text-align: right;
+    }
+
+    /*.report-title {
+        text-align: center;
+        font-size: 18px;
+        font-weight: 600;
+        margin-top: 5px;
+        /*padding-bottom: 4px;
+        border-bottom: 2px solid #000;*/
+
+
+    .employee-details {
+        padding-top: 10px;
+    }
+
+    .detail-row {
+        display: flex;
+        margin-bottom: 5px;
+    }
+
+    .detail-label {
+        width: 400px;
+        font-weight: bold;
+    }
+
+    .salary-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+        .salary-table td {
+            padding: 8px;
+            border: 1px solid #000000;
+        }
+
+        .salary-table .label {
+            font-weight: bold;
+            width: 26%;
+        }
+
+    /* Logo at top-right */
+    .logo-top {
+        position: absolute;
+        top: 0px;
+        right: -15px;
+    }
+
+        .logo-top img {
+            height: 62pX;
+            width: 270px;
+        }
+</style>
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Full & Final Statement Report
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Report_ExitManagement_RptMenu", "Report_ExitManagement_RptMenu",  new { id = 7,ScreenId=856, area = "Reports" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Full & Final Statement Report</h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Export report of  full & final statement Report.
+                    </p>
+                </div>
+                <div class="panel-body" data-scrollbar="true">
+                    <div class="row justify-content-center">
+                        <form role="form" href="@Url.Action("Rpt_ExitManagement_FNFStatement", "Rpt_ExitManagement_FNFStatement" , new { area = "Reports" })" id="formArreasSheet">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-4">
+                                            Company <span class="important">*</span>
+                                        </label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.CmpId, new SelectList(ViewBag.CompanyName, "Id", "Name"), "--Select--", new { @class = "form-select", name = "CompanyName", id = "ddlCmpId" })
+                                            <span id="ErrorddlCmpId" class="Error"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-4">
+                                            Business Unit <span class="important">*</span>
+                                        </label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.BranchId, new SelectList(ViewBag.BranchName, "Id", "Name"), "--All--", new { @class = "form-select", type = "text", name = "BranchId", id = "ddlBranchId" })
+                                            <span id="ErrorddlBranchId" class="Error"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-4">
+                                            Employee Name <span class="important">*</span>
+                                        </label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.EmployeeId, new SelectList(ViewBag.AllEmployeeName, "Id", "Name"), "--Select--", new { id = "ddlFnfEmployee", @class = "form-select", autocomplete = "off", name = "Employee" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 text-end">
+                                    <button type="submit" class="btn btn-primary btn-sm" id="btnSubmit">
+                                        Show
+                                    </button>
+                                    <button type="button" class="btn btn-success btn-sm" id="btlPrintInvoice" onclick="GetInvoice()">
+                                        <i class="fa-solid fa-print fa-xl"></i> Print
+                                    </button>
+                                </div>
+                            </div>
+
+                            @if ((ViewBag.GetFNFStatementData != "") && (ViewBag.GetFNFStatementData != null))
+                            {
+                                <div class="fnf-container" id="divPrint">
+                                    <div class="company-header">
+                                        <!-- LOGO RIGHT TOP -->
+                                        <div class="logo-top">
+                                            <img src="@Session["CompanyLogo"]" id="CompanyLogo" />
+                                        </div>
+                                        <!-- CENTER CONTENT -->
+                                        <div class="company-center">
+                                            <div class="company-name">
+                                                @ViewBag.GetFNFStatementData.CompanyName
+                                            </div>
+
+                                            <div class="company-address">
+                                                @ViewBag.GetFNFStatementData.Address
+                                            </div>
+
+                                            <div class="report-title">
+                                                FINAL SETTLEMENT
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <hr />
+
+                                    <div class="employee-details">
+                                        <div class="row">
+                                            <!-- First Column -->
+                                            <div class="col-md-12">
+                                                <div class="detail-row">
+                                                    <div class="detail-label">Employee No:</div>
+                                                    <div>@ViewBag.GetFNFStatementData.EmployeeNo</div>
+                                                </div>
+
+                                                <div class="detail-row">
+                                                    <div class="detail-label">Employee Name :</div>
+                                                    <div> @ViewBag.GetFNFStatementData.EmployeeName </div>
+                                                </div>
+                                                <div class="detail-row">
+                                                    <div class="detail-label">Department :</div>
+                                                    <div>@ViewBag.GetFNFStatementData.Department</div>
+                                                </div>
+                                                <div class="detail-row">
+                                                    <div class="detail-label">Designation :</div>
+                                                    <div>@ViewBag.GetFNFStatementData.Designation</div>
+                                                </div>
+                                                <div class="detail-row">
+                                                    <div class="detail-label">Location :</div>
+                                                    <div>@ViewBag.GetFNFStatementData.BusinessUnit</div>
+                                                </div>
+                                                <div class="detail-row">
+                                                    <div class="detail-label">Date Of Joining :</div>
+                                                    <div>@ViewBag.GetFNFStatementData.DOJ</div>
+                                                </div>
+                                                <div class="detail-row">
+                                                    <div class="detail-label">Resignation Date :</div>
+                                                    <div>@ViewBag.GetFNFStatementData.ReginationDate</div>
+                                                </div>
+                                                <div class="detail-row">
+                                                    <div class="detail-label">Last Working Date :</div>
+                                                    <div>@ViewBag.GetFNFStatementData.LastWorkingDate</div>
+                                                </div>
+                                                <div class="detail-row">
+                                                    <div class="detail-label">Last Salary Paid :</div>
+                                                    <div>@ViewBag.GetFNFStatementData.LastSalaryPaidMonth</div>
+                                                </div>
+                                                <div class="detail-row">
+                                                    <div class="detail-label">Notice Period as per application letter:</div>
+                                                    <div>@($"{ViewBag.GetFNFStatementData.ShortFallNoticePay_Days}")</div>
+                                                </div>
+
+                                                <div class="detail-row">
+                                                    <div class="detail-label">Notice Period adjustable :</div>
+                                                    <div>@($"{ViewBag.GetFNFStatementData.ShortFallNoticePay_Days}")</div>
+                                                </div>
+                                                <div class="detail-row">
+                                                    <div class="detail-label">PL days payable :</div>
+                                                    <div>@($"{ViewBag.GetFNFStatementData.PLDays}")</div>
+                                                </div>
+                                                <div class="detail-row">
+                                                    <div class="detail-label">Payable Days :</div>
+                                                    <div>@($"{ViewBag.GetFNFStatementData.PayableDays}")</div>
+                                                </div>
+                                                <div class="detail-row">
+                                                    <div class="detail-label">Month Days :</div>
+                                                    <div>@($"{ViewBag.GetFNFStatementData.MonthDays}")</div>
+                                                </div>
+                                                <div class="detail-row">
+                                                    <div class="detail-label">LOP Days :</div>
+                                                    <div>@($"{ViewBag.GetFNFStatementData.LOPDays}")</div>
+                                                </div>
+                                                <div class="detail-row">
+                                                    <div class="detail-label">Effective Workdays :</div>
+                                                    <div>@($"{ViewBag.GetFNFStatementData.EffectiveWorkDays}")</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <table class="salary-table">
+                                        <tr>
+                                            <td class="label" colspan="2" style="text-align:center">Income</td>
+                                            <td class="label" colspan="2" style="text-align:center">Deduction</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label">Basic Salary:</td>
+                                            <td style="text-align:right">@ViewBag.GetFNFStatementData.BasicSalary</td>
+                                            <td class="label">PF:</td>
+                                            <td style="text-align:right">@ViewBag.GetFNFStatementData.PF</td>
+                                        </tr>
+
+                                        <tr>
+                                            <td class="label">Dearness Allowance:</td>
+                                            <td style="text-align:right">@ViewBag.GetFNFStatementData.DearnessAllowance</td>
+                                            <td class="label">Prof Tax:</td>
+                                            <td style="text-align:right">@ViewBag.GetFNFStatementData.ProfTax</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label">Conveyance Allowance:</td>
+                                            <td style="text-align:right">@ViewBag.GetFNFStatementData.ConveyanceAllowance</td>
+                                            <td class="label">Advance:</td>
+                                            <td style="text-align:right">@ViewBag.GetFNFStatementData.Advance</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label">HouseRent Allowance:</td>
+                                            <td style="text-align:right">@ViewBag.GetFNFStatementData.HouseRentAllowance</td>
+                                            <td class="label">TDS:</td>
+                                            <td style="text-align:right">@ViewBag.GetFNFStatementData.TDS</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label">Medical Allowance:</td>
+                                            <td style="text-align:right">@ViewBag.GetFNFStatementData.MedicalAllowance</td>
+                                            <td colspan="2"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label">Special Allowance:</td>
+                                            <td style="text-align:right">@ViewBag.GetFNFStatementData.SpecialAllowance</td>
+                                            <td colspan="2"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label">Education Allowance:</td>
+                                            <td style="text-align:right">@ViewBag.GetFNFStatementData.EducationAllowance</td>
+                                            <td colspan="2"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label">Total Income:</td>
+                                            <td style="text-align:right">@ViewBag.GetFNFStatementData.TotalIncome</td>
+                                            <td class="label">Total Deduction:</td>
+                                            <td style="text-align:right">@ViewBag.GetFNFStatementData.TotalDeduction</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label">Net Pay :</td>
+                                            <td style="text-align:right">@ViewBag.GetFNFStatementData.NetPay</td>
+                                            <td style="text-align:left" colspan="2">@ViewBag.GetFNFStatementData.NetPayInWord</td>
+                                        </tr>
+
+                                        <tr>
+                                            <td class="label">Authorized By</td>
+                                            <td class="label"><center>Signature</center></td>
+                                            <td class="label" colspan="2"><center>Received and Signed</center></td>
+                                        </tr>
+                                        <tr>
+                                            <td>@(ViewBag.GetFNFStatementData?.CheckedBy)</td>
+                                            <td class="label"><center><img src="@Session["SignaturePath"]" id="SignaturePath" height="43px" width="100px" /></center></td>
+                                            <td class="label" colspan="2"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label"> Gratuity Applicable</td>
+                                            <td>@ViewBag.GetFNFStatementData.Gratuity_Applicable</td>
+                                            <td class="label">Total Service.</td>
+                                            <td>@ViewBag.GetFNFStatementData.Gratuity_Service</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label">Remark:</td>
+                                            <td class="label" colspan="3">@ViewBag.GetFNFStatementData.EmployeeMakerRemark</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="label" colspan="4"><img src="@Session["Stamp"]" id="Stamp" style="height:100px;width:150px;padding-left: 40px" /></td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            }
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+<script>
+        $(document).ready(function () {
+            $('title').html("Full & Final Statement Report ");
+
+            $("#ddlBranchId").select2();
+            $("#ddlCmpId").select2();
+            $("#ddlFnfEmployee").select2();
+
+            var Title = @Html.Raw(Json.Encode(TempData["Title"]));
+            var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+            var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+            debugger;
+            if (Message != null) {
+                $(".Userloaderbg").css("display","none");
+                if (Message != null) {
+                    var Text = "Your Download File Path Is "+Title+"";
+                    Swal.fire({
+                        title: Message,
+                        icon: Icon,
+                        text: Text,
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup()
+                            popup.classList.remove('swal2-show')
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake')
+                            })
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake')
+                            }, 500000)
+                            return false
+                        }
+                    });
+                }
+            }
+
+
+            $("#ddlCmpId").on("change", function () {
+    debugger;
+
+    var CmpId = $("#ddlCmpId").val();
+
+    // Clear dropdowns first
+    $("#ddlBranchId").empty();
+    $("#ddlFnfEmployee").empty();
+
+    /* ================= BRANCH LOAD ================= */
+    $.ajax({
+        type: 'GET',
+        dataType: 'JSON',
+        url: '@Url.Action("GetBusinessUnit", "Rpt_ExitManagement_FNFStatement")',
+        data: { CmpId: CmpId },
+        success: function (data) {
+            if (data.Branch != null) {
+                $("#ddlBranchId").append("<option value=''>--All--</option>");
+
+                $.each(data.Branch, function (i, p) {
+                    $("#ddlBranchId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                });
+            }
+        }
+    });
+
+    /* ================= EMPLOYEE LOAD ================= */
+    $.ajax({
+        type: 'GET',
+        dataType: 'JSON',
+        url: '@Url.Action("GetEmployeeName", "Rpt_ExitManagement_FNFStatement")',
+        data: { CmpId: CmpId },
+        success: function (data) {
+            if (data != null) {
+                $("#ddlFnfEmployee").append("<option value=''>--Select--</option>");
+
+                $.each(data, function (i, p) {
+                    $("#ddlFnfEmployee").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                });
+            }
+        }
+    });
+
+});
+</script>
+
+<script>
+    function GetInvoice() {
+        var printContents = document.getElementById("divPrint").innerHTML;
+        var printWindow = window.open('', '', 'height=800,width=1000');
+
+        printWindow.document.write('<html><head>');
+        printWindow.document.write('<link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css">');
+
+        printWindow.document.write(`
+        <style>
+
+            /* FORCE A4 PORTRAIT */
+            @@page {
+                size: A4 portrait;
+                margin: 3mm;
+            }
+
+            @@media print {
+
+                /* Scale entire content */
+                body {
+                    font-family: 'helvetica', Tahoma, Geneva, Verdana, sans-serif !important;
+                    -webkit-print-color-adjust: exact;
+                }
+
+                /* Global text size */
+                body, td, div, span {
+                    font-size: 16px !important;
+                }
+
+                /* Row layout */
+                .row {
+                    display: flex !important;
+                    flex-wrap: wrap !important;
+                }
+
+                .col-md-6 {
+                    flex: 0 0 50% !important;
+                    max-width: 50% !important;
+                }
+
+               .fnf-container {
+            background: white;
+        /*max-width: 800px;*/
+            margin: 20px auto;
+            padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        /*box-shadow: 0 0 0px 1px #333;*/
+        }
+
+          .company-header {
+            display: flex;
+        align-items: center;
+        justify-content: space-between;
+            padding: 10px 20px;
+        margin-bottom: 5px;
+            position: relative;
+        }
+
+                .company-logo img {
+                        height: 60px;
+                        width: 60px;
+                    }
+
+                 .company-center {
+                     flex: 1;
+                     text-align: center;
+                     margin-top: 3rem;
+                     }
+
+                .company-name {
+                    font-size: 22px !important;
+                    font-weight: 900 !important;
+                        margin: 0;
+                    }
+
+                .company-address {
+                    font-size: 16px !important;
+                    margin-top: 3px;
+                    }
+
+                .report-title {
+                    text-align: center;
+                    font-size: 22px !important;
+                    font-weight: 700;
+                    margin-top: 7px;
+                    }
+
+                .date-line {
+                font-size: 12px;
+                white-space: nowrap;
+                text-align: right;
+                    }
+
+                /* Details Row Format */
+                .detail-row {
+                    display: flex;
+                    margin-bottom: 5px !important;
+                }
+
+                .detail-label {
+                    width: 400px;
+                    //font-weight: bold;
+                }
+
+                /* Salary Table */
+                .salary-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin-top: 14px;
+                    font-size: 16px !important;
+                }
+
+                .salary-table td {
+                    border: 1px solid #aaa;
+                    padding: 5px 9px !important;
+                }
+
+                /* Prevent page breaks inside tables */
+                table, tr, td, .fnf-container {
+                    page-break-inside: avoid !important;
+                         }
+              /* Logo at top-right */
+                .logo-top {
+                            position: absolute;
+                top: -20px !important;
+                right: -18px !important;
+                    }
+
+                    .logo-top img {
+                    height: 60px !important;
+                    width: 272px !important;
+                    }
+            }
+        </style>
+    `);
+
+        printWindow.document.write('</head><body>');
+        printWindow.document.write(printContents);
+        printWindow.document.write('</body></html>');
+        printWindow.document.close();
+        printWindow.focus();
+        printWindow.print();
+        printWindow.close();
+    }
+
+</script>

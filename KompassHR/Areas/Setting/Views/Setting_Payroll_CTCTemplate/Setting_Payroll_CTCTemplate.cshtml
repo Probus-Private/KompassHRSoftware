@@ -1,0 +1,942 @@
+﻿@model KompassHR.Areas.Setting.Models.Setting_Payroll.Mas_Employee_CTC_Template
+@{
+    ViewBag.Title = "Setting_Payroll_CTCTemplate";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    /* Constrain the height of the modal and enable scrolling */
+    .modal-dialog {
+        max-width: 800px; /* Adjust the width of the modal */
+    }
+
+    .modal-body {
+        max-height: 400px; /* Set the maximum height of the modal body */
+        overflow-y: auto; /* Enable vertical scrolling */
+    }
+
+    /* Optional: Style for the table to make it look nicer */
+    table {
+        width: 100%;
+    }
+
+    th, td {
+        text-align: center;
+        vertical-align: middle;
+    }
+</style>
+
+<style>
+    .table {
+        --bs-table-striped-bg: rgba(0, 0, 255, 0.02);
+    }
+
+    .text-nowrap {
+        font-size: 12px;
+    }
+
+    tbody tr td {
+        font-size: 12px;
+        padding: 4px !important;
+    }
+
+    .ListBtn {
+        background-color: transparent;
+        color: #000;
+        font-size: 15px !important;
+        padding: 5px 8px !important;
+        border: none;
+    }
+
+        .ListBtn:hover {
+            background-color: transparent;
+            color: #000;
+        }
+
+            .ListBtn:hover i {
+                transition: all 0.5s;
+                transform: scale(1.5);
+            }
+
+
+
+    .box2 {
+        width: 100px;
+        height: 100px;
+        padding: 15px 0px;
+        font-family: 'Montserrat', sans-serif;
+        position: relative;
+        z-index: 0;
+        margin-bottom: 10px;
+    }
+
+        .box2:hover {
+            border: 2px solid #ff9c19;
+            border-radius: 10px;
+            cursor: pointer;
+            transform: translateY(-10px);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.03), 0px -15px 25px rgba(0, 0, 0, 0.03), 0 15px 25px rgba(0, 0, 0, 0.05);
+        }
+
+            .box2:hover .info i {
+                color: #ff9c19;
+            }
+
+
+        .box2 .info i {
+            font-size: 20px;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 5px;
+            color: #007bff;
+        }
+
+        .box2 .info h7 {
+            position: relative;
+            font-size: 12px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            font-weight: 900 !important;
+            text-transform: capitalize;
+            margin-bottom: 2px;
+            padding: 0 10px;
+            color: #444;
+        }
+
+    .FS-12PX {
+        font-size: 12px !important;
+    }
+
+    /*.div1 td:nth-child(1) {
+        position: sticky;
+        left: 0;
+    }*/
+
+    /*.div1 td:nth-child(2) {
+        position: sticky;
+        left: 62px;
+    }*/
+
+    /*.fixed-side {
+        position: sticky;
+        left: 0px;
+    }*/
+
+    /*.fixed-side1 {
+        position: sticky;
+        left: 62px;
+    }*/
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    .card-row-title {
+        color: #e63c3c;
+        font-size: 18px;
+        font-weight: 600;
+        text-transform: capitalize;
+        border-bottom: #009ce7 1px solid;
+    }
+
+    label.error, .Error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .empbx h4 {
+        margin-bottom: 5px;
+    }
+
+    .empbx h6 i {
+        font-size: 1rem;
+        margin-right: 5px;
+    }
+
+    .empbx {
+        margin-bottom: 20px;
+    }
+
+    #partATable input[type="text"] {
+        height: 25px; /* Adjust the height as needed */
+    }
+
+    #partBTable input[type="text"] {
+        height: 25px; /* Adjust the height as needed */
+    }
+
+    .table-responsive {
+   height: 100%;
+}
+
+
+
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Employee CTC
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("ESS_AdminDashboard_Dashboard", "ESS_AdminDashboard_Dashboard", new { area = "ESS" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Setting_Payroll_Menu", "Setting_Payroll_Menu", new {id = 6, ScreenId=287, area = "Setting" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">@*@i.SET_MODULES.FormName*@ Employee CTC - @ViewBag.AddUpdateTitle</h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Add CTC details for a employee.
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("Setting_Payroll_CTCTemplate", "Setting_Payroll_CTCTemplate", new { area = "Setting" })' id="SaveForm">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                              Company Name <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-7">
+                                                @Html.DropDownListFor(model => model.TemplateCompanyId, new SelectList(ViewBag.ComapnyName ?? new List<SelectListItem>(), "Id", "Name"), "-- Select --",
+                                                new { id = "ddlCompanyId", @class = "form-select", autocomplete = "off", name = "CompanyId" , onchange = "onCompanyChange(this)" })
+                                                @Html.ValidationMessage("CompanyId", "", new { @class = "help-block", id = "ErrorddlCompanyId", @style = "color:red" })
+                                               @Html.Hidden("hdnEncriptedId", "", new { id = "hdnEncriptedId" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">
+                                                Template Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-7">
+                                                @Html.TextBoxFor(model => model.TemplateName, null, new { @class = "form-control",  id = "txtTemplateName" })
+                                                @Html.ValidationMessage("TemplateName", "", new { @class = "help-block", id = "ErrorTemplateName", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="row mb-15px">
+                                        <div class="col-md-12">
+                                            <div id="dynamicTables">
+                                                <div class="row">
+                                                    <!-- Part A -->
+                                                    <div class="col-md-6">
+                                                        <div class="table-responsive">
+                                                            <h5 style="background-color:lightgray; padding: 5px;">Part A</h5>
+                                                            <table class="table table-bordered" id="partATable">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th style="width: 10%;">Sr.No</th> <!-- Set width -->
+                                                                        <th hidden style="width: 10%;">ColumnName</th> <!-- Set width -->
+                                                                        <th style="width: 60%;">Head Name</th> <!-- Set width -->
+                                                                        <th style="width: 30%;">Amount</th> <!-- Set width -->
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody id="tblPartA">
+                                                                    @if (ViewBag.MappedHeadPartA != null)
+                                                                    {
+                                                                        int srNo = 1;
+                                                                        foreach (var d in ViewBag.MappedHeadPartA)
+                                                                        {
+                                                                            <tr>
+                                                                                <td>@srNo</td>
+                                                                                <td hidden>@d.ID</td>
+                                                                                <td style="text-align: left;">@d.Heads</td>
+                                                                                <td><input type="text" Value=0 style="text-align: right;" class="form-control validate-number" name="value_@srNo" id="txt@(d.ID)"></td>
+                                                                            </tr>
+                                                                            srNo++;
+                                                                        }
+                                                                    }
+                                                                </tbody>
+                                                                <tfoot>
+                                                                    <tr>
+                                                                        <td colspan="2" style="text-align:right"><b>Part A (Gross) Total =</b></td>
+                                                                        <td><input type="text" Value=0 class="form-control validate-number" id="txtRateTotalPartA" readonly style="text-align: right; background-color:#eee"></td>
+                                                                    </tr>
+                                                                </tfoot>
+                                                            </table>
+
+                                                        </div>
+                                                    </div>
+                                                    <!-- Part B -->
+                                                    <div class="col-md-6">
+                                                        <div class="table-responsive">
+                                                            <h5 style="background-color:lightgray;padding: 5px;">Part B</h5>
+                                                            <table class="table table-bordered" id="partBTable">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th style="width: 10%;">Sr.No</th> <!-- Set width -->
+                                                                        <th hidden style="width: 10%;">ColumnName</th> <!-- Set width -->
+                                                                        <th style="width: 60%;">Head Name</th> <!-- Set width -->
+                                                                        <th style="width: 30%;">Amount</th> <!-- Set width -->
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody id="tblPartB">
+                                                                    @if (ViewBag.MappedHeadPartB != null)
+                                                                    {
+                                                                        int srNo = 1;
+                                                                        foreach (var d in ViewBag.MappedHeadPartB)
+                                                                        {
+                                                                            <tr>
+                                                                                <td>@srNo</td>
+                                                                                <td hidden>@d.ID</td>
+                                                                                <td style="text-align: left;">@d.Heads</td>
+                                                                                <td><input type="text" Value=0 style="text-align: right;" class="form-control validate-number" name="value_@srNo" id="txt@(d.ID)"></td>
+                                                                            </tr>
+                                                                            srNo++;
+                                                                        }
+                                                                    }
+                                                                </tbody>
+                                                                <tfoot>
+                                                                    <tr>
+                                                                        <td colspan="2" style="text-align:right"><b>Part B Total&nbsp;=&nbsp;</b></td>
+                                                                        <td><input type="text" Value=0 class="form-control validate-number" id="txtRateTotalPartB" readonly style="text-align: right; background-color:#eee"></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="2" style="text-align:right"><b>CTC (A + B)&nbsp;=&nbsp;</b></td>
+                                                                        <td><input type="text" Value=0 class="form-control validate-number" id="txtRateTotalPartAB" readonly style="text-align: right;background-color:#eee"></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="2" style="text-align:right"><b>VPF Amount &nbsp;&nbsp;</b></td>
+                                                                        <td><input type="text" Value=0 class="form-control validate-number" style="text-align: right;" id="txtRate_VPF"></td>
+                                                                    </tr>
+
+                                                                    <tr>
+                                                                        <td colspan="2" style="text-align:right"><b>Employee PF &nbsp;&nbsp;</b></td>
+                                                                        <td><input type="text" Value=0 class="form-control validate-number NetPay" style="text-align: right;" id="txtRatePartB_PF"></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="2" style="text-align:right"><b>Employee ESIC &nbsp;&nbsp;</b></td>
+                                                                        <td><input type="text" Value=0 class="form-control validate-number NetPay" style="text-align: right;" id="txtRatePartB_ESIC"></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="2" style="text-align:right"><b>PT &nbsp;&nbsp;</b></td>
+                                                                        <td><input type="text" Value=0 class="form-control validate-number NetPay" style="text-align: right;" id="txtRatePartB_PT"></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td colspan="2" style="text-align:right"><b>Net Pay &nbsp;&nbsp;</b></td>
+                                                                        <td><input type="text" Value=0 class="form-control validate-number" readonly style="text-align: right;background-color:#eee" id="txtRate_NetPay"></td>
+                                                                    </tr>
+
+                                                                    @{
+                                                                        var isAttenBonusApplicable = Convert.ToBoolean(TempData["GetAttenBonusIsApplicable"]);
+                                                                    }
+
+                                                                    @if (isAttenBonusApplicable)
+                                                                    {
+                                                                        <tr>
+                                                                            <td colspan="2" style="text-align:right">
+                                                                                <b>Attendance Bonus &nbsp;&nbsp;</b>
+                                                                            </td>
+                                                                            <td>
+                                                                                <input type="checkbox" class="form-check-input" id="ChkRatePartB_AttendanceBonus_IsApplicable" />
+                                                                            </td>
+                                                                        </tr>
+                                                                    }
+                                                                </tfoot>
+                                                            </table>
+                                                            <hr />
+                                                            <button id="calculateButton" onclick="calculateFunction()" type="button" class="btn btn-primary btn-sm">
+                                                                <i class="fas fa-calculator"></i> Calculate
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-20px">
+                                        <div class="LastShortLeaveBx">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="BtnBx">
+                                                        <div>
+                                                            <button class="btn btn-primary btn-sm btnpress save" id="btnSubmit" type="button">
+                                                                <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                            </button>
+
+                                                            <a href="@Url.Action("GetList", "Setting_Payroll_CTCTemplate", new { area = "Setting" })">
+                                                                <button type="button" class="btn btn-danger btn-sm" id="btnUnit">
+                                                                    <i class="fa-solid fa-share-from-square"></i> List
+                                                                </button>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function onCompanyChange(select) {
+        var selectedCompanyId = select.value;
+        window.location.href = '@Url.Action("Setting_Payroll_CTCTemplate", "Setting_Payroll_CTCTemplate", new { area = "Setting" })' + '?CompanyId=' + selectedCompanyId;
+    }
+</script>
+
+
+
+<script>
+    $('.NetPay').on('input', function () {
+        var total = 0;
+        // Subtract PF, ESIC, PT
+        var pf = parseInt($('#txtRatePartB_PF').val()) || 0;
+        var esic = parseInt($('#txtRatePartB_ESIC').val()) || 0;
+        var pt = parseInt($('#txtRatePartB_PT').val()) || 0;
+
+        var RateTotalPartA = parseInt($('#txtRateTotalPartA').val())
+        var netPay = RateTotalPartA - (pf + esic + pt);
+        $('#txtRate_NetPay').val(netPay);
+    });
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        debugger;
+        $("#ddlCompanyId").select2();
+        const json = @Html.Raw(Json.Encode(TempData["GetAllDetail"]));
+        const CheckUpdateStatus = @Html.Raw(Json.Encode(ViewBag.AddUpdateTitle));
+        if (CheckUpdateStatus === "Update") {
+            const ddl = $("#ddlCompanyId");
+            const txt = $("#txtTemplateName");
+            // Disable Select2
+            ddl.prop("disabled", true);
+            // Disable textbox
+            txt.prop("readonly", true);
+            // Apply background color to Select2 rendered container
+            ddl.next(".select2-container").find(".select2-selection").css("background-color", "#e9ecef");
+            // Apply background color to textbox
+            txt.css("background-color", "#e9ecef");
+        }
+        if (json!=null)
+        {
+            debugger;
+            const transformed = {
+                GetIncrementDetail: Object.fromEntries(
+                    json.map(item =>[item.Key, item.Value])
+                )
+            };
+            var GetData = transformed.GetIncrementDetail;
+
+            //$("#ddlCompanyId").val(GetData.CompanyId).trigger('change');
+            $("#hdnEncriptedId").val(GetData.TemplateCTCId_Encrypted);
+
+            $("#txtTemplateName").val(GetData.TemplateName);
+
+            $("#txtRatePartA_Basic").val(GetData.RatePartA_Basic);
+            $("#txtRatePartA_DA").val(GetData.RatePartA_DA);
+            $("#txtRatePartA_HRA").val(GetData.RatePartA_HRA);
+            $("#txtRatePartA_A").val(GetData.RatePartA_A);
+            $("#txtRatePartA_B").val(GetData.RatePartA_B);
+            $("#txtRatePartA_C").val(GetData.RatePartA_C);
+            $("#txtRatePartA_D").val(GetData.RatePartA_D);
+            $("#txtRatePartA_E").val(GetData.RatePartA_E);
+            $("#txtRatePartA_F").val(GetData.RatePartA_F);
+            $("#txtRatePartA_G").val(GetData.RatePartA_G);
+            $("#txtRatePartA_H").val(GetData.RatePartA_H);
+            $("#txtRatePartA_I").val(GetData.RatePartA_I);
+            $("#txtRatePartA_J").val(GetData.RatePartA_J);
+            $("#txtRatePartA_K").val(GetData.RatePartA_K);
+            $("#txtRatePartA_L").val(GetData.RatePartA_L);
+            $("#txtRatePartA_M").val(GetData.RatePartA_M);
+            $("#txtRatePartA_N").val(GetData.RatePartA_N);
+            $("#txtRatePartA_O").val(GetData.RatePartA_O);
+            $("#txtRatePartA_P").val(GetData.RatePartA_P);
+            $("#txtRatePartA_Q").val(GetData.RatePartA_Q);
+            $("#txtRatePartA_R").val(GetData.RatePartA_R);
+            $("#txtRatePartA_S").val(GetData.RatePartA_S);
+            $("#txtRatePartA_T").val(GetData.RatePartA_T);
+            $("#txtRatePartB_PFEmployer").val(GetData.RatePartB_PFEmployer);
+            $("#txtRatePartB_ESICEmployer").val(GetData.RatePartB_ESICEmployer);
+            $("#txtRatePartB_LWFEmployer").val(GetData.RatePartB_LWFEmployer);
+            $("#txtRatePartB_Bonus").val(GetData.RatePartB_Bonus);
+            $("#txtRatePartB_Gratuity").val(GetData.RatePartB_Gratuity);
+            $("#txtRatePartB_A").val(GetData.RatePartB_A);
+            $("#txtRatePartB_B").val(GetData.RatePartB_B);
+            $("#txtRatePartB_C").val(GetData.RatePartB_C);
+            $("#txtRatePartB_D").val(GetData.RatePartB_D);
+            $("#txtRatePartB_E").val(GetData.RatePartB_E);
+
+            $("#txtRateTotalPartA").val(GetData.RateTotalPartA);
+            $("#txtRateTotalPartB").val(GetData.RateTotalPartB);
+            $("#txtRateTotalPartAB").val(GetData.RateTotalPartA + GetData.RateTotalPartB);
+
+           var NextIncrementDate = convertDate(GetData.NextIncrementDate);
+            $("#txtNextIncrementDate").val(NextIncrementDate);
+            $("#txtRemark").val(GetData.Remark);
+            $("#txtRate_VPF").val(GetData.Rate_VPF);
+            $("#ddlCTCBudget").val(GetData.RateBudgetId);
+
+            $("#txtRatePartB_PF").val(GetData.RatePartB_PFEmployee);
+            $("#txtRatePartB_ESIC").val(GetData.RatePartB_ESICEmployee);
+            $("#txtRatePartB_PT").val(GetData.RatePartB_PTEmployee);
+            //$("#txtRate_NetPay").val(GetData.Rate_NetPay);
+            $("#ChkRatePartB_AttendanceBonus_IsApplicable").prop("checked", GetData.RatePartB_AttendanceBonus_IsApplicable == 1);
+
+            // Parse values for calculation
+            var pf = parseInt(GetData.RatePartB_PFEmployee) || 0;
+            var esic = parseInt(GetData.RatePartB_ESICEmployee) || 0;
+            var pt = parseInt(GetData.RatePartB_PTEmployee) || 0;
+            var RateTotalPartA = parseInt($('#txtRateTotalPartA').val()) || 0;
+
+            // Calculate Net Pay
+            var netPay = RateTotalPartA - (pf + esic + pt);
+            $('#txtRate_NetPay').val(netPay);
+
+            return false;
+        }
+        var Error = false;
+    });
+</script>
+
+<script>
+    //THIS CADE IS AJAX CALL AND SAVE RECORD
+    $('#btnSubmit').click(function () {
+        debugger;
+        var Error = false;
+        var CompanyId = $("#ddlCompanyId").val();
+        var TemplateName = $("#txtTemplateName").val();
+        var EncriptedId = $("#hdnEncriptedId").val();
+       
+        if (CompanyId == "") {
+            $("#ErrorddlCompanyId").html("Company name is required");
+            $("#ddlCompanyId").focus().select();
+            return false;
+        } else {
+            $("#ErrorddlCompanyId").html("");
+        }
+        if (TemplateName == "") {
+            $("#ErrorTemplateName").html("Template Name is required");
+            $("#txtTemplateName").focus();
+            return false;
+        } else {
+            $("#txtTemplateName").html("");
+        }
+        if (Error) { return false;} else{ Error=false;}
+
+        let partAData = {};
+        let partBData = {};
+
+        $('#partATable tbody tr').each(function () {
+            let headName = $(this).find('td:eq(1)').text().trim();
+            let value = $(this).find('input[type="text"]').val().trim();
+            if (headName) {
+                partAData[headName] = value;
+            }
+        });
+
+        $('#partBTable tbody tr').each(function () {
+            let headName = $(this).find('td:eq(1)').text().trim();
+            let value = $(this).find('input[type="text"]').val().trim();
+            if (headName) {
+                partBData[headName] = value;
+            }
+        });
+        var partATotal = $("#txtRateTotalPartA").val();
+        var partBTotal = $("#txtRateTotalPartB").val();
+        var partABTotal = $("#txtRateTotalPartAB").val();
+        var Rate_VPF = $("#txtRate_VPF").val();
+
+        var RatePartB_PF = $("#txtRatePartB_PF").val();
+        var RatePartB_ESIC = $("#txtRatePartB_ESIC").val();
+        var RatePartB_PT = $("#txtRatePartB_PT").val();
+        var Rate_NetPay = $("#txtRate_NetPay").val();
+        var RatePartB_AttendanceBonus_IsApplicable = $("#ChkRatePartB_AttendanceBonus_IsApplicable").length ? $("#ChkRatePartB_AttendanceBonus_IsApplicable").prop("checked"): false;
+        let requestData = {
+            data: {
+                partA: partAData,
+                partB: partBData
+            },
+            CompanyId: CompanyId,
+            TemplateName: TemplateName,
+
+            partATotal: partATotal,
+            partBTotal: partBTotal,
+            partABTotal: partABTotal,
+            EncriptedId: EncriptedId,
+
+            Rate_VPF:Rate_VPF,
+            RatePartB_PF:RatePartB_PF,
+            RatePartB_ESIC:RatePartB_ESIC,
+            RatePartB_PT:RatePartB_PT,
+            Rate_NetPay:Rate_NetPay,
+        };
+
+        $.ajax({
+            url: '@Url.Action("IsExists", "Setting_Payroll_CTCTemplate")',
+            method:"get",
+            data:{CompanyId:CompanyId, EncryptedId:EncriptedId, TemplateName:TemplateName },
+            success:function(response){
+                debugger;
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon=="error") {
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: false
+                            });
+                        }
+                    }
+                }
+                else{
+                    //console.log(requestData);
+                    //return false;
+                    $.ajax({
+                        url: '@Url.Action("SubmitData", "Setting_Payroll_CTCTemplate")',
+                        type: 'POST',
+                        data: JSON.stringify(requestData),
+                        contentType: 'application/json',
+                        success: function (response) {
+                            debugger
+                            var Message1 = response.Message;
+                            var Icon1 = response.Icon;
+                            if (Message1 != null) {
+                                if (Message1 != null) {
+                                    Swal.fire({
+                                        icon: Icon1,
+                                        text: Message1,
+                                        allowOutsideClick: false
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            location.reload(); // reloads the current page
+                                        }
+                                    });
+                                }
+                            }
+                        },
+                        error: function (xhr) {
+                            console.log(xhr);
+                        }
+                    });
+                }
+            }
+        });
+
+
+
+
+
+        
+    });
+</script>
+
+<script type="text/javascript">
+    function calculateFunction() {
+        debugger;
+        var StartDate = $("#txtFromDate").val();
+        var DailyMonthly = $("#ddlDailyMonthly").val();
+        var OBEmployeeId = $("#hdnOBEmpId").val();
+        let partAData = {};
+        $('#partATable tbody tr').each(function () {
+            let headName = $(this).find('td:eq(1)').text().trim();
+            let value = $(this).find('input[type="text"]').val().trim();
+            if (headName) {
+                partAData[headName] = value;
+            }
+        });
+        var partATotal = $("#txtRateTotalPartA").val();
+
+        // Create request payload
+        let requestData1 = {
+            data1: { partA: partAData },
+            FromDate: StartDate,
+            DailyMonthly: DailyMonthly,
+            partATotal: partATotal
+        };
+
+        //console.log(requestData);
+
+        $.ajax({
+            url: '@Url.Action("CalculateDatas", "Setting_Payroll_CTCTemplate", new { area = "Setting" })',
+            type: 'POST',
+            data: JSON.stringify(requestData1),
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            success: function (response)
+            {
+                debugger;
+                var json = JSON.parse(response);
+                // Access the innermost array within GetCalculte
+                const transformed = {
+                    GetCalculte: Object.fromEntries(
+                        json.GetCalculte[0].map(item => [item.Key, item.Value]) // Properly map Key and Value
+                    )
+                };
+                // Access the transformed data
+                var GetData = transformed.GetCalculte;
+                $("#txtRatePartB_PFEmployer").val(GetData.RatePartB_PFEmployer);
+                $("#txtRatePartB_ESICEmployer").val(GetData.RatePartB_ESICEmployer);
+                $("#txtRatePartB_Gratuity").val(GetData.RatePartB_Gratuity);
+                $("#txtRatePartB_A").val(GetData.RatePartB_A);
+
+                var pf = $("#txtRatePartB_PF").val(GetData.RatePartB_PFEmployee);
+                var esic = $("#txtRatePartB_ESIC").val(GetData.RatePartB_ESICEmployee);
+                var pt = $("#txtRatePartB_PT").val(GetData.tb_SalaryDed_PTAmt);
+                $("#txtRate_NetPay").val(GetData.Rate_NetPay);
+                $("#ChkRatePartB_AttendanceBonus_IsApplicable").prop("checked", GetData.RatePartB_AttendanceBonus_IsApplicable == 1);
+
+                // Parse values for calculation
+                var pf = parseInt(GetData.RatePartB_PFEmployee) || 0;
+                var esic = parseInt(GetData.RatePartB_ESICEmployee) || 0;
+                var pt = parseInt(GetData.tb_SalaryDed_PTAmt) || 0;
+                var RateTotalPartA = parseInt($('#txtRateTotalPartA').val()) || 0;
+
+                // Calculate Net Pay
+                var netPay = RateTotalPartA - (pf + esic + pt);
+                $('#txtRate_NetPay').val(netPay);
+
+                calculatePartBTotal();
+                updateOverallTotal();
+                if (response!= null) {
+                    debugger;
+                }
+                else {
+                    alert(response.message || "An error occurred.");
+                }
+            },
+            error: function (xhr, status, error) {
+                debugger;
+                alert(response.Message || "An error occurreds.");
+            }
+        });
+    }
+
+</script>
+
+<script>
+    // Attach input change event for Part A inputs
+    $('#partATable tbody').on('input', 'input[type="text"]', function () {
+        calculatePartATotal();
+    });
+    // Attach input change event for Part B inputs
+    $('#partBTable tbody input[type="text"]').on('input', function () {
+        calculatePartBTotal();
+    });
+
+    // Function to calculate the total for Part A
+    function calculatePartATotal() {
+        let total = 0;
+        $('#partATable tbody input[type="text"]').each(function () {
+            let value = parseInt($(this).val()) || 0; // Parse value or use 0 if NaN
+            total += value;
+        });
+
+        $('#txtRateTotalPartA').val(total); // Set total value in the Total field
+
+        // Update the overall total
+        updateOverallTotal();
+    }
+
+    // Function to calculate the total for Part B
+    function calculatePartBTotal() {
+        let total = 0;
+
+        $('#partBTable tbody input[type="text"]').each(function () {
+            let value = parseInt($(this).val()) || 0;
+            total += value;
+        });
+
+        $('#txtRateTotalPartB').val(total); // Set total value in the Total field
+
+        // Update the overall total
+        updateOverallTotal();
+    }
+
+    // Function to update the overall total of Part A and Part B
+    function updateOverallTotal() {
+        let partATotal = parseInt($('#txtRateTotalPartA').val()) || 0;
+        let partBTotal = parseInt($('#txtRateTotalPartB').val()) || 0;
+        let overallTotal = partATotal + partBTotal;
+
+        $('#txtRateTotalPartAB').val(overallTotal); // Set total value in the overall Total field
+    }
+</script>
+
+@*THIS SCRIPT FOR CHECK ALL TEXTBOX ONLY NUMERIC ALLOW VALIDATION*@
+<script>
+    document.getElementById('tblPartA').addEventListener('input', function (e) {
+        if (e.target.classList.contains('validate-number')) {
+            validateInput(e.target);
+        }
+    });
+
+    document.getElementById('tblPartB').addEventListener('input', function (e) {
+        if (e.target.classList.contains('validate-number')) {
+            validateInput(e.target);
+        }
+    });
+
+    document.getElementById('txtRateOTRate').addEventListener('input', function (e) {
+        if (e.target.classList.contains('validate-number')) {
+            validateInput(e.target);
+        }
+    });
+
+    document.querySelectorAll('.validate-number').forEach(function (element) {
+        element.addEventListener('input', function () {
+            validateInput(this);
+        });
+    });
+    function validateInput(input) {
+        const regex = /^\d*\.?\d{0,2}$/; // Regex: digits, optional dot, and up to 2 decimal places.
+        const value = input.value;
+        if (!regex.test(value)) {
+            input.value = value.slice(0, -1); // Remove the last invalid character
+        }
+    }
+</script>

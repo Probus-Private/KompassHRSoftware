@@ -1,0 +1,681 @@
+﻿@model KompassHR.Areas.Setting.Models.Setting_PhotoGalleryMaster.Setting_PhotoGalleryMaster
+@{
+    ViewBag.Title = "Setting_PhotoGalleryMaster";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+<style>
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    .div1 td:nth-child(1) {
+        position: sticky;
+        left: 0;
+    }
+
+    .div1 td:nth-child(2) {
+        position: sticky;
+        left: 63px;
+    }
+
+    .fixed-side {
+        position: sticky;
+        left: 0;
+    }
+
+    .fixed-side1 {
+        position: sticky;
+        left: 63px;
+    }
+</style>
+
+
+<div id="content" class="app-content">
+    <!-- BEGIN breadcrumb -->
+    <ol class="breadcrumb float-xl-end">
+        <li class="breadcrumb-item"><a href="/ESS/ESS_AdminDashboard_Dashboard/ESS_AdminDashboard_Dashboard">Dashboard</a></li>
+        <li class="breadcrumb-item active"><a href="/Setting/Setting_PhotoGalleryMaster_Menu/Setting_PhotoGalleryMaster_Menu"> Photo Gallery Menu </a></li>
+    </ol>
+    <!-- END breadcrumb -->
+    <!-- BEGIN page-header -->
+    <h1 class="page-header">
+        Photo Gallery Master
+    </h1>
+    <!-- END page-header -->
+
+    <div class="row">
+        <div class="col-md-12 ">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                 <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> </h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Define Image / URL repository here!
+                    </p>
+                </div>
+                <div class="panel-body" data-scrollbar="true">
+                    <div class="row">
+                        <div class="col-md-12">
+                                <form action="/Setting/Setting_PhotoGalleryMaster/SaveUpdate" id="SaveSettingPhotoGalleryMaster" method="post" enctype="multipart/form-data">
+                                    <div class="row mb-15px">
+
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Doc No.
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">                                                  
+                                                      @Html.TextBoxFor(model => model.DocNo, new { @class = "form-control txt", id = "txtDocNo", Value = @TempData["DocNo"], Style = "background-color: #e9ecef;" })
+                                                    @Html.HiddenFor(model => model.PhotoGalleryMasterId_Encrypted, new { id = "PhotoGalleryMasterId_Encrypted" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Doc Date
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.DocDate, new { @class = "form-control txt", Value= @TempData["DocDate"], id = "dateDocDate", type = "date" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-15px">
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <label class="form-label col-form-label col-md-2">
+                                                    Gallery Album Name
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-10">
+                                                    @Html.TextBoxFor(model => model.PhotoGalleryAlbumName, new { @class = "form-control txt",Value= TempData["AlbumName"], id = "txtPhotoGalleryAlbumName", type = "Text", autocomplete = "Off", name = "PhotoGalleryAlbumName", @style = "text-align:left" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-15px">
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <label class="form-label col-form-label col-md-2">
+                                                    File Title
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-10">
+                                                    @Html.TextBoxFor(model => model.PhotoGalleryTitle, new { @class = "form-control txt", Value = @TempData["Title"] ,id = "txtPhotoGalleryTitle", type = "Text", autocomplete = "Off", name = "PhotoGalleryTitle", @style = "text-align:left" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-2">
+                                                    Description
+
+                                                </label>
+                                                <div class="col-md-10">                                                 
+                                                    @Html.TextAreaFor(model => model.PhotoGalleryDescription, new { @class = "form-control txt ", Value = @TempData["Description"], id = "txtPhotoGalleryDescription", type = "textarea", autocomplete = "Off", name = "PhotoGalleryDescription", @style = "text-align:Left" })
+                                                    @Html.HiddenFor(model => model.PhotoGalleryId, new { id = "PhotoGalleryId" })
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-15px">
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    File Type
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.FileType, new List<SelectListItem> {
+                                                new SelectListItem { Text = "Photo", Value = "Photo" },
+                                                new SelectListItem { Text = "URL", Value = "URL" },
+                                               }, "--Select--", new { @class = "form-select txt", type = "text", name = "FileType", id = "ddlFileType", autocomplete = "Off" })
+
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6" id="divPhoto">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Select File
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @*<input type="file" name="Image" class="form-control" id="Image" onchange="ResetFile()"/>*@
+                                                    <input type="file" name="ImageFile" class="form-control" id="ImageFile" />                                               
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6" id="divURL">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Enter URL
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.URLFile, new { @class = "form-control", id = "txtURLFile", autocomplete = "Off", name = "URLFile", @style = "text-align:Left" })
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- BEGIN table-responsive -->
+                                    @*<table class="table table-bordered align-middle" id="fixed-header" style="width: 100%;">*@
+                                    <div class="table-scroll div1">
+                                        <div class="table-wrap">
+                                            <table class="table table-bordered main-table table-hover mb-0 text-dark align-middle" id="tblPhotoGallery1">
+                                                <thead>
+                                                    <tr class="trheading">
+                                                        @*<th class="fixed-side">Delete</th>*@
+                                                        <th class="text-nowrap">File Type</th>
+                                                        <th class="text-nowrap">URL</th>
+                                                        <th class="text-nowrap">File Title</th>
+                                                        <th class="text-nowrap">Description</th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tblPhotoGallery">                                                  
+                                                </tbody>
+                                            </table>
+                                            <span id="tbllength" class="Error"></span>
+                                        </div>
+                                    </div>
+
+                                    <!-- END table-responsive -->
+
+                                    <hr>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="BtnBx">
+                                                <div>
+                                                    <button type="button" id="btnSubmit" onclick="SaveImage()"
+                                                            class="btn btn-primary btn-sm">
+                                                        <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                    </button>
+                                                    <button type="button" id="btnPhotoGalleryList" class="btn btn-danger btn-sm">
+                                                        <i class="fa-solid fa-share-from-square"></i>
+                                                        List
+                                                    </button>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function SomeDeleteRowFunction(btndel) {
+        debugger;
+        if (typeof (btndel) == "object") {
+            $(btndel).closest("tr").remove();
+            return false;
+        }
+    }
+
+    $("#ddlFileType").change(function ()
+    {
+        var title =$('option:selected', $(this)).text();
+
+        if(title=="Photo")
+        {
+            $("#divPhoto").show();
+            $("#divURL").hide();
+        }
+        if(title=="URL")
+        {
+            $("#divPhoto").hide();
+            $("#divURL").show();
+        }
+    });
+    //For List
+    $("#btnPhotoGalleryList").click(function () {
+        var url = '@Url.Action("GetList", "Setting_PhotoGalleryMaster")';
+        window.location.href = url;
+    });
+</script>
+<script>
+       
+</script>
+<script>
+    function millisecTodate(milliDate) {
+        var date = new Date(milliDate);
+        var mnth = ("0" + (date.getMonth() + 1)).slice(-2);
+        var day = ("0" + date.getDate()).slice(-2);
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        hours = hours < 10 ? '0' + hours : hours;
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        var ddmmyyyy = [date.getFullYear(), mnth, day].join("-");
+        return ddmmyyyy;
+    }
+
+    function convertDate(data) {
+        var getdate = parseInt(data.replace("/Date(", "").replace(")/", ""));
+        var date = millisecTodate(getdate);
+        return date;
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        $("#divPhoto").hide();
+        $("#divURL").hide();
+
+        var dt = @Html.Raw(Json.Encode(TempData["DocDate"]));
+    if(dt == null || dt == "")
+    {
+
+    }
+    else
+    {
+        var DocDate =  convertDate(dt);
+        $("#dateDocDate").val(DocDate);
+    }
+    var date = new Date();
+    var dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000 )).toISOString().split("T")[0];
+    $("#dateDocDate").val(dateString);
+
+    });//ready Function   
+</script>
+
+<script>
+    jQuery.validator.addMethod(
+ "regex",
+  function(value, element, regexp) {
+      if (regexp.constructor != RegExp)
+          regexp = new RegExp(regexp);
+      else if (regexp.global)
+          regexp.lastIndex = 0;
+      return this.optional(element) || regexp.test(value);
+  },"erreur expression reguliere"
+);
+    $('#SaveSettingPhotoGalleryMaster').validate({
+        rules: {
+            PhotoGalleryAlbumName:{
+                required: true,
+            },
+            PhotoGalleryTitle:{
+                required: true,
+            },
+            FileType: {
+                required: true,
+            },
+            URLPath: {
+                required: true,
+            },
+        },
+        messages: {
+            PhotoGalleryAlbumName:{
+                required: "Please enter gallery album name",
+            },
+            PhotoGalleryTitle:{
+                required: "Please enter photo gallery title",
+            },
+            FileType: {
+                required: "Please enter file type",
+            },
+            FURLPath: {
+                required: "Insert file path",
+            },
+        },
+    });
+    var form = $("#SaveSettingPhotoGalleryMaster");
+    form.validate();
+    function SaveImage() {
+        debugger;
+        form.valid();
+        if(form.valid()==false)
+        {
+            return false;
+        }
+
+        var FileType = $('select#ddlFileType option:selected').val();
+        var URLFile = "";
+        if (FileType == "URL") {
+            URLFile = $('#txtURLFile').val();
+        }
+        else {
+            URLFile = $('#Image').val();
+        }
+        var file = $("#ImageFile").get(0).files;
+        var data = new FormData;
+        data.append("PhotoGalleryAlbumName",$("#txtPhotoGalleryAlbumName").val());
+        data.append("DocNo",$("#txtDocNo").val());
+        data.append("DocDate",$("#dateDocDate").val());
+        data.append("PhotoGalleryTitle",$("#txtPhotoGalleryTitle").val());
+        data.append("PhotoGalleryDescription",$("#txtPhotoGalleryDescription").val());
+        data.append("FileType",$('select#ddlFileType option:selected').val());
+        data.append("URLFile",$("#txtURLFile").val());
+        data.append("ImageFile", file[0]);
+       
+        debugger;
+        $.ajax({
+            async: true,
+            type:"POST",
+            url: "SaveUpdate",
+            data : data,
+            //contentType: "application/json; charset=utf-8",
+            dataType:"JSON",
+            contentType: false,
+            processData: false,
+            success: function(data){
+                debugger;
+
+                if (data != null) {
+
+                    Swal.fire({
+                        icon: data.Icon,
+                        text: data.Message,
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup()
+                            popup.classList.remove('swal2-show')
+                            return false;
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake')
+                            })
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake')
+                            }, 500)
+                            window.location.reload();
+                            return false
+                        }
+                    }).then(function () {
+                        debugger;                      
+                        if (data != null) {
+                            debugger;  
+                            $('#tblPhotoGallery tr').not(function(){ return !!$(this).has('th').length; }).remove();
+                            for (var i = 0; i <= data.data.length - 1; i++) {
+                              
+                                var table = document.getElementById("tblPhotoGallery");
+                                var rowcount = table.rows.length;
+                                var row = table.insertRow(rowcount);
+                                var count =$('#tblPhotoGallery tr').length;
+                                var Setdata = data.data[i];
+                               // row.insertCell(0).innerHTML = '<center><button type="button" id="btnDelete" onclick="DeletePhoto('+Setdata[3].Value+')"class="btn btn-danger ListBtn btnpress"><i class="fa-solid fa-trash-alt"></i> </button></center>';                              
+                                row.insertCell(0).innerHTML = "" + Setdata[1].Value + "";
+                                row.insertCell(1).innerHTML = "" + Setdata[2].Value + "";
+                                row.insertCell(2).innerHTML = "" + Setdata[4].Value + "";
+                                row.insertCell(3).innerHTML = "" + Setdata[5].Value + "";
+                                $("#ddlFileType").val('');
+                                $("#txtURLFile").val('');
+                                $("#ImageFile").val('');   
+                                var countOne =$('#tblPhotoGallery tr').length;
+                                if(countOne!="")
+                                {
+                                    $("#dateDocDate").attr("disabled", "disabled");
+                                    $("#txtPhotoGalleryAlbumName").attr("disabled", "disabled");
+                                }
+                                else
+                                {
+                                    $("#dateDocDate").removeAttr("disabled");
+                                    $("#txtPhotoGalleryAlbumName").removeAttr("disabled");
+                                }
+                            }
+                        }
+                        else{
+                        }
+                        return false;
+                        @*var url = '@Url.Action("PolicyInformation", "PolicyInformation")';
+                        window.location.href = url;*@
+                    });
+                }
+            },
+            error:function(){
+                alert(response);
+            }
+        });
+    }
+</script>
+
+@*<script>
+    function DeletePhoto(PhotoGalleryMasterId) {
+        debugger;
+        //$("#tblPhotoGallery1").on('click', function(e) {
+        //    var whichtr = $(this).closest("tr");
+        //    alert('worked'); // Alert does not work
+        //    whichtr.remove();    
+        //    return false;
+       
+
+        $.ajax({
+            url: "DeleteOne",
+            method: "get",
+            data: { PhotoGalleryMasterId: PhotoGalleryMasterId },
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            success: function (data) {
+                debugger;
+                var datas = JSON.parse(data);
+                if (data != null) {
+
+                    const DeleteButtons = Swal.mixin({
+                        customClass: {
+                            cancelButton: ' btnpress',
+                            confirmButton: ' btnpress'
+                        },
+                        buttonsStyling: true
+                    })
+                    DeleteButtons.fire({
+                        title: 'Are you sure?',
+                        text: "You won't be able to revert this!",
+                        icon: 'warning',
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, delete it!',
+                        cancelButtonText: 'No, cancel!',
+                        reverseButtons: false,
+
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup()
+                            popup.classList.remove('swal2-show')
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake')
+                            })
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake')
+                            }, 500)
+                            return false
+                        }
+
+                    }).then((result) => {
+                        if (result.isConfirmed) {                         
+                            //window.location.href = url;
+                            DeleteButtons.fire(
+
+                                'Deleted!',
+                                'Your file has been deleted.',
+                                'success'
+                             )
+                        } else if (
+                            /* Read more about handling dismissals below */
+                            result.dismiss === Swal.DismissReason.cancel
+                        ) {
+
+                        }
+
+                    }).then(function () {
+                        debugger;                      
+                        if (data != null) {
+                            debugger;  
+                            $('#tblPhotoGallery tr').not(function(){ return !!$(this).has('th').length; }).remove();
+                            for (var i = 0; i <= data.data.length - 1; i++) {
+                              
+                                var table = document.getElementById("tblPhotoGallery");
+                                var rowcount = table.rows.length;
+                                var row = table.insertRow(rowcount);
+                                var count =$('#tblPhotoGallery tr').length;
+                                var Setdata = data.data[i];
+                                row.insertCell(0).innerHTML = '<center><button type="button" id="btnDelete" onclick="DeletePhoto('+Setdata[3].Value+')"class="btn btn-danger ListBtn btnpress"><i class="fa-solid fa-trash-alt"></i> </button></center>';                              
+                                row.insertCell(1).innerHTML = "" + Setdata[1].Value + "";
+                                row.insertCell(2).innerHTML = "" + Setdata[2].Value + "";
+                                $("#ddlFileType").val('');
+                                $("#txtURLFile").val('');
+                                $("#ImageFile").val('');   
+                                var countOne =$('#tblPhotoGallery tr').length;
+                                if(countOne!="")
+                                {
+                                    $("#dateDocDate").attr("disabled", "disabled");
+                                    $("#txtPhotoGalleryAlbumName").attr("disabled", "disabled");
+                                }
+                                else
+                                {
+                                    $("#dateDocDate").removeAttr("disabled");
+                                    $("#txtPhotoGalleryAlbumName").removeAttr("disabled");
+                                }
+                            }
+                        }
+                        else{
+                        }
+                        return false;
+                        
+                    });
+                }
+            },       
+        });
+    }  
+
+</script>*@

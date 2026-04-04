@@ -1,0 +1,874 @@
+﻿@*@model KompassHR.Areas.Module.Models.Module_Payroll.Payroll_Lock*@
+@model KompassHR.Areas.Reports.Models.MonthWiseFilter
+@{
+    ViewBag.Title = "Module_Payroll_PayrollSlip";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+<!-- Include dompurify -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.4.0/purify.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Payslip
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Report_Payroll_RptMenu", "Report_Payroll_RptMenu", new {id = 6, ScreenId=455, area = "Reports" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Payslip - List <b>@ViewBag.AddUpdateTitle</b></h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Payslip list!
+                    </p>
+                </div>
+                <div class="panel-body" data-scrollbar="false">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "Module_Payroll_PayrollLock", new { area = "Module" })' id="SavePayrollLock" method="post" data-parsley-validate="">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Company Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.CmpId, new SelectList(ViewBag.CompanyName, "Id", "Name"), new { @class = "form-select", name = "CompanyName", id = "ddlCmpId" })
+                                                <span id="ErrorddlCmpId" class="Error"></span>
+                                                @* @Html.HiddenFor(model => model.PayrollLockId_Encrypted, new { id = "PayrollLockId_Encrypted" })*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Business Unit
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @*@Html.DropDownListFor(model => model.BranchId, new SelectList(""), "--Select--", new { id = "ddlPayrollLockBranchID", @class = "form-select", autocomplete = "off", name = "PayrollLockBranchID" })*@
+                                                @Html.DropDownListFor(model => model.BranchId, new SelectList(ViewBag.BranchName, "Id", "Name"), "All", new { @class = "form-select", name = "BranchId", id = "ddlBranchId" })
+                                                <span id="ErrorddlBranchId" class="Error"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Month/Year
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @* @Html.TextBoxFor(model => model.PayrollLockMonthYear, new { @class = "form-control", type = "month", id = "datePayrollLockMonthYear", autocomplete = "Off", name = "PayrollLockMonthYear" })*@
+                                                @Html.TextBoxFor(model => model.Month, new { @class = "form-control", name = "Month", type = "month", id = "GetMonth" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <div class="col-md-4">
+                                                <button type="button" id="btnLoadEmployee" onclick="EmpPaySlipDetails()" class="btn btn-primary btn-sm">
+                                                    <i class="fa-thin fa-user-magnifying-glass"></i>Load Employee
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <!-- BEGIN table-responsive -->
+                                        <div class="table-scroll div1">
+                                            <div class="table-wrap">
+                                                <table class="table table-bordered align-middle tblAddData TablePage2" id="fixed-header" style="width: 100%;">
+                                                    <thead style="background-color: rgba(233, 236, 239, 1) !important;">
+                                                        <tr class="text-center">
+                                                            <th class="text-center">Action</th>
+                                                            <th hidden class="text-center">Salary Id</th>
+                                                            <th hidden class="text-center">SalaryMonthYear</th>
+                                                            <th class="text-center">Employee Name</th>
+                                                            <th class="text-center">Employee No</th>
+                                                            <th class="text-center">Department</th>
+                                                            <th class="text-center">Designation</th>
+                                                            <th class="text-center">Net Pay</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="tblEmployeeListEarning">
+                                                        @if (ViewBag.GetPaySlipList != null)
+                                                        {
+                                                            foreach (var item in ViewBag.GetPaySlipList)
+                                                            {
+                                                                <tr class="text-center">
+                                                                    <td class="text-center">
+                                                                        <i class="fa-solid fa-eye fa-xl" style="color: #f59c1a; cursor: pointer;" onclick="ViewPaySlip(@item.SalaryID)" id="btnViewPaySlip"></i>
+                                                                        &nbsp; | &nbsp;<i class="fas fa-file-pdf fa-xl" style="color: red; cursor: pointer;" onclick="ViewPaySlip(@item.SalaryID, 'PDF', '@item.SalaryEmployeeNo')" )"></i>
+                                                                        <i class="fas fa-envelope fa-xl" style="color: #007bff; cursor: pointer;" onclick="ViewPaySlip('@item.SalaryID', 'Mail', '@item.SalaryEmployeeNo')"></i>
+
+                                                                    </td>
+                                                                    <td hidden>@item.SalaryID</td>
+                                                                    <td hidden>@item.SalaryMonthYear</td>
+                                                                    <td style="text-align:left">@item.SalaryEmployeeName</td>
+                                                                    <td style="text-align:left">@item.SalaryEmployeeNo</td>
+                                                                    <td style="text-align:left">@item.SalaryDepartment</td>
+                                                                    <td style="text-align:left">@item.SalaryDesignation</td>
+                                                                    <td style="text-align:right">@item.SalaryNetPay</td>
+                                                                </tr>
+                                                            }
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+<style>
+    #PayslipMDL .modal-body,
+    #PayslipMDL form,
+    #PayslipMDL table {
+        font-family: 'helvetica', Tahoma, Geneva, Verdana, sans-serif;
+        font-size: 13px; /* Optional: Set font size for better readability */
+    }
+
+    #spnCompanyName, #EmpName {
+        white-space: pre-wrap !important;
+    }
+</style>
+
+<!-- #Start Appprove Reject Modal -dialog -->
+<div class="modal fade" id="PayslipMDL" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-md modal-lg">
+        <div class="modal-content">
+            <div class="modal-header btn-default text-white" style="display:flex; padding:8px;">
+                <button class="btn btn-primary btn-sm" onclick="printDiv()">
+                    <i class="fas fa-print"></i> Print
+                </button>
+                <button class="btn btn-danger btn-sm" onclick="GeneratePDF()">
+                    <i class="fas fa-file-pdf"></i> PDF
+                </button>
+                @*<button onclick="generatePDF()">PDF</button>*@
+                @*<h4 class="modal-title"> Remark For Reject</h4>*@
+                <div class="panel-heading-btn">
+                    <a href="javascript:void(0);" class="btn btn-icon btn-danger btnClear" id="btnClose" data-bs-dismiss="modal">
+                        <i class="fa fa-xmark"></i>
+                    </a>
+                </div>
+                @*<div class="panel-heading-btn">
+                        <a href="javascript:void(0);" class="btn btn-icon btn-danger btnClear" onclick="location.reload();" id="btnClose" data-bs-dismiss="modal">
+                            <i class="fa fa-xmark"></i>
+                        </a>
+                    </div>*@
+            </div>
+
+
+            <div class="modal-body " id="payslip" style="margin:20px; padding:10px;">
+                <form class="form-horizontal PayslipBorder" style="padding:10px; border:2px solid black; padding-bottom:30px;">
+
+                    <div class="">
+                        <div style="display:flex; align-items: center; justify-content: space-between; width: 100%;">
+                            <!-- Logo -->
+                            <div style="flex: 0 0 auto;">
+                                <img src="@Session["PaySlipCompanyLogo"]" style="height:65px; width:90px; padding:0px;" id="CompanyLogo" />
+                            </div>
+
+                            <!-- Company Details -->
+                            <div style="text-align: center; flex: 1;">
+                                <h4>
+                                    <span id="spnCompanyName">Company Name</span>
+                                    @if (Session["ESSCustomerCode"] == null || !Session["ESSCustomerCode"].ToString().Contains("MAX1000"))
+                                    {
+                                        <text> - <span id="spnBranchName">Branch Name</span></text>
+                                    }
+                                </h4>
+                                <h6 style="font-weight: 700;">PAYSLIP FOR THE MONTH - <span id="spnMonth"></span></h6>
+                                <p style="font-size:10px;" id="spnAddress"></p>
+                            </div>
+                        </div>
+
+                        @*<h4 style="text-align:center;">
+                                <span id="spnCompanyName">Company Name</span> -
+                                <span id="spnBranchName">Branch Name</span>
+                            </h4>
+                            <h6 style="text-align:center; font-weight:700;">PAYSLIP FOR THE MONTH - <span id="spnMonth"></span></h6>
+                            <p style="text-align:center; font-size:10px;" id="spnAddress"></p>*@
+
+                        <div class="table-responsive row" style="border-bottom: 2px solid black; border-top: 2px solid black">
+                            <div class="row" style="display: flex; flex-wrap: wrap;">
+                                <div class="row" style="padding:17px">
+                                    <style>
+                                        #tblEmpInfo {
+                                            border: none;
+                                            border-collapse: collapse; /* Ensure borders do not double */
+                                            width: 100%; /* Full width table */
+                                        }
+                                    </style>
+                                    <table class="dynamic-table1" id="tblEmpInfo" cellspacing="0" cellpadding="4">
+                                        <tbody>
+                                            <!-- First Column -->
+                                            <tr>
+                                                <td style="width: 17%;">Employee Name</td>
+                                                <td style="width: 50%;"><strong>: <span id="EmpName"></span></strong></td>
+                                                <td style="width: 15%;">Employee No.</td>
+                                                <td style="width: 18%;">: <span id="EmpNo"></span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Department</td>
+                                                <td>: <span id="EmpDepartment"></span></td>
+                                                <td>Aadhaar No.</td>
+                                                <td>: <span id="EmpAadhaarNo"></span></td>
+
+                                            </tr>
+                                            <tr>
+                                                <td>Designation</td>
+                                                <td>: <span id="EmpDesignation"></span></td>
+                                                <td>PAN</td>
+                                                <td>: <span id="EmpPANNo"></span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Grade</td>
+                                                <td>: <span id="EmpGrade"></span></td>
+                                                <td>ESIC No.</td>
+                                                <td>: <span id="EmpESICNo"></span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>DOJ</td>
+                                                <td>: <span id="EmpDOJ"></span></td>
+                                                <td>LIN</td>
+                                                <td>: <span id="EmpLINNo"></span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>PF No.</td>
+                                                <td style="padding: 5px; color: #555;">: <span id="EmpPFNo"></span></td>
+                                                <td>UAN</td>
+                                                <td>: <span id="EmpUANNo"></span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Bank Name</td>
+                                                <td>:<span id="EmpBankName"></span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Bank Ac No.</td>
+                                                <td>: <span id="EmpBankAccountNo"></span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>IFSC Code</td>
+                                                <td>: <span id="EmpIFSCCode"></span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row no-margin-padding" style="padding-left:5px;">
+                        <style>
+                            .dynamic-table {
+                                table-layout: auto; /* Allow columns to adjust their width based on content */
+                                width: auto; /* Table will take up 100% of its container's width */
+                                border-collapse: collapse; /* Remove gaps between table cells */
+                            }
+
+                                .dynamic-table td {
+                                    text-align: left; /* Align text to the left */
+                                    padding: 5px 8px; /* Add some padding for better readability */
+                                    word-wrap: break-word; /* Break long words to fit within the cell */
+                                    overflow-wrap: anywhere; /* Handle overflowing text gracefully */
+                                    white-space: nowrap; /* Prevent text wrapping */
+                                }
+
+                                .dynamic-table th {
+                                    text-align: left; /* Align header text to the left */
+                                    padding: 8px; /* Add some padding for table headers */
+                                }
+
+                                .dynamic-table td.attend-type {
+                                    font-weight: bold; /* Bold text for specific cells */
+                                }
+
+                                /* Optional: Add borders for better visibility */
+                                .dynamic-table td, .dynamic-table th {
+                                    border: none;
+                                }
+                        </style>
+
+                        <table id="tblAttendanceInfo" class="dynamic-table" cellspacing="0" cellpadding="2"></table>
+                    </div>
+
+                    <div class="row" style="padding-top: 2px; border-top: 1px solid black; border-bottom: 2px solid black;">
+
+                        @*<div class="form-group row no-margin-padding" style="border-bottom: 1px solid black">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="no-margin-padding">Previous Month Adjust Days :</label>
+                                        <label class="no-margin-padding prev-month-adjust-days"></label>
+                                    </div>
+                                </div>
+                            <hr />*@
+                        <div class="form-group row no-margin-padding" style="padding-bottom: 7px; padding-top: 7px; ">
+                            <div class="col-4">
+                                <label class="no-margin-padding"><b>Month Days :</b> </label>
+                                <label class="no-margin-padding month-days" id="lblMonthDays"></label>
+                            </div>
+                            <div class="col-4">
+                                <label class="no-margin-padding"><b>Paid Days :</b></label>
+                                <label class="no-margin-padding paid-days" id="lblPaidDays"></label>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <style>
+                        #tblCombined thead th {
+                            border: 1px solid black; /* Apply border to header cells */
+                            padding: 5px; /* Add padding for better fit */
+                            text-align: center; /* Center-align text for a clean look */
+                            background-color: #f2f2f2; /* Optional: Add a light background color */
+                        }
+                        /* Add vertical borders to table columns */
+                        #tblCombined th,
+                        #tblCombined td {
+                            border-left: 1px solid black; /* Add a left border for vertical lines */
+                            border-right: 1px solid black; /* Add a right border for vertical lines */
+                            padding: 5px; /* Add padding for better spacing */
+                            text-align: right; /* Center-align the content */
+                        }
+
+                        /* Ensure the table headers have proper styling with borders */
+                        #tblCombined thead th {
+                            background-color: #f2f2f2; /* Optional: Light background for the header */
+                            border: 1px solid black; /* Full border for header cells */
+                        }
+
+                        /* Add an outer border for the table */
+                        #tblCombined {
+                            border: 1px solid black; /* Outer border for the entire table */
+                            border-collapse: collapse; /* Ensure borders do not double */
+                            width: 100%; /* Full width table */
+                        }
+
+                            /* Remove horizontal row borders, but keep vertical column borders */
+                            #tblCombined tbody td {
+                                border-top: none; /* No top border */
+                                border-bottom: none; /* No bottom border */
+                                padding: 2px 5px;
+                            }
+
+
+
+                            #tblCombined tfoot td {
+                                border: 1px solid black; /* Full borders for footer cells */
+                                padding: 8px; /* Add padding for spacing */
+                                text-align: center; /* Center-align footer content */
+                            }
+
+                            #tblCombined tfoot .hideBorder {
+                                border: none !important;
+                            }
+                    </style>
+                    <div style="padding-top:10px">
+                        <table id="tblCombined" border="1" style="width:100%;">
+                            <thead>
+                                <tr>
+                                    <th>Earnings</th>
+                                    <th>Standard Amount</th>
+                                    <th>Earning Amount</th>
+                                    <th hidden>Arrears Amount</th>
+                                    <th>Deductions</th>
+                                    <th>Deduction Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Rows will be appended dynamically here -->
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td style="text-align:left"><strong>Total Earning</strong></td>
+                                    <td style="text-align:right"><strong><span id="spnStandardAmt"></span></strong></td>
+                                    <td style="text-align:right"><strong><span id="spnEarningAmt"></span></strong></td>
+                                    <td hidden><strong><span id="ArrearsAmt"></span></strong></td>
+                                    <td style="text-align:left"><strong>Total Deduction</strong></td>
+                                    <td style="text-align:right"><strong> <span id="spnDeductionAmt"></span></strong></td>
+                                </tr>
+                                <tr>
+                                    @*<td class="hideBorder"></td>
+                                        <td class="hideBorder"></td>
+                                        <td class="hideBorder"></td>*@
+                                    <td class="hideBorder" colspan="3"><span id="spnNetPayInWord"></span></td>
+                                    <td style="text-align:left"><strong>Net Pay</strong></td>
+                                    <td style="text-align:right"><strong> <span id="spnNetPay"></span></strong></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+
+                    <style>
+                        /* Styling the table */
+                        /* Styling the tables */
+                        #tblEarning, #tblDeduction {
+                            width: 100%;
+                            border-collapse: collapse; /* Ensures borders are combined */
+                        }
+
+                            /* Styling table cells and table headers for both tables */
+                            #tblEarning th, #tblEarning td, #tblDeduction th, #tblDeduction td {
+                                border: 1px solid black; /* Adds a border to cells */
+                            }
+                    </style>
+                </form>
+                <div class="text-center" style="margin-top:5px;">
+
+                    <div class="mb-4">This is a computer generated report and does not required signature </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #End modal-dialog -->
+<script>
+    function printDiv() {
+        var printContents = document.getElementById('payslip').innerHTML;
+        var printStyles = `
+        <style>
+            body {
+                font-family: 'helvetica', Tahoma, Geneva, Verdana, sans-serif !important;
+                font-size: 13px !important; /* Optional: Adjust the font size */
+            }
+            #PayslipMDL .modal-body,
+            #PayslipMDL form,
+            #PayslipMDL table {
+                font-family: 'helvetica', Tahoma, Geneva, Verdana, sans-serif !important;
+                font-size: 13px !important;
+        }
+
+
+        </style>
+        `;
+        document.body.innerHTML = printStyles + printContents;
+        window.print();
+        document.body.innerHTML = originalContents;
+    }
+
+    //function printDiv() {
+    //    //$(".custom-modal").removeClass("show");
+    //    var printContents = document.getElementById('payslip').innerHTML;
+    //    var originalContents = document.body.innerHTML;
+    //    document.body.innerHTML = printContents;
+    //    window.print();
+    //    document.body.innerHTML = originalContents;
+    //}
+
+    //function generatePDF() {
+    //    debugger
+    //    $(".Userloaderbg").css("display", "flex");
+    //    const jsPDF = window.jspdf.jsPDF;
+    //    // Initialize jsPDF with A4 size
+    //    const pdf = new jsPDF({
+    //        orientation: 'portrait',
+    //        unit: 'pt', // Points
+    //        format: 'a4'
+    //    });
+
+    //    // Define your CSS styles (this won't work for custom fonts, unless they are embedded)
+    //    var printStyles = `
+    //<style>
+    //    body {
+    //        font-family: 'helvetica', Tahoma, Geneva, Verdana, sans-serif !important;
+    //        font-size: 13px !important;
+    //    }
+    //    #PayslipMDL .modal-body,
+    //    #PayslipMDL form,
+    //    #PayslipMDL table {
+    //        font-family: 'helvetica', Tahoma, Geneva, Verdana, sans-serif !important;
+    //        font-size: 13px !important;
+    //    }
+    //</style>
+    //`;
+
+    //    // Get the content of the div and prepend the styles
+    //    const payslipContent = document.getElementById('payslip').innerHTML;
+    //    const fullContent = printStyles + payslipContent;
+
+    //    // Add HTML content to the PDF
+    //    pdf.html(fullContent, {
+    //        callback: function (doc) {
+    //            doc.save('Payslip.pdf');
+    //        },
+    //        x: 20,
+    //        y: 20,
+    //        width: 522, // Adjust width to fit A4 size (A4 width in pt: 595.28pt, minus margins)
+    //        windowWidth: 800 // Adjust based on your content width
+    //    });
+    //    $(".Userloaderbg").css("display", "none");
+    //}
+
+
+</script>
+
+<script>
+    $(document).ready(function () {
+        var message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+
+        if (message) {
+            Swal.fire({
+                icon: icon,
+                text: message,
+                allowOutsideClick: false // Simplified, assuming outside clicks are disabled.
+            });
+        }
+
+        $("#ddlCmpId").select2();
+        $("#ddlBranchId").select2();
+
+        var today = new Date();
+        var yyyy = today.getFullYear();
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+        var defaultMonth = yyyy + '-' + mm;
+        var CheckEmptyDate = document.getElementById('GetMonth').value;
+        if (CheckEmptyDate == "") {
+            document.getElementById('GetMonth').value = defaultMonth;
+        }
+
+
+        $("#ddlCmpId").on("change", function () {
+            debugger;
+            $("#ddlBranchId").find("option").remove();
+            var CmpId = $("#ddlCmpId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetMonthlyBusinessUnit", "Module_Payroll_PayrollSlip")',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    debugger;
+                    if (data.Branch != null) {
+                        $("#ddlBranchId").append("<option value=''>All</option>");
+                        $.each(data.Branch, function (i, p) {
+                            $("#ddlBranchId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        });
+    })
+</script>
+
+<script>
+    function EmpPaySlipDetails() {
+        var CmpId = $('select#ddlCmpId option:selected').val();
+        var BranchId = $('select#ddlBranchId option:selected').val();
+        var Month = $("#GetMonth").val();
+        var url = location.href = '@Url.Action("Module_Payroll_PayrollSlip", "Module_Payroll_PayrollSlip")?CmpId=' + CmpId + '&BranchId=' + BranchId + '&Month=' + Month;
+        window.location.href = url;
+    }
+</script>
+
+<script>
+    function ViewPaySlip(SalaryID, format, EmpNo) {
+        debugger
+        $(".Userloaderbg").css("display", "flex");
+        $.ajax({
+            type: 'GET',
+            dataType: 'JSON',
+            url: '@Url.Action("GetPaySlipDetails", "Module_Payroll_PayrollSlip")',
+            data: { SalaryID: SalaryID },
+            success: function (response) {
+                debugger;
+                const json = response.GetPersonal[0];
+                const transformed = {
+                    GetPersonal: Object.fromEntries(
+                        json.map(item =>[item.Key, item.Value])
+                    )
+                };
+                $(".Userloaderbg").css("display", "none");
+                var GetData = transformed.GetPersonal;
+
+                $("#EmpName").html(GetData.EmployeeName);
+                $("#EmpNo").html(GetData.EmployeeNo);
+                $("#EmpDepartment").html(GetData.Department);
+                $("#EmpDesignation").html(GetData.Designation);
+                $("#EmpGrade").html(GetData.Grade);
+                $("#EmpDOJ").html(GetData.JoiningDate);
+                $("#EmpBankName").html(GetData.BankName);
+                //let bankname= GetData.BankName;
+
+                //alert(bankname);
+                $("#EmpBankAccountNo").html(GetData.AccountNo);
+                $("#EmpIFSCCode").html(GetData.IFSCCode);
+                $("#EmpPFNo").html(GetData.PFNo);
+                $("#EmpUANNo").html(GetData.UAN);
+                $("#EmpESICNo").html(GetData.ESIC);
+                $("#EmpLINNo").html(GetData.LIN);
+                $("#EmpAadhaarNo").html(GetData.AadhaarNo);
+                $("#EmpPANNo").html(GetData.PAN);
+                //$("#spnCompanyName").html(GetData.CompanyName.replace(/\u00A0/g, '&nbsp;'));
+                $("#spnCompanyName").html(GetData.CompanyName);
+                $("#spnBranchName").html(GetData.BranchName);
+                $("#spnNetPay").html(GetData.NetPay);
+
+                $("#spnMonth").html(GetData.SalaryMonthYear);
+                $("#spnAddress").html(GetData.BranchAddress);
+
+                $("#lblMonthDays").html(GetData.SalaryMonthDays);
+                $("#lblPaidDays").html(GetData.SalaryPayableDays);
+
+                $("#spnStandardAmt").html(GetData.TotalStandardGross);
+                $("#spnEarningAmt").html(GetData.TotalGross);
+                $("#spnDeductionAmt").html(GetData.TotalDeduction);
+                $("#spnNetPayInWord").html(GetData.InWord);
+
+                //BIND ATTENDANCE DETAILS
+                var GetAttendanceData = response.GetAttendance;
+                let html = "";
+                let columnCount = 0; // Track the number of columns in a row
+
+                GetAttendanceData.forEach((item) => {
+                    if (columnCount === 0) {
+                        html += "<tr>";
+                    }
+                    html += `<td class="attend-type"><b> ${item.AttenType} :</b></td><td>${item.Total}</td>`;
+                    columnCount += 2; // Increment column count (2 columns per item)
+                    // Close the current row after 4 columns (2 pairs of Head and DeductionAmt)
+                    if (columnCount === 14) {
+                        html += "</tr>";
+                        columnCount = 0; // Reset column count for the next row
+                    }
+                });
+                // Only add the last row if it contains exactly 4 columns
+                if (columnCount !== 0) {
+                    html += "</tr>";
+                }
+                document.getElementById("tblAttendanceInfo").innerHTML = html;
+
+                var GetEarningData = response.GetEarning;
+                var GetDeductionData = response.GetDeduction;
+
+                var tableBody = $('#tblCombined tbody');
+                tableBody.empty(); // Clear existing rows
+
+                // Iterate over the longer array to ensure all data is displayed
+                var maxLength = Math.max(GetEarningData.length, GetDeductionData.length);
+
+                for (var i = 0; i < maxLength; i++) {
+                    var earning = GetEarningData[i] || {}; // Default to empty object if out of bounds
+                    var deduction = GetDeductionData[i] || {}; // Default to empty object if out of bounds
+
+                    var row = $('<tr>');
+                    row.append('<td style="text-align: left;">' + (earning.Head || '') + '</td>');
+                    row.append('<td style="text-align: right;">' + (earning.StandardAmt || '') + '</td>');
+                    row.append('<td style="text-align: right;">' + (earning.EarningAmt || '') + '</td>');
+                    row.append('<td hidden>' + (earning.ArreasAmt || '') + '</td>');
+                    row.append('<td style="text-align: left;">' + (deduction.Head || '') + '</td>');
+                    row.append('<td style="text-align: right;">' + (deduction.DeductionAmt || '') + '</td>');
+
+                    tableBody.append(row);
+                }
+                if (format == 'PDF') {
+                    setTimeout(function () {
+                        GeneratePDF();
+                    }, 500);   // 500ms delay ensures DOM fully renders
+                    return false;
+                }
+                else if (format == 'Mail') {
+                    generateAndSendPDF(EmpNo);
+                    return false;
+                }
+                else {
+                    $('#PayslipMDL').modal('show');
+                }
+            }
+        })
+    }
+
+
+</script>
+
+<script>
+    function generateAndSendPDF(EmpNo) {
+        debugger;
+        var empNumber = EmpNo;
+        //$(".Userloaderbg").css("display", "flex");
+        const jsPDF = window.jspdf.jsPDF;
+        // Initialize jsPDF with A4 size
+        const pdf = new jsPDF({
+            orientation: 'portrait',
+            unit: 'pt', // Points
+            format: 'a4'
+        });
+
+        // Optional: browser preview logo (not used for email)
+        var logoImg = new Image();
+        logoImg.src = document.getElementById("CompanyLogo").src;
+
+        logoImg.onload = function () {
+            pdf.addImage(logoImg, 'PNG', 20, 20, 65, 65);
+        };
+
+        var printStyles = `
+<style>
+    body {
+        font-family: 'helvetica', Tahoma, Geneva, Verdana, sans-serif !important;
+        font-size: 13px !important;
+    }
+    #PayslipMDL .modal-body,
+    #PayslipMDL form,
+    #PayslipMDL table {
+        font-family: 'helvetica', Tahoma, Geneva, Verdana, sans-serif !important;
+        font-size: 13px !important;
+    }
+    #spnCompanyName, #EmpName {
+        white-space: pre-wrap !important;
+    }
+</style>
+`;
+        const payslipContent = document.getElementById('payslip').innerHTML;
+        const fullContent = printStyles + payslipContent;
+
+        pdf.html(fullContent, {
+            callback: function (doc) {
+                //doc.save('Payslip.pdf');
+            },
+            x: 20,
+            y: 100,
+            width: 555,
+            windowWidth: 800
+        });
+
+        // Get the content of the div and prepend the styles
+        // Send content to server
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Are yor sure for send mail!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, send it!',
+            cancelButtonText: 'No, cancel!',
+            allowOutsideClick: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '@Url.Action("GenerateAndSendEmail", "Module_Payroll_PayrollSlip")',
+                    //url: '/PDF/GenerateAndSendEmail',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ htmlContent: fullContent, EmpNo:empNumber }),
+                    success: function (response) {
+                        $(".Userloaderbg").css("display", "none");
+                        if (response.success) {
+                            Swal.fire({
+                                icon: "success",
+                                text: "Email sent successfully!",
+                                allowOutsideClick: false // Disables click outside to close the alert
+                            }).then(() => {
+                                //window.location.reload();
+                                return false;
+                            });
+
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                text: `Failed to send email: ${response.error}`,
+                                allowOutsideClick: false
+                            }).then(() => {
+                                return false;
+                            });
+                        }
+                    },
+                    error: function () {
+                        $(".Userloaderbg").css("display", "none");
+                        alert("An error occurred while sending the email.");
+                    }
+                });
+            }
+        });
+    }
+
+</script>
+<script>
+    function GeneratePDF() {
+
+        var element = document.getElementById('payslip');
+
+        const opt = {
+            margin: [0.3, 0.1, 0.3, 0.1], // smaller left & right margins
+            filename: 'Payslip_' + document.getElementById('EmpNo').innerText + '.pdf',
+            image: { type: 'png', quality: 0.98 },
+            html2canvas: {
+                scale: 2,
+                useCORS: true,
+                logging: false,
+                scrollY: 0
+            },
+            jsPDF: {
+                unit: 'in',
+                format: 'a4',
+                orientation: 'portrait'
+            }
+        };
+
+        html2pdf()
+            .set(opt)
+            .from(element)
+            .toPdf()
+            .get('pdf')
+            .then(function (pdf) {
+                pdf.save(opt.filename);
+            });
+    }
+</script>

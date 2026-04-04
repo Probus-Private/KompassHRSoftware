@@ -1,0 +1,122 @@
+﻿
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+
+
+<!-- Start panel -->
+<div class="row">
+    <div class="offcanvas offcanvas-end" id="offcanvasExample" data-bs-backdrop="false"
+         data-bs-scroll=true>
+        <div class="offcanvas-header" style="border-bottom: 1px solid #d3d3d38a;">
+            <h6 class="offcanvas-title text-center" id="EmpName1"
+                style="width: 100%;">
+                <span id="EmpName">@Session["VendorName"]</span>
+            </h6>
+            <button type="button" class="btn-close text-reset"
+                    data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="row">
+                @foreach (var item in ViewBag.GetUserMenuList)
+                {
+                    <div class="col-md-4 col-6 d-flex justify-content-center">
+                        <a href="@Url.Action(item.ViewName.ToString(), item.ControllerName.ToString(), new { area = item.AreaName.ToString(), id = item.ModuleID, ScreenId = item.ScreenId })" style="text-decoration:none !important;">
+                            <div class="box2">
+                                <div class="info">
+                                    <i class="@item.Icon"></i>
+                                    <h7><b>@item.ScreenDisplayMenuName</b></h7>
+                                    <div class="box2Checkmark">
+                                        <i class="fa-regular fa-circle-check text-green FS-12PX" id="@($"{item.ScreenSourceMenuName}_Submit")"></i>
+                                        <i class="fa-regular fa-circle-xmark text-red FS-12PX" id="@($"{item.ScreenSourceMenuName}_NotSubmit")"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                }
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+$(document).ready(function () {
+
+    var rawList = @Html.Raw(Json.Encode(ViewBag.GetStatusCheckList));
+    debugger
+    // 🔒 Safety check
+    if (!rawList || rawList.length === 0 || !rawList[0]) {
+        showAllNotSubmitted();
+        return;
+    }
+
+    // Convert [{Key,Value}] → { key: value }
+    //var statusMap = {};
+    //rawList[0].forEach(function (item) {
+    //    statusMap[item.Key] = item.Value;
+    //});
+
+    var statusMap = {};
+
+    rawList.forEach(function (item) {
+        statusMap[item.Key] = item.Value;
+    });
+
+    function toggleStatus(key, submitId, notSubmitId) {
+        debugger
+        if (statusMap[key] === true) {
+            $("#" + submitId).show();
+            $("#" + notSubmitId).hide();
+        } else {
+            $("#" + notSubmitId).show();
+            $("#" + submitId).hide();
+        }
+    }
+
+    // 🔁 Apply status
+    toggleStatus(
+        "SetupContactDetails",
+        "ESS_Vendor_ContactDetails_Submit",
+        "ESS_Vendor_ContactDetails_NotSubmit"
+    );
+
+    toggleStatus(
+        "SetupCompliance",
+        "ESS_Vendor_Compliances_Submit",
+        "ESS_Vendor_Compliances_NotSubmit"
+    );
+
+    toggleStatus(
+        "SetupCapacityDomain",
+        "ESS_Vendor_CapacityDomain_Submit",
+        "ESS_Vendor_CapacityDomain_NotSubmit"
+    );
+
+    toggleStatus(
+        "SetupDocumentUpload",
+        "ESS_Vendor_DocumentUpload_Submit",
+        "ESS_Vendor_DocumentUpload_NotSubmit"
+    );
+
+    toggleStatus(
+        "SetupVendorAccess",
+        "ESS_Vendor_VendorAccess_Submit",
+        "ESS_Vendor_VendorAccess_NotSubmit"
+    );
+
+});
+
+    function showAllNotSubmitted() {
+        debugger
+    $("[id$='_Submit']").hide();
+    $("[id$='_NotSubmit']").show();
+}
+</script>

@@ -1,0 +1,327 @@
+﻿
+@model KompassHR.Areas.ESS.Models.ESS_Leave.Leave_Planning
+
+@{
+    ViewBag.Title = "ESS_Leave_Planning";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+
+<style>
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    .card-row-title {
+        color: #e63c3c;
+        font-size: 18px;
+        font-weight: 600;
+        text-transform: capitalize;
+        border-bottom: #009ce7 1px solid;
+    }
+
+    .note-editable {
+        border: groove;
+        font-size: 16px;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Leave Planning
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_Leave_Menu", "ESS_Leave_Menu",  new {id =4, ScreenId=145, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading">
+                    <h4 class="panel-title">Leave Planning- @ViewBag.AddUpdateTitle</h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                       Leave Planning                  
+                      </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "ESS_Leave_Planning", new { area = "ESS" })' id="SaveLeavePlanning" method="post">
+                                @Html.HiddenFor(model => model.LeavePlanningId_Encrypted, new { id = "txtLeavePlanningId_Encrypted" })
+                                @Html.HiddenFor(model => model.LeavePlanningId, new { id = "txtLeavePlanningId" })
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-2">
+                                        <div class="row mb-12px">
+                                            <label class="form-label col-form-label col-md-4">
+                                              From Date
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.FromDate, new { @class = "form-control", id = "txtFromDate", type = "date", name = " FromDate" })
+                                                <span id="ErrorFromDate" class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 mb-2">
+                                        <div class="row mb-12px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                To Date
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.ToDate, new { @class = "form-control", id = "txtToDate", type = "date", name = "ToDate" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-2">
+                                        <div class="row mb-12px">
+                                            <label class="form-label col-form-label col-md-4">
+                                              Reason
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.Reason, new { @class = "form-control", id = "txtReason", type = "txt", name = " Reason" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="button" id="btnSubmit"
+                                                                class="btn btn-primary btn-sm">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                        <a href="@Url.Action("GetList", "ESS_Leave_Planning", new { area = "ESS" })">
+                                                            <button type="button" class="btn btn-danger btn-sm" id="btnDesignationGetList">
+                                                                <i class="fa-solid fa-share-from-square"></i> List
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    $(document).ready(function () {
+        debugger
+        var FromDate = @Html.Raw(Json.Encode(TempData["FromDate"]));
+        $("#txtFromDate").val(FromDate);
+        var ToDate = @Html.Raw(Json.Encode(TempData["ToDate"]));
+        $("#txtToDate").val(ToDate);
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        // return false
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+
+        $("#formReset").click(function () {
+            $("#SaveLeavePlanning")[0].reset();
+        });
+
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        debugger
+        $("#txtFromDate").change(function () {
+            var fromDate = new Date($(this).val());
+            var today = new Date();
+            today.setHours(0, 0, 0, 0); 
+
+            if (fromDate < today) {
+                $("#ErrorFromDate").text("From date cannot be before today");
+                $(this).val(""); 
+                return false;
+            } else {
+                $("#ErrorFromDate").text("");
+            }
+        });
+
+    });
+</script>
+
+<script>
+    jQuery.validator.addMethod(
+    "regex",
+     function(value, element, regexp) {
+         if (regexp.constructor != RegExp)
+             regexp = new RegExp(regexp);
+         else if (regexp.global)
+             regexp.lastIndex = 0;
+         return this.optional(element) || regexp.test(value);
+     },"erreur expression reguliere"
+  );
+
+    $('#SaveLeavePlanning').validate({
+        rules: {
+            FromDate: {
+                required: true,
+            },
+            ToDate:{
+                required: true,
+            }
+
+        },
+        messages: {
+            FromDate: {
+                required: " From Date is required",
+
+              },
+            ToDate:{
+                required: "To Date is required",
+              }
+
+        },
+    });
+
+    var form = $("#SaveLeavePlanning");
+    form.validate();
+    $("#btnSubmit").click(function () {
+        debugger;
+        form.valid();
+        if(form.valid()==false)
+        {
+            $("#txtFromDate").removeClass('error');
+            return false;
+        }
+
+        // 🔹 extra FromDate validation (cannot be before today)
+        //var fromDate = new Date($("#txtFromDate").val());
+        //var today = new Date();
+        //today.setHours(0, 0, 0, 0);
+
+        //if (fromDate < today) {
+        //    $("#ErrorFromDate").text("From date cannot be before today");
+        //    $("#txtFromDate").val("");
+        //    return false;
+        //}
+        //else{
+        //    $("#ErrorFromDate").text("");
+        //}
+
+        var FromDate = $("#txtFromDate").val();
+        var ToDate = $("#txtToDate").val();
+        var LeavePlanningId_Encrypted = $("#txtLeavePlanningId_Encrypted").val();
+        var LeavePlanningId=$("#txtLeavePlanningId").val();
+
+
+        $.ajax({
+            url:"IsLeavePlanningExists",
+            method:"get",
+            data: {
+                FromDate: FromDate,ToDate:ToDate,
+                LeavePlanningId_Encrypted:LeavePlanningId_Encrypted,
+                LeavePlanningId:LeavePlanningId
+            },
+            success:function(response){
+                debugger;
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon=="error") {
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                        }
+                    }
+                }
+                else{
+                    $("#SaveLeavePlanning").submit();
+                }
+            }
+        });
+    });
+</script>

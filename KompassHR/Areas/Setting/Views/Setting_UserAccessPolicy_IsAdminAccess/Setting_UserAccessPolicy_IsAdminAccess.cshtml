@@ -1,0 +1,165 @@
+﻿@model KompassHR.Areas.Setting.Models.Setting_UserAccessPolicy.IsAdminAccess
+@{
+    ViewBag.Title = "Setting_UserAccessPolicy_IsAdminAccess";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<!-- Required library for validation -->
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+<style>
+    label.error, .Error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Is Admin Access
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("ESS_AdminDashboard_Dashboard", "ESS_AdminDashboard_Dashboard", new { id = 32, ScreenId = 121, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Setting_UserAccessPolicy_Menu", "Setting_UserAccessPolicy_Menu", new { id = 32, ScreenId = 121, area = "Setting" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Settings">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                 <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">Is Admin Access </h4>
+                  
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Admin access provides full control over a system, allowing users to manage settings, accounts, and security features.
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "Setting_UserAccessPolicy_IsAdminAccess", new { area = "Setting" })' id="SaveIsAdminAccess" method="post">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Employee Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.EmployeeId, new SelectList(ViewBag.GetEmpolyeeName, "Id", "Name"), "--Select--", new { @class = "form-control", name = "EmpolyeeName", id = "txtEmpolyeeName" })
+                                                <span id="ErrortxtGetEmpolyeeName" class="Error"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        @Html.CheckBoxFor(model => model.IsAdmin, new { id = "IsAdmin" })
+                                        &nbsp; <label class="form-check-label form-label">
+                                            Give admin rights
+                                        </label>
+                                    </div>
+                                 
+                                    <div class="row">
+                                        <div class="LastShortLeaveBx">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="BtnBx">
+                                                        <div>
+                                                            <button type="button" id="btnSubmit" class="btn btn-primary btn-sm">
+                                                                Submit
+                                                            </button>
+                                                            <button type="button" class="btn btn-danger btn-sm" id="btnGetList">
+                                                                <i class="fa-solid fa-share-from-square"></i> List
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#txtEmpolyeeName").select2();
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        // return false
+                    }
+                });
+                //    .then(function() {
+                //    window.location.reload();
+                //});
+            }
+        }
+    });
+</script>
+
+<script>
+    $("#btnSubmit").click(function () {
+        debugger
+       
+        var EmployeeId = $("#txtEmpolyeeName").val();
+        if (EmployeeId == "") {
+            $("#ErrortxtGetEmpolyeeName").html("Employee name id required");
+            return false;
+        }
+        else {
+            $("#ErrortxtGetEmpolyeeName").html("");
+        }
+        $(".Userloaderbg").css("display", "flex");
+        $("#SaveIsAdminAccess").submit();
+    });
+</script>
+
+<script>
+    $("#btnGetList").click(function () {
+        window.location.href = '@Url.Action("GetList", "Setting_UserAccessPolicy_IsAdminAccess")';
+    });
+</script>

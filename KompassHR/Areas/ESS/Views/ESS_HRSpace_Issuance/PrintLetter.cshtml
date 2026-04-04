@@ -1,0 +1,209 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_HRSpace.HRSpace_LetterDetails
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Print Letter";
+}
+
+<style>
+
+     @@font-face {
+        font-family: 'FuturaMD';
+        src: url('../../../../assets/CustomFont/FuturaMD.ttf') format('truetype');
+    }
+    /* ===================== SCREEN ONLY ===================== */
+    body {
+        background: #eceff3;
+    }
+
+    .paper-wrapper {
+        display: flex;
+        justify-content: center;
+        padding: 20px 0;
+    }
+
+    .print-letter {
+        width: 230mm;
+        background: #fff;
+        padding: 15mm;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+    }
+
+    .print-actions {
+        text-align: right;
+        margin: 10px 25px;
+    }
+    .letter-header{
+    border-bottom:1px solid #ccc;
+    /*padding-bottom:8px;*/
+}
+
+.letter-footer{
+    border-top:1px solid #ccc;
+    /*padding-top:6mm;*/
+    font-size:11px;
+    text-align:center;
+}
+
+    /* ===================== PRINT ===================== */
+    @@media print {
+
+        /* PAGE */
+        @@page {
+            size: A4;
+            margin: 15mm 15mm 1mm 15mm;
+            
+        }
+
+       
+  
+        html, body {
+            background: #fff !important;
+        }
+            /* HIDE EVERYTHING */
+            body * {
+                visibility: hidden !important;
+            }
+
+        /* SHOW ONLY LETTER */
+        .print-letter,
+        .print-letter * {
+            visibility: visible !important;
+        }
+
+        /* POSITION LETTER */
+        .print-letter {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            box-shadow: none;
+            padding: 0;
+        }
+
+        /* TABLE PAGINATION */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            display: table-header-group;
+        }
+
+        tfoot {
+            display: table-footer-group;
+        }
+
+        tbody {
+            display: table-row-group;
+        }
+
+        /* HEADER */
+        .letter-header {
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 8px;
+        }
+
+        /* BODY */
+        .letter-body {
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 16px;
+            line-height: 1.7;
+            padding-bottom:2rem;
+            padding-top:2rem;
+            
+             /*margin-top:1rem;*/
+            /*margin-bottom:3rem;*/
+        }
+
+        /* FOOTER */
+        /*.letter-footer {
+        border-top: 1px solid #ccc;
+        padding-top: 6mm;
+        padding-bottom: 1mm;
+        font-size: 11px;
+        text-align: center;
+    }*/
+
+        .letter-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 15mm;
+            border-top: 1px solid #ccc;
+            background: #fff;
+        }
+
+        p, li {
+            page-break-inside: avoid;
+        }
+
+        .print-actions {
+            display: none !important;
+        }
+    }
+</style>
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+               
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new {area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_HRSpace_LettersMenu", "ESS_HRSpace_LettersMenu", new { id = 41, ScreenId =668, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Settings">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+
+
+    <div class="print-actions">
+        <button class="btn btn-primary btn-sm" onclick="window.print()">🖨 Print</button>
+    </div>
+
+    <div class="paper-wrapper">
+        <div class="print-letter">
+            <table>
+                <thead>
+                    <tr>
+                        <td>
+                            <div class="letter-header">
+                                @Html.Raw(ViewBag.LetterHeader)
+                            </div>
+                        </td>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="letter-body">
+                                @Html.Raw(ViewBag.Description)
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+
+                <tfoot>
+                    <tr>
+                        <td>
+                            <div class="letter-footer">
+                                @Html.Raw(ViewBag.LetterFooter)
+                            </div>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>

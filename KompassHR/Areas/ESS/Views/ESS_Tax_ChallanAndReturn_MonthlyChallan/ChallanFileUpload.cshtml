@@ -1,0 +1,467 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_Tax.IncomeTax_Challan_Document
+
+@{
+    ViewBag.Title = "ChallanFileUpload";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+
+<style>
+    #txtURL-error, #fileUploadFile-error, label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .lbltext {
+        text-align: left;
+        height: 25px;
+        color: green;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    th:nth-child(1), td:nth-child(1) {
+        width: 80px; /* Set the width for the first column */
+    }
+
+    #ListLMSLibrary tbody tr {
+        background-color: #fff !important;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Upload Challan Documents.
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("GetList", "ESS_Tax_ChallanAndReturn_MonthlyChallan", new {id = 9, ScreenId=235, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">Challan Documents.</h4>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Upload Challan Documents here.
+                    </p>
+                </div>
+                <div class="panel-body" data-scrollbar="false">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdateUploadFile", "ESS_Tax_ChallanAndReturn_MonthlyChallan", new { area = "ESS" })' id="SaveChallan_Document" method="post" enctype="multipart/form-data">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Title
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-10">
+                                                @Html.TextBoxFor(model => model.Title, new { @class = "form-control", type = "text", name = "Title", id = "txtTitle", autocomplete = "Off" })
+                                                @Html.ValidationMessageFor(model => model.Title, null, new { @class = "help-block", @id = "ErrorTitle", @style = "color:red" })
+                                                @Html.HiddenFor(model => model.IncomeTax_Challan_ChallanId, new { @id = "IncomeTax_Challan_ChallanId" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <style>
+                                    .progress-container {
+                                        position: relative;
+                                        width: 30%;
+                                        background: #ddd;
+                                        border-radius: 0px;
+                                        overflow: hidden;
+                                        height: 18px;
+                                        margin-top: -15px;
+                                    }
+
+                                    .progress-bar {
+                                        height: 100%;
+                                        width: 0;
+                                        background: linear-gradient(to right, #00c6ff, #0072ff);
+                                        transition: width 0.4s ease;
+                                    }
+
+                                    .progress-text {
+                                        position: absolute;
+                                        top: 0;
+                                        left: 50%;
+                                        transform: translateX(-50%);
+                                        height: 100%;
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: center;
+                                        font-weight: bold;
+                                        color: #333;
+                                    }
+                                </style>
+
+
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Upload File<span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-10">
+                                                <input class="form-control" type="file" onchange="ResetFile(this)" name="DocumentPath" id="DocumentPath" accept=".pdf, image/png, image/jpeg, video/*" />
+                                                @Html.ValidationMessageFor(model => model.DocumentPath, null, new { @class = "help-block", @id = "ErrorDocumentPath", @style = "color:red" })
+                                                <label class="form-label col-form-label col-md-8" id="fileUploadFile-lbltext">@TempData["FileName"]</label>
+
+                                                <div id="loader" style="display:none;text-align:center;">
+                                                    <img src="https://i.gifer.com/ZZ5H.gif" alt="Uploading..." style="width:50px;height:50px;" />
+                                                </div>
+
+                                                <div class="progress-container" id="divProcessBar" style="display:none">
+                                                    <div class="progress-bar" id="progressBar"></div>
+                                                    <div class="progress-text" id="progressText">0%</div>
+                                                </div>
+                                                <div id="result" style="margin-top:10px;"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="button" id="btnSubmit" class="btn btn-primary btn-sm">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <hr />
+                    <div class="table-scroll div1">
+                        <div class="table-wrap">
+                            <table class="table table-bordered TablePage4" id="" style="width: 100%">
+                                <thead style="background-color: rgba(233, 236, 239, 1) !important;">
+                                    <tr>
+                                        <th class="text-nowrap">Delete</th>
+                                        <th class="text-nowrap" style="width:200px;">Download</th>
+                                        <th class="text-nowrap">Title</th>
+                                        <th class="text-nowrap">Document Name </th>                                       
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var d in ViewBag.GetListChallanDocs)
+                                    {
+                                        <tr>
+                                            <td class="text-center">
+                                                <a onclick="DeleteChallanDocument('@d.ChallanDocument_EncryptedId','@d.DocumentPath','@d.IncomeTax_Challan_ChallanId')" id="btnDelete"
+                                                   style="cursor:pointer">
+                                                    <i class="fa-solid fa-trash-alt text-danger fa-lg"></i>
+                                                </a>
+                                            </td>
+                                            @if (d.FilePath == "File Not Found")
+                                            {
+                                                <td class="text-center">
+                                                    <a style="cursor:pointer;">
+                                                        <i class="fa-solid fa-xmark text-primary fa-lg"></i>
+                                                    </a>
+                                                </td>
+                                            }
+                                            else
+                                            {
+                                                <td class="text-center">
+                                                    <a onclick="DownloadChallanDocs('@Html.Raw(HttpUtility.JavaScriptStringEncode(d.FilePath))')" id="btnDownload"
+                                                       style="cursor:pointer">
+                                                        <i class="fa-solid fa-arrow-down text-primary fa-lg"></i>
+                                                    </a>
+                                                </td>
+                                            }
+                                            <td>@d.Title</td>
+                                            <td>@d.DocumentPath</td>                                          
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="LastShortLeaveBx">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="BtnBx">
+                                        <div>                                            
+                                            <a href="@Url.Action("GetList", "ESS_Tax_ChallanAndReturn_MonthlyChallan", new { area = "ESS" })">
+                                                <button type="button" id="btnGetTaxRuleList" class="btn btn-danger btn-sm">
+                                                    <i class="fa-solid fa-share-from-square"></i> List
+                                                </button>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        // return false
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+      
+    });//Ready Funcation
+</script>
+
+<script>
+    function validateFileSize(input) {
+        alert('ok');
+        const file = input.files[0];
+        const maxSize = 3 * 1024 * 1024; // 3 MB in bytes
+
+        if (file && file.size > maxSize) {
+            alert("File size must be less than 3 MB.");
+            input.value = ''; // Clear the file
+        }
+    }
+
+
+    //use for add regex function
+    jQuery.validator.addMethod(
+  "regex",
+   function(value, element, regexp) {
+       if (regexp.constructor != RegExp)
+           regexp = new RegExp(regexp);
+       else if (regexp.global)
+           regexp.lastIndex = 0;
+       return this.optional(element) || regexp.test(value);
+   },"erreur expression reguliere"
+);
+
+    // Use for Add validation in form
+    $("#SaveChallan_Document").validate({
+        rules: {
+
+            Title:{
+                required: true,
+            },
+            DocumentPath: {
+                required: true,
+            },
+        },
+        messages: {
+
+            Title:{
+                required: "Title is required",
+            },
+            DocumentPath: {
+                required: "Choose a file",
+            },
+        }
+    });
+
+
+    var form = $("#SaveChallan_Document");
+    form.validate();
+    $("#btnSubmit").click(function () {
+        debugger;
+        if(form.valid()==false)
+        {
+            return false;
+        }
+        $(".Userloaderbg").css("display", "flex");
+        $("#SaveChallan_Document").submit();
+       
+
+    });
+
+   
+
+</script>
+
+<script>
+    function DeleteChallanDocument(ChallanDocument_EncryptedId,DocumentPath,IncomeTax_Challan_ChallanId) {
+            const DeleteButtons = Swal.mixin({
+                customClass: {
+                    cancelButton: ' btnpress',
+                    confirmButton: ' btnpress'
+                },
+                buttonsStyling: true
+            })
+            DeleteButtons.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: false,
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup()
+                    popup.classList.remove('swal2-show')
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                    })
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                    }, 500)
+                    return false
+                }
+
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '@Url.Action("DeleteDocument", "ESS_Tax_ChallanAndReturn_MonthlyChallan")' +
+                    '?ChallanDocument_EncryptedId=' + encodeURIComponent(ChallanDocument_EncryptedId) +
+                    '&FileName=' + encodeURIComponent(DocumentPath) +
+                    '&IncomeTax_Challan_ChallanId=' + encodeURIComponent(IncomeTax_Challan_ChallanId);
+
+                } else if (
+                    /* Read more about handling dismissals below */
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+
+                }
+            })
+        }
+</script>
+
+<script>
+    function DownloadChallanDocs(attachmentPath) {
+        debugger;
+        if (attachmentPath!="File Not Found")
+        {
+            var url = '@Url.Action("DownloadAttachment", "ESS_Tax_ChallanAndReturn_MonthlyChallan")';
+
+            $.ajax({
+                url: url,
+                type: 'POST',
+                data: { DownloadAttachment: attachmentPath },
+                success: function (response) {
+                    debugger;
+                    if (response.Success) {
+                        var fileName = response.FileName;
+                        var fileData = atob(response.FileData);  // Decode the base64 string
+                        var byteArray = new Uint8Array(fileData.length);
+                        for (var i = 0; i < fileData.length; i++) {
+                            byteArray[i] = fileData.charCodeAt(i);
+                        }
+
+                        var blob = new Blob([byteArray], { type: response.ContentType });
+                        var downloadUrl = window.URL.createObjectURL(blob);
+                        var a = document.createElement('a');
+                        a.href = downloadUrl;
+                        a.download = fileName;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
+                        window.URL.revokeObjectURL(downloadUrl);
+                    }
+                    else {
+                        Swal.fire({
+                            icon: response.Icon || 'error',
+                            text: response.Message || 'An error occurred.',
+                            allowOutsideClick: false
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    Swal.fire({
+                        icon: 'error',
+                        text: 'An unexpected error occurred.',
+                        allowOutsideClick: false
+                    });
+                }
+            });
+        }
+        else{
+            var Message1 = "The file has not been uploaded.";
+            var Icon1 = "error";
+            if (Message1 != null) {
+                if (Message1 != null) {
+                    Swal.fire({
+                        icon: Icon1,
+                        text: Message1,
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup()
+                            popup.classList.remove('swal2-show')
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake')
+                            })
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake')
+                            }, 500)
+                            return false
+                        }
+                    });
+                }
+            }
+        }
+
+    }
+</script>

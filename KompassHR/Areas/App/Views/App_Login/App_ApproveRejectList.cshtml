@@ -1,0 +1,510 @@
+﻿
+@{
+    ViewBag.Title = "App_ApproveRejectList";
+    Layout = "~/Views/Shared/_MobileLayout.cshtml";
+}
+
+<link href="~/assets/MyCSS/Tailwindcss.css" rel="stylesheet" />
+
+<style>
+    .gradientLine-Div {
+        display: flex;
+        align-items: center;
+        margin: 10px 0;
+    }
+
+    .gradientLine1,
+    .gradientLine2 {
+        flex: 1; /* Better than fixed width to adapt responsively */
+        height: 1px;
+        background: linear-gradient(to left, #000000, #66666600);
+    }
+
+    .gradientLine2 {
+        background: linear-gradient(to right, #000000, #66666600);
+    }
+
+    .gradientLine-Div div strong {
+        white-space: nowrap;
+    }
+
+
+    .profile-card {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        background: #fff;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+    }
+
+        .profile-card .header {
+            padding: 15px;
+            position: relative;
+            color: white;
+        }
+
+    .org-level {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(0,0,0,0.4);
+        padding: 4px 8px;
+        border-radius: 10px;
+        font-size: 12px;
+    }
+
+    .profile-card .content {
+        padding: 15px;
+    }
+
+    .profile-card .name {
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .profile-card .subtitle {
+        font-size: 14px;
+        color: #555;
+        margin-bottom: 5px;
+    }
+
+
+
+    .app-header-fixed {
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+
+    .app-content {
+        padding: 5px 5px;
+    }
+</style>
+
+<style>
+    /* Fixed circular "+" button for all screen sizes */
+    .mobile-fixed-add-btn {
+        position: fixed;
+        bottom: 15px;
+        right: 15px;
+        z-index: 1050;
+        width: 50px;
+        height: 50px;
+    }
+
+        .mobile-fixed-add-btn .btn {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .app{
+            background-color:white;
+        }
+</style>
+
+<div class="container mx-auto px-2 py-2 bg-white">
+    <!-- Search Input -->
+    <!-- Fixed Search Bar -->
+    <div class="fixed top-0 left-0 w-full bg-white z-50 shadow">
+        <div class="flex justify-center py-2">
+            <div class="w-full max-w-md">
+                <input type="text" id="searchLeave" class="form-control w-full px-4 py-2 border rounded-md"
+                       placeholder="Search by Date (e.g., 20/Aug/2024)">
+            </div>
+        </div>
+    </div>
+    <div class="pt-10">
+        <!-- Card Grid -->
+        <div class="flex flex-wrap justify-center gap-2">
+            @{
+                var GetList = ViewBag.GetPendingRequestList as List<dynamic>;
+                int index = 0;
+            }
+            @foreach (var d in GetList)
+            {
+                var status = d?.CurrentStatus ?? "";
+                string topBorderColor = d.CurrentStatus != null && d.CurrentStatus.Contains("Approved") ? "green-500"
+                        : d.CurrentStatus != null && d.CurrentStatus.Contains("Rejected") ? "red-500"
+                        : d.CurrentStatus != null && d.CurrentStatus.Contains("Pending") ? "orange"
+                        : "";
+                string bgClass = $"bg-{topBorderColor}";
+
+
+                string color = "";
+                string borderClass = "";
+
+                switch (index % 10)
+                {
+                    case 0:
+                        color = "bg-red-400";
+                        borderClass = "border-t-4 border-red-400";
+                        break;
+                    case 1:
+                        color = "bg-blue-400";
+                        borderClass = "border-t-4 border-blue-400";
+                        break;
+                    case 2:
+                        color = "bg-green-400";
+                        borderClass = "border-t-4 border-green-400";
+                        break;
+                    case 3:
+                        color = "bg-yellow-400";
+                        borderClass = "border-t-4 border-yellow-400";
+                        break;
+                    case 4:
+                        color = "bg-purple-400";
+                        borderClass = "border-t-4 border-purple-400";
+                        break;
+                    case 5:
+                        color = "bg-pink-400";
+                        borderClass = "border-t-4 border-pink-400";
+                        break;
+                    case 6:
+                        color = "bg-indigo-400";
+                        borderClass = "border-t-4 border-indigo-400";
+                        break;
+                    case 7:
+                        color = "bg-teal";
+                        borderClass = "border-t-4 border-teal";
+                        break;
+                    case 8:
+                        color = "bg-orange";
+                        borderClass = "border-t-4 border-orange";
+                        break;
+                    case 9:
+                        color = "bg-cyan";
+                        borderClass = "border-t-4 border-cyan";
+                        break;
+                }
+
+                index++; // Increment after assigning
+
+
+                <div class="bg-white rounded-xl shadow-md p-3 w-full sm:max-w-md md:max-w-sm border-t-4 @borderClass search-card">
+                    <input type="hidden" class="hdnEncryptedId" value="@d.EncryptedId" />
+                    <input type="hidden" class="hdnDocId" value="@d.DocId" />
+                    <input type="hidden" class="hdnOrigin" value="@d.OriginShortName" />
+
+                    <div class="flex justify-between items-start">
+                        <!-- User Info -->
+                        <div class="flex items-center space-x-2">
+                            <div class="w-10 h-10 @color text-white rounded-full flex items-center justify-center text-lg font-semibold">
+                                @d.FirstName.Substring(0, 1)
+                            </div>
+                            <div class="text-sm font-medium text-gray-800">
+                                @d.EmployeeName
+                                <div class="text-xs text-gray-500">@d.EmployeeNo - @d.Designation</div>
+                            </div>
+                        </div>
+                        <!-- Applied On -->
+                        <div class="text-xs text-gray-500 text-right">
+                            <div>Applied On</div>
+                            <div>@d.AppliedOn</div>
+                        </div>
+                    </div>
+
+                    <!-- Table-style Layout -->
+                    <table class="w-full text-sm text-gray-700">
+                        <tbody>
+                            <tr>
+                                <td class="py-1 align-center w-5">
+                                    <i class="fas fa-briefcase text-blue-600"></i>
+                                </td>
+                                <td class="font-medium w-17">Type</td>
+                                <td class="px-2">:</td>
+                                <td class="truncate">
+                                    @d.Origin
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="py-1 align-top">
+                                    <i class="fa-solid fa-calendar-days text-purple-600"></i>
+                                </td>
+                                <td class="font-medium">Date</td>
+                                <td class="px-2">:</td>
+                                <td class="find-LeaveType">@d.FromDate</td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="py-1 align-top">
+                                    <i class="fas fa-comment-dots text-indigo-600"></i>
+                                </td>
+                                <td class="font-medium">Remark</td>
+                                <td class="px-2">:</td>
+                                <td>@d.Remark</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- Footer Buttons -->
+                    <div class="flex flex-wrap justify-start items-center gap-3 mt-2 CheckCanApp">
+                        <div class="flex flex-wrap justify-start items-center gap-3 mt-2">
+                            @if (!string.IsNullOrEmpty(d.Origin) && d.Origin != "TravelClaim" && d.Origin != "GeneralClaim")
+                            {
+                                <a href="#modal-dialogForApproval1" id="btnmodal-dialog" onclick="Approved(this, 'Approved')" class="text-blue-600 border border-blue-500 px-2 py-1 rounded-md hover:bg-blue-50">
+                                    <i class="fa-solid fa-check-double"></i> Approve
+                                </a>
+
+                                <button href="#modal-dialogForHoldReject1" onclick="OpenModule(this)" id="btnmodal-dialog1"class="text-red-600 border border-red-500 px-2 py-1 rounded-md hover:bg-red-50">
+                                    <i class="fa fa-trash"></i> Reject
+                                </button>
+                            }
+
+                            @if (d.CancelApproval == "ForCancelAppproval")
+                            {
+                                <input type="hidden" class="hdnForCancelAppproval" value="ForCancelAppproval" />
+                                <a href="@Url.Action("App_CancelApproveRejectDetails", "App_Login",new { area = "App", DocId_Encrypted = d.EncryptedId, Origin = d.Origin})"
+                                   class="text-blue-600 border border-blue-500 px-2 py-1 rounded-md hover:bg-blue-50">
+                                    <i class="fa-solid fa-bars"></i> View More
+                                </a>
+                            }
+                            else
+                            {
+                                <input type="hidden" class="hdnForCancelAppproval" value="" />
+                                <a href="@Url.Action("App_ApproveRejectDetails", "App_Login",new { area = "App", DocId = d.DocId, Origin = d.Origin, EmployeeId = d.EmployeeId })"
+                                   class="text-blue-600 border border-blue-500 px-2 py-1 rounded-md hover:bg-blue-50">
+                                    <i class="fa-solid fa-bars"></i> View More
+                                </a>
+                            }
+                           
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+</div>
+
+<!-- #Start Appprove Reject Modal -dialog -->
+<div class="modal fade" id="myModalFinal" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header bg-black text-white">
+                <h4 class="modal-title"> Remark For Reject</h4>
+                <div class="panel-heading-btn">
+                    <a href="javascript:;" class="btn btn-icon btn-danger btnClear" data-bs-dismiss="modal"
+                       aria-hidden="true" id="CloseModel">
+                        <i class="fa fa-xmark"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="modal-body">
+                <!-- BEGIN panel -->
+                <div class="modal-body-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <input type="hidden" id="modalDocId" />
+                                            <input type="hidden" id="modalEncryptedId" />
+                                            <input type="hidden" id="modalOrigin" />
+                                            <input type="hidden" id="modalForCancelAppproval" />
+                                            <textarea id="txtApproveRejectRemark" class="form-control" rows="4"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- END panel -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="Approved(this,'Rejected')" id="btnReject" class="btn btn-primary btn-sm">
+                    <i class="fa-solid fa-floppy-disk"> </i> Submit
+                </button>
+                <button type="button" id="btnCancel" class="btn btn-danger btnpress CloseModel" data-bs-dismiss="modal">
+                    <i class="fa-solid fa-share-from-square"></i> Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #End modal-dialog -->
+
+<script>
+    function OpenModule(btn) {
+        debugger;
+        var container = $(btn).closest('.search-card');
+        var docId = container.find('.hdnDocId').val();
+        var encryptedId = container.find('.hdnEncryptedId').val();
+        var origin = container.find('.hdnOrigin').val();
+
+        var container1 = $(btn).closest('.CheckCanApp');
+        var GetCanApp = container1.find('.hdnForCancelAppproval').val();
+
+        // Set values into modal hidden fields
+        $('#modalDocId').val(docId);
+        $('#modalEncryptedId').val(encryptedId);
+        $('#modalOrigin').val(origin);
+        $("#myModalFinal").modal('show');
+        $('#modalForCancelAppproval').val(GetCanApp);
+        
+    }
+
+    function Approved(elem, Approver) {
+        debugger;
+
+        const Approved = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        Approved.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes Submit!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+            allowOutsideClick: false
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                debugger;
+                $(".Userloaderbg").css("display", "flex");
+
+                var DocId = "";
+                var Encrypted = "";
+                var Origin = "";
+                var Status = "";
+                var Remark = "";
+                var GetCanApp = "";
+              
+                if (Approver == "Rejected") {
+                    DocId = $('#modalDocId').val();
+                    Encrypted = $('#modalEncryptedId').val();
+                    Origin = $('#modalOrigin').val();
+                    Remark = $("#txtApproveRejectRemark").val();
+                    Status = "Rejected";
+                    GetCanApp = $('#modalForCancelAppproval').val();
+                }
+                else {
+                    var container = $(elem).closest('.search-card');
+                    DocId = container.find('.hdnDocId').val();
+                    Encrypted = container.find('.hdnEncryptedId').val();
+                    Origin = container.find('.hdnOrigin').val();
+                    var container1 = $(elem).closest('.CheckCanApp');
+                    GetCanApp = container1.find('.hdnForCancelAppproval').val();
+
+                    Status = "Approved";
+                }
+                
+                var actionUrl = "";
+                if (GetCanApp == "ForCancelAppproval") {
+                    actionUrl = '@Url.Action("RequestForCancelApprove", "App_Login")';
+                } else {
+                    actionUrl = '@Url.Action("ApproveRequest", "App_Login")';
+                }
+                //alert(Origin);
+                //return false;
+                $.ajax({
+                    url: actionUrl,
+                    method: "get",
+                    data: { DocId: DocId, Encrypted: Encrypted, Status: Status, Remark: Remark, Origin: Origin },
+                    success: function (response) {
+                        debugger;
+                        var Message1 = response.Message;
+                        var Icon1 = response.Icon;
+                        var ApproverMode1 = response.ApproverMode;
+                        $(".Userloaderbg").css("display", "none");
+                        $("#myModalFinal").modal('hide');
+                        $("#txtApproveRejectRemark").val("")
+                        if (response.Icon == "error") {
+                            if (Message1 != null) {
+                                if (Message1 != null) {
+                                    Swal.fire({
+                                        icon: Icon1,
+                                        text: Message1,
+                                        allowOutsideClick: false
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            if (ApproverMode1 == "Bulk") {
+                                                window.location.href = '@Url.Action("ESS_TimeOffice_BulkApproval", "ESS_TimeOffice_BulkApproval")';
+                                            }
+                                            else {
+                                                window.location.href = '@Url.Action("App_ApproveRejectList", "App_Login")';
+                                            }
+                                        } else if (
+                                            /* Read more about handling dismissals below */
+                                            result.dismiss === Swal.DismissReason.cancel
+                                        ) {
+
+                                        }
+                                    })
+                                }
+                            }
+                        }
+                        else {
+                            var Message1 = response.Message;
+                            var Icon1 = response.Icon;
+                            var ApproverMode1 = response.ApproverMode;
+                            if (response.Icon == "success") {
+                                if (Message1 != null) {
+                                    if (Message1 != null) {
+                                        Swal.fire({
+                                            icon: Icon1,
+                                            text: Message1,
+                                            allowOutsideClick: false
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                if (ApproverMode1 == "Bulk") {
+                                                    window.location.href = '@Url.Action("ESS_TimeOffice_BulkApproval", "ESS_TimeOffice_BulkApproval")';
+                                                }
+                                                else {
+                                                    window.location.href = '@Url.Action("App_ApproveRejectList", "App_Login")';
+                                                }
+                                            } else if (
+                                                /* Read more about handling dismissals below */
+                                                result.dismiss === Swal.DismissReason.cancel
+                                            ) {
+
+                                            }
+                                        })
+
+                                        $("#myModalFinal").modal('hide');
+                                        $("#txtApproveRejectRemark").val("");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+            } else if (
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+            }
+        })
+    }
+</script>
+<script>
+    document.getElementById('searchLeave').addEventListener('input', function () {
+        const searchValue = this.value.trim().toLowerCase();
+        const cards = document.querySelectorAll('.search-card');
+
+        cards.forEach(card => {
+            const dateElement = card.querySelector('.find-LeaveType');
+            const dateText = dateElement ? dateElement.innerText.trim().toLowerCase() : '';
+
+            if (dateText.includes(searchValue)) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+</script>

@@ -1,0 +1,674 @@
+﻿
+@{
+    ViewBag.Title = "EmployeeProfileView";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var Item = ViewBag.GetEmployeeReportList;
+}
+
+<style>
+    .Userloaderbg {
+        background: rgb(0 0 0 / 90%);
+        display: flex;
+        flex-direction: column;
+    }
+
+    .Userloader {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: inline-block;
+        position: relative;
+        border: 3px solid;
+        border-color: #FFF #FFF transparent transparent;
+        box-sizing: border-box;
+        animation: rotation 1s linear infinite;
+    }
+
+        .Userloader::after,
+        .Userloader::before {
+            content: '';
+            box-sizing: border-box;
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            margin: auto;
+            border: 3px solid;
+            border-color: transparent transparent #FF3D00 #FF3D00;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            box-sizing: border-box;
+            animation: rotationBack 0.5s linear infinite;
+            transform-origin: center center;
+        }
+
+        .Userloader::before {
+            width: 32px;
+            height: 32px;
+            border-color: #FFF #FFF transparent transparent;
+            animation: rotation 1.5s linear infinite;
+        }
+
+    .loadingtext {
+        color: #FFF;
+        display: inline-block;
+        position: relative;
+        font-size: 18px;
+        font-family: Arial, Helvetica, sans-serif;
+        box-sizing: border-box;
+        margin-top: 10px;
+    }
+
+        .loadingtext::after {
+            content: '';
+            width: 4px;
+            height: 4px;
+            background: currentColor;
+            border-radius: 50%;
+            position: absolute;
+            bottom: 5px;
+            right: -10px;
+            box-sizing: border-box;
+            animation: animloader 1s linear infinite;
+        }
+
+    @@keyframes animloader {
+        0% {
+            box-shadow: 10px 0 rgba(255, 255, 255, 0), 20px 0 rgba(255, 255, 255, 0);
+        }
+
+        50% {
+            box-shadow: 10px 0 white, 20px 0 rgba(255, 255, 255, 0);
+        }
+
+        100% {
+            box-shadow: 10px 0 white, 20px 0 white;
+        }
+    }
+
+    @@keyframes rotation {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    @@keyframes rotationBack {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(-360deg);
+        }
+    }
+
+    .pace.pace-active {
+        display: none !important;
+    }
+
+    .dataTables_length label {
+        display: flex;
+        align-items: center;
+    }
+
+        .dataTables_length label .select2 {
+            margin: 0 10px;
+        }
+
+    /*button Css*/
+    .btn-icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .btnpress:active {
+        transform: translateY(4px);
+    }
+
+
+    .select2.select2-container {
+        width: 100% !important;
+    }
+
+    label {
+        font-weight: 600;
+    }
+
+    .width-45 {
+        width: 45px;
+    }
+</style>
+
+<!-- BEGIN #header -->
+<div id="content" class="app-content p-0">
+
+    <!-- BEGIN profile -->
+    <div class="profile">
+        <div class="profile-header">
+            <!-- BEGIN profile-header-cover -->
+            <div class="profile-header-cover"></div>
+            <!-- END profile-header-cover -->
+            <!-- BEGIN profile-header-content -->
+            <div class="profile-header-content">
+                <!-- BEGIN profile-header-img -->
+                <div class="profile-header-img">
+                    @if (@ViewBag.UploadPhoto != "")
+                    {
+                        <img id="fileData" style="height:120px; width: 180px;" src="@ViewBag.UploadPhoto"/>
+                    }
+                    else
+                    {
+                        @*<span class="border" style="font-size:76px; padding:4px; text-align: center; background-color:#00acac; color:white; margin-right: 7px;"><b>@Session["EmployeeFirstName"]</b></span>*@
+                            <img  style="filter: hue-rotate(328deg);" id="imgUserProfile"/>
+                    }
+
+                    @*<img src="/assets/img/user/user-13.jpg" alt="" />*@
+                </div>
+                <!-- END profile-header-img -->
+                <!-- BEGIN profile-header-info -->
+                <div class="profile-header-info">
+                    <h4 class="mt-0 mb-1">@(Item.EmployeeName ?? "")</h4>
+                    <h6>Company : &nbsp; @(Item.CompanyName ?? "")  </h6>
+                    <h6>Department : &nbsp; @(Item.DepartmentName ?? "")</h6>
+                    <h6>Designation : &nbsp; &nbsp;@(Item.DesignationName ?? "") </h6>
+                    <h6>Joining Date : &nbsp; @(Item.JoiningDate ?? "")</h6>
+                    @*<h6>Tenure : @Item.EmployeeName </h6>*@
+                </div>
+                <!-- END profile-header-info -->
+            </div>
+            <!-- END profile-header-content -->
+        </div>
+    </div>
+    <!-- END profile -->
+    <!-- BEGIN profile-content -->
+    <br />
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+             
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Content("~/Dashboard/Dashboard")">
+                        <img src="~/assets/MenuImages/Home.png" alt="Home" />
+                    </a>
+
+                </li>
+
+                <li>
+                    <a href="@Url.Action("Module_Employee_AllEmployee", "Module_Employee_AllEmployee", new {id = 41, ScreenId= 263, area = "Module" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+                
+            </ol>
+        </div>
+    </div>
+    <div class="profile-content">
+           
+            <!-- BEGIN tab-content -->
+            <div class="tab-content p-0">
+                <!-- BEGIN #profile-post tab -->
+                <div class="tab-pane fade show active" id="profile-post">
+
+                    <!-- BEGIN timeline -->
+                    <div class="timeline">
+                        <!-- BEGIN timeline-item -->
+                        <div class="timeline-item">
+                            <!-- BEGIN timeline-time -->
+                            <div class="timeline-time">
+                                <span class="date"></span>
+                                <span class="time">Profile</span>
+                            </div>
+                            <!-- END timeline-time -->
+                            <!-- BEGIN timeline-icon -->
+                            <div class="timeline-icon">
+                                <a href="javascript:;">&nbsp;</a>
+                            </div>
+                            <!-- END timeline-icon -->
+                            <!-- BEGIN timeline-content -->
+                            <div class="timeline-content">
+                                <!-- BEGIN timeline-header -->
+                                <!-- END timeline-header -->
+                                <!-- BEGIN timeline-body -->
+                                <div class="timeline-body">
+                                    <!-- timeline-post -->
+                                    <!-- timeline-action -->
+
+                                    <div class="d-flex align-items-center fw-bold">
+                                        <a href="javascript:;" class="flex-fill text-decoration-none text-left text-gray-600">
+                                            <div class="row">
+                                                <div class="col-6"><b>Mobile No :</b></div>
+                                                <div class="col-6">@(Item.PrimaryMobileNo ?? "") </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <br />
+                                    <div class="d-flex align-items-center fw-bold">
+
+                                        <a href="javascript:;" class="flex-fill text-decoration-none text-left text-gray-600">
+                                            <div class="row">
+                                                <div class="col-6"><b>Email :</b></div>
+                                                <div class="col-6">@(Item.PersonalEmailID ?? "")</div>
+                                            </div>
+                                        </a>
+
+                                    </div>
+                                    <br />
+                                    <div class="d-flex align-items-center fw-bold">
+
+                                        <a href="javascript:;" class="flex-fill text-decoration-none text-left text-gray-600">
+                                            <div class="row">
+                                                <div class="col-6"><b>Birth Date :</b></div>
+                                                <div class="col-6">@(Item.BirthDayDate ?? "")</div>
+                                        </div>
+                                    </a>
+
+                                </div>
+                                <br />
+                                <div class="d-flex align-items-center fw-bold">
+                                    <a href="javascript:;" class="flex-fill text-decoration-none text-left text-gray-600">
+                                        <div class="row">
+                                            <div class="col-6"><b>State :</b></div>
+                                            <div class="col-6">@(Item.PermanentState ?? "")</div>
+                                        </div>
+                                    </a>
+
+                                </div>
+                                <br />
+                                <div class="d-flex align-items-center fw-bold">
+
+                                    <a href="javascript:;" class="flex-fill text-decoration-none text-left text-gray-600">
+                                        <div class="row">
+                                            <div class="col-6"><b>City :</b></div>
+                                            <div class="col-6">@(Item.PermanentCity ?? "")</div>
+                                        </div>
+                                    </a>
+
+                                </div>
+                                <br />
+                                <div class="d-flex align-items-center fw-bold">
+
+                                    <a href="javascript:;" class="flex-fill text-decoration-none text-left text-gray-600">
+                                        <div class="row">
+                                            <div class="col-6"><b>Pincode :</b></div>
+                                            <div class="col-6">@(Item.PermanentPin ?? "")</div>
+                                        </div>
+                                    </a>
+
+                                </div>
+                                <br />
+                                <div class="d-flex align-items-center fw-bold">
+
+                                    <a href="javascript:;" class="flex-fill text-decoration-none text-left text-gray-600">
+                                        <div class="row">
+                                            <div class="col-6"><b>Address :</b></div>
+                                            <div class="col-6">@(Item.PresentPostelAddress ?? "")</div>
+                                        </div>
+                                    </a>
+
+                                </div>
+                                <br />
+                                <div class="d-flex align-items-center fw-bold">
+
+                                    <a href="javascript:;" class="flex-fill text-decoration-none text-left text-gray-600">
+                                        <div class="row">
+                                            <div class="col-6"><b>Gender :</b></div>
+                                            <div class="col-6">@(Item.Gender ?? "")</div>
+                                        </div>
+                                    </a>
+
+                                </div>
+                                <br />
+                                <div class="d-flex align-items-center fw-bold">
+
+                                    <a href="javascript:;" class="flex-fill text-decoration-none text-left text-gray-600">
+                                        <div class="row">
+                                            <div class="col-6"><b>Blood Group :</b></div>
+                                            <div class="col-6">@(Item.BloodGroup ?? "")</div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <br />
+                                @*<hr class="mt-10px mb-3" />*@
+                                @*<div class="d-flex align-items-center fw-bold">
+
+                                        <a href="javascript:;" class="flex-fill text-decoration-none text-left text-gray-600">
+                                            <div class="row">
+                                                <div class="col-6"><b>Age :</b></div>
+                                                <div class="col-6">@Item.Ageofjoining</div>
+                                            </div>
+                                        </a>
+                                    </div>*@
+
+
+                                <!-- timeline-input -->
+
+                            </div>
+                            <!-- END timeline-body -->
+                        </div>
+                        <!-- END timeline-content -->
+                    </div>
+                    <!-- END timeline-item -->
+                    <div class="timeline-item">
+                        <!-- BEGIN timeline-time -->
+                        <div class="timeline-time">
+                            <span class="date"></span>
+                            <span class="time">Emergency Contact</span>
+                        </div>
+                        <!-- END timeline-time -->
+                        <!-- BEGIN timeline-icon -->
+                        <div class="timeline-icon">
+                            <a href="javascript:;">&nbsp;</a>
+                        </div>
+                        <!-- END timeline-icon -->
+                        <!-- BEGIN timeline-content -->
+                        <div class="timeline-content">
+                            <!-- BEGIN timeline-header -->
+                            <!-- END timeline-header -->
+                            <!-- BEGIN timeline-body -->
+                            <div class="timeline-body">
+                                <!-- timeline-post -->
+                                <!-- timeline-action -->
+                                <div class="d-flex align-items-center fw-bold">
+                                    <a href="javascript:;" class="flex-fill text-decoration-none text-left text-gray-600">
+                                        <div class="row">
+                                            <div class="col-6"><b>Primary Name :</b></div>
+                                            <div class="col-6">@(Item.PrimaryEmergencyName ?? "")</div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <br />
+                                <div class="d-flex align-items-center fw-bold">
+
+                                    <a href="javascript:;" class="flex-fill text-decoration-none text-left text-gray-600">
+                                        <div class="row">
+                                            <div class="col-6"><b>Primary Relation :</b></div>
+                                            <div class="col-6">@(Item.PrimaryEmergencyRelation ?? "")</div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <br />
+                                <div class="d-flex align-items-center fw-bold">
+                                    <a href="javascript:;" class="flex-fill text-decoration-none text-left text-gray-600">
+                                        <div class="row">
+                                            <div class="col-6"><b>Primary Phone :</b></div>
+                                            <div class="col-6">@(Item.PrimaryEmergencyMobileNo ?? "")</div>
+                                        </div>
+                                    </a>
+                                </div>
+
+
+                                <br />
+
+
+                                <div class="d-flex align-items-center fw-bold">
+
+                                    <a href="javascript:;" class="flex-fill text-decoration-none text-left text-gray-600">
+                                        <div class="row">
+                                            <div class="col-6"><b>Primary Neighbour Name  :</b></div>
+                                            <div class="col-6">@(Item.PrimaryNeighbourName ?? "")</div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <br />
+                                <div class="d-flex align-items-center fw-bold">
+
+                                    <a href="javascript:;" class="flex-fill text-decoration-none text-left text-gray-600">
+                                        <div class="row">
+                                            <div class="col-6"><b>Primary Neighbour Phone  :</b></div>
+                                            <div class="col-6">@(Item.PrimaryNeighbourMobileNo ?? "")</div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <br />
+
+                                <!-- timeline-input -->
+
+                            </div>
+                            <!-- END timeline-body -->
+                        </div>
+                        <!-- END timeline-content -->
+                    </div>
+                    <!-- BEGIN timeline-item -->
+                    <div class="timeline-item">
+                        <!-- BEGIN timeline-time -->
+                        <div class="timeline-time">
+                            <span class="date"></span>
+                            <span class="time">Legal Info</span>
+                        </div>
+                        <!-- END timeline-time -->
+                        <!-- BEGIN timeline-icon -->
+                        <div class="timeline-icon">
+                            <a href="javascript:;">&nbsp;</a>
+                        </div>
+                        <!-- END timeline-icon -->
+                        <!-- BEGIN timeline-content -->
+                        <div class="timeline-content">
+                            <!-- BEGIN timeline-header -->
+                            <!-- END timeline-header -->
+                            <!-- BEGIN timeline-body -->
+                            <div class="timeline-body">
+                                <!-- timeline-post -->
+                                <!-- timeline-action -->
+                                @if (Item.CountryId == 1)
+                                {
+                                    <div class="row align-items-center fw-bold mb-2">
+                                        <div class="col-md-6">
+                                            <a href="javascript:;" class="flex-fill text-decoration-none text-left text-gray-600">
+                                                <div class="row">
+                                                    <div class="col-6"><b>Aadhar No :</b></div>
+                                                    <div class="col-6">@(Item.AadharNo ?? "")</div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <a href="javascript:;" class="flex-fill text-decoration-none text-left text-gray-600">
+                                                <div class="row">
+                                                    <div class="col-6"><b>PAN NO :</b></div>
+                                                    <div class="col-6">@(Item.PanName ?? "")</div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                }
+                                
+                                <div class="row align-items-center fw-bold mb-2">
+                                    <div class="col-md-6">
+                                        <a href="javascript:;" class="flex-fill text-decoration-none text-right text-gray-600">
+                                            <div class="row">
+                                                <div class="col-6"><b>Nationality :</b></div>
+                                                <div class="col-6">@(Item.Nationality ?? "")</div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <a href="javascript:;" class="flex-fill text-decoration-none text-right text-gray-600">
+                                            <div class="row">
+                                                <div class="col-6"><b>Marital status :</b></div>
+                                                <div class="col-6">@(Item.MaritalStatus ?? "")</div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="row align-items-center fw-bold mb-2">
+                                    <div class="col-md-6">
+                                        <a href="javascript:;" class="flex-fill text-decoration-none text-left text-gray-600">
+                                            <div class="row">
+                                                <div class="col-6"><b>Passport No :</b></div>
+                                                <div class="col-6">@(Item.PassportNo ?? "")</div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <a href="javascript:;" class="flex-fill text-decoration-none text-right text-gray-600">
+                                            <div class="row">
+                                                <div class="col-6"><b>Passport Exp Date :</b></div>
+                                                <div class="col-6">@(Item.PassportExpiryDate ?? "")</div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                                <!-- timeline-input -->
+                            </div>
+                            <!-- END timeline-body -->
+                        </div>
+                        <!-- END timeline-content -->
+                    </div>
+                    <!-- END timeline-item -->
+                    <!-- BEGIN timeline-item -->
+                    <div class="timeline-item">
+                        <!-- BEGIN timeline-time -->
+                        <div class="timeline-time">
+                            <span class="date"></span>
+                            <span class="time">Bank info</span>
+                        </div>
+                        <!-- END timeline-time -->
+                        <!-- BEGIN timeline-icon -->
+                        <div class="timeline-icon">
+                            <a href="javascript:;">&nbsp;</a>
+                        </div>
+                        <!-- END timeline-icon -->
+                        <!-- BEGIN timeline-content -->
+                        <div class="timeline-content">
+                            <!-- BEGIN timeline-header -->
+                            <!-- END timeline-header -->
+                            <!-- BEGIN timeline-body -->
+                            <div class="timeline-body">
+                                <!-- timeline-post -->
+                                <!-- timeline-action -->
+
+
+                                <div class="d-flex align-items-center fw-bold">
+                                    <a href="javascript:;" class="flex-fill text-decoration-none text-left text-gray-600">
+                                        <div class="row">
+                                            <div class="col-6"><b>Bank Name :</b></div>
+                                            <div class="col-6">@(Item.BankName ?? "")</div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <br />
+                                <div class="d-flex align-items-center fw-bold">
+                                    <a href="javascript:;" class="flex-fill text-decoration-none text-left text-gray-600">
+                                        <div class="row">
+                                            <div class="col-6"><b>Bank Account No :</b></div>
+                                            <div class="col-6">@(Item.AccountNo ?? "")</div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <br />
+                                <div class="d-flex align-items-center fw-bold">
+                                    <a href="javascript:;" class="flex-fill text-decoration-none text-left text-gray-600">
+                                        <div class="row">
+                                            <div class="col-6"><b>IFSC Code :</b></div>
+                                            <div class="col-6">@(Item.IFSCCode ?? "")</div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <br />
+
+                                <div class="d-flex align-items-center fw-bold">
+                                    <a href="javascript:;" class="flex-fill text-decoration-none text-left text-gray-600">
+                                        <div class="row">
+                                            <div class="col-6"><b>Bank Address :</b></div>
+                                            <div class="col-6">@(Item.BankAddress ?? "")</div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <!-- timeline-input -->
+                            </div>
+                            <!-- END timeline-body -->
+                        </div>
+                        <!-- END timeline-content -->
+                    </div>
+                    <!-- END timeline-item -->
+                    <!-- BEGIN timeline-item -->
+                    @*<div class="timeline-item">
+                            <!-- BEGIN timeline-time -->
+                            <div class="timeline-time">
+                                <span class="date"></span>
+                                <span class="time">Family Info</span>
+                            </div>
+                            <!-- END timeline-time -->
+                            <!-- BEGIN timeline-icon -->
+                            <div class="timeline-icon">
+                                <a href="javascript:;">&nbsp;</a>
+                            </div>
+                            <!-- END timeline-icon -->
+                            <!-- BEGIN timeline-content -->
+                            <div class="timeline-content">
+                                <!-- BEGIN timeline-header -->
+                                <!-- END timeline-header -->
+                                <!-- BEGIN timeline-body -->
+                                <div class="timeline-body">
+                                    <!-- timeline-post -->
+                                    <!-- timeline-action -->
+                                    <hr class="my-10px" />
+                                    <div class="d-flex align-items-center fw-bold">
+                                        <a href="javascript:;" class="flex-fill text-decoration-none text-left text-gray-600">
+                                            <table id="data-table" class="table table-striped">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Name</th>
+                                                        <th>Relationship</th>
+                                                        <th>Date of Birth</th>
+                                                        <th>Phone</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var d in ViewBag.GetEmployeeReportList)
+                                                    {
+                                                        <tr>
+                                                            <td>@d.DocNo</td>
+                                                            <td>@d.DocDate</td>
+                                                        </tr>
+
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </a>
+                                    </div>
+                                    <hr class="mt-10px mb-3" />
+                                    <!-- timeline-input -->
+                                </div>
+                                <!-- END timeline-body -->
+                            </div>
+                            <!-- END timeline-content -->
+                        </div>*@
+                    <!-- END timeline-item -->
+                    <!-- BEGIN timeline-item -->
+                    <!-- END timeline-item -->
+                </div>
+                <!-- END timeline -->
+            </div>
+            <!-- END #profile-post tab -->
+            <!-- BEGIN #profile-about tab -->
+            <div class="tab-pane fade" id="profile-about">
+                <!-- BEGIN table -->
+                <!-- END table -->
+            </div>
+            <!-- END #profile-about tab -->
+            <!-- BEGIN #profile-photos tab -->
+            <!-- END #profile-photos tab -->
+            <!-- BEGIN #profile-videos tab -->
+            <!-- END #profile-videos tab -->
+            <!-- BEGIN #profile-friends tab -->
+            <!-- END #profile-friends tab -->
+        </div>
+        <!-- END tab-content -->
+    </div>
+    <!-- END profile-content -->
+</div>
+<!-- END #content -->
+<script>
+    $(document).ready(function () {
+        $('#imgUserProfile').attr('src', '@Url.Content("~/assets/img/user/MyUser.png")');
+    });
+</script>

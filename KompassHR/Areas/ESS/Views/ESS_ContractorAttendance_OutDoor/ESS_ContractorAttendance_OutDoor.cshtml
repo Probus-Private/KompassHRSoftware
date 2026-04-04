@@ -1,0 +1,1238 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_TimeOffice.Atten_OutDoorCompany
+@{
+    ViewBag.Title = "ESS_ContractorAttendance_OutDoor";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+<script src="~/assets/js/CaptchaVerification.js"></script>
+
+
+<style>
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    .teambx {
+        border: 1px solid gray;
+        padding: 10px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        margin: 10px 5px;
+        border-radius: 10px;
+    }
+
+        .teambx .teamheading {
+            position: absolute;
+            right: 0px;
+            bottom: 5px;
+            padding: 5px 15px;
+            width: fit-content;
+            border-radius: 20px 0px 0px 20px;
+            background: #000;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 900;
+        }
+
+        .teambx .teamname {
+            font-size: 16px;
+            font-weight: 800;
+            border-bottom: 1px solid lightgray;
+            margin-bottom: 8px;
+        }
+
+    .teamname i {
+        margin-right: 0 10px !important;
+    }
+
+    .teamcontactBx {
+        font-size: 14px;
+        text-align: left;
+        font-weight: 600;
+    }
+
+        .teamcontactBx i {
+            margin: 0 5px;
+        }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Contractor Outdoor
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_ContractorAttendance_Menu", "ESS_ContractorAttendance_Menu",  new { id = 27,ScreenId=333, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Contractor Outdoor - Add</h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        The employee indicates the date(s) and duration of the outdoor assignment, including the start and end times. This helps managers and supervisors plan and allocate resources effectively.
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form action="/ESS/ESS_ContractorAttendance_OutDoor/SaveUpdate" id="SaveContractorOutDoor" method="post" data-parsley-validate="true">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            @Html.HiddenFor(model => Model.OutDoorCompanyID)
+                                            <label class="form-label col-form-label col-md-3"> Doc No. @*<span class="important">*</span>*@</label>
+                                            <div class="col-md-9">
+                                                @Html.TextBoxFor(model => Model.DocNo, new { @class = "form-control mb-5px", @id = "txtDocNo", Value = @ViewBag.DocNo.DocNo })
+                                                @Html.HiddenFor(model => model.OutDoorCompanyID_Encrypted)
+                                            </div>
+                                        </div>
+                                    </div>
+                                  
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3"> Shift <span class="important">*</span> </label>
+                                            <div class="col-md-9">
+                                                <input type="hidden" name="OutDoorCompanyShiftName" id="ShiftName" />
+                                                <input type="hidden" id="hdnLunchTime" />
+                                                @Html.DropDownListFor(model => model.OutDoorCompanyShiftId, new SelectList(ViewBag.GetShiftList, "ShiftId", "ShiftName"), "--Select--", new { id = "ddlShift", name = "OutDoorCompanyShiftId", @class = "form-select", autocomplete = "off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3"> Employee Name <span class="important">*</span> </label>
+                                            <div class="col-md-9">
+                                                @Html.DropDownListFor(model => model.OutDoorCompanyEmployeeID, new SelectList(ViewBag.EmployeeName, "Id", "Name"), "--Select--", new { @class = "form-select", name = "EmployeeID", id = "ddlEmployeeID" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row" id="HdnDirecationandTotalMinutes">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">Outdoor Type <span class="important">*</span></label>
+                                            <div class="col-md-9">
+                                                @Html.DropDownListFor(model => model.OutDoorCompanyType, new List<SelectListItem>{
+                                                new SelectListItem {Text ="Full Day", Value="Full Day"},
+                                                 new SelectListItem {Text ="1st Half", Value="1st Half"},
+                                                   new SelectListItem {Text ="2nd Half", Value="2nd Half"},
+                                                   new SelectListItem {Text ="Short Period", Value="Short Period"}
+                                              }, "--Select--", new { @class = "form-select", name = "OutDoorCompanyType", @id = "OutDoorCompanyType" })
+                                            </div>
+                                        </div>
+                                        @*<div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3"> Direction <span class="important">*</span></label>
+                                            <div class="col-md-9">
+                                                @Html.DropDownListFor(model => model.Direction, new List<SelectListItem>{
+                                                new SelectListItem {Text ="Shift InTime", Value="Shift InTime"},
+                                                new SelectListItem {Text ="Shift Between", Value="Shift Between"},
+                                                new SelectListItem {Text ="Shift OutTime", Value="Shift OutTime"}
+                                              }, "--Select--", new { @class = "form-select", name = "Year", @id = "ddlDirecation" })
+                                                @Html.ValidationMessageFor(model => model.Direction, "", new { @class = "help-block", id = "ErrorddlDirecation", @style = "color:red" })
+                                            </div>
+                                        </div>*@
+                                    </div>
+                                    <div class="col-md-6" id="TotalMinutes">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">Max Allowed</label>
+                                            <div class="col-md-9">
+                                                @Html.TextBoxFor(model => model.TotalMinutes, new { @name = "TotalMinutes", @class = "form-control", @id = "txtTotalMinutes", Type = "text", @readonly = "readonly" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3"> From Date <span class="important">*</span></label>
+                                            <div class="col-md-9">
+                                                @Html.TextBoxFor(model => model.FromDate, new { @name = "FromDate", @class = "form-control", @id = "txtFromDate", Type = "date"})
+                                                @Html.ValidationMessageFor(model => model.FromDate, "", new { @class = "help-block", id = "ErrortxtFromDate", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">To Date<span class="important">*</span></label>
+                                            <div class="col-md-9">
+                                                @Html.TextBoxFor(model => model.ToDate, new { @name = "ToDate", @class = "form-control", @id = "txtToDate", Type = "date"})
+                                                @Html.ValidationMessageFor(model => model.ToDate, "", new { @class = "help-block", id = "ErrortxtToDate", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3"> From Time <span class="important">*</span></label>
+                                            <div class="col-md-9">
+                                                @Html.TextBoxFor(model => model.FromTime, new { @name = "FromTime", @class = "form-control", @id = "txtFromTime", type = "time" })
+                                                @Html.ValidationMessageFor(model => model.FromTime, "", new { @class = "help-block", id = "ErrortxtFromTime", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3"> To Time <span class="important">*</span></label>
+                                            <div class="col-md-9">
+                                                @Html.TextBoxFor(model => model.ToTime, new { @name = "ToTime", @class = "form-control", @id = "txtToTime", type = "time" })
+                                                @Html.ValidationMessageFor(model => model.ToTime, "", new { @class = "help-block", id = "ErrortxtToTime", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">Total Duration (Min)</label>
+                                            <div class="col-md-9">
+                                                @Html.TextBoxFor(model => model.TotalDuration, new { @name = "TotalDuration", @class = "form-control", @id = "txtTotalDuration", type = "text", @readonly = "readonly" })
+                                                @Html.ValidationMessageFor(model => model.TotalDuration, "", new { @class = "help-block", id = "ErrortxtTotalDuration", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">Total Days </label>
+                                            <div class="col-md-9">
+                                                @Html.TextBox("TotalDays", null, new { @name = "TotalDays", @class = "form-control", @id = "txtTotalDays", type = "text", @readonly = "readonly" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                   
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3" style="width:12.5%;">Reason <span class="important">*</span></label>
+                                            <div class="col-md-9" style="width:87.5%">
+                                                @Html.TextAreaFor(model => model.Reason, new { @name = "Reason", @class = "form-control", @id = "txtReason", rows = "2" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-4 d-flex">
+                                                <div class="title d-flex align-items-center">
+                                                  
+                                                </div>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="button" id="btnSubmit" class="btn btn-primary btn-sm" value="Submit">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                        <button type="button" class="btn btn-danger btn-sm" id="btnGetList">
+                                                            <i class="fa-solid fa-share-from-square"></i> List
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+
+        document.getElementById("txtFromDate").addEventListener("blur", function () {
+            debugger
+            var dateValue = this.value;
+
+            if (dateValue.includes("-")) {
+                var parts = dateValue.split("-"); 
+                dateValue = parts[2] + "-" + parts[1] + "-" + parts[0];
+            }
+            var regex = /^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-(19|20)\d\d$/;
+            if (!regex.test(dateValue)) {
+                $("#ErrortxtFromDate").html("Please enter valid date in DD-MM-YYYY format");
+                this.value = "";
+                this.focus();
+                return;
+            } else {
+                $("#ErrortxtFromDate").html("");
+            }
+        });
+
+        document.getElementById("txtToDate").addEventListener("blur", function () {
+            debugger
+            var dateValue = this.value;
+
+            if (dateValue.includes("-")) {
+                var parts = dateValue.split("-"); 
+                dateValue = parts[2] + "-" + parts[1] + "-" + parts[0];
+            }
+            var regex = /^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-(19|20)\d\d$/;
+            if (!regex.test(dateValue)) {
+                $("#ErrortxtToDate").html("Please enter valid date in DD-MM-YYYY format");
+                this.value = "";
+                this.focus();
+                return;
+            } else {
+                $("#ErrortxtToDate").html("");
+            }
+        });
+
+
+        //Validation for back day days
+        @*var BackDatedDays = @Html.Raw(Json.Encode(ViewBag.GetBackDatedDays));
+        var fromDateInput = document.getElementById("txtFromDate");
+        var toDateInput = document.getElementById("txtToDate");
+        var currentDate = new Date();
+        var minDate = new Date();
+        minDate.setDate(currentDate.getDate() - BackDatedDays);
+        var minDateString = minDate.toISOString().split('T')[0];
+        fromDateInput.setAttribute("min", minDateString);
+        toDateInput.setAttribute("min", minDateString);*@
+        //End Validation for back day days
+        $("#ddlShift").select2();
+        $("#ddlEmployeeID").select2();
+
+        document.querySelector('#txtDocNo').style.backgroundColor = '#e9ecef';
+        document.querySelector('#txtTotalDuration').style.backgroundColor = '#e9ecef';
+        document.querySelector('#txtTotalDays').style.backgroundColor = '#e9ecef';
+        $("#ddlDirecation").prop("disabled", true);
+        $("#txtTotalMinutes").prop("disabled", true);
+        $("#txtFromTime").attr('readOnly', true);
+        $("#txtToTime").attr('readOnly', true);
+        document.querySelector('#txtFromTime').style.backgroundColor = '#eee';
+        document.querySelector('#txtToTime').style.backgroundColor = '#eee';
+      
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        // return false
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+      
+        $('#ddlEmployeeID').change(function () {
+            $("#ddlShift").find("option").remove();
+            var EmployeeID=$("#ddlEmployeeID").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetEmployeeShift", "ESS_ContractorAttendance_OutDoor")',
+
+                data: { EmployeeID: EmployeeID },
+                success: function (data) {
+                    debugger;
+                    var ddlShift=data.GetShiftList;
+                    var GetEmployeeNameShort=data.GetEmployeeNameShort;
+                    localStorage.setItem("OutDoorCompanyShortPeriod", GetEmployeeNameShort[0].Value);
+                    localStorage.setItem("OutDoorCompanyIstHalfDuration", GetEmployeeNameShort[1].Value);
+                    localStorage.setItem("OutDoorCompanyIIndHalfDuration", GetEmployeeNameShort[2].Value);
+                    localStorage.setItem("OutDoorCompanyFullDayDuration", GetEmployeeNameShort[3].Value);
+                    if (data == false) {
+                        $("#ddlShift").find("option").remove();
+                        $("#ddlShift").append("<option value=''>All </option>");
+                    }
+                    else {
+                        if (ddlShift != null) {
+                            $("#ddlShift").append("<option value=''>--Select-- </option>");
+                            $.each(ddlShift, function (i, p) {
+                                $("#ddlShift").append("<option value='" + p.ShiftId + "'>" + p.ShiftName + "</option>");
+                            });
+                        }
+                    }
+                }
+            })
+        });
+
+
+
+
+        $("#btnGetList").click(function () {
+            var url = '@Url.Action("ESS_ContractorAttendance_GetList", "ESS_ContractorAttendance_OutDoor")';
+            window.location.href = url;
+        })
+        var date = new Date();
+        var dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000 )).toISOString().split("T")[0];
+
+        var BeforeTime;
+        var BeforeDuration;
+        $('#OutDoorCompanyType').change(function () {
+            debugger;
+            $("#ddlDirecation").val(null);
+            var SelectedDay = $('#OutDoorCompanyType').val();
+            var FromTime = $("#txtFromTime").val();
+            var ToTime = $("#txtToTime").val();
+            //Ask Time Diff Code Start
+            $.ajax({
+                type: "Get",
+                url: "GetTotalDuration",
+                data: { FromTime:FromTime , ToTime:ToTime},
+                dataType: "text",
+                success: function (data) {
+                    debugger;
+                    var a = JSON.parse(data);
+                    var GetnewTime = a.data.Hours*60 + a.data.Minutes;
+                    $('#txtTotalDuration').val(GetnewTime);
+                    var TotalTime = $('#txtTotalMinutes').val();
+                    var GetTotalTime=TotalTime.replaceAll("Min", "");
+                    var SetTotalTime =Number(GetTotalTime);
+                    if(GetnewTime>SetTotalTime)
+                    {
+                        $("#ErrortxtTotalDuration").html("Total duration not greater than : " + TotalTime );
+                        return false;
+                    }
+                    else{
+                        $("#ErrortxtTotalDuration").html("");
+                    }
+                }
+            });
+
+            var SelectedDay = $('#OutDoorCompanyType').val();
+           
+            var Duration = localStorage.getItem("OutDoorCompanyShortPeriod");
+            var IstHalfDuration = localStorage.getItem("OutDoorCompanyIstHalfDuration");
+            var IIndHalfDuration = localStorage.getItem("OutDoorCompanyIIndHalfDuration");
+            var FullDayDuration = localStorage.getItem("OutDoorCompanyFullDayDuration");
+
+            @*var Duration = @Html.Raw(Json.Encode(ViewBag.OutDoorCompanyShortHrs));
+            var IstHalfDuration = @Html.Raw(Json.Encode(ViewBag.OutDoorCompanyIstHalfDuration));
+            var IIndHalfDuration = @Html.Raw(Json.Encode(ViewBag.OutDoorCompanyIIndHalfDuration));
+            var FullDayDuration = @Html.Raw(Json.Encode(ViewBag.OutDoorCompanyFullDayDuration));*@
+            if(SelectedDay == "Full Day" )
+            {
+                debugger;
+                var ShiftId = $("#ddlShift").val();
+                //$("#txtToDate").prop("disabled", false);
+                $("#txtToDate").prop("readonly", false);
+                $.ajax({
+                    async: true,
+                    type: 'GET',
+                    dataType: 'JSON',
+                    contentType: 'application/json; charset=utf-8',
+                    url: 'OutDoorType',
+                    data: { DayType:"Full Day",ShiftId: ShiftId },
+                    success: function (data){
+                        debugger;
+                        var SetData = Object.values(data[0]);
+
+                        $('#txtFromTime').val(SetData[0].Value);
+                        $('#txtToTime').val(SetData[1].Value);
+                        BeforeTime=SetData[1].Value;
+                        //localStorage.setItem('Obj',BeforeTime)
+                        $('#txtTotalDuration').val(SetData[2].Value);
+                        BeforeDuration=SetData[2].Value;
+
+                        //Ashafak Added
+                        var TotalTime = $('#txtTotalMinutes').val();
+                        var GetTotalTime=TotalTime.replaceAll("Min", "");
+                        var SetTotalTime =Number(GetTotalTime);
+                        var TotalDuration = $('#txtTotalDuration').val();
+                        if(TotalDuration>SetTotalTime)
+                        {
+                            $("#ErrortxtTotalDuration").html("Total duration not greater than : " + TotalTime );
+                            return false;
+                        }
+                        else{
+                            $("#ErrortxtTotalDuration").html("");
+                        }
+                        // $('#txtTotalDuration').val(b);
+                    },
+                });
+                $("#txtTotalDays").val('1')
+                $("#txtFromDate").val(dateString);
+                $("#txtToDate").val(dateString);
+                $("#txtTotalMinutes").val(FullDayDuration + ' Min');
+                document.querySelector('#txtToDate').style.backgroundColor = '';
+                $("#ddlDirecation").prop("disabled", true);
+                //$("#txtTotalMinutes").prop("readOnly", true);
+               // document.querySelector('#txtTotalMinutes').style.backgroundColor = '#eee';
+                $("#txtToDate").attr('readOnly', false);
+                $("#txtFromTime").attr('readOnly', true);
+                $("#txtToTime").attr('readOnly', true);
+                document.querySelector('#txtFromTime').style.backgroundColor = '#eee';
+                document.querySelector('#txtToTime').style.backgroundColor = '#eee';
+
+
+            }
+            if(SelectedDay ==  "1st Half" )
+            {
+                var ShiftId = $("#ddlShift").val();
+                $.ajax({
+                    async: true,
+                    type: 'GET',
+                    dataType: 'JSON',
+                    contentType: 'application/json; charset=utf-8',
+                    url: 'OutDoorType',
+                    data: { DayType:"1st Half",ShiftId: ShiftId },
+                    success: function (data){
+                        debugger;
+                        var SetData = Object.values(data[0]);
+                        var a = Object.values(SetData[0]);
+                        var b = Object.values(SetData[1]);
+                        var duration = Object.values(SetData[2]);
+                        document.getElementById("txtFromTime").value = a[1];
+                        document.getElementById("txtToTime").value = b[1];
+                        document.getElementById("txtTotalDuration").value = duration[1];
+
+                        //Ashafak Added
+                        // $("#txtToDate").attr("readonly", "readonly");
+                        $("#txtToDate").prop("readonly", true);
+                        document.querySelector('#txtToDate').style.backgroundColor = '#eee';
+
+                        var TotalTime = $('#txtTotalMinutes').val();
+                        var GetTotalTime=TotalTime.replaceAll("Min", "");
+                        var SetTotalTime =Number(GetTotalTime);
+                        var TotalDuration = $('#txtTotalDuration').val();
+                        if(TotalDuration>SetTotalTime)
+                        {
+                            $("#ErrortxtTotalDuration").html("Total duration not greater than : " + TotalTime );
+                            return false;
+                        }
+                        else{
+                            $("#ErrortxtTotalDuration").html("");
+                        }
+                    },
+                });
+                $("#txtTotalDays").val('0.5');
+                $("#txtToDate").datepicker("option", "minDate", -1);
+                $("#txtToDate").datepicker("option", "maxDate", -2);
+                document.querySelector('#txtToDate').style.backgroundColor = '#e9ecef';
+                $("#txtToDate").attr('readonly', 'readonly');
+                $("#txtTotalMinutes").val(IstHalfDuration + ' Min');
+
+                $("#txtFromDate").val(dateString);
+                $("#txtToDate").val(dateString);
+                $("#ddlDirecation").prop("disabled", true);
+               // $("#txtTotalMinutes").prop("readonly", true);
+                //document.querySelector('#txtTotalMinutes').style.backgroundColor = '#eee';
+                $("#txtFromTime").attr('readOnly', true);
+                $("#txtToTime").attr('readOnly', true);
+                document.querySelector('#txtFromTime').style.backgroundColor = '#eee';
+                document.querySelector('#txtToTime').style.backgroundColor = '#eee';
+            }
+            if(SelectedDay ==  "2nd Half")
+            {
+                var ShiftId = $("#ddlShift").val();
+                $.ajax({
+                    async: true,
+                    type: 'GET',
+                    dataType: 'JSON',
+                    url: 'OutDoorType',
+                    data: { DayType:"2nd Half",ShiftId: ShiftId },
+                    success: function (data){
+                        debugger;
+                        var SetData = Object.values(data[0]);
+                        var a = Object.values(SetData[0]);
+                        var b = Object.values(SetData[1]);
+                        var duration = Object.values(SetData[2]);
+                        document.getElementById("txtFromTime").value = a[1];
+                        document.getElementById("txtToTime").value = b[1];
+                        document.getElementById("txtTotalDuration").value = duration[1];
+
+                        //Ashafak Added
+                        var TotalTime = $('#txtTotalMinutes').val();
+                        var GetTotalTime=TotalTime.replaceAll("Min", "");
+                        var SetTotalTime =Number(GetTotalTime);
+                        var TotalDuration = $('#txtTotalDuration').val();
+                        if(TotalDuration>SetTotalTime)
+                        {
+                            $("#ErrortxtTotalDuration").html("Total duration not greater than : " + TotalTime );
+                        //    return false;
+                        }
+                        else{
+                            $("#ErrortxtTotalDuration").html("");
+                        }
+                    },
+                });
+
+                $("#txtTotalDays").val('0.5')
+                $("#txtToDate").attr('readOnly', true);
+                $("#txtFromDate").val(dateString);
+                $("#txtToDate").val(dateString);
+               $("#txtTotalMinutes").val(IIndHalfDuration + ' Min');
+                document.querySelector('#txtToDate').style.backgroundColor = '#e9ecef';
+                $("#ddlDirecation").prop("disabled", true);
+                //$("#txtTotalMinutes").prop("readonly", true);
+                $("#txtFromTime").attr('readOnly', true);
+                $("#txtToTime").attr('readOnly', true);
+                document.querySelector('#txtFromTime').style.backgroundColor = '#eee';
+                document.querySelector('#txtToTime').style.backgroundColor = '#eee';
+            }
+
+            if(SelectedDay == "Short Period")
+            {
+                var ShiftId = $("#ddlShift").val();
+                $.ajax({
+                    async: true,
+                    type: 'GET',
+                    dataType: 'JSON',
+                    contentType: 'application/json; charset=utf-8',
+                    url: 'OutDoorType',
+                    data: { DayType:"Short Period",ShiftId: ShiftId },
+                    success: function (data){
+                        debugger;
+                        var SetData = Object.values(data[0]);
+                        var a = Object.values(SetData[0]);
+                        var b = Object.values(SetData[1]);
+                        var duration = Object.values(SetData[2]);
+                        document.getElementById("txtFromTime").value = a[1];
+                        document.getElementById("txtToTime").value = b[1];
+                        document.getElementById("txtTotalDuration").value = duration[1];
+
+                       // Ashafak Added
+                        var TotalTime = $('#txtTotalMinutes').val();
+                        var GetTotalTime=TotalTime.replaceAll("Min", "");
+                        var SetTotalTime =Number(GetTotalTime);
+                        var TotalDuration = $('#txtTotalDuration').val();
+                        if(TotalDuration>SetTotalTime)
+                        {
+                            $("#ErrortxtTotalDuration").html("Total duration not greater than : " + TotalTime );
+                            return false;
+                        }
+                        else{
+                            $("#ErrortxtTotalDuration").html("");
+                        }
+                    },
+
+                });
+                $("#txtTotalDays").val('1')
+                $("#txtToDate").attr('readOnly', true);
+                $("#ddlDirecation").attr('required', 'required');
+               // $("#ErrorddlDirecation").html("Direction is required");
+                $("#txtTotalMinutes").val(Duration + ' Min');
+                $("#txtFromDate").val(dateString);
+                $("#txtToDate").val(dateString);
+                document.querySelector('#txtToDate').style.backgroundColor = '#e9ecef';
+                $("#ddlDirecation").prop("disabled", false);
+               // $("#txtTotalMinutes").prop("disabled", false);
+
+                $("#txtFromTime").attr('readOnly', false);
+                $("#txtToTime").attr('readOnly', false);
+                document.querySelector('#txtFromTime').style.backgroundColor = '';
+                document.querySelector('#txtToTime').style.backgroundColor = '';
+            }
+
+        });
+
+        var CheckLunchTime;
+        $('#ddlShift').change(function () {
+            debugger;
+            var ShiftId = $("#ddlShift").val();
+            var EmployeeID = $("#ddlEmployeeID").val();
+            $("#OutDoorCompanyType").val(null);
+            $("#txtTotalMinutes").val("");
+            $("#txtTotalDays").val("0");
+            $("#txtFromDate").val("YYYY-mm-dd");
+            $("#txtToDate").val("YYYY-mm-dd");
+            $("#txtFromTime").val("0");
+            $("#txtToTime").val("0");
+            $("#txtTotalDuration").val("0");
+
+
+            $.ajax({
+                type: "Get",
+                url: "GetLunchTime",
+                data: { ShiftId:ShiftId,EmployeeID:EmployeeID },
+                dataType: "text",
+                success: function (data) {
+                    debugger;
+                    var GetData = JSON.parse(data);
+                    var LunchTime = GetData.data[0].Value;
+
+                    $("#hdnLunchTime").val(LunchTime);
+                    CheckLunchTime =  $("#hdnLunchTime").val();
+
+                }
+            });
+        });
+        $('#ddlDirecation').change(function () {
+            debugger;
+            var GetDirection = $('#ddlDirecation').val();
+            if(GetDirection =="Shift InTime")
+            {
+                $("#txtFromTime").prop("readonly", true);
+                $("#txtToTime").prop("readonly", false);
+                document.querySelector('#txtFromTime').style.backgroundColor = '#e9ecef';
+                document.querySelector('#txtToTime').style.backgroundColor = '';
+            }
+            if(GetDirection =="Shift OutTime")
+            {
+                $("#txtFromTime").prop("readonly", false);
+                $("#txtToTime").prop("readonly", true);
+                document.querySelector('#txtToTime').style.backgroundColor = '#e9ecef';
+                document.querySelector('#txtFromTime').style.backgroundColor = '';
+            }
+            if(GetDirection =="Shift Between")
+            {
+                $("#txtFromTime").prop("readonly", false);
+                $("#txtToTime").prop("readonly", false);
+                document.querySelector('#txtToTime').style.backgroundColor = '';
+                document.querySelector('#txtFromTime').style.backgroundColor = '';
+            }
+        });
+
+
+
+        $("#txtToTime,#txtFromTime").change(function () {
+            debugger;
+            //alert(BeforeTime);
+
+            var OutdoorType= $("#OutDoorCompanyType").val();
+            if(OutdoorType=="1st Half")
+            {
+                var inputTime = document.getElementById("txtFromTime").value;
+                var gurrenTime = CheckLunchTime; // Change this to your desired "gurren time"
+
+                if (inputTime > gurrenTime) {
+                    $('#ErrortxtFromTime').html("This time not allow for 1st Half.");
+                    return false;
+                } else {
+                    $('#ErrortxtFromTime').html("");
+                }
+            }
+            if(OutdoorType=="2nd Half")
+            {
+                var inputTime = document.getElementById("txtFromTime").value;
+                var gurrenTime = CheckLunchTime; // Change this to your desired "gurren time"
+
+                if (inputTime < gurrenTime) {
+                    $('#ErrortxtFromTime').html("This time not allow for 2nd Half.");
+                    return false;
+                } else {
+                    $('#ErrortxtFromTime').html("");
+                }
+            }
+            if(OutdoorType!="Full Day")
+            {
+                var FromTime = $("#txtFromTime").val();
+                var ToTime = $("#txtToTime").val();
+                var difference = (strToMins(ToTime) - strToMins(FromTime));
+
+                $('#txtTotalDuration').val(difference);
+                var ChangeTotalMinute=$("#txtTotalMinutes").val();
+                var NumberChangeTotalMinute = ChangeTotalMinute.replace(" Min","");
+                var ChangeTotalMinutes=Number(NumberChangeTotalMinute);
+                var inputString = $("#txtTotalDuration").val();
+                if (inputString.includes('-')) {
+                    if (FromTime >= ToTime) {
+                        $('#ErrortxtToTime').html("To time should not be less than from time");  return false;
+                    } else if(FromTime < ToTime){
+                        $('#ErrortxtToTime ,#ErrortxtFromTime').html("");
+                    }
+                    else {
+                        $('#ErrortxtToTime').html("");
+                    }
+                }
+                if(ChangeTotalMinutes<difference)
+                {
+                    $('#ErrortxtTotalDuration').html("Total duration should not greater than Max allowed time");return false;
+                }
+                else{
+                    $('#ErrortxtTotalDuration').html("");
+                }
+            }
+            else{
+               // var BeforeDuration=Number($("#txtTotalDuration").val());
+                var FromTime = $("#txtFromTime").val();
+                var ToTime = $("#txtToTime").val();
+                var difference = (strToMins(ToTime) - strToMins(BeforeTime));
+                var Totalduration=BeforeDuration+difference;
+
+                $('#txtTotalDuration').val(Totalduration);
+
+                var ChangeTotalMinute=$("#txtTotalMinutes").val();
+                var NumberChangeTotalMinute = ChangeTotalMinute.replace(" Min","");
+                var ChangeTotalMinutes=Number(NumberChangeTotalMinute);
+                var Newdifference= Number($('#txtTotalDuration').val());
+                if(ChangeTotalMinutes<Newdifference)
+                {
+                    $('#ErrortxtTotalDuration').html("Total duration should not greater than Max allowed time");return false;
+                }
+                else{
+                    $('#ErrortxtTotalDuration').html("");
+                }
+
+                //var inputString = $("#txtTotalDuration").val();
+                //if (inputString.includes('-')) {
+                //    if (FromTime >= ToTime) {
+                //        $('#ErrortxtToTime').html("To time should not be less than from time");
+                //        return false;
+                //    } else if(FromTime < ToTime){
+                //        $('#ErrortxtToTime ,#ErrortxtFromTime').html("");
+                //    }
+                //    else {
+                //        $('#ErrortxtToTime').html("");
+                //    }
+                //}
+
+            }
+        });
+        function strToMins(t) {
+            var s = t.split(":");
+            return Number(s[0]) * 60 + Number(s[1]);
+        }
+
+        function minsToStr(t) {
+            return Math.trunc(t / 60)+':'+('00' + t % 60).slice(-2);
+        }
+
+        $("#txtFromDate,#txtToDate").change(function () {
+            debugger;
+            var SelectedDay = $('#OutDoorCompanyType').val();
+            if(SelectedDay == "1st Half")
+            {
+                var StartDate= document.getElementById('txtFromDate').value;
+                $('#txtToDate').val(StartDate)=moment().format('DD/MM/YYYY');
+            }
+            if(SelectedDay == "2nd Half")
+            {
+                var StartDate= document.getElementById('txtFromDate').value;
+                $('#txtToDate').val(StartDate)=moment().format('DD/MM/YYYY');
+            }
+            if(SelectedDay == "Short Period")
+            {
+                var StartDate= document.getElementById('txtFromDate').value;
+                $('#txtToDate').val(StartDate)=moment().format('DD/MM/YYYY');
+
+                var StartDate= document.getElementById('txtFromDate').value;
+                var EndDate= document.getElementById('txtToDate').value;
+
+                var sDate = new Date(StartDate);
+                var eDate = new Date(EndDate);
+                var Time = Math.abs(eDate - sDate);
+                var days = Math.ceil(Time/(1000 * 60 * 60 * 24))+1;
+                $("#txtTotalDays").val(days);
+
+
+            }
+
+
+            if(SelectedDay == "Full Day")
+            {
+                var StartDate= document.getElementById('txtFromDate').value;
+                var EndDate= document.getElementById('txtToDate').value;
+
+                var sDate = new Date(StartDate);
+                var eDate = new Date(EndDate);
+                var Time = Math.abs(eDate - sDate);
+                var days = Math.ceil(Time/(1000 * 60 * 60 * 24))+1;
+                $("#txtTotalDays").val(days);
+                var StartDate= document.getElementById('txtFromDate').value;
+                var EndDate= document.getElementById('txtToDate').value;
+                var eDate = new Date(EndDate);
+                var sDate = new Date(StartDate);
+                //if(StartDate!= '' && EndDate!= '' && sDate > eDate)
+                //{
+                //    $("#ErrortxtToDate").html("To date should not be less than from date.");
+                //    $("#txtToDate").val('');
+                //    $("#txtTotalDays").val('');
+                //}
+                //else{
+                //    $("#ErrortxtToDate").html("");
+                //}
+            }
+
+
+
+        });
+
+        $("#formReset").click(function () {
+            $("#SaveContractorOutDoor")[0].reset();
+        })
+
+    });//ready funcation for SelectedDay
+
+
+
+
+    jQuery.validator.addMethod(
+   "regex",
+       function(value, element, regexp) {
+           if (regexp.constructor != RegExp)
+               regexp = new RegExp(regexp);
+           else if (regexp.global)
+               regexp.lastIndex = 0;
+           return this.optional(element) || regexp.test(value);
+       },"erreur expression reguliere"
+    );
+
+    $('#SaveContractorOutDoor').validate({
+        rules: {
+            OutDoorCompanyShiftId:{
+                required: true,
+            },
+            OutDoorCompanyEmployeeID: {
+                required: true,
+            },
+            OutDoorCompanyType:{
+                required: true,
+            },
+            FromDate:{
+                required: true,
+            },
+            ToDate:{
+                required: true,
+            },
+            FromTime:{
+                required: true,
+            },
+            ToTime:{
+                required: true,
+            },
+            Reason:{
+                required: true,
+            }
+
+        },
+        messages: {
+            OutDoorCompanyShiftId:{
+                required: "Please select shift",
+            },
+            OutDoorCompanyEmployeeID: {
+                required: "Please select the Employee Name",
+            },
+            OutDoorCompanyType: {
+                required: "Outdoor type is required",
+            },
+            FromDate:{
+                required: "From Date is required",
+            },
+            ToDate:{
+                required: "To Date is required",
+            },
+            FromTime:{
+                required: "From Time is required",
+            },
+            ToTime:{
+                required: "To Time is required",
+            },
+            Reason:{
+                required: "Reason is required",
+            }
+        },
+    });
+
+
+    var form = $("#SaveContractorOutDoor");
+    form.validate();
+    $("#btnSubmit").click(function () {
+        debugger;
+        var OutdoorType= $("#OutDoorCompanyType").val();
+        if(OutdoorType!="Full Day")
+        {
+            var txtTotalDuration=Number($("#txtTotalDuration").val());
+            var ChangeTotalMinute=$("#txtTotalMinutes").val();
+            var NumberChangeTotalMinute = ChangeTotalMinute.replace(" Min","");
+            var ChangeTotalMinutes=Number(NumberChangeTotalMinute);
+            if(txtTotalDuration>ChangeTotalMinutes)
+            {
+                $('#ErrortxtTotalDuration').html("Total duration should not greater than Max allowed time");return false;
+            }
+            else{
+                $('#ErrortxtTotalDuration').html("");
+            }
+
+        }
+        else{
+            $('#ErrortxtTotalDuration').html("");
+        }
+
+
+
+
+        //var AdditionalNotify = [];
+        //for (var option of document.getElementById('ddlAdditionNotify').options)
+        //{
+        //    if (option.selected) {
+        //        AdditionalNotify.push(option.value);
+        //    }
+        //}
+        //var AdditionalNotifyPerson = JSON.stringify(AdditionalNotify);
+        form.valid();
+        if(form.valid()==false)
+        {
+            $("#txtFromDate").removeClass('error');
+            $("#txtToDate").removeClass('error');
+            $("#txtFromTime").removeClass('error');
+            $("#txtToTime").removeClass('error');
+            return false;
+        }
+        var OutDoorCompanyIDEncrypted = $("#OutDoorCompanyID_Encrypted").val();
+        var Fromdate=$("#txtFromDate").val();
+        var Todate=$("#txtToDate").val();
+        var FromTime=$("#txtFromTime").val();
+        var ToTime = $("#txtToTime").val();
+        var OutDoorCompanyShift = $("#OutDoorCompanyType").val();
+        //var Diraction = $("#ddlDirecation").val();
+        var TotalDuration =Number($("#txtTotalDuration").val());
+        var TotalMinutes = $('#txtTotalMinutes').val();
+        var GetTotalMinutes= TotalMinutes.replaceAll("Min", "");
+        var OutDoorCompanyType = $("#OutDoorCompanyType").val();
+        var EmployeeID = $("#ddlEmployeeID").val();
+        if(OutDoorCompanyType == "Short Period")
+        {
+            if(GetTotalMinutes < TotalDuration)
+            {
+                $("#ErrortxtTotalDuration").html("");
+                $("#ErrortxtTotalDuration").html("Please Select valid time");
+                return false;
+            }
+            else
+            {
+                $("#ErrortxtTotalDuration").html("");
+            }
+        }
+        //if( FromTime > ToTime || ToTime < FromTime || Fromdate > Todate )
+        //{
+        //    return false;
+        //}
+        $(".Userloaderbg").css("display","flex");
+        $.ajax({
+            url:"IsOutdoorExists",
+            method:"get", //EmployeeId:EmployeeId,
+            data:{Fromdate:Fromdate,Todate:Todate,OutDoorCompanyShift:OutDoorCompanyShift,EmployeeID:EmployeeID}, //,AdditionalNotifyPerson:AdditionalNotifyPerson
+            success:function(response){
+                debugger;
+               
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon=="error") {
+                  
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    return false;
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            })
+                            $(".Userloaderbg").css("display","none");
+                        }
+                    }
+                    return false;
+                }
+                else{
+                    $("#SaveContractorOutDoor").submit();
+                }
+            }
+        });
+
+    });
+
+
+    function NotificationFunction(EmployeeId,OutDoorCompanyId_Encrypted) {
+        $.ajax({
+            type: "Get",
+            url: "GetContactDetails",
+            data: {EmployeeId:EmployeeId , OutDoorCompanyId_Encrypted: OutDoorCompanyId_Encrypted},
+            dataType: "text",
+            success: function (data) {
+                debugger;
+                var datas = JSON.parse(data);
+                var Getdata = datas.data[0];
+
+                $('#lblManager1Name').html(Getdata[0].Value);
+                $('#lblManager1EmailId').html(Getdata[1].Value);
+                $('#lblManager1Mobile').html(Getdata[2].Value);
+
+                $('#lblManager2Name').html(Getdata[3].Value);
+                $('#lblManager2EmailId').html(Getdata[4].Value);
+                $('#lblManager2Mobile').html(Getdata[5].Value);
+
+                $('#lblHRName').html(Getdata[6].Value);
+                $('#lblHREmailId').html(Getdata[7].Value);
+                $('#lblHRMobile').html(Getdata[8].Value);
+                $('#NotificationModalPopUp').modal('show');
+            }
+        });
+    }
+    //CapthaVerification code added in CapthaVerification.js file.
+    $(".Close").click(function () {
+        $("#mainCaptcha").val("");
+        $("#txtInput").val("");
+        $("#success").html("");
+        $("#error").html("");
+    });
+
+</script>

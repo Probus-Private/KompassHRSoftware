@@ -1,0 +1,409 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_Recruitment.Recruitment_OfferLetterGeneration
+@{
+    ViewBag.Title = "ViewForCandidateCTC";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script><link href="~/assets/plugins/summernote/dist/summernote-lite.css" rel="stylesheet" />
+<script src="~/assets/plugins/summernote/dist/summernote-lite.min.js"></script>
+
+<style>
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+</style>
+
+
+<div id="content" class="app-content">
+    <!-- BEGIN breadcrumb -->
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Offer Letter Generation
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_Recruitment_Menu", "ESS_Recruitment_Menu", new {id = 1, ScreenId=126, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="alert alert-warning alert-dismissible rounded-0 mb-0 fade show">
+        This process typically involves several steps and considerations to ensure accuracy, compliance, and professionalism.
+    </div>
+    <!-- END page-header -->
+    <!-- BEGIN invoice -->
+    <div class="invoice">
+        <!-- BEGIN invoice-company -->
+        <div class="invoice-company">
+            <!-- BEGIN modal -->
+            <!-- BEGIN modal -->
+            Recruitment for : @ViewBag.CandidateStatusProfile.DesignationName
+        </div>
+        <!-- END invoice-company -->
+
+        <div class="card">
+            <div id="card">
+                <!-- BEGIN invoice-header -->
+                <div class="invoice-header">
+                    <div class="invoice-from">
+                        <address class="mt-5px mb-5px">
+                            <i class="fa-solid fa-user"> </i>    <strong class="text-dark">&nbsp;@ViewBag.CandidateStatusProfile.CandidateName</strong><br />
+                            <i class="fa-solid fa-phone-volume"> </i>&nbsp;    <b>Phone:</b>&nbsp; +@ViewBag.CandidateStatusProfile.MobileNo <br />
+                            <i class="fa-solid fa-envelope"> </i>&nbsp;&nbsp;<b>Email:</b>&nbsp;  @ViewBag.CandidateStatusProfile.EmailId
+                        </address>
+                    </div>
+                    <div class="invoice-to">
+                        <small>   </small>
+                        <br />
+                        <address class="mt-5px mb-5px">
+                            <i class="fa-solid fa-building"> </i>&nbsp;&nbsp; &nbsp; <b> Current Organization:</b>&nbsp; @ViewBag.CandidateStatusProfile.LastCompanyName<br />
+                            <i class="fa-regular fa-handshake"> </i>&nbsp;&nbsp;  <b>  Current Designation: </b>&nbsp; @ViewBag.CandidateStatusProfile.LastDesignation<br />
+                            <i class="fa-solid fa-info"></i> &nbsp;&nbsp; &nbsp; <b>Experience:</b> &nbsp;@ViewBag.CandidateStatusProfile.TotalExperience<br />
+                        </address>
+                    </div>
+
+                    <div class="invoice-date">
+                        <small> </small>
+                        <br />
+                        <div class="date text-dark mt-5px"></div>
+                        <div class="invoice-detail">
+                            <i class="fa-solid fa-calendar-days"></i> <b> Notice Period (Days): </b>@ViewBag.CandidateStatusProfile.NoticePeriodDays<br />
+                        </div>
+                    </div>
+                </div>
+                <!-- END invoice-header -->
+                <br />
+                <!-- BEGIN invoice-content -->
+                <div class="invoice-company">
+                    Employee CTC
+                    <hr>
+                </div>
+                <form action='@Url.Action("SaveUpdate", "ESS_Recruitment_OfferLetterGeneration", new { area = "ESS" })' id="SaveInterviewSchedule" method="post" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row mb-15px">
+                                <label class="form-label col-form-label col-md-4">
+                                    Joining Date
+                                    <span class="important">*</span>
+                                </label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.JoiningDate, new { @class = "form-control", id = "dateJoiningDate", type = "date", name = "JoiningDate", autocomplete = "Off" })
+                                    @Html.HiddenFor(model => model.OfferLetterGenId_Encrypted, new { id = "txtOfferLetterGenId_Encrypted" })
+                                    @Html.HiddenFor(model => model.OfferLetterGenId, new { id = "txtOfferLetterGenId" })
+                                    @Html.HiddenFor(model => model.OfferLetterGenResumeId, new { id = "txtOfferLetterGenResumeId" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="row mb-15px">
+                                <label class="form-label col-form-label col-md-4">
+                                    Offer Letter Approval
+                                    <span class="important">*</span>
+                                </label>
+                                <div class="col-md-8">
+                                    @Html.DropDownListFor(model => model.OfferLetterApproverId, new SelectList(ViewBag.ApproverName, "Id", "Name"), new { @class = "form-control", id = "txtOfferLetterApproverId", name = "OfferLetterApproverId" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row mb-15px">
+                                <label class="form-label col-form-label col-md-4">
+                                    CTC (In Lakhs)
+                                    <span class="important">*</span>
+                                </label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.CTC, new { @class = "form-control", id = "txCTC", type = "text", name = "CTC", autocomplete = "Off", Maxlength = 7, onkeypress = " return numbervalidate(event)" })
+                                    @Html.ValidationMessageFor(model => model.CTC, "", new { @class = "help-block", @id = "ErrorCTC", @style = "color:red" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row mb-15px">
+                                <label class="form-label col-form-label col-md-4">
+                                    Gross (In Lakhs)
+                                    <span class="important">*</span>
+                                </label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.GrossAmount, new { @class = "form-control", id = "txGrossAmount", type = "text", name = "GrossAmount", autocomplete = "Off", Maxlength = 7, onkeypress = " return numbervalidate(event)" })
+                                    @Html.ValidationMessageFor(model => model.GrossAmount, "", new { @class = "help-block", @id = "ErrorGrossAmount", @style = "color:red" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row mb-15px">
+                                <label class="form-label col-form-label col-md-4">
+                                    In Hand (In Lakhs)
+                                    <span class="important">*</span>
+                                </label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.InHandAmount, new { @class = "form-control", id = "txInHandAmount", type = "text", name = "InHandAmount", autocomplete = "Off", Maxlength = 7, onkeypress = " return numbervalidate(event)" })
+                                    @Html.ValidationMessageFor(model => model.InHandAmount, "", new { @class = "help-block", @id = "ErrorInHandAmount", @style = "color:red" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row mb-15px">
+                                <label class="form-label col-form-label col-md-2">
+                                    Offer Letter
+                                </label>
+                                <div class="col-md-9" style="border: 1px solid #000;">
+                                    <div id="SomeDivWithOfferLetter">
+                                        @Html.Raw(ViewBag.CandidateStatusProfileLetter)
+                                        <textarea name="OfferLetterTemplate" id="OfferLetterTemplate" style="display: none;"></textarea>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END panel -->
+                    <div class="modal-footer">
+                        <button type="button" id="btnSubmit" class="btn btn-primary btn-sm">
+                            <i class="fa-solid fa-floppy-disk"> </i> Submit
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- BEGIN invoice-footer -->
+    </div>
+</div>
+<!-- END #content -->
+@*  @Html.TextAreaFor(model => model.OfferLetterTemplate, new { @class = "summernote", style = "border: 1px solid #000;", id = "OfferLetterTemplate", @required = "required", @placeholder = "Job Description....", autocomplete = "Off", contenteditable = "true" })*@
+@*@Html.TextAreaFor(model => model.OfferLetterTemplate, new { @class = "form-control", id = "txtOffterLetterTemplate", type = "text", name = "OffterLetterTemplate", autocomplete = "Off" })*@
+
+<script>
+    $(document).ready(function () {
+        debugger;
+        $("#txtOfferLetterApproverId").select2();
+        var date = new Date();
+        var dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000 )).toISOString().split("T")[0];
+        $("#dateJoiningDate").val(dateString);
+
+        var CandidateStatusProfile = @Html.Raw(Json.Encode(ViewBag.CandidateStatusProfile));
+        if(CandidateStatusProfile!=null)
+        {
+            var ResumeID=CandidateStatusProfile[3].Value;
+            $("#txtOfferLetterGenResumeId").val(ResumeID);
+        }
+        var JoiningDate = @Html.Raw(Json.Encode(TempData["JoiningDate"]));
+
+        if(JoiningDate == null || JoiningDate == "")
+        {
+        }
+        else
+        {
+            var JoiningDatedt =  convertDate(JoiningDate);
+            $("#dateJoiningDate").val(JoiningDatedt);
+        }
+    })
+
+    $("#dateJoiningDate").change(function () {
+        var joiningDate = $("#dateJoiningDate").val(); // e.g., "2025-05-07"
+
+        if (joiningDate) {
+            var date = new Date(joiningDate);
+
+            // Format joining date as "dd/MMM/yyyy"
+            var options = { day: '2-digit', month: 'short', year: 'numeric' };
+            var formattedDate = date.toLocaleDateString('en-GB', options).replace(/ /g, '/'); // e.g., "07/May/2025"
+
+            // Display formatted joining date
+            $(".txtJoiningDate").text(formattedDate);
+
+            // Calculate two days before
+            var twoDaysBefore = new Date(date);
+            twoDaysBefore.setDate(twoDaysBefore.getDate() - 2);
+
+            var formattedTwoDaysBefore = twoDaysBefore.toLocaleDateString('en-GB', options).replace(/ /g, '/'); // e.g., "05/May/2025"
+
+            // Display formatted date two days before joining
+            $("#txtTwoDaysBefore").text(formattedTwoDaysBefore);
+        }
+    });
+
+
+    function getFloatValue(selector) {
+        return parseFloat($(selector).val()) || 0;
+    }
+
+    function validateAmounts() {
+        var isValid = true;
+
+        var CTCGet = getFloatValue("#txCTC");
+        var GrossAmount = getFloatValue("#txGrossAmount");
+        var HandAmount = getFloatValue("#txInHandAmount");
+
+        if (GrossAmount > CTCGet) {
+            $("#ErrorGrossAmount").html("Gross Amount should not be greater than CTC amount");
+            isValid = false;
+        } else {
+            $("#ErrorGrossAmount").html("");
+        }
+
+        if (HandAmount > GrossAmount) {
+            $("#ErrorInHandAmount").html("In-Hand Amount should not be greater than Gross Amount");
+            isValid = false;
+        } else if (HandAmount > CTCGet) {
+            $("#ErrorInHandAmount").html("In-Hand Amount should not be greater than CTC amount");
+            isValid = false;
+        } else {
+            $("#ErrorInHandAmount").html("");
+        }
+
+        return isValid;
+    }
+
+
+    $("#txCTC").keyup(function () {
+        var CTCGet = $("#txCTC").val();
+        $("#txtCTC").text(CTCGet);
+        validateAmounts();
+    });
+
+    $("#txGrossAmount").keyup(function () {
+        var GrossAmount = $("#txGrossAmount").val();
+        $("#txtGross").text(GrossAmount);
+        validateAmounts();
+    });
+
+    $("#txInHandAmount").keyup(function () {
+        var HandAmount = $("#txInHandAmount").val();
+        $("#txtInhand").text(HandAmount);
+        validateAmounts();
+    });
+
+
+
+
+
+    function millisecTodate(milliDate) {
+        var date = new Date(milliDate);
+        var mnth = ("0" + (date.getMonth() + 1)).slice(-2);
+        var day = ("0" + date.getDate()).slice(-2);
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        hours = hours < 10 ? '0'+hours : hours;
+        minutes = minutes < 10 ? '0'+minutes : minutes;
+        var ddmmyyyy = [date.getFullYear(), mnth,day].join("-");
+        return ddmmyyyy;
+    }
+
+    function convertDate(data) {
+        var getdate = parseInt(data.replace("/Date(", "").replace(")/", ""));
+        var date = millisecTodate(getdate);
+        return date;
+    }
+</script>
+
+<script>
+    $(".summernote").summernote({
+        placeholder: '',
+        height: "300"
+    });
+    var today = new Date().toISOString().split('T')[0];
+    document.getElementById("dateJoiningDate").setAttribute("min", today);
+
+    function numbervalidate(key) {
+        var presskeys = (key.which) ? key.which : key.presskeys;
+        if (!(presskeys == 8 || presskeys == 46) && (presskeys < 48 || presskeys > 57)) {
+            return false;
+        }
+    }
+</script>
+
+<script>
+$("#btnSubmit").click(function () {
+    const Approved = Swal.mixin({
+        customClass: {
+            cancelButton: ' btnpress',
+            confirmButton: ' btnpress'
+        },
+        buttonsStyling: true
+    })
+    Approved.fire({
+        text: "Are you want to recheck it?",
+        icon: 'warning',
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, recheck!',
+        cancelButtonText: 'No, submit!',
+        reverseButtons: false,
+        allowOutsideClick: () => {
+            const popup = Swal.getPopup()
+            popup.classList.remove('swal2-show')
+            setTimeout(() => {
+                popup.classList.add('animate__animated', 'animate__headShake')
+            })
+            setTimeout(() => {
+                popup.classList.remove('animate__animated', 'animate__headShake')
+            }, 500)
+            return false
+        }
+
+    }).then((result) => {
+        if (result.isConfirmed) {
+            
+           
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+            // ✅ If No → proceed to save
+            if (!validateAmounts()) {
+                return;
+            }
+            var OfferLetterGenId_Encrypted = $("#txtOfferLetterGenId_Encrypted").val();
+            $.ajax({
+                method: "get",
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("IsOfferLetterValidation", "ESS_Recruitment_OfferLetterGeneration")',
+                data: { OfferLetterGenId_Encrypted: OfferLetterGenId_Encrypted },
+                success: function (response) {
+                    var Message1 = response.Message;
+                    var Icon1 = response.Icon;
+                    if (response.Icon == "error") {
+                        Swal.fire({
+                            icon: Icon1,
+                            text: Message1
+                        });
+                    } else {
+                        var htmlContent = $("#SomeDivWithOfferLetter").html();
+                        $(".Userloaderbg").css("display", "flex");
+                        $("#OfferLetterTemplate").val(htmlContent);
+                        $("#SaveInterviewSchedule").submit();
+                    }
+                }
+            });
+        }
+    });
+});
+
+</script>

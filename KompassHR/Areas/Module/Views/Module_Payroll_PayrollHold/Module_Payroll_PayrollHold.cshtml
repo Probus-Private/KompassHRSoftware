@@ -1,0 +1,505 @@
+﻿@model KompassHR.Areas.Module.Models.Module_Payroll.Payroll_SalaryHold
+@{
+    ViewBag.Title = "Module_Payroll_PayrollHold";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+
+<style>
+    .Col-md-2 {
+        margin: 10px 0;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    label.error, .Error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <ol class="breadcrumb float-xl-end">
+        <li class="breadcrumb-item"><a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">Dashboard</a></li>
+        <li class="breadcrumb-item active"><a href="@Url.Action("Module_Payroll_SubMenu", "Module_Payroll_SubMenu", new { id = 6,ScreenId=493, area = "Module" })">Payroll Menu</a></li>
+    </ol>
+
+    <h1 class="page-header">Payroll Hold </h1>
+
+    <div class="row">
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="panel panel-inverse" data-sortable-id="index-1">
+                    <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                        <h4 class="panel-title">Payroll Hold - <span>@ViewBag.AddUpdateTitle</span></h4>
+                        <div class="panel-heading-btn">
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                        </div>
+                    </div>
+                    <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                        <p class="pb-0">
+                            Define payroll Hold here!
+                        </p>
+                    </div>
+                    <div class="panel-body" style="max-height: fit-content;">
+                        <div class="row justify-content-center">
+                            <div class="row justify-content-center">
+                                <form role="form" action='@Url.Action("SaveUpdate", "Module_Payroll_PayrollHold", new { area = "Module" })' id="SavePayrollHold" method="post">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Company Name
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.CmpId, new SelectList(ViewBag.GetCompanyName, "Id", "Name"), "--Select--", new { @class = "form-select", id = "ddlCmpId", type = "text", name = "CmpId", autocomplete = "Off" })
+                                                @Html.HiddenFor(model => model.PayrollHoldId_Encrypted,new { id= "PayrollHoldId_Encrypted" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Business Unit
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.BranchId, new SelectList(ViewBag.GetBranchName, "Id", "Name"), "--Select--", new { @class = "form-select", id = "ddlBranchId", type = "text", name = "BranchId", autocomplete = "Off" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Salary Month/Year
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.Payroll_SalaryMonth, new { @class = "form-control", name = "Payroll_SalaryMonth", type = "month", id = "datePayroll_SalaryMonth" })
+                                                    @Html.ValidationMessageFor(model => model.Payroll_SalaryMonth, "", new { @class = "help-block", @id = "ErrorPayroll_SalaryMonth", @style = "color:red" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Employee Name
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.Payroll_SalaryEmployeeId, new SelectList(ViewBag.GetEmployeeName, "Id", "Name"), "--Select--", new { @class = "form-select", id = "ddlPayroll_SalaryEmployeeId", type = "text", name = "Payroll_SalaryEmployeeId" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                       
+                                    </div>
+                                    <hr />
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Salary Amount
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.Payroll_SalaryAmount, new { @class = "form-control", name = "Payroll_SalaryAmount", type = "text", id = "txtPayroll_SalaryAmount",@readonly= "readonly",style="background-color:#eee" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Hold/Release
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.IsHoldRelease, new { @class = "form-control", name = "IsHoldRelease", type = "text", id = "txtIsHoldRelease", disabled = "disabled" })
+                                                    @*@Html.DropDownListFor(model => model.IsHoldRelease, new List<SelectListItem> {
+                                                    new SelectListItem { Text = "Hold", Value = "false"},
+                                                    new SelectListItem { Text = "Release", Value = "true"},
+                                                }, new { id = "ddlIsHoldRelease", @class = "form-select", autocomplete = "off", name = "IsHoldRelease", disabled = "disabled" })*@
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" id="DivHold">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Hold Remark
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.HoldRemark, new { @class = "form-control", name = "HoldRemark", type = "text", id = "txtHoldRemark", autocomplete = "Off" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" id="DivRelease">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                   Release Remark
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.ReleaseRemark, new { @class = "form-control", name = "ReleaseRemark", type = "text", id = "txtReleaseRemark" ,autocomplete="Off"})
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="LastShortLeaveBx">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="BtnBx">
+                                                        <button type="button" id="btnEmployeeSubmit" onclick="GetPayrollHold()"
+                                                                class="btn btn-primary btn-sm">
+                                                            <i class="fa-solid fa-floppy-disk"></i>  Submit
+                                                        </button>
+                                                        <a href="@Url.Action("GetList", "Module_Payroll_PayrollHold", new { area = "Module" })">
+                                                            <button type="button" class="btn btn-danger btn-sm">
+                                                                <i class="fa-solid fa-share-from-square"></i> List
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        $("#ddlPayroll_SalaryEmployeeId").select2();
+        $("#ddlCmpId").select2();
+        $("#ddlBranchId").select2();
+        $("#txtIsHoldRelease").val("Hold");
+        $("#DivRelease").hide();
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        var AddUpdateTitle = @Html.Raw(Json.Encode(ViewBag.AddUpdateTitle));
+        if (AddUpdateTitle!="Add")
+        {
+            $("#ddlPayroll_SalaryEmployeeId").attr("disabled", "disabled");
+            $('#ddlPayroll_SalaryEmployeeId').next('.select2').find('.select2-selection').css('background-color', '#e9ecef');
+            $("#ddlCmpId").attr("disabled", "disabled");
+            $('#ddlCmpId').next('.select2').find('.select2-selection').css('background-color', '#e9ecef');
+            $("#ddlBranchId").attr("disabled", "disabled");
+            $('#ddlBranchId').next('.select2').find('.select2-selection').css('background-color', '#e9ecef');
+            $("#datePayroll_SalaryMonth").attr("readonly", "readonly");
+            $("#datePayroll_SalaryMonth").css('background-color', '#e9ecef');
+            $("#txtIsHoldRelease").val("Release");
+            $("#DivRelease").show();
+            $("#txtHoldRemark").attr("disabled", "disabled");
+        }
+      
+      
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+
+                        return false
+                    }
+                });
+            }
+        }
+
+
+        $("#ddlCmpId").on("change", function () {
+            $("#ddlBranchId").find("option").remove();
+            $("#ddlOtherEarningEarningDeductionID").find("option").remove();
+            var CmpId = $("#ddlCmpId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetBusinessUnit", "Module_Payroll_PayrollHold")',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    if (data !=null) {
+                        $("#ddlBranchId").append("<option value=''>--Select-- </option>");
+                        $.each(data, function(i, p) {
+                            $("#ddlBranchId").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                        });
+                    }
+
+                    if (data.GetVeriableHead !=null) {
+                        $("#ddlOtherEarningEarningDeductionID").append("<option value=''>--Select-- </option>");
+                        $.each(data.GetVeriableHead, function(i, p) {
+                            $("#ddlOtherEarningEarningDeductionID").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                        });
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        })
+
+
+        $("#ddlBranchId").on("change", function () {
+            debugger
+            $("#ddlPayroll_SalaryEmployeeId").find("option").remove();
+            var BranchId = $("#ddlBranchId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url:'@Url.Action("GetEmployeeName", "Module_Payroll_PayrollHold")',
+                data: { BranchId: BranchId },
+                success: function (data) {
+                    if (data !=null) {
+                        $("#ddlPayroll_SalaryEmployeeId").append("<option value=''>--Select--</option>");
+                        $.each(data, function(i, p) {
+                            $("#ddlPayroll_SalaryEmployeeId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        });
+
+        $("#ddlPayroll_SalaryEmployeeId").on("change", function () {
+            debugger
+            $("#txtPayroll_SalaryAmount").val("");
+            var EmployeeId = $("#ddlPayroll_SalaryEmployeeId").val();
+            var SalaryMonth = $("#datePayroll_SalaryMonth").val();
+            if (SalaryMonth=="")
+            {
+                $("#ErrorPayroll_SalaryMonth").html("Salary Month/Year is required");return false;
+            }
+            else{
+                $("#ErrorPayroll_SalaryMonth").html("");
+            }
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url:'@Url.Action("GetEmployeeSalaryAmount", "Module_Payroll_PayrollHold")',
+                data: { SalaryMonth: SalaryMonth,EmployeeId:EmployeeId },
+                success: function (data) {
+                    debugger;
+                    if (data !=null) {
+                        if (data.Icon=="error")
+                        {
+                            debugger;
+                            if (data.Message != null) {
+                                if (data.Icon != null) {
+                                    Swal.fire({
+                                        icon: data.Icon,
+                                        text: data.Message,
+                                        allowOutsideClick: () => {
+                                            const popup = Swal.getPopup()
+                                            popup.classList.remove('swal2-show')
+                                            setTimeout(() => {
+                                                popup.classList.add('animate__animated', 'animate__headShake')
+                                            })
+                                            setTimeout(() => {
+                                                popup.classList.remove('animate__animated', 'animate__headShake')
+                                            }, 500)
+
+                                            return false
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                        else{
+                            $("#txtPayroll_SalaryAmount").val(data[0].Value);
+                        }
+                       
+                    }
+                }
+            })
+        });
+
+        var today = new Date();
+        // Format the date as YYYY-MM (year-month)
+        var yyyy = today.getFullYear();
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+        var defaultMonth = yyyy + '-' + mm;
+        // Set the value of the input element to the default month
+        var CheckEmptyDate = document.getElementById('datePayroll_SalaryMonth').value;
+        if (CheckEmptyDate == "") {
+            document.getElementById('datePayroll_SalaryMonth').value = defaultMonth;
+        }
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        // return false
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+    });//Ready Funcation
+
+    //use for add regex function
+    jQuery.validator.addMethod(
+    "regex",
+     function (value, element, regexp) {
+         if (regexp.constructor != RegExp)
+             regexp = new RegExp(regexp);
+         else if (regexp.global)
+             regexp.lastIndex = 0;
+         return this.optional(element) || regexp.test(value);
+     }, "erreur expression reguliere"
+  );
+
+    $('#SavePayrollHold').validate({
+        rules: {
+            CmpId: {
+                required: true,
+            },
+            BranchId: {
+                required: true,
+            },
+
+            Payroll_SalaryMonth: {
+                required: true,
+            },
+            Payroll_SalaryEmployeeId: {
+                required: true,
+            },
+            HoldReleaseRemark: {
+                required: true,
+            },
+        },
+        messages: {
+            CmpId: {
+                required: "Company name is required",
+            },
+            BranchId: {
+                required: "Business unit is required",
+            },
+            Payroll_SalaryEmployeeId: {
+                required: "Employee name is required",
+            },
+            Payroll_SalaryMonth: {
+                required: "Earning Month /Year is required",
+            },
+            HoldReleaseRemark: {
+                required: "Hold/Release Remark is required",
+            },
+        },
+    });
+
+    var form = $("#SavePayrollHold");
+    form.validate();
+    function GetPayrollHold() {
+        debugger;
+        form.valid();
+        if (form.valid() == false) {
+            $("#datePayroll_SalaryMonth").removeClass("error");
+            return false;
+        }
+        $(".Userloaderbg").css("display", "flex");
+        var Payroll_SalaryEmployeeId = $("#ddlPayroll_SalaryEmployeeId").val();
+        var CmpId= $("#ddlCmpId").val();
+        var BranchId=  $("#ddlBranchId").val();
+        var Payroll_SalaryMonth=$("#datePayroll_SalaryMonth").val();
+        var PayrollHoldId_Encrypted=$("#PayrollHoldId_Encrypted").val();
+
+        $.ajax({
+            method:"get",
+            dataType: 'JSON',
+            contentType: "application/json; charset=utf-8",
+            url: '@Url.Action("IsPayrollHoldExists", "Module_Payroll_PayrollHold")',
+            data:{Payroll_SalaryEmployeeId:Payroll_SalaryEmployeeId,CmpId:CmpId,BranchId:BranchId,Payroll_SalaryMonth:Payroll_SalaryMonth,PayrollHoldId_Encrypted:PayrollHoldId_Encrypted},
+            success: function (response) {
+                debugger;
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon=="error") {
+                    $(".Userloaderbg").css("display", "none");
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                        }
+                    }
+                }
+                else{
+                    $("#SavePayrollHold").submit();
+                }
+            }
+        })
+    }
+</script>

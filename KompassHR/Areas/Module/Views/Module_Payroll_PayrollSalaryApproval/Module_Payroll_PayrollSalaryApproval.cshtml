@@ -1,0 +1,1129 @@
+﻿@model KompassHR.Areas.Module.Models.Module_Payroll.SalaryMonthlyAttendance
+@{
+    ViewBag.Title = "Module_Payroll_PayrollSalaryApproval";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+@*<script src="~/assets/bower_components/moment/moment.js"></script>*@
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+
+<style>
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    /*.table-wrap {
+        width: 100%;
+        overflow: auto;
+    }*/
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    th:nth-child(1), td:nth-child(1) {
+        width: 40px; /* Set the width for the first column */
+    }
+
+    th:nth-child(2), td:nth-child(2) {
+        width: 40px; /* Set the width for the first column */
+    }
+
+    #data-table-combine15 tbody tr:last-child {
+        position: sticky;
+        bottom: 0;
+        background: #f8f9fa; /* light background */
+        font-weight: bold;
+        z-index: 5;
+    }
+
+        #data-table-combine15 tbody tr:last-child td {
+            font-weight: bold;
+        }
+
+            #data-table-combine15 tbody tr:last-child td:first-child input[type="checkbox"] {
+                display: none;
+            }
+
+    label.error, .Error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Payroll Approval
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Module_Payroll_PayrollSalaryRequestApproval", "Module_Payroll_PayrollSalaryRequestApproval", new { id = 6, ScreenId = 745, area = "Module" })">
+                        <img src="~/assets/MenuImages/Back.png" class="img-fluid" style="max-width: 100%;float:right" />
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Payroll Approval</h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                    </p>
+                </div>
+                <div class="panel-body" data-scrollbar="true">
+                    <div class="row justify-content-center">
+                        <form role="form" href="@Url.Action("Module_Payroll_PayrollSalaryApproval", "Module_Payroll_PayrollSalaryApproval" , new { area = "Module" })" id="SavePayrollsalary" method="post">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-4">
+                                            Company
+                                        </label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.SalaryCmpId, new SelectList(ViewBag.GetCompanyName, "Id", "Name"), "--Select--", new { id = "ddlCmpId", @class = "form-select", name = "SalaryCmpId" })
+                                            <span id="ErrorddlCmpId" class="Error"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-4">
+                                            Business Unit<span class="important">*</span>
+                                        </label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.SalaryBranchId, new SelectList(ViewBag.GetBranchName, "Id", "Name"), "--Select--", new { id = "ddlBranchId", @class = "form-select", name = "SalaryBranchId" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-4">
+                                            Month/Year
+                                            <span class="important">*</span>
+                                        </label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.SalaryMonthYear, new { id = "txtMonthYear", @class = "form-control", name = "Month", type = "month" })
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-4">
+                                            Salary Process (Category)
+                                            <span class="important">*</span>
+                                        </label>
+                                        <div class="col-md-3">
+                                            @Html.DropDownListFor(model => model.SalaryProcessCategoryId, new SelectList(ViewBag.SalaryProcess, "Id", "Name"), new { @class = "form-select", id = "ddlProcessCategoryId", type = "text", name = "ProcessCategoryId", autocomplete = "Off" })
+                                        </div>
+                                        @*<div class="col-md-1">
+
+                                            </div>*@
+                                        <div class="col-md-5">
+                                            <button type="button" id="btnshow" onclick="showList()" class="btn btn-success btn-sm  mb-10px">
+                                                Show
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-primary mb-10px" id="btlExportToExcel" onclick="downloadExcelFile()">
+                                                <i class="fa-regular fa-file-excel fa-xl"></i> Export To Excel
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr />
+                        </form>
+
+                        <!-- BEGIN table-responsive -->
+                        <div class="table-scroll div1">
+                            <div class="table-wrap">
+                                @if (ViewBag.PayrollSalaryRequest != null && ((List<object>)ViewBag.PayrollSalaryRequest).Count > 1)
+                                {
+                                    <table id="data-table-combine15" class="table table-bordered mb-0 text-dark align-middle TabledataBulkClass" style="width: 100%;">
+                                        <thead class="table-active horizontal-scroll" style="background-color: rgba(233, 236, 239, 1) !important;">
+                                            @{ var dynamicList = ViewBag.PayrollSalaryRequest as List<dynamic>; }
+                                            <tr>
+                                                <th class="text-nowrap text-center">All <input type="checkbox" class="form-check-input" data-checked="all-checkbox" id="SelectAll" onchange="checkAll(this)" /></th>
+                                                @foreach (var Site in dynamicList)
+                                                {
+                                                    foreach (var property in (IDictionary<string, object>)Site)
+                                                    {
+                                                        var isHidden = property.Key == "SalaryID" ||
+                                                                       property.Key == "SalaryEmployeeId" ||
+                                                                       property.Key == "SalaryMonthYear" ||
+                                                                       property.Key == "SalaryCmpId" ||
+                                                                       property.Key == "SalaryBranchId";
+                                                        <td style="@(isHidden ? "display: none;" : "")">@property.Key</td>
+
+                                                    }
+                                                    break;
+                                                }
+                                            </tr>
+                                        </thead>
+
+                                        <tbody id="tbodyApproveReject">
+                                            @foreach (var Site in dynamicList)
+                                            {
+                                                <tr>
+                                                    @{
+                                                        var dict = (IDictionary<string, object>)Site;
+                                                        var salaryId = dict.ContainsKey("SalaryID") ? dict["SalaryID"] : null;
+
+                                                    }
+
+
+                                                    <td style="text-align:center">
+                                                        <input type="checkbox" name="selectedRows" value="@salaryId" />
+                                                    </td>
+
+                                                    @foreach (var property in dict)
+                                                    {
+                                                        if (property.Key.StartsWith("View"))
+                                                        {
+                                                            continue;
+                                                        }
+
+                                                        var isHidden = property.Key == "SalaryID" ||
+                                                                       property.Key == "SalaryEmployeeId" ||
+                                                                       property.Key == "SalaryMonthYear" ||
+                                                                       property.Key == "SalaryCmpId" ||
+                                                                       property.Key == "SalaryBranchId";
+                                                        <td style="@(isHidden ? "display: none;" : "")">@property.Value</td>
+                                                    }
+                                                </tr>
+                                                        }
+                                        </tbody>
+                                    </table>
+                                                        }
+                            </div>
+
+                        </div>
+
+                        <div class="row mb-20px">
+                            <div class="LastShortLeaveBx">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Remark
+                                            </label>
+                                            <div class="col-md-10">
+                                                <textarea id="txtApproveRejectRemark" class="form-control" rows="1"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="row mb-15px">
+                                            <div class="BtnBx">
+                                                <div>
+                                                    <button type="button" class="btn btn-primary btn-sm" id="btnAllApprove" onclick="AllApproveReject('Approved')">
+                                                        <i class="fa-solid fa-floppy-disk"></i> Approve
+                                                    </button>
+                                                    @*<button href="#modal-dialogForHoldReject1" onclick="OpenModule('Reject')" type="button" class="btn btn-danger btn-sm" id="btnmodal-dialog1" value="Rejected">Reject</button>*@
+
+                                                    <button type="button" class="btn btn-danger btn-sm" id="btnAllApprove" onclick="AllApproveReject('Rejected')">
+                                                        <i class="fa-solid fa-floppy-disk"></i> Reject
+                                                    </button>
+                                                    <button type="button" class="btn btn-success btn-sm" onclick="ApproveRejectList()">
+                                                        <i class="fa-solid fa-share-from-square"></i> Approve Reject List
+                                                    </button>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+!-- #Start modal-dialog -->
+<div class="modal fade" id="myEmployeeSalary" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-black text-white">
+                <h4 class="modal-title">Payroll Salary Approved  - List</h4>
+                <div class="panel-heading-btn">
+                    <a href="javascript:;" class="btn btn-icon btn-danger CloseModelHistory" data-bs-dismiss="modal"
+                       aria-hidden="true" id="CloseModelHistory">
+                        <i class="fa fa-xmark"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="modal-body">
+                <!-- BEGIN panel -->
+                <div class="modal-body-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-scroll div1">
+                                <div class="row">
+                                    <table class="table table-bordered mb-0 text-dark align-middle TabledataBulkClass" style="width: 100%;" id="tblEmployeeHistoryHead">
+                                        <thead class="table-active horizontal-scroll" style="background-color: rgba(233, 236, 239, 1) !important;">
+                                            <tr>
+                                                <th class="text-nowrap text-center">All <input type="checkbox" class="form-check-input" data-checked="all-checkbox" id="SelectAll" onchange="checkAll(this)" /></th>
+                                                <th hidden class="text-nowrap">SalaryID </th>
+                                                <th hidden class="text-nowrap">EmployeeId </th>
+                                                <th class="text-nowrap">Business Unit</th>
+                                                <th class="text-nowrap">Employee No </th>
+                                                <th class="text-nowrap">Employee Name</th>
+                                                <th class="text-nowrap">Payable Days </th>
+                                                <th class="text-nowrap">OT Hrs </th>
+                                                <th class="text-nowrap">Gross Pay </th>
+                                                <th class="text-nowrap">Salary Net Pay </th>
+                                                <th class="text-nowrap">Salary CTC</th>
+                                                <th class="text-nowrap">Status</th>
+                                                <th class="text-nowrap">ProcessCategoryName</th>
+                                                <th class="text-nowrap">Approved/Reject By</th>
+                                                <th class="text-nowrap">Approved/Reject Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tblBodyEmployeeSalary"></tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr/>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="row mb-15px">
+                                <label class="form-label col-form-label col-md-4">
+                                    Salary Checker Status
+                                    <span class="important">*</span>
+                                </label>
+                                <div class="col-md-6">
+                                    @Html.DropDownListFor(model => model.SalaryCheckerStatus,
+                                                new List<SelectListItem>{
+                                                    new SelectListItem { Text = "Pending", Value = "Pending" },
+                                                    //new SelectListItem { Text = "Approved to Pending", Value = "true" }
+                                                }, new { @class = "form-select", name = "SalaryCheckerStatus", id = "ddlSalaryCheckerStatus" })
+                                    <span id="ErrorddlBranchId" class="Error"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 text-end">
+                            <button type="button" id="btnEmployeeSubmit" class="btn btn-primary btn-sm">
+                                <i class="fa-solid fa-floppy-disk"></i> Submit
+                            </button>
+
+                            <button type="button" class="btn btn-danger btnpress btn-sm CloseModelHistory" id="CloseModelHistory" data-bs-dismiss="modal" aria-hidden="true">
+                                <i class="fa-solid fa-share-from-square"></i> Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- END panel -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #End modal-dialog -->
+
+
+<script>
+    $(document).ready(function () {
+        $("#ddlCmpId").select2();
+        $("#ddlBranchId").select2();
+
+        var table = $('.TabledataBulkClass').DataTable();
+
+        if ($.fn.DataTable.isDataTable('.TabledataBulkClass')) {
+            table.destroy();
+        }
+
+        $('.TabledataBulkClass').DataTable({
+            scrollY: 400,
+            scrollCollapse: true,
+            paging: false,
+            scrollX: true,
+            searching: true, // Enable searching
+            stripeClasses: [] // Disable alternating row colors
+        });
+
+        $('#myEmployeeSalary').on('shown.bs.modal', function () {
+            var table = $('.TabledataBulkClass').DataTable();
+
+            if ($.fn.DataTable.isDataTable('.TabledataBulkClass')) {
+                table.destroy();
+            }
+
+            $('.TabledataBulkClass').DataTable({
+                scrollY: 350,
+                scrollCollapse: true,
+                paging: false,
+                scrollX: true,
+                searching: true,
+                stripeClasses: []
+            });
+        });
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        // return false
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+
+        var today = new Date();
+        // Format the date as YYYY-MM (year-month)
+        var yyyy = today.getFullYear();
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+        var defaultMonth = yyyy + '-' + mm;
+        // Set the value of the input element to the default month
+        var CheckEmptyDate = document.getElementById('txtMonthYear').value;
+        if (CheckEmptyDate == "") {
+            document.getElementById('txtMonthYear').value = defaultMonth;
+        }
+
+        $("#ddlCmpId").on("change", function () {debugger
+            $("#ddlBranchId").find("option").remove();
+            var CmpId = $("#ddlCmpId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetBusinessUnit", "Module_Payroll_PayrollSalaryApproval")',
+                data: { CmpId: CmpId },
+                success: function (data) {debugger
+                    if (data !=null) {debugger
+                        $("#ddlBranchId").append("<option value=''>--Select-- </option>");
+                        $.each(data, function(i, p) {
+                            $("#ddlBranchId").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                        });
+                    }
+                }
+            })
+        })
+
+    });
+
+
+
+
+    //use for add regex function
+    jQuery.validator.addMethod(
+    "regex",
+     function (value, element, regexp) {
+         if (regexp.constructor != RegExp)
+             regexp = new RegExp(regexp);
+         else if (regexp.global)
+             regexp.lastIndex = 0;
+         return this.optional(element) || regexp.test(value);
+     }, "erreur expression reguliere"
+  );
+
+    $('#SavePayrollsalary').validate({
+        rules: {
+            SalaryCmpId: {
+                required: true,
+            },
+            SalaryBranchId: {
+                required: true,
+            },
+            SalaryMonthYear: {
+                required: true,
+            },
+        },
+        messages: {
+            SalaryCmpId: {
+                required: "Company name is required",
+            },
+            SalaryBranchId: {
+                required: "Business Unit name is required",
+            },
+            SalaryMonthYear: {
+                required: "Month/year is required",
+            },
+        },
+    });
+
+    var form = $("#SavePayrollsalary");
+    form.validate();
+
+    function showList() {
+        debugger;
+        form.valid();
+        if (form.valid() == false) {
+            $("#MonthYear").removeClass("error");
+            return false;
+        }
+        $(".Userloaderbg").css("display", "flex");
+        $("#SavePayrollsalary").submit();
+    }
+
+    function checkAll(ele) {
+        var checkboxes = document.getElementsByTagName('input');
+        if (ele.checked) {
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].type == 'checkbox') {
+                    checkboxes[i].checked = true;
+                }
+            }
+        } else {
+            for (var i = 0; i < checkboxes.length; i++) {
+                console.log(i)
+                if (checkboxes[i].type == 'checkbox') {
+                    checkboxes[i].checked = false;
+                }
+            }
+        }
+    }
+
+    //function checkAll(ele) {
+    //    // Get all checkboxes inside tbody except the last row
+    //    var checkboxes = document.querySelectorAll(
+    //        "#data-table-combine15 tbody tr:not(:last-child) input[type='checkbox']"
+    //    );
+
+    //    checkboxes.forEach(function (cb) {
+    //        cb.checked = ele.checked;
+    //    });
+    //}
+
+</script>
+<script>
+    function OpenModule(Status) {
+        debugger;
+        const RecordList = [];
+        //$("#tbodyApproveReject").find(':checkbox:checked').each(function (i) {
+        //    var data = {};
+        //    var currentRow = $(this).closest("tr");
+
+        //    data.SalaryID = currentRow.find("td:eq(1)").html();
+        //    data.SalaryEmployeeId = currentRow.find("td:eq(2)").html();
+        //    data.SalaryMonthYear = currentRow.find("td:eq(3)").html();
+        //    data.SalaryCmpId = currentRow.find("td:eq(4)").html();
+        //    data.SalaryBranchId = currentRow.find("td:eq(5)").html();
+        //    data.Status = Status;
+        //    //data.RejectRemark = RejectRemark;
+        //    RecordList.push(data);
+        //});
+
+        $("#tbodyApproveReject").find("tr:not(:last-child) :checkbox:checked").each(function (i) {
+            var data = {};
+            var currentRow = $(this).closest("tr");
+
+            data.SalaryID = currentRow.find("td:eq(1)").html();
+            data.SalaryEmployeeId = currentRow.find("td:eq(2)").html();
+            data.SalaryMonthYear = currentRow.find("td:eq(3)").html();
+            data.SalaryCmpId = currentRow.find("td:eq(4)").html();
+            data.SalaryBranchId = currentRow.find("td:eq(5)").html();
+            data.Status = Status;
+            data.Remark = RejectRemark;
+
+            RecordList.push(data);
+        });
+        if (RecordList == "") {
+            debugger;
+            Swal.fire({
+                icon: "error",
+                text: "Select atleast one record",
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup()
+                    popup.classList.remove('swal2-show')
+                    return false;
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                    })
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                    }, 500)
+                    window.location.reload();
+                    return false
+                }
+            });
+            return false;
+        }
+
+        $("#myModalFinal").modal('show');
+    }
+
+    function AllApproveReject(Status) {
+        debugger;
+        $("#SelectAll").prop("checked", false);
+        debugger;
+        const Month = $("#txtMonthYear").val();
+        const CmpId = $("#ddlCmpId").val();
+        const RecordList = [];
+        var RejectRemark = document.getElementById("txtApproveRejectRemark").value;
+
+        //$("#tbodyApproveReject").find(':checkbox:checked').each(function (i) {
+        //    var data = {};
+        //    var currentRow = $(this).closest("tr");
+
+        //    data.SalaryID = currentRow.find("td:eq(1)").html();
+        //    data.SalaryEmployeeId = currentRow.find("td:eq(2)").html();
+        //    data.SalaryMonthYear = currentRow.find("td:eq(3)").html();
+        //    data.SalaryCmpId = currentRow.find("td:eq(4)").html();
+        //    data.SalaryBranchId = currentRow.find("td:eq(5)").html();
+        //    data.Status = Status;
+        //    data.Remark = RejectRemark;
+        //    RecordList.push(data);
+        //});
+
+        $("#tbodyApproveReject").find("tr:not(:last-child) :checkbox:checked").each(function (i) {
+            var data = {};
+            var currentRow = $(this).closest("tr");
+
+            data.SalaryID = currentRow.find("td:eq(1)").html();
+            data.SalaryEmployeeId = currentRow.find("td:eq(2)").html();
+            data.SalaryMonthYear = currentRow.find("td:eq(3)").html();
+            data.SalaryCmpId = currentRow.find("td:eq(4)").html();
+            data.SalaryBranchId = currentRow.find("td:eq(5)").html();
+            data.Status = Status;
+            data.Remark = RejectRemark;
+
+            RecordList.push(data);
+        });
+
+        if (RecordList == "") {
+            debugger;
+            $("#myModalFinal").modal('hide');
+            document.getElementById("txtApproveRejectRemark").value="";
+            Swal.fire({
+                icon: "error",
+                text: "Select atleast one record",
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup()
+                    popup.classList.remove('swal2-show')
+                    return false;
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                    })
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                    }, 500)
+                    window.location.reload();
+                    return false
+                }
+            });
+            return false;
+        }
+        const dataToSend = {
+            model: {
+                ObjPayrollsalary: RecordList
+            },
+            Month: Month,
+            CmpId:CmpId
+        };
+        $(".Userloaderbg").css("display", "flex");
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("MultipleApproveRejectRequest", "Module_Payroll_PayrollSalaryApproval")",
+            data: JSON.stringify(dataToSend),
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            success: function (data) {
+                debugger;
+                $(".Userloaderbg").css("display", "none");
+                var datas = JSON.parse(data);
+                if (datas != null) {
+                    //$('#tblInbox').load();
+                    Swal.fire({
+                        icon: datas.Icon,
+                        text: datas.Message,
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup()
+                            popup.classList.remove('swal2-show')
+                            return false;
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake')
+                            })
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake')
+                            }, 500)
+                            window.location.reload();
+                            return false
+                        }
+                    }).then(function () {
+                        var url = '@Url.Action("Module_Payroll_PayrollSalaryApproval", "Module_Payroll_PayrollSalaryApproval")';
+                        window.location.href = url;
+                    });
+                }
+            }
+        });
+    }
+
+    //Select All Checkboxes
+    function checkAll(ele) {
+        var checkboxes = document.getElementsByTagName('input');
+        if (ele.checked) {
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].type == 'checkbox') {
+                    checkboxes[i].checked = true;
+                }
+            }
+        } else {
+            for (var i = 0; i < checkboxes.length; i++) {
+                console.log(i)
+                if (checkboxes[i].type == 'checkbox') {
+                    checkboxes[i].checked = false;
+                }
+            }
+        }
+    }
+
+    function downloadExcelFile() {
+        debugger;
+        form.valid();
+        if (form.valid() == false) {
+            $("#txtMonthYear").removeClass("error");
+            return false;
+        }
+        $(".Userloaderbg").css("display", "flex");
+        //$(".Userloaderbg").css("display", "flex");
+
+        //var CmpId = $("#ddlCmpId").val();
+        //var Month = $("#FromDate").val();
+        //var BranchId = $("#ddlBranchId").val();
+
+        var CmpId = encodeURIComponent($("#ddlCmpId").val());
+        var MonthYear = encodeURIComponent($("#txtMonthYear").val());
+        var BranchId = encodeURIComponent($("#ddlBranchId").val());
+        var ProcessCategoryId = $("#ddlProcessCategoryId").val();
+        // var LeaveTypeId = encodeURIComponent($("#ddlLeaveTypeId").val());
+        var url = `@Url.Action("DownloadMonthlyAttendnceExcelFile", "Module_Payroll_PayrollSalaryApproval")?CmpId=${CmpId}&BranchId=${BranchId}&MonthYear=${MonthYear}&ProcessCategoryId=${ProcessCategoryId}`;
+
+        $.ajax({
+            url: url,
+            method: 'GET',
+            xhrFields: {
+                responseType: 'blob' // Set the response type to blob
+            },
+            success: function(data) {
+                debugger;
+                if(data.size==0)
+                {
+                    Swal.fire({
+                        icon: 'error',
+                        text: 'Record Not Found',
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup()
+                            popup.classList.remove('swal2-show')
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake')
+                            })
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake')
+                            }, 500)
+                            return false
+                        }
+                    });
+                    $(".Userloaderbg").css("display", "none");
+                    return false;
+                }
+                //var formattedDate = convertDateFormat(FromDate);
+                //var ToformattedDate = convertDateFormat(ToDate);
+                // Create a Blob from the response data
+                var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                // Create a temporary anchor element to initiate the download
+                var anchorElement = document.createElement('a');
+                var url = window.URL.createObjectURL(blob);
+                anchorElement.href = url;
+                anchorElement.download = 'PayrollSalaryApproval.xlsx';
+                anchorElement.click();
+                // Clean up
+                window.URL.revokeObjectURL(url);
+                $(".Userloaderbg").css("display", "none");
+            },
+            error: function(xhr, status, error) {
+                console.error('Error downloading file:', error);
+                // Handle error scenarios here
+            }
+        });
+    }
+
+
+    function ApproveRejectList() {debugger
+        form.valid();
+        if (form.valid() == false) {
+            $("#MonthYear").removeClass("error");
+            return false;
+        }
+        var CmpId = encodeURIComponent($("#ddlCmpId").val());
+        var SalaryMonthYear = encodeURIComponent($("#txtMonthYear").val());
+        var SalaryBranchId = encodeURIComponent($("#ddlBranchId").val());
+        var SalaryProcessCategoryId = $("#ddlProcessCategoryId").val();
+        //var status="Approved";
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetApproveRejectList", "Module_Payroll_PayrollSalaryApproval")',
+            data: { SalaryBranchId, SalaryMonthYear, SalaryProcessCategoryId},
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            success: function (response) {
+                debugger;
+                const data = JSON.parse(response);
+                const modal = $('#myEmployeeSalary');
+                const tableBody = $('#tblBodyEmployeeSalary');
+
+                // Clear table body (except headers)
+                if ($.fn.DataTable.isDataTable('#tblEmployeeHistoryHead')) {
+                    $('#tblEmployeeHistoryHead').DataTable().clear().destroy();
+                }
+
+                modal.modal(data.length > 0 ? 'show' : 'hide');
+               
+                if ($.fn.DataTable.isDataTable('#tblEmployeeHistoryHead')) {
+                    $('#tblEmployeeHistoryHead').DataTable().clear().destroy();
+                }
+
+                if (!data || Object.keys(data).length === 0) {
+                    return Swal.fire({
+                        icon: "error",
+                        text: "No Record Found",
+                        allowOutsideClick: () => animatePopup()
+                    });
+                }
+
+
+                if (data) {
+                    debugger;
+                    let convertedData = {};
+
+                    // Flatten the original data
+                    Object.keys(data).forEach(key => {
+                        let flatObject = {};
+                        data[key].forEach(item => {
+                            flatObject[item.Key] = item.Value;
+                        });
+                        convertedData[key] = flatObject;
+                    });
+
+                    debugger;
+
+                    // Clear table body first (important if appending dynamically multiple times)
+                    $('#tblBodyEmployeeSalary').empty();
+
+                    // Loop over the converted object
+                    Object.values(convertedData).forEach(item => {
+                        let row = `<tr>
+                        <td><center><input type="checkbox" class="form-check-input" /></center></td>
+                        <td hidden class="text-nowrap">${item.SalaryID || ''}</td>
+                        <td hidden class="text-nowrap">${item.SalaryEmployeeId || ''}</td>
+                        <td class="text-nowrap">${item.BranchName || ''}</td>
+                        <td class="text-nowrap">${item.EmployeeNo || ''}</td>
+                        <td class="text-nowrap">${item.EmployeeName || ''}</td>
+                        <td class="text-nowrap text-end">${item.PayableDays || '0'}</td>
+                        <td class="text-nowrap text-end">${item.SalaryOTHrs || '0'}</td>
+                        <td class="text-nowrap text-end">${item.SalaryTotalGross || '0'}</td>
+                        <td class="text-nowrap text-end">${item.SalaryNetPay || '0'}</td>
+                        <td class="text-nowrap text-end">${item.SalaryCTC || '0'}</td>
+                        <td class="text-nowrap">${item.SalaryCheckerStatus || ''}</td>
+                        <td class="text-nowrap">${item.ProcessCategoryName || '0'}</td>
+                        <td class="text-nowrap">${item.ApprovedBy || ''}</td>
+                        <td class="text-nowrap">${item.SalaryCheckerApprovedDate || ''}</td>
+                    </tr>`;
+
+                        $('#tblBodyEmployeeSalary').append(row);
+                    });
+
+                } else {
+                    modal.modal('hide');
+                }
+            }
+        });
+    }
+</script>
+<script>
+    $("#btnEmployeeSubmit").click(function () {
+            debugger
+            $("#SelectAll").prop("checked", false);
+            var SalaryMonthYear = encodeURIComponent($("#txtMonthYear").val());
+            debugger;
+            const SalaryCheckerStatus = $("#ddlSalaryCheckerStatus").val();
+            const ObjPayrollProcess = [];
+
+            const $thead = $('#tblEmployeeHistoryHead thead th');
+
+            $('#tblBodyEmployeeSalary :checkbox:checked').each(function () {
+                var row = $(this).closest('tr'); // Get the closest row
+                var data = {
+                    SalaryID: row.find('td').eq(1).text(), // Hidden column
+                    SalaryEmployeeId: row.find('td').eq(2).text(), // Hidden column
+                    SalaryMonthYear:$("#txtMonth").val()
+                };
+
+                // Push the data object to the array
+                ObjPayrollProcess.push(data);
+            });
+
+
+            if (ObjPayrollProcess.length === 0) {
+                return Swal.fire({
+                    icon: "error",
+                    text: "Select at least one employee",
+                    allowOutsideClick: () => animatePopup()
+                });
+            }
+
+            const dataToSend = {
+                model: {
+                    ObjPayrollProcess: ObjPayrollProcess
+                },
+                SalaryMonthYear:SalaryMonthYear,
+                SalaryCheckerStatus:SalaryCheckerStatus,
+            };
+            $(".Userloaderbg").css("display", "flex");
+
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("UpdatePayrollApproval", "Module_Payroll_PayrollSalaryApproval")',
+                data: JSON.stringify(dataToSend),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    $(".Userloaderbg").hide();
+                    debugger;
+                    // var data = JSON.parse(response);
+                    var Message1 = response.Message;
+                    var Icon1 = response.Icon;
+                  //  var Month1=response.Month;
+                    if (response != null) {
+                        if(Icon1=="error")
+                        {
+                            $(".Userloaderbg").css("display", "none");
+                            if (Message1 != null) {
+                                Swal.fire({
+                                    icon: Icon1,
+                                    text: Message1,
+                                    allowOutsideClick: () => {
+                                        const popup = Swal.getPopup()
+                                        popup.classList.remove('swal2-show')
+                                        setTimeout(() => {
+                                            popup.classList.add('animate__animated', 'animate__headShake')
+                                        })
+                                        setTimeout(() => {
+                                            popup.classList.remove('animate__animated', 'animate__headShake')
+                                        }, 500)
+                                        return false
+                                    }
+                                });
+                            }
+                        }
+                        else{
+                            if (Message1 != null) {
+                                Swal.fire({
+                                    icon: Icon1,
+                                    text: Message1,
+                                    allowOutsideClick: () => {
+                                        const popup = Swal.getPopup()
+                                        popup.classList.remove('swal2-show')
+                                        setTimeout(() => {
+                                            popup.classList.add('animate__animated', 'animate__headShake')
+                                        })
+                                        setTimeout(() => {
+                                            popup.classList.remove('animate__animated', 'animate__headShake')
+                                        }, 500)
+                                        return false
+                                    }
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+window.location.href = '@Url.Action("Module_Payroll_PayrollSalaryApproval", "Module_Payroll_PayrollSalaryApproval")';
+                                    } else if (
+                                        /* Read more about handling dismissals below */
+                                        result.dismiss === Swal.DismissReason.cancel
+                                    ) {
+
+                                    }
+                                })
+                            }
+                        }
+                    }
+                }
+            });
+    });
+</script>

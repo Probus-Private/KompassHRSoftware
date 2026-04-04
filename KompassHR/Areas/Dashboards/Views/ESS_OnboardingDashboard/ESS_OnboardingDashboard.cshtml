@@ -1,0 +1,1059 @@
+﻿
+@{
+    ViewBag.Title = "ESS_OnboardingDashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="https://cdn.jsdelivr.net/npm/highcharts@12.5.0/highcharts.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highcharts/12.4.0/css/highcharts.css"
+      integrity="sha512-AK+uoqT8+mBIDSg8X82PlPLtProHlfKagadiSPEqYJiGTQxKnSVoiGgE8IhgRxKre0JWw7teyJc7Mzr/4opudA=="
+      crossorigin="anonymous" referrerpolicy="no-referrer" />
+<!-- Bootstrap Core JS -->
+<script src="../assets/js/bootstrap.bundle.min.js"></script>
+<!-- Feather Icon JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.2/feather.min.js"
+        integrity="sha512-zMm7+ZQ8AZr1r3W8Z8lDATkH05QG5Gm2xc6MlsCdBz9l6oE8Y7IXByMgSm/rdRQrhuHt99HAYfMljBOEZ68q5A=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script> 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.35.0/tabler-icons.min.css" integrity="sha512-gzw5zNP2TRq+DKyAqZfDclaTG4dOrGJrwob2Fc8xwcJPDPVij0HowLIMZ8c1NefFM0OZZYUUUNoPfcoI5jqudw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+<style>
+    body {
+        font-family: "Roboto", sans-serif;
+        font-size: 14px;
+      
+        line-height: 1.5;
+        background-color: #F8F9FA;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+    .page-wrapper {
+        -webkit-transition: all 0.5s ease;
+        -ms-transition: all 0.5s ease;
+        transition: all 0.5s ease;
+        margin: 0 0 0 252px;
+        padding: 50px 0 0;
+        position: relative;
+        left: 0;
+        -webkit-transition: all 0.2s ease;
+        -ms-transition: all 0.2s ease;
+        transition: all 0.2s ease;
+    }
+    .page-wrapper .content {
+    padding: 24px;
+    padding-bottom: 0;
+    min-height: calc(100vh - 105px);
+}
+</style>
+
+<style>
+
+
+    /* ==========================================
+                      ONBOARDING DASHBOARD INTERNAL STYLES
+                      (Self-contained CSS for the dashboard content)
+                      ========================================== */
+    .onboarding-dashboard .card {
+        border-radius: 10px;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        margin-bottom: 24px;
+        background-color: #fff;
+        display: flex;
+        flex-direction: column;
+        word-wrap: break-word;
+    }
+
+    .onboarding-dashboard .card-header {
+        background-color: transparent;
+        padding: 1rem 1.25rem;
+        border-bottom: 1px solid rgba(0, 0, 0, .05);
+    }
+
+    .onboarding-dashboard .card-title {
+        font-weight: 600;
+        font-size: 16px;
+        color: #1D2A3A;
+    }
+
+    .onboarding-dashboard .card-body {
+        flex: 1 1 auto;
+        padding: 1.25rem;
+    }
+
+    .onboarding-dashboard .avatar {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .onboarding-dashboard .avatar-sm {
+        width: 32px;
+        height: 32px;
+        font-size: 13px;
+    }
+
+    .onboarding-dashboard .avatar-md {
+        width: 48px;
+        height: 48px;
+        font-size: 20px;
+    }
+
+    /* Transparent Backgrounds & Text Colors */
+    .onboarding-dashboard .bg-primary-transparent {
+        background-color: rgba(242, 101, 34, 0.1) !important;
+        color: #F26522 !important;
+    }
+
+    .onboarding-dashboard .bg-success-transparent {
+        background-color: rgba(40, 167, 69, 0.1) !important;
+        color: #28a745 !important;
+    }
+
+    .onboarding-dashboard .bg-info-transparent {
+        background-color: rgba(23, 162, 184, 0.1) !important;
+        color: #17a2b8 !important;
+    }
+
+    .onboarding-dashboard .bg-warning-transparent {
+        background-color: rgba(255, 193, 7, 0.1) !important;
+        color: #ffc107 !important;
+    }
+
+    .onboarding-dashboard .bg-danger-transparent {
+        background-color: rgba(220, 53, 69, 0.1) !important;
+        color: #dc3545 !important;
+    }
+
+    .onboarding-dashboard .bg-secondary-transparent {
+        background-color: rgba(108, 117, 125, 0.1) !important;
+        color: #6c757d !important;
+    }
+
+    .onboarding-dashboard .text-primary {
+        color: #F26522 !important;
+    }
+
+    .onboarding-dashboard .text-success {
+        color: #28a745 !important;
+    }
+
+    .onboarding-dashboard .text-info {
+        color: #17a2b8 !important;
+    }
+
+    .onboarding-dashboard .text-warning {
+        color: #ffc107 !important;
+    }
+
+    .onboarding-dashboard .text-danger {
+        color: #dc3545 !important;
+    }
+
+    .onboarding-dashboard .text-secondary {
+        color: #6c757d !important;
+    }
+
+    .onboarding-dashboard .border-primary {
+        border-color: #F26522 !important;
+    }
+
+    .onboarding-dashboard .border-success {
+        border-color: #28a745 !important;
+    }
+
+    .onboarding-dashboard .border-info {
+        border-color: #17a2b8 !important;
+    }
+
+    .onboarding-dashboard .border-warning {
+        border-color: #ffc107 !important;
+    }
+
+    .onboarding-dashboard .border-danger {
+        border-color: #dc3545 !important;
+    }
+
+    .onboarding-dashboard .border-secondary {
+        border-color: #6c757d !important;
+    }
+
+    /* Tables */
+    .onboarding-dashboard .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .onboarding-dashboard .custom-table {
+        width: 100%;
+        margin-bottom: 1rem;
+        color: #212529;
+    }
+
+        .onboarding-dashboard .custom-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+            border-bottom: 1px solid #dee2e6;
+            font-size: 13px;
+            white-space: nowrap;
+            padding: 0.75rem;
+            vertical-align: bottom;
+        }
+
+        .onboarding-dashboard .custom-table td {
+            vertical-align: middle;
+            font-size: 14px;
+            border-bottom: 1px solid #f1f1f1;
+            padding: 0.75rem;
+        }
+
+    .onboarding-dashboard .table-hover tbody tr:hover {
+        background-color: #fcfcfc;
+    }
+
+    /* Badges */
+    .onboarding-dashboard .badge {
+        font-weight: 500;
+        padding: 0.35em 0.65em;
+        font-size: 0.75em;
+        border-radius: 4px;
+        display: inline-block;
+        line-height: 1;
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    /* Utilities */
+    .onboarding-dashboard .fs-12 {
+        font-size: 12px !important;
+    }
+
+    .onboarding-dashboard .fs-13 {
+        font-size: 13px !important;
+    }
+
+    .onboarding-dashboard .fs-14 {
+        font-size: 14px !important;
+    }
+
+    .onboarding-dashboard .fs-18 {
+        font-size: 18px !important;
+    }
+
+    .onboarding-dashboard .fs-20 {
+        font-size: 20px !important;
+    }
+
+    .onboarding-dashboard .fs-22 {
+        font-size: 22px !important;
+    }
+
+    .onboarding-dashboard .progress-sm {
+        height: 6px;
+        border-radius: 4px;
+        overflow: hidden;
+        background-color: #e9ecef;
+    }
+
+    .onboarding-dashboard .progress-bar {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        overflow: hidden;
+        color: #fff;
+        text-align: center;
+        white-space: nowrap;
+        transition: width 0.6s ease;
+    }
+
+    .onboarding-dashboard .border-opacity-25 {
+        border-color: rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .onboarding-dashboard .border-4 {
+        border-left-width: 4px !important;
+    }
+</style>
+
+
+    <!-- Page Wrapper -->
+<div id="content" class="app-content">
+    <!-- Main Content -->
+    <div class="content onboarding-dashboard">
+
+        <!-- Page Header -->
+        <div class="d-md-flex d-block align-items-center justify-content-between mb-4 mt-2">
+            <div class="my-auto mb-2 mb-md-0">
+                <h3 class="page-title mb-1">Onboarding Dashboard</h3>
+                <p class=" mb-0">Comprehensive tracking of hiring, onboarding, and probation.</p>
+            </div>
+            <div class="d-flex my-xl-auto right-content align-items-center flex-wrap gap-2">
+                <a href="#" class="btn btn-primary d-flex align-items-center">
+                    <i class="ti ti-plus me-2"></i>Add
+                    New Hire
+                </a>
+            </div>
+        </div>
+
+        <!-- Top KPI Cards -->
+        <div class="row">
+            <div class="col-xl-3 col-sm-6 col-12 d-flex">
+                <div class="card flex-fill shadow-sm border-0 mb-3">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <span class="fs-13 fw-medium  mb-1 text-truncate d-block">
+                                    Candidates
+                                    Selected
+                                </span>
+                                <h4 class="fs-22 fw-bold mb-0">124</h4>
+                            </div>
+                            <span class="avatar avatar-md bg-primary-transparent text-primary rounded-circle">
+                                <i class="ti ti-users fs-20"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-sm-6 col-12 d-flex">
+                <div class="card flex-fill shadow-sm border-0 mb-3">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <span class="fs-13 fw-medium  mb-1 text-truncate d-block">
+                                    Offers
+                                    Accepted
+                                </span>
+                                <h4 class="fs-22 fw-bold mb-0 text-success">85</h4>
+                            </div>
+                            <span class="avatar avatar-md bg-success-transparent text-success rounded-circle">
+                                <i class="ti ti-circle-check fs-20"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-sm-6 col-12 d-flex">
+                <div class="card flex-fill shadow-sm border-0 mb-3">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <span class="fs-13 fw-medium  mb-1 text-truncate d-block">
+                                    Joining This
+                                    Week
+                                </span>
+                                <h4 class="fs-22 fw-bold mb-0 text-info">12</h4>
+                            </div>
+                            <span class="avatar avatar-md bg-info-transparent text-info rounded-circle">
+                                <i class="ti ti-calendar-event fs-20"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-sm-6 col-12 d-flex">
+                <div class="card flex-fill shadow-sm border-0 mb-3">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <span class="fs-13 fw-medium  mb-1 text-truncate d-block">
+                                    Onboarding
+                                    Progress
+                                </span>
+                                <h4 class="fs-22 fw-bold mb-0 text-warning">18</h4>
+                            </div>
+                            <span class="avatar avatar-md bg-warning-transparent text-warning rounded-circle">
+                                <i class="ti ti-loader fs-20"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xl-3 col-sm-6 col-12 d-flex">
+                <div class="card flex-fill shadow-sm border-0 mb-3">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <span class="fs-13 fw-medium  mb-1 text-truncate d-block">
+                                    Probation
+                                    Employees
+                                </span>
+                                <h4 class="fs-22 fw-bold mb-0">45</h4>
+                            </div>
+                            <span class="avatar avatar-md bg-secondary-transparent text-secondary rounded-circle">
+                                <i class="ti ti-user-shield fs-20"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-sm-6 col-12 d-flex">
+                <div class="card flex-fill shadow-sm border-0 mb-3">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <span class="fs-13 fw-medium  mb-1 text-truncate d-block">
+                                    Pending
+                                    Documents
+                                </span>
+                                <h4 class="fs-22 fw-bold mb-0 text-danger">4</h4>
+                            </div>
+                            <span class="avatar avatar-md bg-danger-transparent text-danger rounded-circle">
+                                <i class="ti ti-file-alert fs-20"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-sm-6 col-12 d-flex">
+                <div class="card flex-fill shadow-sm border-0 mb-3">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <span class="fs-13 fw-medium  mb-1 text-truncate d-block">
+                                    Employees
+                                    Confirmed
+                                </span>
+                                <h4 class="fs-22 fw-bold mb-0 text-success">28</h4>
+                            </div>
+                            <span class="avatar avatar-md bg-success-transparent text-success rounded-circle">
+                                <i class="ti ti-rosette-discount-check fs-20"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-sm-6 col-12 d-flex">
+                <div class="card flex-fill shadow-sm border-0 mb-3">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <span class="fs-13 fw-medium  mb-1 text-truncate d-block">
+                                    Offers
+                                    Pending
+                                </span>
+                                <h4 class="fs-22 fw-bold mb-0 text-warning">10</h4>
+                            </div>
+                            <span class="avatar avatar-md bg-warning-transparent text-warning rounded-circle">
+                                <i class="ti ti-clock-pause fs-20"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="row">
+            <div class="col-md-6 mb-3 d-flex">
+                <div class="card shadow-sm border-0 flex-fill">
+                    <div class="card-header border-0 pb-0 d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Offer Status Distribution</h5>
+                        <select class="form-select form-select-sm w-auto">
+                            <option>This Month</option>
+                            <option>This Year</option>
+                        </select>
+                    </div>
+                    <div class="card-body">
+                        <div id="offerStatusChart" style="height: 300px;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3 d-flex">
+                <div class="card shadow-sm border-0 flex-fill">
+                    <div class="card-header border-0 pb-0 d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Hiring Trend</h5>
+                        <select class="form-select form-select-sm w-auto">
+                            <option>2026</option>
+                            <option>2025</option>
+                        </select>
+                    </div>
+                    <div class="card-body">
+                        <div id="hiringTrendChart" style="height: 300px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Offer Letter Pipeline -->
+        <div class="row">
+            <div class="col-12 mb-3">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header border-bottom d-flex align-items-center justify-content-between">
+                        <h5 class="card-title mb-0">Offer Letter Pipeline</h5>
+                        <a href="#" class="btn btn-sm btn-outline-primary">View All</a>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-center custom-table mb-0">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Candidate Name</th>
+                                        <th>Position & Dept</th>
+                                        <th>Reporting Manager</th>
+                                        <th>Offer Date</th>
+                                        <th>Offered Salary</th>
+                                        <th>Expected Joining</th>
+                                        <th>Offer File</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <span class="avatar avatar-sm rounded-circle bg-primary-transparent text-primary me-2 fw-bold">JD</span>
+                                                <span class="fs-14 fw-medium text-dark">John Doe</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="fs-14 fw-medium text-dark">React Developer</div>
+                                            <div class="fs-12 ">Engineering</div>
+                                        </td>
+                                        <td>Sarah Smith</td>
+                                        <td>01 Mar 2026</td>
+                                        <td>₹ 8,00,000</td>
+                                        <td>15 Mar 2026</td>
+                                        <td><a href="#" class="text-primary"><i class="ti ti-file-type-pdf fs-18"></i></a></td>
+                                        <td>
+                                            <span class="badge bg-success-transparent text-success border border-success border-opacity-25">Accepted</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <span class="avatar avatar-sm rounded-circle bg-info-transparent text-info me-2 fw-bold">JC</span>
+                                                <span class="fs-14 fw-medium text-dark">Jane Cooper</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="fs-14 fw-medium text-dark">HR Executive</div>
+                                            <div class="fs-12 ">Human Resources</div>
+                                        </td>
+                                        <td>Michael Brown</td>
+                                        <td>05 Mar 2026</td>
+                                        <td>₹ 5,00,000</td>
+                                        <td>20 Mar 2026</td>
+                                        <td><a href="#" class="text-primary"><i class="ti ti-file-type-pdf fs-18"></i></a></td>
+                                        <td>
+                                            <span class="badge bg-warning-transparent text-warning border border-warning border-opacity-25">Pending</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upcoming Joinings & Document Verification -->
+        <div class="row">
+            <div class="col-md-6 mb-3 d-flex">
+                <div class="card shadow-sm border-0 flex-fill">
+                    <div class="card-header border-bottom d-flex align-items-center justify-content-between">
+                        <h5 class="card-title mb-0">Upcoming Joining Employees</h5>
+                        <a href="#" class="btn btn-sm btn-outline-primary">View All</a>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-center custom-table mb-0">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Employee</th>
+                                        <th>Position</th>
+                                        <th>Joining Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="assets/img/avatar-03.jpg" class="avatar avatar-sm rounded-circle me-2" alt="img">
+                                                <div>
+                                                    <span class="fs-14 fw-medium text-dark d-block">
+                                                        Robert
+                                                        Fox
+                                                    </span>
+                                                    <span class="fs-12 ">#EMP-0125</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="fs-14 fw-medium text-dark">UI/UX Designer</div>
+                                            <div class="fs-12 ">Office â€¢ Full-time</div>
+                                        </td>
+                                        <td>09 Mar 2026</td>
+                                        <td>
+                                            <span class="badge bg-info-transparent text-info border border-info border-opacity-25">
+                                                Joining
+                                                Today
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <span class="avatar avatar-sm rounded-circle bg-secondary-transparent text-secondary me-2 fw-bold">GH</span>
+                                                <div>
+                                                    <span class="fs-14 fw-medium text-dark d-block">
+                                                        Guy
+                                                        Hawkins
+                                                    </span>
+                                                    <span class="fs-12 ">#EMP-0126</span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="fs-14 fw-medium text-dark">Software Tester</div>
+                                            <div class="fs-12 ">WFH â€¢ Full-time</div>
+                                        </td>
+                                        <td>12 Mar 2026</td>
+                                        <td>
+                                            <span class="badge bg-secondary-transparent text-secondary border border-secondary border-opacity-25">Pre-boarding</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-3 d-flex">
+                <div class="card shadow-sm border-0 flex-fill">
+                    <div class="card-header border-bottom d-flex align-items-center justify-content-between">
+                        <h5 class="card-title mb-0">Pre-Boarding Document Verification</h5>
+                        <a href="#" class="btn btn-sm btn-outline-primary">View All</a>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-center custom-table mb-0">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Employee</th>
+                                        <th>Docs Status</th>
+                                        <th>Verification</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="fs-14 fw-medium text-dark">Alice Smith</div>
+                                            <div class="fs-12 ">Sales Executive</div>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex gap-1 flex-wrap">
+                                                <span class="badge bg-light text-dark border" title="Aadhaar">
+                                                    Aadhaar <i class="ti ti-check text-success ms-1"></i>
+                                                </span>
+                                                <span class="badge bg-light text-dark border" title="PAN">
+                                                    PAN <i class="ti ti-check text-success ms-1"></i>
+                                                </span>
+                                                <span class="badge bg-light text-dark border" title="Bank">
+                                                    Bank
+                                                    <i class="ti ti-check text-success ms-1"></i>
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-success-transparent text-success border border-success border-opacity-25">Verified</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="fs-14 fw-medium text-dark">David Jones</div>
+                                            <div class="fs-12 ">Marketing Analyst</div>
+                                        </td>
+                                        <td>
+                                            <div class="d-flex gap-1 flex-wrap">
+                                                <span class="badge bg-light text-dark border" title="Aadhaar">
+                                                    Aadhaar <i class="ti ti-x text-danger ms-1"></i>
+                                                </span>
+                                                <span class="badge bg-light text-dark border" title="PAN">
+                                                    PAN <i class="ti ti-check text-success ms-1"></i>
+                                                </span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-warning-transparent text-warning border border-warning border-opacity-25">Pending</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Onboarding Tasks & Progress -->
+        <div class="row">
+            <div class="col-md-6 mb-3 d-flex">
+                <div class="card shadow-sm border-0 flex-fill">
+                    <div class="card-header border-bottom d-flex align-items-center justify-content-between">
+                        <h5 class="card-title mb-0">Onboarding Task Tracker</h5>
+                        <a href="#" class="btn btn-sm btn-outline-primary">View All</a>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-center custom-table mb-0">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Task Name</th>
+                                        <th>Assigned To</th>
+                                        <th>Due Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="fs-14 fw-medium text-dark">Laptop setup</div>
+                                            <div class="fs-12 ">Bob Johnson (IT)</div>
+                                        </td>
+                                        <td>IT Dept</td>
+                                        <td>12 Mar 2026</td>
+                                        <td>
+                                            <span class="badge bg-warning-transparent text-warning border border-warning border-opacity-25">Pending</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="fs-14 fw-medium text-dark">HR orientation</div>
+                                            <div class="fs-12 ">Alice Smith (HR)</div>
+                                        </td>
+                                        <td>HR Dept</td>
+                                        <td>10 Mar 2026</td>
+                                        <td>
+                                            <span class="badge bg-success-transparent text-success border border-success border-opacity-25">Completed</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-3 d-flex">
+                <div class="card shadow-sm border-0 flex-fill">
+                    <div class="card-header border-bottom d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Onboarding Progress Tracker</h5>
+                        <select class="form-select form-select-sm w-auto">
+                            <option>All</option>
+                            <option>In Progress</option>
+                        </select>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-center custom-table mb-0">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Employee</th>
+                                        <th>Progress</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="fs-14 fw-medium text-dark">Charlie Davis</div>
+                                            <div class="fs-12 ">4/5 Tasks Done</div>
+                                        </td>
+                                        <td style="min-width: 150px;">
+                                            <div class="d-flex align-items-center">
+                                                <div class="progress progress-sm flex-grow-1 me-2" style="height: 6px;">
+                                                    <div class="progress-bar bg-primary rounded" role="progressbar" style="width: 80%"
+                                                         aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                                <span class="fs-12 fw-medium">80%</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-info-transparent text-info border border-info border-opacity-25">
+                                                In
+                                                Progress
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="fs-14 fw-medium text-dark">Alice Smith</div>
+                                            <div class="fs-12 ">5/5 Tasks Done</div>
+                                        </td>
+                                        <td style="min-width: 150px;">
+                                            <div class="d-flex align-items-center">
+                                                <div class="progress progress-sm flex-grow-1 me-2" style="height: 6px;">
+                                                    <div class="progress-bar bg-success rounded" role="progressbar" style="width: 100%"
+                                                         aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                                </div>
+                                                <span class="fs-12 fw-medium">100%</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-success-transparent text-success border border-success border-opacity-25">Completed</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Probation Employees & Alerts -->
+        <div class="row">
+            <div class="col-md-8 mb-3 d-flex">
+                <div class="card shadow-sm border-0 flex-fill">
+                    <div class="card-header border-bottom d-flex align-items-center justify-content-between">
+                        <h5 class="card-title mb-0">Probation Employees & Review Tracker</h5>
+                        <a href="#" class="btn btn-sm btn-outline-primary">View All</a>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-center custom-table mb-0">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Employee</th>
+                                        <th>Probation End</th>
+                                        <th>Review Date</th>
+                                        <th>Score</th>
+                                        <th>Decision / Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="fs-14 fw-medium text-dark">Eve Carter</div>
+                                            <div class="fs-12 ">Marketing â€¢ Mngr: Alice</div>
+                                        </td>
+                                        <td>01 Mar 2026</td>
+                                        <td>28 Feb 2026</td>
+                                        <td><span class="badge bg-success"><i class="ti ti-star-filled me-1"></i>4.2</span></td>
+                                        <td>
+                                            <span class="badge bg-success-transparent text-success border border-success border-opacity-25">Confirmed</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="fs-14 fw-medium text-dark">Will Smith</div>
+                                            <div class="fs-12 ">Sales â€¢ Mngr: Tom</div>
+                                        </td>
+                                        <td>30 Mar 2026</td>
+                                        <td>25 Mar 2026</td>
+                                        <td>-</td>
+                                        <td>
+                                            <span class="badge bg-warning-transparent text-warning border border-warning border-opacity-25">
+                                                Review
+                                                Pending
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-3 d-flex">
+                <div class="card shadow-sm border-0 flex-fill">
+                    <div class="card-header border-bottom">
+                        <h5 class="card-title mb-0">Onboarding Alerts</h5>
+                    </div>
+                    <div class="card-body d-flex flex-column gap-3">
+                        <div class="p-3 bg-primary-transparent rounded d-flex align-items-center border-start border-primary border-4">
+                            <span class="avatar avatar-sm bg-primary text-white rounded-circle me-3">
+                                <i class="ti ti-calendar-user"></i>
+                            </span>
+                            <div>
+                                <h6 class="mb-1 fs-14 fw-bold">Joining Tomorrow</h6>
+                                <p class="mb-0 fs-13 ">2 employees are joining.</p>
+                            </div>
+                        </div>
+                        <div class="p-3 bg-danger-transparent rounded d-flex align-items-center border-start border-danger border-4">
+                            <span class="avatar avatar-sm bg-danger text-white rounded-circle me-3">
+                                <i class="ti ti-file-alert"></i>
+                            </span>
+                            <div>
+                                <h6 class="mb-1 fs-14 fw-bold">Missing Documents</h6>
+                                <p class="mb-0 fs-13 ">1 employee missing PAN.</p>
+                            </div>
+                        </div>
+                        <div class="p-3 bg-warning-transparent rounded d-flex align-items-center border-start border-warning border-4">
+                            <span class="avatar avatar-sm bg-warning text-white rounded-circle me-3">
+                                <i class="ti ti-clock-exclamation"></i>
+                            </span>
+                            <div>
+                                <h6 class="mb-1 fs-14 fw-bold">Overdue Tasks</h6>
+                                <p class="mb-0 fs-13 ">3 onboarding tasks pending.</p>
+                            </div>
+                        </div>
+                        <div class="p-3 bg-info-transparent rounded d-flex align-items-center border-start border-info border-4 mb-0">
+                            <span class="avatar avatar-sm bg-info text-white rounded-circle me-3">
+                                <i class="ti ti-user-exclamation"></i>
+                            </span>
+                            <div>
+                                <h6 class="mb-1 fs-14 fw-bold">Probation Ending Soon</h6>
+                                <p class="mb-0 fs-13 ">2 employees approaching end.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+      // Highcharts Initialization Script for Onboarding Dashboard
+      document.addEventListener('DOMContentLoaded', function () {
+
+        if (typeof Highcharts !== 'undefined') {
+
+          Highcharts.setOptions({
+            colors: ['#28a745', '#ffc107', '#dc3545', '#17a2b8', '#F26522', '#1D2A3A'],
+
+            chart: {
+              backgroundColor: '#ffffff',
+              style: {
+                fontFamily: 'Roboto, sans-serif',
+                color: '#111827'
+              }
+            },
+
+            title: {
+              style: {
+                color: '#111827',
+                fontWeight: '600'
+              }
+            },
+
+            subtitle: {
+              style: {
+                color: '#111827'
+              }
+            },
+
+            xAxis: {
+              labels: { style: { color: '#111827' } },
+              title: { style: { color: '#111827' } },
+              gridLineDashStyle: 'Dash',
+              gridLineColor: 'rgba(0,0,0,0.1)'
+            },
+
+            yAxis: {
+              labels: { style: { color: '#111827' } },
+              title: { style: { color: '#111827' } },
+              gridLineDashStyle: 'Dash',
+              gridLineColor: 'rgba(0,0,0,0.1)'
+            },
+
+            legend: {
+              itemStyle: { color: '#111827' },
+              itemHoverStyle: { color: '#000000' }
+            },
+
+            tooltip: {
+              backgroundColor: '#ffffff',
+              style: { color: '#111827' }
+            },
+
+            credits: { enabled: false }
+
+          });
+
+          /* =================================================
+          1️⃣ Offer Status Distribution (Pie Chart)
+          ================================================= */
+
+          Highcharts.chart('offerStatusChart', {
+            chart: { type: 'pie' },
+
+            title: {
+              text: 'Offer Status Distribution'
+            },
+
+            plotOptions: {
+              pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                  enabled: true,
+                  format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                  style: {
+                    color: '#111827',
+                    textOutline: 'none'
+                  }
+                }
+              }
+            },
+
+            series: [{
+              name: 'Offers',
+              colorByPoint: true,
+              data: [
+                { name: 'Accepted', y: 70, color: '#28a745' },
+                { name: 'Pending', y: 20, color: '#ffc107' },
+                { name: 'Rejected', y: 10, color: '#dc3545' }
+              ]
+            }]
+
+          });
+
+          /* =================================================
+          2️⃣ Hiring Trend Chart (Area Spline)
+          ================================================= */
+
+          Highcharts.chart('hiringTrendChart', {
+            chart: { type: 'areaspline' },
+
+            title: {
+              text: 'Hiring Trend'
+            },
+
+            xAxis: {
+              categories: [
+                'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+              ]
+            },
+
+            yAxis: {
+              title: {
+                text: 'Number of Hires'
+              }
+            },
+
+            tooltip: {
+              crosshairs: true,
+              shared: true
+            },
+
+            series: [{
+              name: 'Hires',
+              data: [5, 8, 12, 10, 15, 22, 18, 25, 20, 30, 28, 35],
+              color: '#F26522',
+              fillColor: {
+                linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                stops: [
+                  [0, Highcharts.color('#F26522').setOpacity(0.3).get('rgba')],
+                  [1, Highcharts.color('#F26522').setOpacity(0).get('rgba')]
+                ]
+              }
+            }]
+          });
+
+        }
+      });
+</script> 

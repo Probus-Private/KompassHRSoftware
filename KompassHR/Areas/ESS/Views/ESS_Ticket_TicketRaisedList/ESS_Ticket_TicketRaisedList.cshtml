@@ -1,0 +1,2446 @@
+﻿
+
+@{
+    ViewBag.Title = "ESS_Ticket_TicketRaisedList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<style>
+
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    /*.div1 td:nth-child(1) {
+        position: sticky;
+        left: 0;
+    }
+
+    .div1 td:nth-child(2) {
+        position: sticky;
+        left: 67px;
+    }
+
+    .fixed-side {
+        position: sticky;
+        left: 0;
+    }
+
+    .fixed-side1 {
+        position: sticky;
+        left: 67px;
+    }*/
+</style>
+
+<style>
+    #detached-tickets-wrapper .card {
+        border: none;
+        border-radius: 10px;
+        background-color: #fff;
+        margin-bottom: 1.5rem;
+    }
+
+    #detached-tickets-wrapper .card-header {
+        border-color: #ededed;
+        position: relative;
+        background: transparent;
+        padding: 1rem 1.25rem 1rem;
+        border-bottom: 1px solid #ededed;
+    }
+
+    #detached-tickets-wrapper .card-title {
+        font-size: 18px;
+        font-weight: 600;
+        text-transform: capitalize;
+        color: #111827;
+        margin-bottom: 0;
+    }
+
+    #detached-tickets-wrapper .card-body {
+        padding: 1.25rem;
+    }
+
+    #detached-tickets-wrapper .badge {
+        font-size: 12px;
+        padding: 5px 10px;
+        border-radius: 6px;
+        margin-left: 6px;
+    }
+
+    #detached-tickets-wrapper .list-group-item {
+        border-color: #f3f4f6;
+        background-color: #fff;
+    }
+
+    .ticket-iconbx {
+        width: 28px;
+        height: 28px;
+        border-radius: 10px;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        margin-right: 15px;
+        margin-top: 15px;
+        transform: rotate(45deg);
+        flex-shrink: 0;
+    }
+
+        .ticket-iconbx i {
+            transform: rotate(-45deg);
+        }
+
+    .ticket-content {
+        padding: 15px;
+    }
+
+    .ticket-title {
+        font-size: 16px;
+        font-weight: 500;
+        color: #202C4B;
+    }
+
+    .ticket-count {
+        font-size: 30px;
+        font-weight: 800;
+        color: #202C4B;
+    }
+
+
+    .ticket-iconbx.bg-primary {
+        background-color: #0d6efd !important;
+        color: #fff !important;
+    }
+
+    .ticket-iconbx.bg-info {
+        background-color: #0dcaf0 !important;
+        color: #fff !important;
+    }
+
+    .ticket-iconbx.bg-warning {
+        background-color: #ff9800 !important;
+        color: #fff !important;
+    }
+
+    .ticket-iconbx.bg-danger {
+        background-color: #dc3545 !important;
+        color: #fff !important;
+    }
+
+    .ticket-iconbx.bg-success {
+        background-color: #198754 !important;
+        color: #fff !important;
+    }
+</style>
+
+<style>
+    .detached-ticket-body {
+        padding: 0;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .detached-ticket-table {
+        width: 100%;
+        margin-bottom: 0;
+        font-size: 14px;
+        color: #4B5563;
+        border-collapse: collapse;
+        white-space: nowrap;
+        text-align: left;
+    }
+
+        .detached-ticket-table thead th {
+            font-weight: 600;
+            color: #6B7280;
+            padding: 12px 24px;
+            border-bottom: 1px solid #ededed;
+            background-color: #F8F9FA;
+        }
+
+        .detached-ticket-table tbody td {
+            padding: 12px 24px !important;
+            vertical-align: middle;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .detached-ticket-table tbody tr {
+            transition: background-color 0.2s ease;
+        }
+
+            .detached-ticket-table tbody tr:hover {
+                background-color: #f8f9fa;
+            }
+
+            .detached-ticket-table tbody tr:last-child td {
+                border-bottom: none;
+            }
+</style>
+
+<style>
+    body {
+        background-color: #F8F9FA;
+    }
+    /* ── Premium Dashboard Enhancements ──────────────── */
+    .btn-premium-primary {
+        border-radius: 8px;
+        font-weight: 500;
+        background-color: #F26522;
+        border-color: #F26522;
+    }
+
+    .btn-premium-light {
+        border-radius: 8px;
+        font-weight: 500;
+        background-color: #FFFFFF;
+        border-color: #ededed;
+        color: #4B5563;
+    }
+
+    .card-kpi-standard {
+        border: 1px solid #ededed;
+        border-radius: 12px;
+        background: #ffffff;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+        .card-kpi-standard:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
+        }
+
+    .kpi-icon-box {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 20px;
+    }
+
+    .kpi-title {
+        font-size: 13px;
+        font-weight: 600;
+        color: #6B7280;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 8px;
+    }
+
+    .kpi-value {
+        font-size: 28px;
+        font-weight: 800;
+        color: #1D2A3A;
+        margin: 0;
+    }
+
+    .kpi-value-hero {
+        font-size: 42px;
+        font-weight: 800;
+        margin: 0 0 8px 0;
+        color: #1D2A3A;
+        line-height: 1;
+    }
+
+    .card-premium-panel {
+        border: 1px solid #ededed;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #ffffff, #fafafa);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+        overflow: hidden;
+    }
+
+    .activity-item-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 16px;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        margin-right: 20px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .card-dashboard-chart {
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+        border-radius: 16px;
+        background: #ffffff;
+        height: 100%;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .card-dashboard-chart:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06);
+        }
+
+        .card-dashboard-chart .card-header {
+            background: rgba(248, 250, 252, 0.7);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+            padding: 20px 24px;
+            border-radius: 16px 16px 0 0;
+            backdrop-filter: blur(8px);
+        }
+
+        .card-dashboard-chart .card-title {
+            font-weight: 700;
+            color: #1D2A3A;
+            font-size: 16px;
+            margin: 0;
+        }
+
+    .premium-table {
+        border-collapse: separate;
+        border-spacing: 0;
+        margin-bottom: 0;
+    }
+
+        .premium-table thead th {
+            background-color: rgba(248, 250, 252, 0.8);
+            padding: 16px 24px;
+            font-weight: 600;
+            color: #475569;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+        }
+
+        .premium-table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+            .premium-table tbody tr:hover {
+                background-color: rgba(248, 250, 252, 0.6);
+                transform: scale(1.002);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+                z-index: 1;
+                position: relative;
+            }
+
+        .premium-table tbody td {
+            padding: 16px 24px !important;
+            border-bottom: 1px solid rgba(241, 245, 249, 0.8);
+            vertical-align: middle;
+            color: #334155;
+            background-color: inherit;
+        }
+
+    .card-list-container {
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+        border-radius: 16px;
+        background: #ffffff;
+        width: 100%;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .card-list-container:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06);
+        }
+
+        .card-list-container .card-header {
+            background: rgba(248, 250, 252, 0.7) !important;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8) !important;
+            border-radius: 16px 16px 0 0;
+            backdrop-filter: blur(8px);
+        }
+
+    .list-item-premium {
+        padding: 20px 24px;
+        border-bottom: 1px solid rgba(241, 245, 249, 0.8);
+        transition: all 0.2s ease;
+        list-style: none;
+        background-color: #ffffff;
+        position: relative;
+    }
+
+        .list-item-premium:hover {
+            background-color: rgba(248, 250, 252, 0.8);
+            padding-left: 28px;
+        }
+
+        .list-item-premium::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: #6610f2;
+            transform: scaleY(0);
+            transition: transform 0.2s ease;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .list-item-premium:hover::before {
+            transform: scaleY(1);
+        }
+
+    .list-item-title {
+        font-weight: 600;
+        color: #1D2A3A;
+        margin-bottom: 4px;
+    }
+
+    .list-item-subtitle {
+        font-size: 12px;
+        color: #6B7280;
+    }
+
+    /* ── Detached Recent Tickets Classes ──────────────── */
+    .detached-ticket-card {
+        background-color: #ffffff;
+        border: 1px solid rgba(226, 232, 240, 0.8);
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        margin-bottom: 24px;
+        width: 100%;
+        box-sizing: border-box;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .detached-ticket-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06);
+        }
+
+    .detached-ticket-header {
+        background: rgba(248, 250, 252, 0.7);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+        padding: 20px 24px;
+        backdrop-filter: blur(8px);
+    }
+
+    .detached-ticket-title {
+        margin: 0;
+        font-weight: 700;
+        color: #1D2A3A;
+        font-size: 18px;
+        line-height: 1.2;
+    }
+
+    .detached-ticket-btn {
+        font-weight: 500;
+        border-radius: 6px;
+        background-color: #F8F9FA;
+        border: 1px solid #ededed;
+        color: #4B5563;
+        padding: 6px 16px;
+        text-decoration: none;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: inline-block;
+    }
+
+        .detached-ticket-btn:hover {
+            background-color: #e2e6ea;
+            color: #1D2A3A;
+        }
+
+    .detached-ticket-body {
+        padding: 0;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .detached-ticket-table {
+        width: 100%;
+        margin-bottom: 0;
+        font-size: 14px;
+        color: #4B5563;
+        border-collapse: collapse;
+        white-space: nowrap;
+        text-align: left;
+    }
+
+        .detached-ticket-table thead th {
+            font-weight: 600;
+            color: #475569;
+            padding: 16px 24px;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+            background-color: rgba(248, 250, 252, 0.8);
+            text-transform: uppercase;
+            font-size: 11px;
+            letter-spacing: 0.5px;
+        }
+
+        .detached-ticket-table tbody td {
+            padding: 16px 24px;
+            vertical-align: middle;
+            border-bottom: 1px solid rgba(241, 245, 249, 0.8);
+            color: #334155;
+            background-color: inherit;
+        }
+
+        .detached-ticket-table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+            .detached-ticket-table tbody tr:hover {
+                background-color: rgba(248, 250, 252, 0.6);
+                transform: scale(1.002);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+                z-index: 1;
+                position: relative;
+            }
+
+            .detached-ticket-table tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+    .detached-flex-row {
+        display: flex;
+        align-items: center;
+    }
+
+    .detached-badge {
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: fit-content;
+        font-size: 12px;
+    }
+
+    .detached-row-emergency {
+        background-color: rgba(220, 53, 69, 0.02);
+    }
+
+    .detached-text-danger {
+        color: #dc3545;
+        font-weight: 500;
+    }
+
+    .detached-text-warning {
+        color: #ff9800;
+        font-weight: 500;
+    }
+
+    .detached-badge-critical {
+        background-color: rgba(139, 0, 0, 0.1);
+        color: #8b0000;
+    }
+
+    .detached-badge-high {
+        background-color: rgba(220, 53, 69, 0.1);
+        color: #dc3545;
+    }
+
+    .detached-badge-progress {
+        background-color: rgba(13, 110, 253, 0.1);
+        color: #0d6efd;
+    }
+
+    .detached-badge-open {
+        background-color: rgba(255, 152, 0, 0.1);
+        color: #ff9800;
+    }
+
+    .detached-badge-escalated {
+        background-color: rgba(220, 53, 69, 0.1);
+        color: #dc3545;
+    }
+
+    /* ── Reusable Chart & Legend Classes ──────────────── */
+    .chart-container-wrapper {
+        position: relative;
+        width: 140px;
+        height: 140px;
+        margin: 0 auto;
+    }
+
+    .chart-inner-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        pointer-events: none;
+    }
+
+        .chart-inner-text b {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1D2A3A;
+            line-height: 1.2;
+        }
+
+    .legend-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        font-size: 13px;
+    }
+
+    .legend-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 0;
+        border: none;
+    }
+
+    .legend-label {
+        display: flex;
+        align-items: center;
+        font-weight: 500;
+        color: #4B5563;
+    }
+
+    .legend-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 12px;
+    }
+
+    /* ── Specialized KPI & Activity Classes ─────────── */
+    .card-kpi-hero-decorative {
+        border: 1px solid #b8b3ee !important;
+        border-radius: 12px;
+        background: linear-gradient(328deg, rgb(241 242 255) 0%, rgba(255, 242, 242, 1) 100%);
+        color: #000;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+        transition: transform 0.2s, box-shadow 0.2s;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-blob-1 {
+        position: absolute;
+        right: -20px;
+        top: -20px;
+        width: 120px;
+        height: 120px;
+        background: rgba(56, 189, 248, 0.1);
+        border-radius: 50%;
+        filter: blur(20px);
+    }
+
+    .hero-blob-2 {
+        position: absolute;
+        left: -20px;
+        bottom: -20px;
+        width: 100px;
+        height: 100px;
+        background: rgba(99, 102, 241, 0.1);
+        border-radius: 50%;
+        filter: blur(20px);
+    }
+
+    .hero-kpi-title {
+        font-size: 14px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin: 0;
+        color: #94a3b8;
+    }
+
+    .hero-icon-box {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 20px;
+        color: #38bdf8;
+    }
+
+    .trend-badge {
+        font-size: 13px;
+        font-weight: 500;
+        color: #94a3b8;
+        display: flex;
+        align-items: center;
+    }
+
+    .trend-badge-pill {
+        font-weight: 600;
+        background: rgba(52, 211, 153, 0.1);
+        padding: 2px 6px;
+        border-radius: 4px;
+        margin-right: 8px;
+    }
+
+    .progress-bar-container {
+        height: 6px;
+        border-radius: 10px;
+    }
+
+    .progress-bar-round {
+        border-radius: 10px;
+    }
+
+    .activity-column {
+        padding: 24px;
+        position: relative;
+    }
+
+    .activity-blob {
+        position: absolute;
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        filter: blur(24px);
+    }
+
+    .activity-trend {
+        display: flex;
+        align-items: baseline;
+        gap: 12px;
+    }
+
+    .activity-trend-pct {
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .activity-value {
+        font-size: 24px;
+        font-weight: 700;
+        color: #1D2A3A;
+    }
+
+    .card-satisfaction {
+        background: linear-gradient(to right, #ffffff, #fffdf8);
+    }
+
+    .satisfaction-score-box {
+        text-align: right;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 12px;
+        border: 1px solid #fff5e6;
+        box-shadow: 0 4px 12px rgba(255, 152, 0, 0.08);
+    }
+
+    .star-rating {
+        display: flex;
+        gap: 6px;
+        font-size: 24px;
+        color: #ffc107;
+        margin-bottom: 10px;
+    }
+
+    /* ── Soft Badges & Color Utilities ──────────── */
+    .badge-soft-secondary {
+        background-color: rgba(108, 117, 125, 0.1);
+        color: #6c757d;
+    }
+
+    .badge-soft-success {
+        background-color: rgba(25, 135, 84, 0.1);
+        color: #198754;
+    }
+
+    .badge-soft-info {
+        background-color: rgba(13, 202, 240, 0.1);
+        color: #0dcaf0;
+    }
+
+    .badge-soft-warning {
+        background-color: rgba(255, 193, 7, 0.1);
+        color: #ffc107;
+    }
+
+    .badge-soft-danger {
+        background-color: rgba(220, 53, 69, 0.1);
+        color: #dc3545;
+    }
+
+    .badge-soft-purple {
+        background-color: rgba(111, 66, 193, 0.1);
+        color: #6f42c1;
+    }
+
+    .badge-soft-pink {
+        background-color: rgba(232, 62, 140, 0.1);
+        color: #e83e8c;
+    }
+
+    .badge-soft-teal {
+        background-color: rgba(32, 201, 151, 0.1);
+        color: #20c997;
+    }
+
+    .badge-soft-orange {
+        background-color: rgba(253, 126, 20, 0.1);
+        color: #fd7e14;
+    }
+
+    .dot-primary {
+        background-color: #0d6efd;
+    }
+
+    .dot-secondary {
+        background-color: #6c757d;
+    }
+
+    .dot-success {
+        background-color: #198754;
+    }
+
+    .dot-info {
+        background-color: #0dcaf0;
+    }
+
+    .dot-warning {
+        background-color: #ffc107;
+    }
+
+    .dot-danger {
+        background-color: #dc3545;
+    }
+
+    .dot-purple {
+        background-color: #6f42c1;
+    }
+
+    .dot-pink {
+        background-color: #e83e8c;
+    }
+
+    .dot-teal {
+        background-color: #20c997;
+    }
+
+    .dot-orange {
+        background-color: #fd7e14;
+    }
+
+    .avatar-primary {
+        background-color: #ebf5ff;
+        color: #0d6efd;
+    }
+
+    .avatar-success {
+        background-color: #e8f5e9;
+        color: #198754;
+    }
+
+    .avatar-purple {
+        background-color: #f0ebf8;
+        color: #6610f2;
+    }
+
+    .border-light {
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .text-muted-small {
+        font-size: 12px;
+        color: #6B7280;
+    }
+
+    .font-bold-soft {
+        font-weight: 500;
+    }
+
+    .font-bold-heavy {
+        font-weight: 600;
+        color: #1D2A3A;
+    }
+
+
+
+    .no-border-bottom {
+        border-bottom: none !important;
+    }
+
+    .align-middle-right {
+        text-align: right;
+        vertical-align: middle;
+    }
+
+    /* ── Progress & Status Upgrades ──────────────── */
+    .progress-bar-custom {
+        height: 8px;
+        border-radius: 10px;
+        background-color: rgba(241, 245, 249, 0.8);
+        width: 100px;
+        margin-right: 12px;
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+    }
+
+        .progress-bar-custom .progress-bar {
+            border-radius: 10px;
+            box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+    .text-progress-pct {
+        font-weight: 700;
+        font-size: 13px;
+    }
+
+    /* Upgrade Avatar Initials */
+    .avatar-initials {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 12px;
+        margin-right: 12px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        flex-shrink: 0;
+    }
+
+    /* Avatar color variants with subtle gradients */
+    .avatar-primary {
+        background: linear-gradient(135deg, #ebf5ff, #dbeafe);
+        color: #2563eb;
+        border-color: rgba(59, 130, 246, 0.2);
+    }
+
+    .avatar-success {
+        background: linear-gradient(135deg, #e8f5e9, #dcfce7);
+        color: #16a34a;
+        border-color: rgba(34, 197, 94, 0.2);
+    }
+
+    .avatar-warning {
+        background: linear-gradient(135deg, #fff4e5, #fef3c7);
+        color: #d97706;
+        border-color: rgba(245, 158, 11, 0.2);
+    }
+
+    .avatar-purple {
+        background: linear-gradient(135deg, #f0ebf8, #f3e8ff);
+        color: #7e22ce;
+        border-color: rgba(168, 85, 247, 0.2);
+    }
+
+    /* Upgrade action buttons in panels */
+    .btn-premium-action {
+        border-radius: 20px;
+        padding: 4px 14px;
+        font-weight: 600;
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        transition: all 0.2s ease;
+    }
+
+        .btn-premium-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(13, 110, 253, 0.2);
+            background-color: #0d6efd;
+            color: #ffffff;
+        }
+</style>
+
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+@using Newtonsoft.Json
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Ticket Raise
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_Ticket_Menu", "ESS_Ticket_Menu", new { id = 13, ScreenId = 199, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                @*<div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Ticket Raise - List</h4>
+                </div> <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+
+                    </p>
+                </div>*@
+
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        The Support Desk Dashboard allows managers to monitor all support tickets, including pending responses and tickets due for resolution. It provides a quick overview of ticket status, priority, and helps ensure timely issue resolution.
+
+                    </p>
+                </div>
+                @*<div class="panel-body" data-scrollbar="false">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-scroll div1">
+                                <div class="table-wrap">
+                                    <table class="table table-bordered align-middle TablePage" id="data-table-combine"
+                                           style="width: 100%;">
+                                        <thead>
+                                            <tr>
+                                                <th class="fixed-side text-center">View</th>
+                                                <th class="fixed-side text-center">View History</th>
+                                                <th class="text-nowrap"> Status</th>
+                                                <th class="text-nowrap"> Priority</th>
+                                                <th class="text-nowrap"> Designation</th>
+                                                <th class="text-nowrap">Doc No</th>
+                                                <th class="text-nowrap">Doc Date </th>
+                                                <th class="text-nowrap">Ticket Category</th>
+                                                <th class="text-nowrap">Ticket Raise Title</th>
+                                                <th class="text-nowrap">Description</th>
+                                                <th class="text-nowrap">TicketRaiseBy</th>
+                                                <th class="text-nowrap">Download Attachment</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var d in ViewBag.GetTicketRaiseList)
+                                            {
+                                                <tr>
+
+                                                    <td class="text-center">
+                                                       
+                                                        <a onclick="ViewTicketRaise('@d.TicketRaiseID_Encrypted','@d.TicketRaiseID')"
+                                                           id="btnTicketRaiseView"
+                                                           style="cursor:pointer;">
+                                                            <i class="fa-solid fa-eye text-success fa-lg"></i>
+                                                        </a>
+                                                     
+                                                    </td>
+
+                                                    <td class="text-center">
+                                                        <a onclick="ViewTicketSolutionHistory('@d.TicketRaiseID')" id="btnTicketSolutionHistory" style="cursor:pointer;">
+                                                            <i class="fa-solid fa-eye text-success fa-lg"></i>
+                                                        </a>
+                                                    </td>
+                                                    <td>@d.ApprovalStatus</td>
+                                                    <td>@d.Priority</td>
+                                                    <td>@d.DesignationName</td>
+                                                    <td>@d.DocNo</td>
+                                                    <td>@d.DocDate</td>
+                                                    <td>@d.TicketCategoryName</td>
+                                                    <td>@d.TicketRaiseTitle</td>
+                                                    <td>@d.Description</td>
+                                                    <td>@d.TicketRaiseBy</td>
+                                                    <td class="text-center">
+                                                        @if (d.AttachFile != "No")
+                                                        {
+                                                            <a href="@Url.Action("DownloadFile", "ESS_Ticket_TicketRaisedList",
+                                                               new { FilePath = d.AttachFile })"
+                                                               class="text-primary"
+                                                               title="Download File">
+                                                                <i class="fa-solid fa-download fa-lg"></i>
+                                                            </a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <div style="display:flex; justify-content:center; align-items:center;">
+                                                                <i class="fa fa-times" style="color:red;"></i>
+                                                            </div>
+                                                        }
+                                                    </td>
+
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>*@
+            </div>
+        </div>
+    </div>
+
+
+
+    <div id="detached-tickets-wrapper">
+    
+
+        @*<div class="row mb-4">
+            <div class="col-12 d-flex flex-wrap gap-2">
+                <button class="btn shadow-sm btn-premium-primary">
+                    <i class="fa-solid fa-plus me-1"></i> Create
+                    Ticket
+                </button>
+                <button class="btn shadow-sm btn-premium-light">
+                    <i class="fa-solid fa-user-plus me-1"></i>
+                    Assign Ticket
+                </button>
+                <button class="btn shadow-sm btn-premium-light">
+                    <i class="fa-solid fa-list me-1"></i> View All
+                    Tickets
+                </button>
+                <button class="btn shadow-sm btn-premium-light">
+                    <i class="fa-solid fa-filter me-1"></i> Filter
+                    by Department
+                </button>
+                <button class="btn shadow-sm ms-auto btn-premium-light">
+                    <i class="fa-solid fa-download me-1"></i>
+                    Export Reports
+                </button>
+            </div>
+        </div>*@
+
+        <!-- 1️⃣ Summary KPI Cards -->
+        <div class="row">
+            <!-- Total Tickets - Premium Hero Card -->
+            <div class="col-xl-4 col-lg-4 col-md-12 mb-3">
+                <div class="card h-100 card-kpi-hero-decorative">
+                    <!-- Decorative Blobs -->
+                   
+                        <div class="card-body p-3">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <div class="kpi-title">
+                                        Total Tickets
+                                    </div>
+                                    <h3 class="kpi-value">
+                                      @TempData["GetTotalTickets"]
+                                    </h3>
+                                </div>
+                                <div class="kpi-icon-box" style="background: rgba(0, 8, 255,0.1);color: #348fe2;">
+                                    <i class="fa-solid fa-ticket"></i>
+                                </div>
+                            </div>
+                        
+                        </div>                    
+                  
+                </div>
+            </div>
+
+            <!-- Open Tickets -->
+            <div class="col-xl-4 col-lg-4 col-md-6 mb-3">
+                <div class="card h-100 card-kpi-standard"
+                   style="border: 1px solid  rgba(255, 152, 0, 0.1); background:#fffbfb; box-shadow: 0 4px 12px rgba(255, 152, 0, 0.1);">
+
+                    <div class="card-body p-3">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+
+                            <div>
+                                <div class="kpi-title">
+                                    Open Tickets
+                                </div>
+                                <h3 class="kpi-value">
+                                   @TempData["GetOpenTickets"]
+                                </h3>
+                            </div>
+                            <div class="kpi-icon-box" style="background: rgba(255, 152, 0, 0.1); color: #ff9800;">
+                                <i class="fa-regular fa-folder-open"></i>
+                            </div>
+                        </div>
+                        <div class="progress progress-bar-container" style="background-color: #fff4e5;">
+                            <div class="progress-bar bg-warning progress-bar-round" style="width: @ViewBag.OpenPercent%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- In Progress -->
+            <div class="col-xl-4 col-lg-4 col-md-6 mb-3">
+                <div class="card h-100 card-kpi-standard"
+                    style="border: 1px solid   rgba(13, 202, 240, 0.1); background:#fffbfb; box-shadow: 0 4px 12px   rgba(13, 202, 240, 0.1);">
+
+                    <div class="card-body p-3">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <div class="kpi-title">
+                                    In Progress
+                                </div>
+                                <h3 class="kpi-value">
+                                   @TempData["GetInProcessTickets"]
+                                </h3>
+                            </div>
+                            <div class="kpi-icon-box" style="background: rgba(13, 202, 240, 0.1); color: #0dcaf0;">
+                                <i class="fa-solid fa-spinner"></i>
+                            </div>
+                        </div>
+                        <div class="progress progress-bar-container" style="background-color: #e0f8fd;">
+                            <div class="progress-bar bg-info progress-bar-round" style="width: @ViewBag.InProcessPercent%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+      
+            <!-- Closed Tickets -->
+            <div class="col-xl-4 col-lg-4 col-md-6 mb-3">
+                <div class="card h-100 card-kpi-standard"
+                      style="border: 1px solid  rgba(25, 135, 84, 0.1); background:#fffbfb; box-shadow: 0 4px 12px  rgba(25, 135, 84, 0.1);">
+                    <div class="card-body p-3">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <div class="kpi-title" style="color:#198754;">
+                                    Closed
+                                </div>
+                                <h3 class="kpi-value">
+                                   @TempData["GetResolvedTickets"]
+                                </h3>
+                            </div>
+                            <div class="kpi-icon-box" style="    background-color: rgba(25, 135, 84, 0.1); color: #198754;">
+                                <i class="fa-solid fa-check-double"></i>
+                            </div>
+                        </div>
+                        <div class="progress progress-bar-container" style="background-color: #f3f4f6;">
+                            <div class="progress-bar bg-success progress-bar-round" style="width: @ViewBag.ClosePercent%;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!---Critical Priority-->
+            <div class="col-xl-4 col-lg-4 col-md-12 mb-3">
+                <div class="card h-100 card-kpi-standard"
+                     style="border: 1px solid rgba(220, 53, 69, 0.2); background: #fffbfb; box-shadow: 0 4px 12px rgba(220, 53, 69, 0.05);">
+                    <div class="card-body p-3">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <div class="kpi-title" style="color: #dc3545;">
+                                    Critical Priority
+                                </div>
+                                <h3 class="kpi-value">
+                                    @TempData["GetCriticalTicket"]
+                                </h3>
+                            </div>
+                            <div class="kpi-icon-box" style="background: rgba(220, 53, 69, 0.1); color: #dc3545;">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                            </div>
+                        </div>
+                        <div class="progress progress-bar-container" style="background-color: #fcedee;">
+                            <div class="progress-bar bg-danger progress-bar-round" style="width: @ViewBag.CriticalPercent%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- High Priority -->
+            <div class="col-xl-4 col-lg-4 col-md-12 mb-3">
+                <div class="card h-100 card-kpi-standard"
+                     style="border: 1px solid rgba(255, 152, 0, 0.1); background: #fffbfb; box-shadow: 0 4px 12px rgba(255, 152, 0, 0.1);">
+                    <div class="card-body p-3">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <div class="kpi-title" style="color: #ff9800;">
+                                    High Priority
+                                </div>
+                                <h3 class="kpi-value">
+                                    @TempData["GetHighTicket"]
+                                </h3>
+                            </div>
+                            <div class="kpi-icon-box" style="    background-color: rgba(255, 152, 0, 0.1);    color: #ff9800;">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                            </div>
+                        </div>
+                        <div class="progress progress-bar-container" style="background-color: #fcedee;">
+                            <div class="progress-bar bg-warning progress-bar-round" style="width: @ViewBag.HighPercent%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 🌟 Today's Activity Premium Panel -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-premium-panel">
+                    <div class="card-body p-0">
+                        <div class="row g-0">
+                            <div class="col-md-6 activity-column" style="border-right: 1px solid #ededed;">
+                                <!-- Decorative background blur -->
+                                <div class="activity-blob"
+                                     style="top: -20px; right: -20px; background: rgba(102, 16, 242, 0.05);">
+                                </div>
+
+                                <div class="d-flex align-items-center position-relative">
+                                    <div class="activity-item-icon"
+                                         style="background: linear-gradient(135deg, #6610f2, #8540f5); box-shadow: 0 8px 16px rgba(102, 16, 242, 0.2);">
+                                        <i class="fa-solid fa-bolt"></i>
+                                    </div>
+                                    <div>
+                                        <div class="hero-kpi-title" style="font-weight: 700; margin-bottom: 4px;">
+                                            Created Today
+                                        </div>
+                                        <div class="activity-trend">
+                                            <div class="activity-value">@TempData["GetTodayCreate"]</div>
+                                            @*<div class="activity-trend-pct text-danger">
+                                                <i class="fa-solid fa-arrow-trend-down me-1"></i>-5%
+                                            </div>*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @*<div class="col-md-4 activity-column">
+                       
+                                <div class="activity-blob"
+                                     style="bottom: -20px; right: -20px; background: rgba(32, 201, 151, 0.05);">
+                                </div>
+
+                                <div class="d-flex align-items-center position-relative">
+                                    <div class="activity-item-icon"
+                                         style="background: linear-gradient(135deg, #20c997, #28a745); box-shadow: 0 8px 16px rgba(32, 201, 151, 0.2);">
+                                        <i class="fa-solid fa-clipboard-check"></i>
+                                    </div>
+                                    <div>
+                                        <div class="hero-kpi-title" style="font-weight: 700; margin-bottom: 4px;">
+                                            Response Today
+                                        </div>
+                                        <div class="activity-trend">
+                                            <div class="activity-value">@TempData["GetTodayResolved"]</div>
+                                     
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>*@
+
+                            <div class="col-md-6 activity-column">
+                                <!-- Decorative background blur -->
+                                <div class="activity-blob"
+                                     style="bottom: -20px; right: -20px; background: rgba(32, 201, 151, 0.05);">
+                                </div>
+
+                                <div class="d-flex align-items-center position-relative">
+                                    <div class="activity-item-icon"
+                                         style="background: linear-gradient(135deg, #20c997, #28a745); box-shadow: 0 8px 16px rgba(32, 201, 151, 0.2);">
+                                        <i class="fa-solid fa-clipboard-check"></i>
+                                    </div>
+                                    <div>
+                                        <div class="hero-kpi-title" style="font-weight: 700; margin-bottom: 4px;">
+                                            Resolved Today
+                                        </div>
+                                        <div class="activity-trend">
+                                            <div class="activity-value">@TempData["GetTodayResolved"]</div>
+                                            @*<div class="activity-trend-pct text-success">
+                                                <i class="fa-solid fa-arrow-trend-up me-1"></i>+12%
+                                            </div>*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 1️⃣ SLA Monitoring & Satisfaction -->
+        <div class="row">
+            <!-- Avg Response & Resolution Time -->
+
+            <div class="col-xl-6 col-lg-6 col-md-12 mb-3">
+                <div class="card h-100 card-kpi-standard">
+                    <div class="card-body p-4">
+                        <h5 class="card-title" style="margin-bottom: 24px;">
+                            <i class="fa-solid fa-stopwatch" style="color: #6610f2; margin-right: 8px;"></i> SLA
+                            Performance
+                        </h5>
+                        <div class="row align-items-center">
+                            <div class="col-6" style="border-right: 1px solid #f3f4f6;">
+                                <div class="kpi-title" style="margin-bottom: 6px;">
+                                    Avg Response Time
+                                </div>
+                                <div class="activity-value" style="font-size: 24px; margin-bottom: 12px;">
+                                    @TempData["AvgResponseTime"]
+                                </div>
+                                <div class="progress progress-bar-container" style="background-color: #ebf5ff;">
+                                    <div class="progress-bar bg-primary progress-bar-round" style="width: @ViewBag.AvgResponsePercent%;">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 ps-4">
+                                <div class="kpi-title" style="margin-bottom: 6px;">
+                                    Avg Resolution Time
+                                </div>
+                                <div class="activity-value" style="font-size: 24px; margin-bottom: 12px;">
+                                   @TempData["AvgResolutionTime"]
+                                </div>
+                                <div class="progress progress-bar-container" style="background-color: #e8f5e9;">
+                                    <div class="progress-bar bg-success progress-bar-round" style="width: @ViewBag.AvgResolutionPercent%;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Satisfaction Score -->
+            <div class="col-xl-6 col-lg-6 col-md-12 mb-3">
+                <div class="card h-100 card-kpi-standard card-satisfaction">
+                    <div class="card-body p-4 d-flex align-items-center justify-content-between">
+                        <div>
+                            <h5 class="card-title" style="margin-bottom: 16px;">
+                                <i class="fa-regular fa-face-smile" style="color: #ff9800; margin-right: 8px;"></i>
+                                Customer Satisfaction
+                            </h5>
+                            <div class="activity-trend mb-2">
+                                <div class="activity-value" style="font-size: 36px;">4.5</div>
+                                <div class="item-stacked-subtitle" style="font-size: 16px; font-weight: 600;">
+                                    /
+                                    5.0
+                                </div>
+                            </div>
+                            <div style="font-size: 13px; color: #198754; font-weight: 600;">
+                                <i class="fa-solid fa-arrow-trend-up me-1"></i>+0.2 from last month
+                            </div>
+                        </div>
+                        <div class="satisfaction-score-box">
+                            <div class="star-rating">
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star"></i>
+                                <i class="fa-solid fa-star-half-stroke"></i>
+                            </div>
+                            <div style="font-size: 13px; font-weight: 600; color: #4B5563;">
+                                Based on 124 reviews
+                                <i class="fa-solid fa-chevron-right ms-1" style="font-size: 10px;"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Manager Dashboard Row 2: Main Charts -->
+        <div class="row">
+            <!-- Ticket Status Overview -->
+            <div class="col-xl-4 col-lg-4 d-flex mb-3">
+                <div class="card w-100 card-dashboard-chart">
+                    <div class="card-header">
+                        <h4 class="card-title">
+                            Ticket Status Overview
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-center mb-4">
+                            <div style="position: relative; width: 140px; height: 140px;">
+                                <canvas id="statusTicketChart"></canvas>
+                                <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; flex-direction: column; pointer-events: none;">
+                                    <span style="font-size: 20px; font-weight: 700; color: #1D2A3A; line-height: 1.2;">@TempData["GetTotalTickets"]</span>
+                                </div>
+                            </div>
+                        </div>
+                        <ul class="legend-list">
+                            <li class="legend-item">
+                                <div class="legend-label"><span class="legend-dot dot-warning"></span>Pending</div>
+                                <span class="badge badge-soft-warning">@TempData["GetOpenTickets"]</span>
+                            </li>
+                        
+                            <li class="legend-item">
+                                <div class="legend-label">
+                                    <span class="legend-dot dot-primary"></span>In
+                                    Progress
+                                </div>
+                                <span class="badge detached-badge-progress">@TempData["GetInProcessTickets"]</span>
+                            </li>
+                            
+                            <li class="legend-item">
+                                <div class="legend-label">
+                                    <span class="legend-dot dot-orange"></span> Escalated
+                                </div>
+                                <span class="badge badge-soft-orange">  @TempData["GetEscalatedTicket"]</span>
+                            </li>
+
+                            <li class="legend-item">
+                                <div class="legend-label">
+                                    <span class="legend-dot dot-secondary"></span>Closed
+                                </div>
+                                <span class="badge badge-soft-secondary">@TempData["GetResolvedTickets"]</span>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tickets by Priority -->
+            <div class="col-xl-4 col-lg-4 d-flex mb-3">
+                <div class="card w-100 card-dashboard-chart">
+                    <div class="card-header">
+                        <h4 class="card-title">
+                            Tickets by Priority
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-center mb-4">
+                            <div class="chart-container-wrapper">
+                                <canvas id="priorityTicketChart"></canvas>
+                                <div class="chart-inner-text">
+                                    <b>@TempData["GetTotalTickets"]</b>
+                                </div>
+                            </div>
+                        </div>
+                        <ul class="legend-list">
+                            <li class="legend-item">
+                                <div class="legend-label"><span class="legend-dot dot-danger"></span>Critical</div>
+                                <span class="badge detached-badge-high">@TempData["GetCriticalTicket"]</span>
+                            </li>
+                            <li class="legend-item">
+                                <div class="legend-label"><span class="legend-dot dot-warning"></span>High</div>
+                                <span class="badge detached-badge-open">@TempData["GetHighTicket"]</span>
+                            </li>
+                            <li class="legend-item">
+                                <div class="legend-label">
+                                    <span class="legend-dot dot-info"></span>Medium
+                                </div>
+                                <span class="badge badge-soft-info">@TempData["GetMediumTicket"]</span>
+                            </li>
+                            <li class="legend-item">
+                                <div class="legend-label"><span class="legend-dot dot-success"></span>Low</div>
+                                <span class="badge badge-soft-success">@TempData["GetLowTicket"]</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ticket List by Category -->
+            <div class="col-md-4 mb-3">
+                <div class="card"
+                     style="border: 1px solid #ededed; box-shadow: 0 4px 12px rgba(0,0,0,0.02); border-radius: 12px; height: 100%;">
+                    <div class="card-header bg-white"
+                         style="border-bottom: 1px solid #ededed; padding: 20px 24px;">
+                        <h4 class="card-title mb-0" style="font-weight: 700; color: #1D2A3A; font-size: 16px;">
+                            Tickets by Category
+                        </h4>
+                    </div>
+                    <div class="card-body" style="padding: 20px 24px;overflow:auto; max-height:250px;">
+                        <ul class="list-group list-group-flush">
+
+                            @foreach (var item in ViewBag.CategoryName)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center"
+                                    style="padding: 12px 0; border-bottom: 1px solid #f3f4f6;">
+                                    <div class="d-flex align-items-center">
+                                        <div style="width: 32px; height: 32px; border-radius: 8px; background-color: rgba(13, 110, 253, 0.1); color: #0d6efd; display: flex; align-items: center; justify-content: center; margin-right: 12px;">
+
+                                            @*<i class="bi bi-person-badge-fill " style="font-size: 16px;"></i>*@
+                                            <i  class="fa-solid fa-id-badge" style="font-size: 16px;"></i>
+                                        </div>
+                                        <span style="font-weight: 500; color: #4B5563; font-size: 14px;">
+                                            @item.TicketCategoryName
+                                        </span>
+                                    </div>
+                                    <span style="font-weight: 600; color: #1D2A3A; font-size: 14px;">@item.Total</span>
+                                </li>
+                            }
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Manager Dashboard Row 3: Trends & Problems -->
+        <div class="row">
+            <!-- Ticket Volume Trends -->
+            <div class="col-xl-8 col-lg-7 d-flex mb-4">
+                <div class="card w-100 card-dashboard-chart">
+                    <div class="card-header">
+                        <h4 class="card-title">
+                            Ticket Volume Trends (Last 8 Days)
+                        </h4>
+                    </div>
+                    <div class="card-body card-premium-body">
+                        <canvas id="ticketTrendChart" style="max-height: 250px; width: 100%;"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Problem Categories -->
+            <div class="col-xl-4 col-lg-5 d-flex mb-4">
+                <div class="card w-100 card-dashboard-chart">
+                    <div class="card-header">
+                        <h4 class="card-title">
+                            Top Problem Categories
+                        </h4>
+                    </div>
+                    <div class="card-body card-premium-body">
+                        <ul class="list-group list-group-flush">
+                            @foreach (var item in ViewBag.TopProblemCategoryName)
+                            {
+
+                                <li class="list-group-item d-flex justify-content-between align-items-center legend-item">
+                                    <div class="d-flex flex-column">
+                                        <span class="item-stacked-title">@item.TicketCategoryName</span>
+                                    </div>
+                                    <span class="badge detached-badge-high" style="font-size: 14px;">@item.Total</span>
+                                </li>
+
+                            }
+
+                      
+                         </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Manager Dashboard Row 4: Agent & Team Performance -->
+        @*<div class="row">*@
+            <!-- Agent Workload -->
+            @*<div class="col-xl-6 col-lg-6 d-flex mb-3">
+                <div class="card w-100 card-dashboard-chart">
+                    <div class="card-header">
+                        <h4 class="card-title">
+                            Agent Workload Overview
+                        </h4>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0 premium-table">
+                                <thead>
+                                    <tr>
+                                        <th>Agent</th>
+                                        <th class="text-center">Open Tickets</th>
+                                        <th>Workload Load</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-initials avatar-primary">MA</div>
+                                                <span class="item-stacked-title mb-0">Mark Adams</span>
+                                            </div>
+                                        </td>
+                                        <td class="text-center font-weight-600">14</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="progress progress-bar-custom">
+                                                    <div class="progress-bar bg-danger" role="progressbar"
+                                                         style="width: 90%" aria-valuenow="90" aria-valuemin="0"
+                                                         aria-valuemax="100"></div>
+                                                </div>
+                                                <span class="text-progress-pct text-danger">90%</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-initials avatar-purple">SJ</div>
+                                                <span class="item-stacked-title mb-0">Sarah Jenkins</span>
+                                            </div>
+                                        </td>
+                                        <td class="text-center font-weight-600">8</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="progress progress-bar-custom">
+                                                    <div class="progress-bar bg-warning" role="progressbar"
+                                                         style="width: 60%" aria-valuenow="60" aria-valuemin="0"
+                                                         aria-valuemax="100"></div>
+                                                </div>
+                                                <span class="text-progress-pct text-warning">60%</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="no-border-bottom">
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-initials avatar-success">DP</div>
+                                                <span class="item-stacked-title mb-0">David Patel</span>
+                                            </div>
+                                        </td>
+                                        <td class="text-center font-weight-600 no-border-bottom">5</td>
+                                        <td class="no-border-bottom">
+                                            <div class="d-flex align-items-center">
+                                                <div class="progress progress-bar-custom">
+                                                    <div class="progress-bar bg-success" role="progressbar"
+                                                         style="width: 35%" aria-valuenow="35" aria-valuemin="0"
+                                                         aria-valuemax="100"></div>
+                                                </div>
+                                                <span class="text-progress-pct text-success">35%</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>*@
+
+            <!-- Team Performance -->
+            @*<div class="col-xl-6 col-lg-6 d-flex mb-4">
+                <div class="card w-100 card-dashboard-chart">
+                    <div class="card-header">
+                        <h4 class="card-title">
+                            Team SLA Performance
+                        </h4>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0 premium-table">
+                                <thead>
+                                    <tr>
+                                        <th>Department</th>
+                                        <th class="text-center">Avg Resolution</th>
+                                        <th>SLA Adherence</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="font-bold-heavy">IT Support</td>
+                                        <td class="text-center font-bold-soft">4.2 Hrs</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="progress progress-bar-custom">
+                                                    <div class="progress-bar bg-success" role="progressbar"
+                                                         style="width: 95%" aria-valuenow="95" aria-valuemin="0"
+                                                         aria-valuemax="100"></div>
+                                                </div>
+                                                <span class="text-progress-pct text-success">95%</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-bold-heavy">HR & Admin</td>
+                                        <td class="text-center font-bold-soft">18.5 Hrs</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="progress progress-bar-custom">
+                                                    <div class="progress-bar bg-warning" role="progressbar"
+                                                         style="width: 82%" aria-valuenow="82" aria-valuemin="0"
+                                                         aria-valuemax="100"></div>
+                                                </div>
+                                                <span class="text-progress-pct text-warning">82%</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-bold-heavy no-border-bottom">Finance</td>
+                                        <td class="text-center font-bold-soft no-border-bottom">24.0 Hrs</td>
+                                        <td class="no-border-bottom">
+                                            <div class="d-flex align-items-center">
+                                                <div class="progress progress-bar-custom">
+                                                    <div class="progress-bar bg-danger" role="progressbar"
+                                                         style="width: 76%" aria-valuenow="76" aria-valuemin="0"
+                                                         aria-valuemax="100"></div>
+                                                </div>
+                                                <span class="text-progress-pct text-danger">76%</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>*@
+
+        <!-- Manager Dashboard Row 5: Needs Response & Due Today -->
+        <div class="row">
+            <!-- Needs to Respond Today -->
+            <div class="col-xl-6 col-lg-6 d-flex mb-2">
+                <div class="card card-list-container">
+
+                    @{
+                        var ResponseTickets = ViewBag.DueTodayResponse as IEnumerable<dynamic>;
+                        var ResponseTicketCount = ResponseTickets != null ? ResponseTickets.Count() : 0;
+                    }
+
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center border-light p-4">
+                        <h4 class="card-title mb-0 font-bold-heavy font-size-16">
+                            <i class="fa-solid fa-reply text-warning me-2"></i> 
+                            Needs Response Today
+                        </h4>
+                        <span class="badge badge-soft-warning rounded-pill">@ResponseTicketCount Tickets</span>
+                    </div>
+
+                    <div class="card-body p-0">
+                        <ul class="list-group list-group-flush">
+
+                           @if (ResponseTickets != null && ResponseTickets.Any())
+                            {
+                           foreach (var T1 in ResponseTickets)
+                             {
+                              <li class="list-group-item d-flex justify-content-between align-items-start list-item-premium">
+                                <div class="ms-2 me-auto">
+                                    <div class="list-item-title">
+                                        @T1.EmployeeNo: @T1.TicketRaiseTitle
+                                    </div>
+                                    <div class="list-item-subtitle">
+                                        <i class="fa-regular fa-clock me-1"></i>Waiting
+                                        for @T1.HoursRemaining hours
+                                    </div>
+                                </div>
+
+
+                                @*<button class="btn btn-sm btn-outline-primary btn-premium-action">Respond</button>*@
+
+                                  <div>
+                                      <a onclick="ViewTicketRaise('@T1.TicketRaiseID_Encrypted','@T1.TicketRaiseID')"
+                                         id="btnTicketRaiseView"
+                                         style="cursor:pointer;">
+                                          <button class="btn btn-sm btn-outline-primary btn-premium-action">Respond</button>
+                                      </a>
+                                  </div>
+
+                            </li>
+                         }
+                           }
+                         
+                          
+                         </ul>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Due Today List -->
+
+
+            <div class="col-xl-6 col-lg-6 d-flex mb-2">
+                <div class="card card-list-container">
+
+
+                    @{
+                        var tickets = ViewBag.DueTodayResolve as IEnumerable<dynamic>;
+                           var ticketCount = tickets != null ? tickets.Count() : 0;
+                           }
+
+
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center border-light p-4">
+                        <h4 class="card-title mb-0 font-bold-heavy font-size-16">
+                            <i class="fa-solid fa-calendar-day text-danger me-2"></i> Due Today
+                        </h4>
+                        <span class="badge badge-soft-danger rounded-pill">@ticketCount Tickets</span>
+                    </div>
+                   
+                     <div class="card-body p-0">
+
+                        
+                        <ul class="list-group list-group-flush">
+
+                        @if (tickets != null && tickets.Any())
+                        {
+                            foreach (var ticket in tickets)
+                            {
+
+                            <li class="list-group-item d-flex justify-content-between align-items-start list-item-premium">
+                                <div class="ms-2 me-auto">
+                                    
+                                    <div class="list-item-title">
+                                       <i class="fas fa-circle"></i>
+                                    @ticket.EmployeeNo: @ticket.TicketRaiseTitle</div>
+                                    <div class="list-item-subtitle text-danger font-bold-soft">
+                                        <i class="fa-solid fa-hourglass-half me-1"></i>Due in @ticket.HoursRemaining hours
+                                    </div>
+                                </div>
+                                @*<div class="d-flex align-items-center">
+                                    <div class="avatar-initials avatar-primary" style="font-size: 20px;"
+                                         title="Assigned to Mark Adams">@ticket.ShortForm</div>
+                                </div>*@
+                            </li>
+
+                            }
+
+
+                            <!-- Placeholder to fill space equivalent to 3 items -->
+                            @*<li class="list-group-item d-flex justify-content-center align-items-center p-4 no-border-bottom"
+                                style="background-color: #fcfcfd;">
+                                <span class="text-muted-small" style="font-style: italic;">
+                                    No more tickets due
+                                    today
+                                </span>
+                            </li>*@
+                        }
+
+
+                        else
+                        {
+                            <li class="list-group-item d-flex justify-content-center align-items-center p-4 no-border-bottom"
+                                style="background-color: #fcfcfd;">
+                                <span class="text-muted-small" style="font-style: italic;">
+                                    No tickets due today
+                                </span>
+                            </li>
+                        }
+
+                        </ul>
+                    </div>
+
+
+                </div>
+            </div>
+      
+          </div>
+
+      
+
+        <!-- Recent Tickets List Table (Independent block for easy detachment) -->
+
+        <div class="row">
+            <div class="col-12 mb-3">
+                <div class="detached-ticket-card card" >
+
+
+
+                    <div class="detached-ticket-header card-header">
+                        <h4 class="detached-ticket-title"> Ticket List</h4>
+                        <div class="d-flex gap-3">
+                            @*<a href="javascript:void(0);" class="detached-ticket-btn"
+                               style="background-color: #0d6efd; color: #fff; border-color: #0d6efd; margin-right: 8px;">
+                                <i class="f
+                                a-solid fa-plus" style="margin-right: 4px;"></i> Create Ticket
+                            </a>*@
+
+                        
+
+                            <select id="ddlPriority" name="Priority"
+                                    class="detached-ticket-btn form-control form-select"
+                                    onchange="FilterPriority()">
+                                <option value="" selected>All</option>
+                                <option value="Critical">Critical</option>
+                                <option value="High">High</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Low">Low</option>
+                            </select>
+
+                            @*<a href="javascript:void(0);" class="detached-ticket-btn text-nowrap">View All Escalated</a>*@
+                            <a href="@Url.Action("ESS_Ticket_TicketRaisedList","ESS_Ticket_TicketRaisedList",new { status = "Escalated" })"
+                               class="detached-ticket-btn text-nowrap">
+                                View All Escalated
+                            </a>
+                        </div>
+                    </div>
+                
+               
+                    <div class="detached-ticket-body card-body">
+                        <table class="detached-ticket-table">
+                            <thead>
+                                <tr>
+
+                            @if (Request.QueryString["status"] != "Escalated")
+                              {
+                                    <th class="fixed-side text-center">View</th>
+                                    <th class="fixed-side text-center">View History</th>
+                              }
+                                    <th>Doc No</th>
+                                    <th>Date</th>
+                                    <th>Ticket Title</th>
+                                    <th>Category</th>
+                                    <th>Ticket Raised By</th>
+                                    <th>Priority</th>
+                                    <th style="text-align: center;">Status</th>
+                                    <th style="text-align: center;">Attachment</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                               @foreach (var d in ViewBag.GetTicketRaiseList)
+                               {
+                                     <tr>
+
+                                  @if (Request.QueryString["status"] != "Escalated")
+                                    {
+
+                                         <td class="text-center">
+                                             <a onclick="ViewTicketRaise('@d.TicketRaiseID_Encrypted','@d.TicketRaiseID')"
+                                                id="btnTicketRaiseView"
+                                                style="cursor:pointer;">
+                                                 <i class="fa-solid fa-eye text-success fa-lg"></i>
+                                             </a>
+                                         </td>
+
+                                         <td class="text-center">
+                                             <a onclick="ViewTicketSolutionHistory('@d.TicketRaiseID')" id="btnTicketSolutionHistory" style="cursor:pointer;">
+                                                 <i class="fa-solid fa-eye text-success fa-lg"></i>
+                                             </a>
+                                         </td>
+                                   }
+                                        <td class="text-center">@d.DocNo</td>
+                                        <td>@d.DocDate</td>
+                                        <td>@d.TicketRaiseTitle</td>
+                                        <td>@d.TicketCategoryName</td>
+                                        <td>@d.TicketRaiseBy</td>
+                                        <td class="text-center">@d.Priority</td>
+                                        <td class="text-center">@d.ApprovalStatus</td>
+                                         <td class="text-center">
+                                             @*<span class="detached-badge detached-badge-critical  mx-auto">*@
+                                                 @if (d.AttachFile != "No")
+                                                 {
+                                                     <a href="@Url.Action("DownloadFile", "ESS_Ticket_TicketRaisedList",
+                                                               new { FilePath = d.AttachFile })"
+                                                        class="text-primary"
+                                                        title="Download File">
+                                                         <i class="fa-solid fa-download fa-lg"></i>
+                                                     </a>
+                                                 }
+                                                 else
+                                                 {
+                                                     <div style="display:flex; justify-content:center; align-items:center;">
+                                                         <i class="fa fa-times" style="color:red;"></i>
+                                                     </div>
+                                                 }
+                                             @*</span>*@
+                                         </td>
+                                    </tr>
+                                }
+                            </tbody>
+
+
+
+
+                        </table>
+                    </div>
+                
+                 </div>
+            </div>
+        </div>
+
+        <!-- /Page Wrapper -->
+
+
+
+    </div>
+
+</div>
+
+
+<script>
+function FilterPriority() {
+    debugger
+    var selectedPriority = document.getElementById("ddlPriority").value.toLowerCase();
+    var table = document.querySelector(".detached-ticket-table");
+    var rows = table.getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+
+    for (var i = 0; i < rows.length; i++) {
+
+        var priorityCell = rows[i].getElementsByTagName("td")[7]; // Priority column index
+
+        if (priorityCell) {
+            var priorityText = priorityCell.textContent || priorityCell.innerText;
+            priorityText = priorityText.toLowerCase();
+
+            if (selectedPriority == "" || priorityText == selectedPriority) {
+                rows[i].style.display = "";
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+    }
+}
+</script>
+
+<script>
+    $(document).ready(function () {
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+    });
+</script>
+
+<script>
+    @*function ViewTicketRaise(TicketCategoryID,TicketRaiseID) {
+        var url = '@Url.Action("ESS_Ticket_TicketSolution", "ESS_Ticket_TicketSolution")?TicketCategoryID=' + TicketCategoryID + '&TicketRaiseID=' + TicketRaiseID;
+        window.location.href = url;
+    }*@
+
+    function ViewTicketRaise(TicketRaiseID_Encrypted,TicketRaiseID) {
+        debugger
+        var url = '@Url.Action("ViewTicketSolution", "ESS_Ticket_TicketRaisedList")?TicketRaiseID_Encrypted=' + TicketRaiseID_Encrypted + '&TicketRaiseID='+ TicketRaiseID;
+        window.location.href = url;
+    }
+
+    function ViewTicketSolutionHistory(TicketRaiseID) {
+        var url = '@Url.Action("ViewTicketSolutionHistoryList", "ESS_Ticket_TicketRaisedList")?TicketRaiseID=' + TicketRaiseID;
+        window.location.href = url;
+    }
+
+
+    @*function DownloadAttachment(TicketRaiseID_Encrypted) {
+        var url = '@Url.Action("DownloadFile", "ESS_Ticket_TicketRaise")?TicketRaiseID_Encrypted=' + TicketRaiseID_Encrypted;
+        window.location.href = url;
+    }*@
+
+    function DeleteTicketRaise(TicketRaiseID) {
+        const DeleteButtons = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        DeleteButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+            allowOutsideClick: () => {
+                const popup = Swal.getPopup()
+                popup.classList.remove('swal2-show')
+                setTimeout(() => {
+                    popup.classList.add('animate__animated', 'animate__headShake')
+                })
+                setTimeout(() => {
+                    popup.classList.remove('animate__animated', 'animate__headShake')
+                }, 500)
+                return false
+            }
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '@Url.Action("Delete", "ESS_Ticket_TicketRaise")?TicketRaiseID=' + TicketRaiseID;
+
+            } else if (
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+
+            }
+        })
+    }
+
+</script>
+
+    
+ <!-- Chart JS API (CDN) -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+            document.addEventListener("DOMContentLoaded", function () {
+                // Common options for Donut Charts
+                const donutOptions = {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '75%',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return ' ' + context.label + ': ' + context.parsed + ' Tickets';
+                                }
+                            }
+                        }
+                    }
+                };
+
+                // Initialize Status Ticket Chart
+
+                var pending = @TempData["GetOpenTickets"];
+                var inProgress = @TempData["GetInProcessTickets"];
+                var escalated = @TempData["GetEscalatedTicket"];
+                var closed = @TempData["GetResolvedTickets"];
+
+                var sChartCtx = document.getElementById('statusTicketChart');
+                if (sChartCtx) {
+                    new Chart(sChartCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Pending', 'In Progress', 'Escalated','Closed'],
+                            datasets: [{
+                                data:  [pending, inProgress, escalated, closed],
+                                // backgroundColor: ['#ffc107', '#0dcaf0', '#0d6efd', '#fd7e14', '#198754', '#6c757d'],
+                                backgroundColor: ['#ffc107', '#0d6efd', '#fd7e14', '#6c757d'],
+                                borderWidth: 0,
+                                hoverOffset: 4
+                            }]
+                        },
+                        options: donutOptions
+                    });
+                }
+
+                // Initialize Priority Ticket Chart
+
+                var Critical = @TempData["GetCriticalTicket"];
+                var High = @TempData["GetHighTicket"];
+                var Medium = @TempData["GetMediumTicket"];
+                var Low = @TempData["GetLowTicket"];
+
+
+                var pChartCtx = document.getElementById('priorityTicketChart');
+                if (pChartCtx) {
+                    new Chart(pChartCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Critical','High', 'Medium', 'Low'],
+                            datasets: [{
+                                data: [Critical,High,Medium,Low],
+                                backgroundColor: ['#dc3545', '#ff9800', '#0dcaf0','#198754'],
+                                borderWidth: 0,
+                                hoverOffset: 4
+                            }]
+                        },
+                        options: donutOptions
+                    });
+                }
+
+                // Initialize Category Donut Chart
+                var cChartCtx = document.getElementById('categoryDonutChart');
+                if (cChartCtx) {
+                    new Chart(cChartCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['IT Support', 'Payroll', 'Leave', 'HR Queries', 'Hardware', 'Software'],
+                            datasets: [{
+                                data: [32, 15, 10, 14, 8, 12],
+                                backgroundColor: ['#0d6efd', '#6f42c1', '#e83e8c', '#17a2b8', '#20c997', '#fd7e14'],
+                                borderWidth: 0,
+                                hoverOffset: 4
+                            }]
+                        },
+                        options: donutOptions
+                    });
+                }
+
+
+
+                var ticketTrendData = @Html.Raw(JsonConvert.SerializeObject(ViewBag.Last8DayResponse));
+                var ticketTrendCreateData=@Html.Raw(JsonConvert.SerializeObject(ViewBag.Last8DayCreated));
+
+                var labels = [];
+                var resolvedData = [];
+                var CreatedData=[];
+
+                if (ticketTrendData != null) {
+
+                    ticketTrendData.forEach(function (item) {
+                        labels.push(item.DayName);
+                        resolvedData.push(item.ResolvedTickets);
+                    });
+                }
+
+
+                if (ticketTrendCreateData != null) {
+
+                    ticketTrendCreateData.forEach(function (item) {
+                        //labels.push(item.DayName);
+                        CreatedData.push(item.CreatedTickets);
+                    });
+                }
+
+
+                // Initialize Ticket Trend Line Chart
+                var trendCtx = document.getElementById('ticketTrendChart');
+
+
+                if (trendCtx) {
+                    new Chart(trendCtx, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [
+                                {
+                                    label: 'Created Tickets',
+                                    data:CreatedData,
+                                    borderColor: '#dc3545',
+                                    backgroundColor: 'rgba(220, 53, 69, 0.05)',
+                                    borderWidth: 2,
+                                    tension: 0.4,
+                                    fill: true,
+                                    pointBackgroundColor: '#dc3545'
+                                },
+                                {
+                                    label: 'Resolved Tickets',
+                                    data:  resolvedData,
+                                    borderColor: '#198754',
+                                    backgroundColor: 'rgba(25, 135, 84, 0.05)',
+                                    borderWidth: 2,
+                                    tension: 0.4,
+                                    fill: true,
+                                    pointBackgroundColor: '#198754'
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                    labels: { usePointStyle: true, boxWidth: 8 }
+                                }
+                            },
+                            scales: {
+                                y: { beginAtZero: true, grid: { color: '#f3f4f6', drawBorder: false } },
+                                x: { grid: { display: false, drawBorder: false } }
+                            }
+                        }
+                    });
+                }
+            });
+</script>

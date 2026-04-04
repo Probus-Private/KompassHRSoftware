@@ -1,0 +1,581 @@
+﻿
+@model KompassHR.Areas.ESS.Models.ESS_HRSpace.Employee_AccidentRegister
+
+@{
+    ViewBag.Title = "ESS_HRSpace_AccidentRegistration";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+
+<style>
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    .card-row-title {
+        color: #e63c3c;
+        font-size: 18px;
+        font-weight: 600;
+        text-transform: capitalize;
+        border-bottom: #009ce7 1px solid;
+    }
+
+    .note-editable {
+        border: groove;
+        font-size: 16px;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+               Accident Registration
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_HRSpaceMenu", "ESS_HRSpaceMenu",  new {id = 41, ScreenId=651, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading">
+                    <h4 class="panel-title">Accident Registration- @ViewBag.AddUpdateTitle</h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Accident Registration!
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "ESS_HRSpace_AccidentRegistration", new { area = "ESS" })' id="SaveAccidentRegistration" method="post" >
+                                @Html.HiddenFor(model => model.AccidentRegisterId_Encrypted, new { id = "txtAccidentRegisterId_Encrypted" })
+                                @Html.HiddenFor(model => model.AccidentRegisterId, new { id = "txtAccidentRegisterId" })
+
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-2">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                               Accident No.
+                                                <span class="important">*</span>
+                                            </label>
+                                        
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.AccidentNo, new { @class = "form-control", id = "txtAccidentNo", autocomplete = "Off", name = "AccidentNo", Value = @ViewBag.AccidentNo, @readonly = "readonly" })
+                                            </div>
+                                        </div>
+                                    </div>                                
+
+                                </div>
+
+                                <div class="row">
+                                    @*<div class="col-md-6 mb-2">
+                                        <div class="row mb-12px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Accident Time
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.AccidentTime,"{0:HH\\:mm}",  new { @class = "form-control", id = "txtAccidentTime", type = "time" })
+                                            </div>
+                                        </div>
+                                    </div>*@
+
+                                    <div class="col-md-6 mb-2">
+                                        <div class="row mb-12px">
+                                            <label class="form-label col-form-label col-md-4">
+                                               Company
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.Company, new SelectList(ViewBag.CompanyName, "Id", "Name"), new { @class = "form-select", type = "text", name = "Company", id = "ddlCompany", onchange = "OnCompanyChange()" })
+                                                <span id="ErrorddlCompanyId" class="Error"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 mb-2">
+                                        <div class="row mb-12px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Buisness Unit
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.BusinessUnit, new SelectList(ViewBag.BUName, "Id", "Name"), new { @class = "form-select", type = "text", name = "BusinessUnit", id = "ddlBusinessUnit", onchange = "OnBUChange()" })
+                                                <span id="ErrorddlBranchId" class="Error"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-2">
+                                        <div class="row mb-12px">
+                                            <label class="form-label col-form-label col-md-4">
+                                               SubUnit
+                                                @*<span class="important">*</span>*@
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.SubUnit, new SelectList(ViewBag.SubUnit, "Id", "Name"), new { @class = "form-select", type = "text", name = "SubUnit", id = "ddlSubUnit" })
+                                                <span id="ErrorddlBranchId" class="Error"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <div class="row mb-12px">
+                                            <label class="form-label col-form-label col-md-4">
+                                               Shift
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.Shift, new SelectList(ViewBag.Shift, "Id", "Name"), new { @class = "form-select", id = "ddlShift", type = "text", name = "Shift" })
+
+                                                <span id="ErrorddlBranchId" class="Error"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-2">
+                                        <div class="row mb-12px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Date of Notice
+                                                <span class="important">*</span>
+                                            </label>
+
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.DateOfEntry, new { @class = "form-control", id = "txtDateOfEntry", type = "date" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-2">
+                                        <div class="row mb-12px">
+                                            <label class="form-label col-form-label col-md-4">
+                                               Time Of Notice
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.AccidentTime, "{0:HH\\:mm}", new { @class = "form-control", id = "txtAccidentTime", type = "time" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                     <div class="row">
+                                        <div class="col-md-12 mb-2">
+                                            <div class="row mb-2">
+                                                <label class="form-label col-form-label col-md-2">
+                                                    Short Description
+                                                </label>
+                                                <div class="col-md-10">
+                                                    @Html.TextBoxFor(model => model.Description, new { @class = "form-control", id = "txtDescription", autocomplete = "Off", name = "Description"})
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row mb-2">
+                                                <label class="form-label col-form-label col-md-2">
+                                                    Cause
+                                                </label>
+                                                <div class="col-md-10">
+                                                    @Html.TextBoxFor(model => model.Cause, new { @class = "form-control", id = "txtCause", autocomplete = "Off", name = "Cause" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row mb-2">
+                                                <label class="form-label col-form-label col-md-2">
+                                                    Nature
+                                                </label>
+                                                <div class="col-md-10">
+                                                    @Html.TextBoxFor(model => model.Nature, new { @class = "form-control", id = "txtNature", autocomplete = "Off", name = "Nature" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row mb-2">
+                                                <label class="form-label col-form-label col-md-2">
+                                                    Immediate Correction Action
+                                                </label>
+                                                <div class="col-md-10">
+                                                    @Html.TextBoxFor(model => model.ImmediateCorrectionAction, new { @class = "form-control", id = "txtImmediateCorrectionAction", autocomplete = "Off", name = "ImmediateCorrectionAction" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row mb-2">
+                                                <label class="form-label col-form-label col-md-2">
+                                                    Hospital Name
+                                                </label>
+                                                <div class="col-md-10">
+                                                    @Html.TextBoxFor(model => model.HospitalName, new { @class = "form-control", id = "txtHospitalName", autocomplete = "Off", name = "HospitalName" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row mb-2">
+                                                <label class="form-label col-form-label col-md-2">
+                                                    Was Anybody Injured
+                                                </label>
+                                                <div class="col-md-10">
+                                                    @Html.TextBoxFor(model => model.WasAnybodyInjured, new { @class = "form-control", id = "txtWasAnybodyInjured", autocomplete = "Off", name = "WasAnybodyInjured" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row mb-2">
+                                                <label class="form-label col-form-label col-md-2">
+                                                    Was Anybody Involved
+                                                </label>
+                                                <div class="col-md-10">
+                                                    @Html.TextBoxFor(model => model.WasAnybodyInvolved, new { @class = "form-control", id = "txtWasAnybodyInvolved", autocomplete = "Off", name = "WasAnybodyInvolved" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row mb-2">
+                                                <label class="form-label col-form-label col-md-2">
+                                                    Where There is Any Witness
+                                                </label>
+                                                <div class="col-md-10">
+                                                    @Html.TextBoxFor(model => model.Witness, new { @class = "form-control", id = "txtWitness", autocomplete = "Off", name = "Witness" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row mb-2">
+                                                <label class="form-label col-form-label col-md-2">
+                                                    Accident Book By
+                                                </label>
+                                                <div class="col-md-10">
+                                                    @Html.TextBoxFor(model => model.AccidentBookedBy, new { @class = "form-control", id = "txtAccidentBookedBy", autocomplete = "Off", name = "AccidentBookedBy" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="row">
+                                        <div class="LastShortLeaveBx">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="BtnBx">
+                                                        <div>
+                                                            <button type="button" id="btnSubmit"
+                                                                    class="btn btn-primary btn-sm">
+                                                                <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                            </button>
+                                                            <a href="@Url.Action("GetList", "ESS_HRSpace_AccidentRegistration", new { area = "ESS" })">
+                                                                <button type="button" class="btn btn-danger btn-sm" id="btnDesignationGetList">
+                                                                    <i class="fa-solid fa-share-from-square"></i> List
+                                                                </button>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+</form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END panel -->
+    </div>
+</div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+
+        debugger
+        var DateOfEntry = @Html.Raw(Json.Encode(TempData["DateOfEntry"]));
+        $("#txtDateOfEntry").val(DateOfEntry);
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        // return false
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+
+        $("#formReset").click(function () {
+            $("#SaveAccidentRegistration")[0].reset();
+        });
+
+    });
+</script>
+
+
+<script>
+    jQuery.validator.addMethod(
+    "regex",
+     function(value, element, regexp) {
+         if (regexp.constructor != RegExp)
+             regexp = new RegExp(regexp);
+         else if (regexp.global)
+             regexp.lastIndex = 0;
+         return this.optional(element) || regexp.test(value);
+     },"erreur expression reguliere"
+  );
+
+    $('#SaveAccidentRegistration').validate({
+        rules: {
+            AccidentNo: {
+                required: true,
+            },
+            DateOfEntry:{
+                required: true,
+            },
+
+            BusinessUnit: {
+                required: true,
+            },
+            Company:{
+                required: true,
+            }
+          
+        },
+        messages: {
+              AccidentNo: {
+                  required: "Accident No is required",
+
+              },
+              DateOfEntry:{
+                  required: "DateOfEntry is required",
+              },
+              BusinessUnit: {
+                  required: "BusinessUnit name is required",
+              },
+              Company:{
+                  required: "Company is required",
+              }
+         
+        },
+    });
+
+    var form = $("#SaveAccidentRegistration");
+    form.validate();
+    $("#btnSubmit").click(function () {
+        debugger;
+        form.valid();
+        if(form.valid()==false)
+        {
+            $("#txtDateOfEntry").removeClass('error');
+            return false;
+        }
+        var AccidentNo = $("#txtAccidentNo").val();
+        var AccidentRegisterId_Encrypted = $("#txtAccidentRegisterId_Encrypted").val();
+        var AccidentRegisterId=$("#txtAccidentRegisterId").val();
+  
+
+        $.ajax({
+            url:"IsAccidentRegisterExists",
+            method:"get",
+            data: {
+                AccidentNo: AccidentNo,
+                AccidentRegisterId_Encrypted: AccidentRegisterId_Encrypted,
+                AccidentRegisterId:AccidentRegisterId
+            },
+            success:function(response){
+                debugger;
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon=="error") {
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                        }
+                    }
+                }
+                else{
+                    $("#SaveAccidentRegistration").submit();
+                }
+            }
+        });
+    });
+</script>
+
+<script>
+    function OnCompanyChange() {
+        debugger
+        var Company = document.getElementById("ddlCompany").value;
+
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("GetBuisnessUnit", "ESS_HRSpace_AccidentRegistration")',
+            data: { Company: Company },
+            success: function (data) {
+                var $BusinessUnitDropdown = $("#ddlBusinessUnit");
+                $BusinessUnitDropdown.empty();
+
+                if (data && data.length > 0) {
+                    $BusinessUnitDropdown.append("<option value=''>--Select--</option>");
+                    $.each(data, function (i, module) {
+                        $BusinessUnitDropdown.append(
+                            $("<option>").val(module.Id).text(module.Name)
+                        );
+                    });
+                } else {
+                    $BusinessUnitDropdown.append("<option>--Select--</option>");
+                }
+            },
+            error: function () {
+                console.error("Failed to fetch modules.");
+                $("#ddlBusinessUnit").empty().append("<option>Error loading modules</option>");
+            }
+        });
+    }
+</script>
+
+<script>
+    function OnBUChange() {
+        debugger
+        var BusinessUnit = document.getElementById("ddlBusinessUnit").value;
+
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("GetSubBuisnessUnit", "ESS_HRSpace_AccidentRegistration")',
+            data: { BusinessUnit: BusinessUnit },
+            success: function (data) {
+                var $SubUnitDropdown = $("#ddlSubUnit");
+                $SubUnitDropdown.empty();
+
+                if (data && data.length > 0) {
+                    $SubUnitDropdown.append("<option value=''>--Select--</option>");
+                    $.each(data, function (i, module) {
+                        $SubUnitDropdown.append(
+                            $("<option>").val(module.Id).text(module.Name)
+                        );
+                    });
+                } else {
+                    $SubUnitDropdown.append("<option>--Select--</option>");
+                }
+            },
+            error: function () {
+                console.error("Failed to fetch modules.");
+                $("#ddlSubUnit").empty().append("<option>Error loading modules</option>");
+            }
+        });
+    }
+</script>
+
+
+<script>
+    function OnBUChange() {
+        debugger
+        var BusinessUnit = document.getElementById("ddlBusinessUnit").value;
+
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("GetShift", "ESS_HRSpace_AccidentRegistration")',
+            data: { BusinessUnit: BusinessUnit },
+            success: function (data) {
+                var $ShiftDropdown = $("#ddlShift");
+                $ShiftDropdown.empty();
+
+                if (data && data.length > 0) {
+                    $ShiftDropdown.append("<option value=''>--Select--</option>");
+                    $.each(data, function (i, module) {
+                        $ShiftDropdown.append(
+                            $("<option>").val(module.Id).text(module.Name)
+                        );
+                    });
+                } else {
+                    $ShiftDropdown.append("<option>--Select--</option>");
+                }
+            },
+            error: function () {
+                console.error("Failed to fetch modules.");
+                $("#ddlShift").empty().append("<option>Error loading modules</option>");
+            }
+        });
+    }
+</script>

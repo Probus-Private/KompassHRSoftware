@@ -1,0 +1,894 @@
+﻿@model KompassHR.Areas.Module.Models.Module_Preboarding.Preboarding_Mas_Employee
+@{
+    ViewBag.Title = "Module_Preboarding_CreateLink";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+
+<style>
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    .card-row-title {
+        color: #e63c3c;
+        font-size: 18px;
+        font-weight: 600;
+        text-transform: capitalize;
+        border-bottom: #009ce7 1px solid;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Preboarding Create Link
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Module_Preboarding_Menu", "Module_Preboarding_Menu", new {id = 2, ScreenId=137, area = "Module" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                @*<div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                        <h4 class="panel-title"> Preboarding Create Link - <b>@ViewBag.AddUpdateTitle</b></h4>
+                        <div class="panel-heading-btn">
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-default"
+                               data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        </div>
+                    </div>*@
+
+
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">@*@i.SET_MODULES.FormName*@Preboarding Create Link - @ViewBag.AddUpdateTitle</h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Configure the system to send automated email notifications to new hires, providing them with the pre-boarding link and any necessary instructions. Include information about the pre-boarding process, the purpose of the portal, and any documents they need to bring or complete.
+
+                    </p>
+                </div>
+                <div class="panel-body" data-scrollbar="false">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "Module_Preboarding_CreateLink", new { area = "Module" })' id="SavePreboardingLink" method="post">
+                                <div class="row mb-15px">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Doc No
+
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.DocNo, new { @class = "form-control", @id = "txtDocNo", @readonly = "readonly", Value = @ViewBag.DocNo.DocNo, Style = "background-color: #e9ecef;" })
+                                                @Html.HiddenFor(model => model.FID_Encrypted, new { @id = "FID_Encrypted" })
+                                                @Html.HiddenFor(model => model.FID, new { @id = "FID" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Doc Date
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.DocDate, new { id = "txtDocDate", name = "DocDate", @class = "form-control", @readonly = "readonly", type = "date", Style = "background-color: #e9ecef;" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Company Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.CmpId, new SelectList(ViewBag.ComapnyProfile, "Id", "Name"), "--Select--", new { id = "ddlCompanyName", @class = "form-control select2", autocomplete = "off", name = "CmpId" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Business Unit
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+
+                                                @Html.DropDownListFor(model => model.BranchID, new SelectList(ViewBag.Location, "Id", "Name"), "--Select--", new { @class = "form-select", type = "text", id = "ddlBuniessUnit", autocomplete = "Off", Required = "", name = "BranchID", @readonly = "true" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-15px">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Candidate Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-2">
+                                                @Html.DropDownListFor(model => model.SalutationName, new List<SelectListItem> {
+                                                new SelectListItem { Text = "Mr.", Value = "Mr." },
+                                                new SelectListItem { Text = "Ms.", Value = "Ms." },
+                                                new SelectListItem { Text = "Mrs.", Value = "Mrs." },
+                                               }, "--Select--", new { @class = "form-control", type = "text", name = "SalutationName", id = "txtSalutationName", autocomplete = "Off" })
+                                            </div>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.EmployeeName, new { id = "txtEmployeeName", name = "EmployeeName", @class = "form-control", type = "text", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Department
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.EmployeeDepartmentId, new SelectList(ViewBag.GetDepartmentName, "Id", "Name"), "--Select--", new { id = "ddlEmployeeDepartmentId", @class = "form-select", autocomplete = "off", name = "EmployeeDepartmentId", @readonly = "true" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Designation
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.EmployeeDesignationId, new SelectList(ViewBag.GetDesignationName, "Id", "Name"), "--Select--", new { @class = "form-select", type = "text", id = "ddlEmployeeDesignationId", autocomplete = "Off", name = "EmployeeDesignationId", @readonly = true })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Grade
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.EmployeeGradeID, new SelectList(ViewBag.GetGradeName, "Id", "Name"), "--Select--", new { id = "ddlEmployeeGradeID", @class = "form-select", autocomplete = "off", name = "EmployeeGradeID", @readonly = "readonly" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-15px">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                PF
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.EM_PF_Applicable, new List<SelectListItem> {
+                                                new SelectListItem { Text = "Not Applicable", Value = "false" },
+                                                new SelectListItem { Text = "Applicable", Value = "true" },
+                                               }, "--Select--", new { @class = "form-select", type = "text", name = "EM_PF_Applicable", id = "txtEM_PF_Applicable" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                ESIC/Insurance
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.ESIC_Insurance, new List<SelectListItem> {
+                                                new SelectListItem { Text = "Not Applicable", Value = "0", Selected=true},
+                                                new SelectListItem { Text = "ESIC", Value = "1" },
+                                                new SelectListItem { Text = "Insurance", Value = "2" },
+
+                                                }, "--Select--", new { @class = "form-select", type = "text", name = "ESIC_Insurance", id = "txtESIC_Insurance", autocomplete = "Off" })
+                                                @Html.ValidationMessageFor(model => model.ESIC_Insurance, "", new { @class = "help-block", @id = "ErrorESIC_Insurance", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Reporting HR
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.ReportingHR, new SelectList(ViewBag.ReportingHR, "Id", "Name"), "--Select--", new { @class = "form-select", id = "ddlReportingHR", autocomplete = "Off", name = "ReportingHR" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Reporting Date
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.JoiningDate, new { id = "dateJoiningDate", name = "JoiningDate", @class = "form-control", type = "date", autocomplete = "Off" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Compulsory Module
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.CompulsoryModuleId, new SelectList(ViewBag.GetCompulsoryModule, "Id", "Name"), "--Select--", new { @class = "form-select", id = "ddlCompulsoryModuleId", autocomplete = "Off", name = "CompulsoryModuleId" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-10px">
+                                    <div class="col-md-12">
+                                        <div class="card-row-title">
+                                            Username And Password
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-15px">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Personal Email Id
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.PersonalEmailID, new { @class = "form-control", type = "text", id = "txtPersonalEmailID", autocomplete = "Off", Required = "", name = "PersonalEmailID" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Password
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.Esspassword, new { id = "txtEsspassword", name = "Esspassword", @class = "form-control", type = "text", autocomplete = "Off", Maxlength = 8, placeholder = "Ex :- Pre@2025", Value = "Pre@2025" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-15px">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Link Expiry Date
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.LinkExpiryDate, new { @class = "form-control", type = "date", id = "txtLink", autocomplete = "Off", name = "LinkExpiryDate" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="LastShortLeaveBx">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="BtnBx">
+                                                            <div>
+                                                                <button type="button" id="btnSubmit"
+                                                                        class="btn btn-primary btn-sm">
+                                                                    <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                                </button>
+                                                                <a href="@Url.Action("GetList", "Module_Preboarding_CreateLink", new { area = "Module" })">
+                                                                    <button type="button" class="btn btn-danger btn-sm" id="btnGetPreboardingCreateLinkList">
+                                                                        <i class="fa-solid fa-share-from-square"></i>List
+                                                                    </button>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+
+<!-- #Start Appprove Reject Modal -dialog -->
+<div class="modal fade" id="myModal" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header bg-black text-white">
+                <h4 class="modal-title">Send Prebording Message</h4>
+                <div class="panel-heading-btn">
+                    <a href="javascript:;" class="btn btn-icon btn-danger btnClear" data-bs-dismiss="modal"
+                       aria-hidden="true">
+                        <i class="fa fa-xmark"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="modal-body">
+                <!-- BEGIN panel -->
+                <div class="modal-body-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <button type="button" id="btnReject" onclick="SendMail()" class="btn btn-primary btn-sm">
+                                        <i class="fa-solid fa-floppy-disk"> </i> Send Mail
+                                    </button>
+                                </div>
+                                <div class="col-md-1">
+                                </div><div class="col-md-3">
+                                    <div class="row">
+                                        <button type="button" id="btnReject" class="btn btn-primary btn-sm">
+                                            <i class="fa-solid fa-floppy-disk"> </i> Send SMS
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="row">
+                                        <button type="button" id="btnReject" class="btn btn-primary btn-sm">
+                                            <i class="fa-solid fa-floppy-disk"> </i>   Whatapp No
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END panel -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #End modal-dialog -->
+
+<script>
+    $(document).ready(function () {
+        debugger;
+        var today = new Date().toISOString().split('T')[0];
+        document.getElementById("txtLink").setAttribute("min", today);
+        //document.getElementById("txtDocDate").setAttribute("min", today);
+        document.getElementById("dateJoiningDate").setAttribute("min", today);
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        $("#ddlReportingHR").select2();
+        $("#ddlEmployeeDepartmentId").select2();
+        $("#ddlEmployeeDesignationId").select2();
+        $("#ddlEmployeeGradeID").select2();
+
+        $("#ddlCompanyName").select2();
+        $("#ddlBuniessUnit").select2();
+        //$("#ddlCompanyName").attr("readonly", true);
+        var OfferLetterGenId_Encrypted = @Html.Raw(Json.Encode(TempData["OfferLetterGenId_Encrypted"]));
+        //if(OfferLetterGenId_Encrypted!="")
+        //{
+        //    $("#ddlCompanyName").select2("readonly", true);
+        //}
+
+        $("#ddlCompanyName").on("change", function () {
+            debugger;
+            $("#ddlBuniessUnit").find("option").remove();
+            var CmpId = $("#ddlCompanyName").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetBusinessUnit", "Module_Preboarding_CreateLink")',
+                //url: 'GetBusinessUnit',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    debugger;
+                    if (data !=null) {
+                        $("#ddlBuniessUnit").append("<option value=0>--Select--</option>");
+                        $.each(data, function(i, p) {
+                            debugger;
+                            $("#ddlBuniessUnit").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                        });
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        })
+
+        debugger;
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $("#myModal").modal('show');
+
+                    } else if (
+                        result.dismiss === Swal.DismissReason.cancel
+                    ) {
+
+                    }
+                })
+            }
+        }
+
+        $("#btnGetPreboardingCreateLinkList").click(function () {
+        window.location.href= '@Url.Action("GetList", "Module_Preboarding_CreateLink")';
+    });
+        var Applicable = @Html.Raw(Json.Encode(TempData["EM_PF_Applicable"]));
+        var ESIC_Insurance = @Html.Raw(Json.Encode(TempData["ESIC_Insurance"]));
+        var ValidDays = @Html.Raw(Json.Encode(TempData["ValidDays"]));
+        debugger;
+        if (Applicable == true) {
+            $("#txtEM_PF_Applicable").val("true");
+        }
+        else if(Applicable == false) {
+            $("#txtEM_PF_Applicable").val("false");
+        }
+
+        if(ESIC_Insurance==0)
+        {
+            $("#txtESIC_Insurance").val(0);
+        }
+        else if(ESIC_Insurance ==1) {
+            $("#txtESIC_Insurance").val(1);
+        }
+        else if(ESIC_Insurance ==2) {
+            $("#txtESIC_Insurance").val(2);
+        }
+
+
+
+        var ValidDays = @Html.Raw(Json.Encode(TempData["ValidDays"]));
+        debugger;
+        var start = new Date(document.getElementById('txtLink').value);
+        var years = start.setDate(start.getDate() + ValidDays);
+        var Fromdatedt =  millisecTodate(years);
+        $("#txtLink").val(Fromdatedt);
+
+
+        var Reporting = @Html.Raw(Json.Encode(ViewBag.ReportingHR));
+        debugger;
+        var Id=Reporting[0].Id;
+        var Name=Reporting[0].Name;
+
+        $("#ddlReportingHR").find("option").remove();
+        $("#ddlReportingHR").append("<option value='" + Id +"'>" + Name +"</option>");
+
+
+        var dt = @Html.Raw(Json.Encode(TempData["DocDate"]));
+        var LinkExpiryDate = @Html.Raw(Json.Encode(TempData["LinkExpiryDate"]));
+        var JoiningDate = @Html.Raw(Json.Encode(TempData["JoiningDate"]));
+        console.log("JoiningDate:", JoiningDate);
+
+        debugger;
+        if(dt == null || dt == "" || LinkExpiryDate==null || LinkExpiryDate=="" ||JoiningDate==null|| JoiningDate=="")
+        {
+            var date = new Date();
+            var dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000 )).toISOString().split("T")[0];
+            $("#txtDocDate").val(dateString);
+            $("#dateJoiningDate").val(dateString);
+            $("#txtLink").val(dateString);
+        }
+        else
+        {
+            debugger
+            var JobdocDatedt =  convertDate(dt);
+            var LinkExpiryDatedt =  convertDate(LinkExpiryDate);
+            var JoiningDatedt =  convertDate1(JoiningDate);
+            $("#txtDocDate").val(JobdocDatedt);
+            $("#dateJoiningDate").val(JoiningDatedt);
+            $("#txtLink").val(LinkExpiryDatedt);
+
+        }
+    });
+</script>
+
+<script>
+    function SendMail() {
+        $.ajax({
+            url: '@Url.Action("SendMail", "Module_Preboarding_CreateLink")',
+          //  url:"SendMail",
+            method:"get",
+            data:{},
+            success:function(response){
+                debugger;
+                var data1=JSON.stringify(response);
+                var data=JSON.parse(data1);
+                var Message1=data.Message;
+                var Icon1=data.Icon;
+                //if(response==true)
+                //{
+                    //var Message1 = "Mail has been send";
+                    //var Icon1 = "success";
+                    if (Message1 != null) {
+                        if (Icon1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                            $("#myModal").modal('hide');
+                        }
+                    }
+
+
+                //else
+                //{
+                //    var Message1 = "Mail is not send";
+                //    var Icon1 = "error";
+                //    if (Message1 != null) {
+                //        if (Icon1 != null) {
+                //            Swal.fire({
+                //                icon: Icon1,
+                //                text: Message1,
+                //                allowOutsideClick: () => {
+                //                    const popup = Swal.getPopup()
+                //                    popup.classList.remove('swal2-show')
+                //                    setTimeout(() => {
+                //                        popup.classList.add('animate__animated', 'animate__headShake')
+                //                    })
+                //                    setTimeout(() => {
+                //                        popup.classList.remove('animate__animated', 'animate__headShake')
+                //                    }, 500)
+                //                    return false
+                //                }
+                //            });
+                //            $("#myModal").modal('hide');
+                //        }
+                //    }
+                //}
+
+            }
+
+        })
+    }
+</script>
+
+<script>
+    //use for add regex function
+      jQuery.validator.addMethod(
+      "regex",
+       function(value, element, regexp) {
+           if (regexp.constructor != RegExp)
+               regexp = new RegExp(regexp);
+           else if (regexp.global)
+               regexp.lastIndex = 0;
+           return this.optional(element) || regexp.test(value);
+       },"erreur expression reguliere"
+    );
+      $('#SavePreboardingLink').validate({
+          rules: {
+              CmpID: {
+                  required: true,
+              },
+              PersonalEmailID: {
+                  required: true,
+                  email:true,
+              },
+              BranchID: {
+                  required: true,
+              },
+              SalutationName: {
+                  required: true,
+              },
+              EmployeeName: {
+                  required: true,
+              },
+              EmployeeDepartmentId: {
+                  required: true,
+              },
+              EmployeeDesignationId: {
+                  required: true,
+              },
+              EmployeeGradeID: {
+                  required: true,
+              },
+
+              PersonalEmailID: {
+                  required: true,
+              },
+              EM_PF_Applicable: {
+                  required: true,
+              },
+              ESIC_Insurance: {
+                  required: true,
+              },
+              EssloginID: {
+                  required: true,
+              },
+              Esspassword: {
+                  required: true,
+              },
+              ReportingHR: {
+                  required: true,
+              },
+              LinkExpiryDate: {
+                  required: true,
+              },
+              CompulsoryModuleId:{
+                  required: true,
+              },
+          },
+          messages: {
+              CmpID: {
+                  required: "Company name is required",
+              },
+              PersonalEmailID: {
+                  required: "Personal email id is required",
+                  email:"Please enter proper email id",
+              },
+              BranchID: {
+                  required: "Business unit is required",
+              },
+              SalutationName: {
+                  required: "Salutation name is required",
+              },
+              EmployeeName: {
+                  required: "Candidate name is required",
+              },
+              EmployeeDepartmentId: {
+                  required: "Department is required",
+              },
+              EmployeeDesignationId: {
+                  required: "Designation is required",
+              },
+              EmployeeGradeID: {
+                  required: "Grade is required",
+              },
+
+              PersonalEmailID: {
+                  required: "Personal emailid is required",
+              },
+              EM_PF_Applicable: {
+                  required: "PF  is required",
+              },
+              ESIC_Insurance: {
+                  required: "Type is required",
+              },
+              EssloginID: {
+                  required: "Username is required",
+              },
+
+              Esspassword: {
+                  required: "Password is required",
+              },
+              ReportingHR: {
+                  required: "Reporting person  is required",
+              },
+              LinkExpiryDate: {
+                  required: "Link expiry date is required",
+              },
+              CompulsoryModuleId:{
+                  required: "Compulsory module is required",
+              },
+          },
+      });
+
+      var form = $("#SavePreboardingLink");
+      form.validate();
+      $("#btnSubmit").click(function () {
+          debugger;
+          form.valid();
+          if(form.valid()==false)
+          {
+              $("#txtLink").removeClass('error')
+              return false;
+          }
+
+          var TypeSelect= $("#txtESIC_Insurance").val();
+          if(TypeSelect!="--Select--")
+          {
+              $('#ErrorESIC_Insurance').html("");
+          }
+          else
+          {
+              $('#ErrorESIC_Insurance').html("Type is required"); $("#ErrorESIC_Insurance").focus();  return false;
+          }
+
+          var FID_Encrypted=$("#FID_Encrypted").val();
+          var PersonalEmailID=$("#txtPersonalEmailID").val();
+
+          $.ajax({
+              url: '@Url.Action("IsPreboardingCreateLinkExists", "Module_Preboarding_CreateLink")',
+                 // url:"IsPreboardingCreateLinkExists",
+                  method:"get",
+                  data:{PersonalEmailID:PersonalEmailID,FID_Encrypted:FID_Encrypted},
+                  success:function(response){
+                      debugger;
+                      var Message1 = response.Message;
+                      var Icon1 = response.Icon;
+                      if (response.Icon=="error") {
+                          if (Message1 != null) {
+                              if (Message1 != null) {
+                                  Swal.fire({
+                                      icon: Icon1,
+                                      text: Message1,
+                                      allowOutsideClick: () => {
+                                          const popup = Swal.getPopup()
+                                          popup.classList.remove('swal2-show')
+                                          setTimeout(() => {
+                                              popup.classList.add('animate__animated', 'animate__headShake')
+                                          })
+                                          setTimeout(() => {
+                                              popup.classList.remove('animate__animated', 'animate__headShake')
+                                          }, 500)
+                                          return false
+                                      }
+                                  });
+                              }
+                          }
+                      }
+                      else
+                      {
+                          $("#SavePreboardingLink").submit();
+                      }
+                  }
+              });
+      });
+</script>
+<script>
+
+</script>
+
+
+<script>
+    function millisecTodate(milliDate) {
+        var date = new Date(milliDate);
+        var mnth = ("0" + (date.getMonth() + 1)).slice(-2);
+        var day = ("0" + date.getDate()).slice(-2);
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        hours = hours < 10 ? '0'+hours : hours;
+        minutes = minutes < 10 ? '0'+minutes : minutes;
+        var ddmmyyyy = [date.getFullYear(), mnth,day].join("-");
+        return ddmmyyyy;
+    }
+
+    function convertDate(data) {
+        var getdate = parseInt(data.replace("/Date(", "").replace(")/", ""));
+        var date = millisecTodate(getdate);
+        return date;
+    }
+
+    function convertDate1(data) {
+        // data comes like "2004-06-07 00:00:00.000"
+        var d = new Date(data);
+
+        var year = d.getFullYear();
+        var month = ("0" + (d.getMonth() + 1)).slice(-2); // 01-12
+        var day = ("0" + d.getDate()).slice(-2);         // 01-31
+
+        // For input[type=date], return yyyy-MM-dd
+        return year + "-" + month + "-" + day;
+    }
+</script>
+<script>
+    //$("#ddlBuniessUnit").on("change", function () {
+    //    debugger;
+    //    $("#ddlReportingHR").find("option").remove();
+    //    var CmpId = $("#ddlCompanyName").val();
+    //    var EmployeeBranchId = $("#ddlBuniessUnit").val();
+    //    $.ajax({
+    //        type: 'GET',
+    //        dataType: 'JSON',
+    //        contentType: "application/json; charset=utf-8",
+    //        url: 'GetReportingHR',
+    //        data: { CmpId: CmpId,EmployeeBranchId:EmployeeBranchId },
+    //        success: function (data) {
+    //            debugger;
+    //            if (data !=null) {
+    //                $("#ddlReportingHR").append("<option value=0>--Select--</option>");
+    //                $.each(data, function(i, p) {
+    //                    debugger;
+    //                    $("#ddlReportingHR").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+    //                });
+    //            }
+    //            else {
+    //                $('#ErrorESSPassword').html(" ");
+    //            }
+    //        }
+    //    })
+    //})
+</script>
+
+<script>
+    function model()
+    {
+        $("#myModal").modal('show');
+    }
+</script>

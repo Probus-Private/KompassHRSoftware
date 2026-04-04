@@ -1,0 +1,331 @@
+﻿
+@{
+    ViewBag.Title = "App_LeaveDetails";
+    Layout = "~/Views/Shared/_MobileLayout.cshtml";
+}
+
+
+<style>
+    .app-header-fixed {
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+
+    .app-content {
+        padding: 5px 5px;
+    }
+</style>
+
+
+
+<div id="content" class="app-content">
+    <!-- BEGIN panel -->
+    <div class="panel panel-inverse" data-sortable-id="index-1">
+        <div class="panel-body" data-scrollbar="false">
+            <div class="row">
+                <div class="col-md-2">
+                    <a href="@Url.Action("App_TimeOffice_Leave", "App_TimeOffice_Leave", new { area = "App" })">
+                        <button type="button" class="btn btn-primary btn-sm">
+                            <i class="fa-solid fa-plus"></i> &nbsp; Add
+                        </button>
+                    </a>
+                </div>
+                @{
+                    var leaveList = ViewBag.LeaveAll as IEnumerable<dynamic>;
+                    var d = leaveList?.FirstOrDefault();
+                }
+                <div class="container px-1 py-1">
+                    @{
+                        var leaveMasterId = d?.LeaveMasterId ?? 0;
+                        var cancelStatus = d?.CancelStatus;
+                        var status = d?.Status ?? "";
+                    }
+                    <div class="card">
+                        <div class="card-body">
+                            <p><strong>Employee Name:</strong> @(d?.EmployeeName ?? "")</p>
+                            <p><strong>Employee No:</strong> @(d?.EmployeeNo ?? "")</p>
+                            <p><strong>Branch:</strong> @(d?.BranchName ?? "")</p>
+                            <p><strong>Leave Type:</strong> @(d != null ? $"{d.LeaveTypeShortName} ({d.LeaveMasterDayType})" : "")</p>
+                            <p><strong>Leave Dates:</strong> @(d?.ForDate ?? "")</p>
+                            <p><strong>Shift:</strong> @(d?.LeaveMasterShiftName ?? "")</p>
+                            <p>
+                                <strong>Status:</strong>
+                                <span class="badge @(status != null && status.Contains("Approved") ? "bg-success" : status != null && status.Contains("Rejected") ? "bg-danger" : "bg-secondary")">
+                                    @status
+                                </span>
+                            </p>
+                            <p><strong>Reason:</strong> @(d?.Reason ?? "")</p>
+                            <p><strong>Approver:</strong> @(d?.ApproverName ?? "")</p>
+                            <p><strong>Approved On:</strong> @(d != null ? $"{d.ApproveRejectDate} ({d.ApprovedAutoManually})" : "")</p>
+                            <p><strong>Document Date:</strong> @(d?.DocDate ?? "")</p>
+                            <p><strong>Attachment:</strong> <span class="text-danger">@((d?.AttachFile) ?? "")</span></p>
+                        </div>
+                        <div class="card-footer">
+                            <div class="action-buttons d-flex justify-content-between px-3 pb-3">
+
+                                <a href="@Url.Action("App_GetList", "App_TimeOffice_Leave", new { area = "App" })" class="btn btn-outline-primary btn-sm">
+                                    <i class="fa fa-list"></i> List
+                                </a>
+
+                                @if (cancelStatus == "Requested" || cancelStatus == "Canceled")
+                                {
+                                    <button class="btn btn-outline-secondary btn-sm" disabled>@cancelStatus</button>
+                                }
+                                else
+                                {
+                                    <a href="#modal-dialogForHoldReject1"
+                                       onclick="CancelRequestFun(@leaveMasterId, '@status')"
+                                       class="btn btn-outline-warning btn-sm">
+                                        <i class="fa fa-xmark"></i> Cancel
+                                    </a>
+                                }
+
+                                <button onclick="DeleteLeave('@(d?.LeaveMasterId_Encrypted)', '@status')" class="btn btn-outline-danger btn-sm">
+                                    <i class="fa fa-trash"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- #Start Cancel Request dialog -->
+<div class="modal fade" id="CancelModal" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header bg-black text-white">
+                <h4 class="modal-title"> Remark For Cancel</h4>
+            </div>
+            <div class="modal-body">
+                <div class="modal-body-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            @* @Html.DropDownListFor(model => model.PunchMissingEmployeeID, new SelectList(ViewBag.GetAdditionalList, "Id", "Name"), new { id = "LeaveMasterLeaveYearId", name = "LeaveMasterLeaveYearId", @class = "form-select", autocomplete = "off" })*@
+                                            <h6> Select Approver Name</h6>
+
+                                            @Html.DropDownList("Id", new SelectList(ViewBag.GetManagerEmployee, "Id", "Name"), "--Select--", new { @class = "form-control", Id = "ddlManagerName" })
+                                            <h1></h1>
+                                            <span id="ErrorMessage" class="Error" style="color:red"></span>
+                                            <h6> Enter Remark </h6>
+                                            <textarea id="txtApproveRejectRemark" class="form-control" rows="4"></textarea>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="SendCancelRequest()" id="btnReject" class="btn btn-primary btn-sm">
+                    <i class="fa-solid fa-floppy-disk"> </i> Submit
+                </button>
+                <button type="button" id="btnCancel" class="btn btn-danger btnpress btn-sm CloseModel" data-bs-dismiss="modal">
+                    <i class="fa-solid fa-share-from-square"></i> Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #End Cancel Request dialog -->
+
+<script>
+    function CancelRequestFun(LeaveMasterId, Status) {
+        debugger;
+        if (Status == "Pending" || Status == "Cancel") {
+            if (Status == "Pending") {
+                var Message = "Pending request can't cancel";
+                var Icon = "error";
+            }
+            else {
+                var Message = "Request already cancel";
+                var Icon = "error";
+            }
+
+            Swal.fire({
+                icon: Icon,
+                text: Message,
+                allowOutsideClick: false
+            });
+            return false;
+        }
+        localStorage.setItem('LeaveMasterId', LeaveMasterId);
+        $("#CancelModal").modal('show');
+    }
+
+
+    function DeleteLeave(LeaveMasterId_Encrypted, Status) {
+        debugger;
+        if (Status != "Pending") {
+            Swal.fire({
+                icon: "error",
+                text: "Approved/Rejected request can't delete",
+                allowOutsideClick: false
+            });
+            return false;
+        }
+        const DeleteButtons = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        DeleteButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+            allowOutsideClick: false
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '@Url.Action("LeaveDelete", "ESS_TimeOffice_Leave")?LeaveMasterId_Encrypted=' + LeaveMasterId_Encrypted;
+
+            } else if (
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+
+            }
+        })
+    }
+</script>
+
+<script>
+    function SendCancelRequest() {
+        //$("#CancelModal").modal('show');
+        var ddlManagerName = $('select#ddlManagerName option:selected').val();
+        if (ddlManagerName == "") {
+            $("#ErrorMessage").html("Please select approver name");
+            $("#ddlManagerName").focus();
+            return false;
+        }
+        else {
+            $("#ErrorMessage").html("");
+        }
+
+        const Approved = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        Approved.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes Submit!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+
+            allowOutsideClick: false
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                debugger;
+                $("#CancelModal").modal('hide');
+                $(".Userloaderbg").css("display", "flex");
+                var GetLeaveId = localStorage.getItem('LeaveMasterId');
+
+                var ddlManagerId = $("#ddlManagerName").val();
+                var Origin = "Leave";
+                Remark = $("#txtApproveRejectRemark").val();
+                $("#CancelModal").modal('hide');
+                $(".Userloaderbg").css("display", "flex");
+                $.ajax({
+                    url: "@Url.Action("CancelRequest", "ESS_TimeOffice_Leave")",
+                    method: "get",
+                    data: { LeaveMasterId: GetLeaveId, ddlManagerId: ddlManagerId, Remark: Remark, Origin: Origin },
+                    success: function (response) {
+                        debugger;
+                        var Message1 = response.Message;
+                        var Icon1 = response.Icon;
+                        if (response.Icon == "error") {
+                            if (Message1 != null) {
+                                if (Message1 != null) {
+                                    Swal.fire({
+                                        icon: Icon1,
+                                        text: Message1,
+                                        allowOutsideClick: false
+                                    })
+                                    .then((result) => {
+                                        if (result.isConfirmed) {
+                                            $("#CancelModal").modal('hide');
+                                            $("#txtApproveRejectRemark").val("")
+                                            window.location.reload();
+
+                                            //window.location.href = '@Url.Action("MbLeaveMasterDetails", "ESS_TimeOffice_Leave")';
+                                        } else if (
+                                            /* Read more about handling dismissals below */
+                                            result.dismiss === Swal.DismissReason.cancel
+                                        ) {
+
+                                        }
+                                    })
+                                }
+                            }
+                        }
+                        else {
+                            var Message1 = response.Message;
+                            var Icon1 = response.Icon;
+                            if (response.Icon == "success") {
+                                if (Message1 != null) {
+                                    if (Message1 != null) {
+                                        Swal.fire({
+                                            icon: Icon1,
+                                            text: Message1,
+                                            allowOutsideClick: false
+                                        })
+                                        .then((result) => {
+                                            if (result.isConfirmed) {
+                                                window.location.reload();
+
+                                                //window.location.href = '@Url.Action("MbLeaveMasterDetails", "ESS_TimeOffice_Leave")';
+                                            } else if (
+                                                /* Read more about handling dismissals below */
+                                                result.dismiss === Swal.DismissReason.cancel
+                                            ) {
+
+                                            }
+                                        })
+
+                                        $("#CancelModal").modal('hide');
+                                        $("#txtApproveRejectRemark").val("");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+            } else if (
+                /* Read more about handling dismissals below */
+                                result.dismiss === Swal.DismissReason.cancel
+                            ) {
+                $("#CancelModal").modal('hide');
+                $("#ddlManagerName").val(null);
+                $("#txtApproveRejectRemark").val("");
+            }
+        })
+    }
+</script>
+

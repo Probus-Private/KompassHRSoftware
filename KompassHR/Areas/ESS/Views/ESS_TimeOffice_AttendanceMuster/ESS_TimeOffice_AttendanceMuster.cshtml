@@ -1,0 +1,1287 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_TimeOffice.AttendanceMuster
+@{
+    ViewBag.Title = "ESS_TimeOffice_AttendanceMuster";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+
+<style>
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+
+    /* Add these styles to your existing CSS */
+
+    /* Make the table container scrollable */
+    .table-scroll {
+        /*max-height: 500px;*/
+        overflow: auto;
+        position: relative;
+    }
+
+    /* Fixed columns styling */
+    .fixed-col {
+        position: sticky !important;
+        background: white !important;
+        z-index: 10 !important;
+    }
+
+    .col-emp {
+        left: 0;
+        width: 140px;
+        min-width: 140px !important;
+        max-width: 140px !important;
+    }
+    .col-emp {
+    white-space: normal !important;
+    word-break: break-word;
+    max-width: 120px;
+    font-size: 11px;
+    line-height: 1.2;
+}
+    .col-bu {
+        left: 200px; /* Same as col-emp width */
+        width: 150px;
+        min-width: 150px !important;
+        max-width: 150px !important;
+    }
+
+    /* For header row */
+    thead .fixed-col {
+        background: rgba(233, 236, 239, 1) !important;
+        z-index: 20 !important;
+    }
+
+    /* Make sure other cells don't overlap */
+    .table-scroll table {
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    /* Hide context menu for non-P/AB cells */
+    td[data-employeeid]:not(.att-p):not(.att-ab):not(.att-wo):not(.att-ph) {
+        cursor: default !important;
+    }
+
+    td[data-employeeid].att-p,
+    td[data-employeeid].att-wo,
+    td[data-employeeid].att-ph,
+    td[data-employeeid].att-ab {
+        cursor: pointer !important;
+    }
+
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    th:nth-child(1), td:nth-child(1) {
+        width: 40px; /* Set the width for the first column */
+    }
+
+    th:nth-child(2), td:nth-child(2) {
+        width: 40px; /* Set the width for the first column */
+    }
+
+
+    .dataTables_scrollBody::-webkit-scrollbar {
+        width: 10px !important;
+        background-color: #F5F5F5;
+    }
+    /* Horizontal scrollbar */
+    .dataTables_scrollBody::-webkit-scrollbar {
+        height: 10px;
+    }
+
+    .approve-btn, .reject-btn, .pending-btn {
+        display: flex;
+        justify-content: center;
+        padding: 5px 8px;
+        border-radius: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        font-weight: 700;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        border: 1px solid white;
+        letter-spacing: -0.5px;
+        align-items: center;
+    }
+
+
+        .approve-btn, .approve-btn:hover {
+            background-color: #ddf5df;
+            color: #2e7d32;
+            /*background: #2e7d32;
+        /* background-color: #e8f5e9; */
+        }
+
+    .doodle {
+        font-size: 12px !important;
+        background: #fff;
+        color: #2e7d32;
+        padding: 0 2px;
+        margin-left: 5px;
+        border-radius: 50px;
+    }
+
+    .approve-btn .doodle {
+        color: #2e7d32;
+    }
+
+    .reject-btn .doodle {
+        color: #c62828 !important;
+    }
+
+    .pending-btn .doodle {
+        color: #ab9808 !important;
+    }
+
+    .reject-btn {
+        background-color: #ffebee;
+        color: #c62828;
+    }
+
+    .pending-btn {
+        background-color: #fffad5;
+        color: #ab9808;
+    }
+    /*.approve-btn:hover {
+        background-color: #c8e6c9;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }*/
+
+    .reject-btn:hover {
+        background-color: #ffebee;
+        color: #c62828;
+    }
+
+    .approve-btn i, .reject-btn i, .pending-btn i {
+        margin-right: 5px;
+    }
+
+    .approve-btn span, .reject-btn span, .pending-btn span {
+        font-size: 0.9rem;
+    }
+
+
+    .att-text {
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-block;
+    }
+
+    /* Absent */
+    td.att-ab {
+        background-color: red !important;
+        color: #fff !important;
+        /*font-weight: 600;*/
+    }
+
+    /* Week Off / Holiday */
+    td.att-wo {
+        background-color: #f39c12 !important;
+        color: #fff !important;
+        /*font-weight: 600;*/
+    }
+
+    /* Normal Present */
+    td.att-p {
+        background-color: #2e7d32 !important;
+        color: #fff !important;
+        /*font-weight: 600;*/
+    }
+
+    /* ✅ Punch Through Attendance – SPECIAL GREEN */
+    td.att-punch {
+        background-color: #008181 !important;
+        color: #fff !important;
+        /*font-weight: 700;*/
+        border: 1px solid #69db8a;
+    }
+
+    td.att-edit {
+        background-color: #ffe08a !important;
+    }
+
+    td.att-active {
+        outline: 2px solid #0d6efd;
+    }
+
+    .attendance-legend {
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        font-size: 13px;
+        font-weight: 600;
+        flex-wrap: wrap;
+    }
+
+    .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .legend-box {
+        width: 18px;
+        height: 18px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+    }
+
+        /* Reuse your existing attendance colors */
+        .legend-box.att-p {
+            background-color: green;
+        }
+
+        .legend-box.att-ab {
+            background-color: red;
+        }
+
+        .legend-box.att-wo {
+            background-color: #f39c12;
+        }
+
+        .legend-box.att-ph {
+            background-color: #f39c12;
+        }
+
+        .legend-box.att-punch {
+            background-color: #008181;
+        }
+
+        .day-header{
+    font-size:10px;
+    padding:4px;
+}
+
+.day-num{
+    font-size:10px;
+    font-weight:600;
+}
+
+.day-name{
+    font-size:10px;
+    color:#6c757d;
+}
+
+.att-cell{
+    font-size:10px;
+    padding:3px 4px !important;
+}
+
+.att-text{
+    font-size:11px;
+    font-weight:600;
+}
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Attendance Muster
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard" , new { area="" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_TimeOffice_Menu", "ESS_TimeOffice_Menu" , new {id=5, ScreenId=150, area="ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12">
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">Attendance Muster</h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Define monthly attendance muster here!
+                    </p>
+                </div>
+                <div class="panel-body" style="max-height: fit-content;">
+                    <div class="row justify-content-center">
+                        <div class="row justify-content-center">
+                            <form role="form" action='@Url.Action("ESS_TimeOffice_AttendanceMuster", "ESS_TimeOffice_AttendanceMuster", new { area = "ESS" })' id="SaveAttendanceMuster" method="post" enctype="multipart/form-data">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">
+                                                Company Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-9">
+                                                @Html.DropDownListFor(model => model.CmpId, new SelectList(ViewBag.GetCompanyName, "Id", "Name"), "--Select--", new { @class = "form-select", id = "ddlCmpId", type = "text", name = "CmpId", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">
+                                                Business Unit
+                                            </label>
+                                            <div class="col-md-9">
+                                                @Html.DropDownListFor(model => model.BranchId, new SelectList(ViewBag.GetBranchName, "Id", "Name"), "--All--", new { @class = "form-select", id = "ddlBranchId", type = "text", name = "BranchId", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">
+                                                Employee Name
+                                            </label>
+                                            <div class="col-md-9">
+                                                @Html.DropDownListFor(model => model.EmployeeId, new SelectList(ViewBag.EmployeeName, "Id", "Name"), "--All--", new { @class = "form-select", id = "ddlEmployeeId", type = "text", name = "EmployeeId", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">
+                                                Month/Year
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-4">
+                                                @Html.TextBoxFor(model => model.Month, new { @class = "form-control", name = "FromDate", type = "month", id = "txtMonth" })
+                                            </div>
+                                            <div class="col-md-2 text-end">
+                                                <button type="button" id="btnshow" onclick="showList()" class="btn btn-info btn-sm w-100">
+                                                    Load
+                                                </button>
+                                            </div>
+                                            <div class="col-md-3 text-end">
+                                                <button type="button" class="btn btn-secondary btn-sm" id="btlExportToExcel" onclick="downloadExcelFile()">
+                                                    Export To Excel
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="attendance-container">
+                                    <div class="row">
+                                        <div class="table-scroll div1">
+                                            <div class="table-wrap">
+                                                <table class="table table-bordered mb-0 text-dark align-middle TabledataBulkClass" id="tblAttendanceMuster" style="width: 100%;">
+                                                    <thead class="table-active horizontal-scroll" style="background-color: rgba(233, 236, 239, 1) !important;">
+                                                        <tr class="trheading text-center">
+                                                            <th class="fixed-side text-nowrap" hidden>EmployeeId</th>
+                                                            <th class="fixed-col col-emp">Employee Name</th>
+                                                            @*<th class="fixed-col col-bu text-nowrap">Business Unit</th>*@
+                                                            @if (ViewBag.MonthYear != null)
+                                                            {
+                                                                foreach (int day in ViewBag.GetDays)
+                                                                {
+                                                                    DateTime date = new DateTime(
+                                                                    ((DateTime)ViewBag.MonthYear).Year,
+                                                                    ((DateTime)ViewBag.MonthYear).Month,
+                                                                    day
+                                                                    );
+
+                                                                    @*<th class="text-nowrap">
+                                                                        @day <br />
+                                                                        <small>@date.ToString("ddd").Substring(0, 1)</small>
+                                                                    </th>*@
+                                                                    <th class="text-center day-header">
+                                                                        <span class="day-num">@day</span><br />
+                                                                        <span class="day-name">@date.ToString("ddd").Substring(0, 1)</span>
+                                                                    </th>
+                                                                }
+                                                            }
+                                                            <th class="text-nowrap">Month Days</th>
+                                                            <th class="text-nowrap">AB </th>
+                                                            <th class="text-nowrap">PP </th>
+                                                            <th class="text-nowrap">WO </th>
+                                                            <th class="text-nowrap">WO(P) </th>
+                                                            <th class="text-nowrap">PH </th>
+                                                            <th class="text-nowrap">PH(P)</th>
+                                                            <th class="text-nowrap">CO </th>
+                                                            <th class="text-nowrap">Leaves </th>
+                                                            <th class="text-nowrap">LWP </th>
+                                                            <th class="text-nowrap">Payable Days </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="tblDeptWiseReport">
+                                                        @if (ViewBag.AttendanceMuster != null)
+                                                        {
+                                                            foreach (var d in ViewBag.AttendanceMuster)
+                                                            {
+                                                                <tr>
+                                                                    <td class="text-nowrap" hidden>@d.EmployeeId</td>
+
+                                                                    <td class="fixed-col col-emp">
+                                                                        <strong>@d.EmployeeName</strong><br />
+                                                                        <small style="color:#0d6efd">@d.Designation</small>,<small style="color:black">@d.BusinessUnit</small>
+                                                                    </td>
+
+                                                                    @*<td class="fixed-col col-bu">@d.BusinessUnit</td>*@
+
+                                                                    @foreach (int day in ViewBag.GetDays)
+                                                                    {
+                                                                        string colName = day.ToString("00") + "-" +
+                                                                                         ((DateTime)ViewBag.MonthYear).ToString("MM-yy");
+
+                                                                        var row = (IDictionary<string, object>)d;
+
+                                                                        string val = row.ContainsKey(colName) && row[colName] != null ? row[colName].ToString().Trim() : "";
+
+                                                                        // Build adjust column name
+                                                                        string adjustCol = colName + "_isAdjustFor";
+
+                                                                        // Get 1 or 0
+                                                                        string adjustVal = row.ContainsKey(adjustCol) && row[adjustCol] != null ? row[adjustCol].ToString().Trim() : "0";
+
+                                                                        // TRUE only when that specific date has 1
+                                                                        bool isPunchThrough = adjustVal == "1";
+
+
+                                                                        bool isRed = !isPunchThrough && (val == "AB" || val.Contains("/AB") || val.StartsWith("AB/"));
+
+                                                                        bool isWO = !isPunchThrough && (val == "WO" || val == "WO(P)" || val == "PH(P)" || val == "PH");
+
+                                                                        bool isGreen = !isPunchThrough &&
+                                                                                       !isRed && !isWO &&
+                                                                                       (val.Contains("P") || val.Contains("OD") || val.Contains("WFH") ||
+                                                                                        val.Contains("CO") || val.Contains("CL") || val.Contains("SL") ||
+                                                                                        val.Contains("EL") || val.Contains("PL") || val.Contains("ML"));
+
+
+                                                                        string attClass = "";
+
+                                                                        if (isPunchThrough)
+                                                                        {
+                                                                            attClass = "att-punch";
+                                                                        }
+                                                                        else if (isRed)
+                                                                        {
+                                                                            attClass = "att-ab";
+                                                                        }
+                                                                        else if (isWO)
+                                                                        {
+                                                                            attClass = "att-wo";
+                                                                        }
+                                                                        else if (isGreen)
+                                                                        {
+                                                                            attClass = "att-p";
+                                                                        }
+
+                                                                        <td class="text-center text-nowrap att-cell @attClass" tabindex="0" data-employeeid="@d.EmployeeId"
+                                                                            data-date="@colName">
+                                                                            <span class="att-text">@val</span>
+                                                                        </td>
+                                                                    }
+
+                                                                    <td class="text-nowrap text-end">@d.MonthDays</td>
+                                                                    <td class="text-nowrap text-end">@d.AB</td>
+                                                                    <td class="text-nowrap text-end">@d.PP</td>
+                                                                    <td class="text-nowrap text-end">@d.WO</td>
+                                                                    <td class="text-nowrap text-end">@d.WOP</td>
+                                                                    <td class="text-nowrap text-end">@d.PH</td>
+                                                                    <td class="text-nowrap text-end">@d.PHP</td>
+                                                                    <td class="text-nowrap text-end">@d.COFF</td>
+                                                                    <td class="text-nowrap text-end">@d.Leaves</td>
+                                                                    <td class="text-nowrap text-end">@d.LWP</td>
+                                                                    <td class="text-nowrap text-end">@d.PayableDays</td>
+                                                                </tr>
+                                                            }
+                                                        }
+                                                    </tbody>
+
+                                                </table>
+                                                <!-- Add this context menu HTML after the table -->
+                                                <div id="attendanceContextMenu" class="context-menu" style="display: none; position: absolute; z-index: 1000;">
+                                                    <div class="context-menu-content">
+                                                        <button type="button" class="context-menu-item btn-present" onclick="markAsPresent()">
+                                                            <i class="fa-solid fa-check me-2"></i>Mark as Present - <span style="color:#0d6efd" id="txtpresentdate"></span>
+                                                        </button>
+                                                        <button type="button" class="context-menu-item btn-absent" onclick="markAsAbsent()">
+                                                            <i class="fa-solid fa-xmark me-2"></i>Mark as Absent - <span style="color:#0d6efd" id="txtabsentdate"></span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <!-- Expand Button -->
+                                        <div>
+                                            <button type="button" class="btn btn-dark btn-icon btn-default" id="btnExpandTable" style="height:30px;width:30px">
+                                                <i class="fa fa-expand"></i>
+                                            </button>
+                                        </div>
+
+                                        <!-- Attendance Legend -->
+                                        <div class="attendance-legend">
+                                            <span class="legend-item">
+                                                Present <span class="legend-box att-p"></span>
+                                            </span>
+                                            <span class="legend-item">
+                                                Absent <span class="legend-box att-ab"></span>
+                                            </span>
+                                            <span class="legend-item">
+                                                Week Off <span class="legend-box att-wo"></span>
+                                            </span>
+                                            <span class="legend-item">
+                                                Public Holiday <span class="legend-box att-ph"></span>
+                                            </span>
+                                            <span class="legend-item">
+                                                Adjust Punch <span class="legend-box att-punch"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Context Menu Styles */
+    .context-menu {
+        background: white;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        min-width: 180px;
+        overflow: hidden;
+        position: fixed !important; /* Change to fixed for accurate positioning */
+        z-index: 1000;
+    }
+
+    .context-menu-content {
+        padding: 4px 0;
+    }
+
+    .context-menu-item {
+        display: block;
+        width: 100%;
+        text-align: left;
+        padding: 8px 16px;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        font-size: 0.85rem;
+        color: #212529;
+        transition: background-color 0.2s;
+    }
+
+        .context-menu-item:hover {
+            background-color: #f8f9fa;
+            text-decoration: none;
+        }
+
+        .context-menu-item.btn-present {
+            color: #198754;
+        }
+
+            .context-menu-item.btn-present:hover {
+                background-color: #d1e7dd;
+            }
+
+        .context-menu-item.btn-absent {
+            color: #dc3545;
+        }
+
+            .context-menu-item.btn-absent:hover {
+                background-color: #f8d7da;
+            }
+
+    /* Make ONLY P and AB cells clickable */
+    td[data-employeeid]:not(.att-p):not(.att-ab):not(.att-wo):not(.att-punch):not(.att-ph) {
+        cursor: default !important;
+        pointer-events: none !important;
+    }
+
+    td[data-employeeid].att-p,
+    td[data-employeeid].att-wo,
+    td[data-employeeid].att-ph,
+    td[data-employeeid].att-punch,
+    td[data-employeeid].att-ab {
+        cursor: pointer !important;
+        pointer-events: auto !important;
+    }
+
+    td[data-employeeid] {
+        position: relative;
+        min-height: 40px;
+        transition: all 0.2s ease;
+    }
+
+    .att-selected {
+        background-color: rgba(13, 110, 253, 0.1) !important;
+        outline: 2px solid #000000 !important;
+        z-index: 100;
+    }
+
+    /* Add styles for AB/EL cells */
+    td[data-employeeid][data-value*="AB"] {
+        cursor: pointer !important;
+        pointer-events: auto !important;
+    }
+
+    .attendance-fullscreen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: #fff;
+        z-index: 9999;
+        padding: 10px;
+        overflow: auto;
+    }
+
+        .attendance-fullscreen .table-scroll {
+            height: calc(100vh - 120px);
+        }
+</style>
+
+<script>
+    $(document).ready(function () {debugger
+        $("#ddlEmployeeId").select2();
+        $("#ddlCmpId").select2();
+        $("#ddlBranchId").select2();
+
+        // window.attendanceModal = new bootstrap.Modal(document.getElementById('attendanceModal'));
+
+
+
+        table = $('.TabledataBulkClass').DataTable({
+            paging: false,
+            searching: true,
+            stripeClasses: [],
+            scrollX: true, // Enable horizontal scrolling
+            scrollY: '400px', // Enable vertical scrolling
+            scrollCollapse: true,
+            createdRow: function(row, data, dataIndex) {
+                // Add click and contextmenu events to cells
+                $(row).find('td[data-employeeid]').on('click contextmenu', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    // Check if this cell should show context menu
+                    var cellText = $(this).find('.att-text').text().trim();
+                    var allowedValues = ['P','AB','PH','PH(P)','WO','AB/P','P/AB','HD','LWP/AB','AB/LWP','OD/AB','WFH/AB','AB/WFH','AB/SL',
+    'CO/AB','AB/CO','CL/AB','AB/CL','SL/AB','AB/SL','EL/AB','AB/EL','PL/AB','AB/PL',
+    'P/OD','P/WFH','OD/P','WFH/P','P/CO','P/CL','P/SL','P/EL','EL/P','P/PL','PL/P','P/LWP','LWP/P','CL/P',
+    'SL/P','WFH/P','CO/P'];
+
+                    if (!allowedValues.includes(cellText)) {
+                        hideContextMenu();
+                        return;
+                    }
+
+                    // Remove previous selection
+                    $('.att-selected').removeClass('att-selected');
+
+                    // Add selection to current cell
+                    $(this).addClass('att-selected');
+
+                    showAttendanceContextMenu(this, e);
+
+                    // For right-click, prevent default browser context menu
+                    if (e.type === 'contextmenu') {
+                        return false;
+                    }
+                });
+            },
+            drawCallback: function() {
+                // Reattach events after draw
+                $('#tblAttendanceMuster').off('click contextmenu', 'td[data-employeeid]')
+                    .on('click contextmenu', 'td[data-employeeid]', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        // Check if this cell should show context menu
+                        var cellText = $(this).find('.att-text').text().trim();
+                        var allowedValues = ['P','AB','PH','PH(P)','WO','AB/P','P/AB','HD','LWP/AB','AB/LWP','OD/AB','WFH/AB','AB/WFH','AB/SL',
+'CO/AB','AB/CO','CL/AB','AB/CL','SL/AB','AB/SL','EL/AB','AB/EL','PL/AB','AB/PL',
+'P/OD','P/WFH','OD/P','WFH/P','P/CO','P/CL','P/SL','P/EL','EL/P','P/PL','PL/P','P/LWP','LWP/P','CL/P',
+'SL/P','WFH/P','CO/P'];
+
+                        if (!allowedValues.includes(cellText)) {
+                            hideContextMenu();
+                            return;
+                        }
+
+                        // Remove previous selection
+                        $('.att-selected').removeClass('att-selected');
+
+                        // Add selection to current cell
+                        $(this).addClass('att-selected');
+
+                        showAttendanceContextMenu(this, e);
+
+                        // For right-click, prevent default browser context menu
+                        if (e.type === 'contextmenu') {
+                            return false;
+                        }
+                    });
+            }
+        });
+
+
+
+
+        var today = new Date();
+        var yyyy = today.getFullYear();
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+        var defaultMonth = yyyy + '-' + mm;
+        var CheckEmptyDate = document.getElementById('txtMonth').value;
+        if (CheckEmptyDate == "") {
+            document.getElementById('txtMonth').value = defaultMonth;
+        }
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+
+                        return false
+                    }
+                });
+            }
+        }
+
+
+        $("#ddlCmpId").on("change", function () {
+            $("#ddlBranchId").find("option").remove();
+            var CmpId = $("#ddlCmpId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetBusinessUnit", "ESS_TimeOffice_AttendanceMuster")',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    if (data.Branch != null && data.Branch.length > 0) {
+                        $("#ddlBranchId").append("<option value='0'>--All--</option>");
+                        $.each(data.Branch, function (i, p) {
+                            $("#ddlBranchId").append(
+                                "<option value='" + p.Id + "'>" + p.Name + "</option>"
+                            );
+                        });
+                    }
+
+                    /* Employee Dropdown */
+                    if (data.Employee != null && data.Employee.length > 0) {
+                        $("#ddlEmployeeId").append("<option value=''>--All--</option>");
+                        $.each(data.Employee, function (i, p) {
+                            $("#ddlEmployeeId").append(
+                                "<option value='" + p.Id + "'>" + p.Name + "</option>"
+                            );
+                        });
+                    }
+                }
+            })
+        })
+
+
+        $("#ddlBranchId").on("change", function () {
+            debugger
+            var CmpId = $("#ddlCmpId").val();
+            var BranchId = $("#ddlBranchId").val();
+            $("#ddlEmployeeId").find("option").remove();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetEmployeeName", "ESS_TimeOffice_AttendanceMuster")',
+                data: {CmpId:CmpId, BranchId: BranchId },
+                success: function (data) {
+                    if (data !=null) {
+                        $("#ddlEmployeeId").append("<option value=''>--All--</option>");
+                        $.each(data, function(i, p) {
+                            $("#ddlEmployeeId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        });
+    });
+
+    // Context menu variables
+    let currentCell = null;
+    let currentEmployeeId = null;
+    let currentDate = null;
+    let currentValue = null;
+
+    // Show context menu - Fixed positioning
+    function showAttendanceContextMenu(cell, event) {
+        currentCell = $(cell);
+        currentEmployeeId = currentCell.data('employeeid');
+        currentDate = currentCell.data('date');
+        currentValue = currentCell.find('.att-text').text().trim();
+
+        // Check if value contains AB (for AB/EL case)
+        var allowedValues = ['P','AB','PH','PH(P)','WO','AB/P','P/AB','HD','LWP/AB','AB/LWP','OD/AB','WFH/AB','AB/WFH','AB/SL',
+   'CO/AB','AB/CO','CL/AB','AB/CL','SL/AB','AB/SL','EL/AB','AB/EL','PL/AB','AB/PL',
+   'P/OD','P/WFH','OD/P','WFH/P','P/CO','P/CL','P/SL','P/EL','EL/P','P/PL','PL/P','P/LWP','LWP/P','CL/P',
+   'SL/P','WFH/P','CO/P'];
+        if (!allowedValues.includes(currentValue) && !currentValue.includes('AB')) {
+            hideContextMenu();
+            return;
+        }
+
+        var dateParts = currentDate.split('-');
+        if (dateParts.length === 3) {
+            var day = dateParts[0];
+            var month = dateParts[1];
+            var year = '20' + dateParts[2]; // Convert yy to yyyy
+
+            // Format as DD/MM/YYYY
+            var formattedDate = day + '/' + month + '/' + year;
+
+            // Update both button spans
+            $('#txtpresentdate').text(formattedDate);
+            $('#txtabsentdate').text(formattedDate);
+        }
+
+        // Get context menu element
+        const contextMenu = $('#attendanceContextMenu');
+
+        // Get cell position relative to viewport
+        const cellRect = cell.getBoundingClientRect();
+
+        // Position context menu right next to the cell
+        // You can adjust these offsets as needed
+        const offsetX = 5; // 5px right of cell
+        const offsetY = 5; // 5px below cell
+
+        let posX = cellRect.right + offsetX;
+        let posY = cellRect.top + offsetY;
+
+        // If context menu would go off screen to the right, show it to the left
+        if (posX + 180 > window.innerWidth) {
+            posX = cellRect.left - 180 - offsetX;
+        }
+
+        // If context menu would go off screen to the bottom, show it above
+        if (posY + 100 > window.innerHeight) {
+            posY = cellRect.top - 100 - offsetY;
+        }
+
+        // Show context menu
+        contextMenu.css({
+            left: posX + 'px',
+            top: posY + 'px',
+            display: 'block'
+        });
+    }
+
+    // Alternative method using mouse coordinates (if you prefer click position)
+    function showAttendanceContextMenuAtClick(cell, event) {
+        currentCell = $(cell);
+        currentEmployeeId = currentCell.data('employeeid');
+        currentDate = currentCell.data('date');
+        currentValue = currentCell.find('.att-text').text().trim();
+
+        // Check if value contains AB (for AB/EL case)
+        var allowedValues = ['P', 'AB', 'AB/EL'];
+        if (!allowedValues.includes(currentValue) && !currentValue.includes('AB')) {
+            hideContextMenu();
+            return;
+        }
+
+        // Get context menu element
+        const contextMenu = $('#attendanceContextMenu');
+
+        // Use mouse click coordinates
+        const clickX = event.clientX;
+        const clickY = event.clientY;
+
+        // Show context menu right at click position
+        contextMenu.css({
+            left: (clickX + 5) + 'px', // 5px offset from click
+            top: (clickY + 5) + 'px', // 5px offset from click
+            display: 'block'
+        });
+
+        // Adjust if goes off screen
+        const menuWidth = contextMenu.outerWidth();
+        const menuHeight = contextMenu.outerHeight();
+
+        if (clickX + menuWidth > window.innerWidth) {
+            contextMenu.css('left', (clickX - menuWidth - 5) + 'px');
+        }
+
+        if (clickY + menuHeight > window.innerHeight) {
+            contextMenu.css('top', (clickY - menuHeight - 5) + 'px');
+        }
+    }
+
+    // Close context menu when clicking elsewhere
+    $(document).on('click', function(e) {
+        if (!$(e.target).closest('.context-menu, td[data-employeeid]').length) {
+            hideContextMenu();
+        }
+    });
+
+    // Close context menu with ESC key
+    //$(document).on('keydown', function(e) {
+    //    if (e.key === 'Escape') {
+    //        hideContextMenu();
+    //    }
+    //});
+
+    // Hide context menu
+    function hideContextMenu() {debugger
+        $('#attendanceContextMenu').hide();
+        $('.att-selected').removeClass('att-selected');
+    }
+
+    // Mark as Present
+    function markAsPresent() {debugger
+        // updateAttendance('P', 'Present', 'att-p');
+        saveAttendance(currentEmployeeId, currentDate, 'P');
+        hideContextMenu();
+    }
+
+    // Mark as Absent
+    function markAsAbsent() {debugger
+        //updateAttendance('AB', 'Absent', 'att-ab');
+        saveAttendance(currentEmployeeId, currentDate, 'AB');
+        hideContextMenu();
+    }
+
+    // Save attendance to server
+    function saveAttendance(EmployeeId, date, status) {debugger
+        let CmpId= $("#ddlCmpId").val();
+        let BranchId=$("#ddlBranchId").val();
+        var Month=$("#txtMonth").val();
+        let AllEmployeeId=$("#ddlEmployeeId").val();
+        $(".Userloaderbg").css("display", "flex");
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Save", "ESS_TimeOffice_AttendanceMuster")',
+            data: JSON.stringify({ EmployeeId: EmployeeId,
+                date:date,
+                Status:status}),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                debugger;
+                $(".Userloaderbg").css("display", "none");
+                var Message1 = data.Message1;
+                var Icon1 = data.Icon1;
+
+                if (Icon1 != null) {
+                    if (Message1 != null) {debugger
+                        Swal.fire({
+                            icon: Icon1,
+                            text: Message1,
+                            allowOutsideClick: () => {
+                                const popup = Swal.getPopup()
+                                popup.classList.remove('swal2-show')
+                                setTimeout(() => {
+                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                })
+                                setTimeout(() => {
+                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                }, 500)
+                                // return false
+                            }
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                if(AllEmployeeId != 0)
+                                {
+                                    window.location.href ='@Url.Action("ESS_TimeOffice_AttendanceMuster", "ESS_TimeOffice_AttendanceMuster")'
+                                              + '?CmpId=' + encodeURIComponent(CmpId)
+                                              + '&BranchId=' + encodeURIComponent(BranchId)
+                                              + '&Month=' + encodeURIComponent(Month)
+                                              + '&EmployeeId=' + encodeURIComponent(EmployeeId);
+                                }
+                                else
+                                {
+                                    window.location.href ='@Url.Action("ESS_TimeOffice_AttendanceMuster", "ESS_TimeOffice_AttendanceMuster")'
+                                             + '?CmpId=' + encodeURIComponent(CmpId)
+                                             + '&BranchId=' + encodeURIComponent(BranchId)
+                                             + '&Month=' + encodeURIComponent(Month)
+                                             + '&EmployeeId=' + encodeURIComponent(AllEmployeeId);
+                                }
+                            } else if (
+                                result.dismiss === Swal.DismissReason.cancel
+                            ) {
+
+                            }
+                        })
+                    }
+                }
+            }
+        });
+    }
+
+    // Close modal with ESC key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && document.getElementById('attendanceModal').classList.contains('show')) {
+            attendanceModal.hide();
+        }
+    });
+</script>
+<script>
+    //use for add regex function
+    jQuery.validator.addMethod(
+    "regex",
+     function (value, element, regexp) {
+         if (regexp.constructor != RegExp)
+             regexp = new RegExp(regexp);
+         else if (regexp.global)
+             regexp.lastIndex = 0;
+         return this.optional(element) || regexp.test(value);
+     }, "erreur expression reguliere"
+  );
+
+    $('#SaveAttendanceMuster').validate({
+        rules: {
+            CmpId: {
+                required: true,
+            },
+            //BranchId: {
+            //    required: true,
+            //},
+            MonthYear: {
+                required: true,
+            },
+        },
+        messages: {
+            CmpId: {
+                required: "Company name is required",
+            },
+            //BranchId: {
+            //    required: "Branch is required",
+            //},
+            MonthYear: {
+                required: "Month /Year is required",
+            },
+        },
+    });
+
+    var form = $("#SaveAttendanceMuster");
+    form.validate();
+
+    function showList() {
+        debugger;
+        form.valid();
+        if (form.valid() == false) {
+            $("#MonthYear").removeClass("error");
+            return false;
+        }
+        $(".Userloaderbg").css("display", "flex");
+        $("#SaveAttendanceMuster").submit();
+    }
+
+    function downloadExcelFile() {
+        debugger;
+        $(".Userloaderbg").css("display", "flex");
+        let CmpId= $("#ddlCmpId").val();
+        let BranchId=$("#ddlBranchId").val();
+        var Month=$("#txtMonth").val();
+        let EmployeeId=$("#ddlEmployeeId").val();
+        url ='@Url.Action("DownloadExcelFile", "ESS_TimeOffice_AttendanceMuster")'
+                                                + '?CmpId=' + encodeURIComponent(CmpId)
+                                                + '&BranchId=' + encodeURIComponent(BranchId)
+                                                + '&Month=' + encodeURIComponent(Month)
+                                                + '&EmployeeId=' + encodeURIComponent(EmployeeId);
+        $.ajax({
+            url: url,
+            method: 'GET',
+            xhrFields: {
+                responseType: 'blob'
+            },
+            success: function(data) {
+                debugger;
+                $(".Userloaderbg").css("display", "none");
+                if(data.size==0)
+                {
+                    Swal.fire({
+                        icon: 'error',
+                        text: 'Record Not Found',
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup()
+                            popup.classList.remove('swal2-show')
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake')
+                            })
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake')
+                            }, 500)
+                            return false
+                        }
+                    });
+                    $(".Userloaderbg").css("display", "none");
+                    return false;
+                }
+                var formattedDate = convertMonthYearFormat(Month);
+                // Create a Blob from the response data
+                var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                // Create a temporary anchor element to initiate the download
+                var anchorElement = document.createElement('a');
+                var url = window.URL.createObjectURL(blob);
+                anchorElement.href = url;
+                anchorElement.download = 'AttendanceMuster('+formattedDate+').xlsx';
+                anchorElement.click();
+                // Clean up
+                window.URL.revokeObjectURL(url);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error downloading file:', error);
+            }
+        });
+    }
+
+    $("#btnExpandTable").click(function () {
+        $(".attendance-container").toggleClass("attendance-fullscreen");
+
+        if ($(".attendance-container").hasClass("attendance-fullscreen")) {
+            $(this).html('<i class="fa fa-compress"></i>');
+        } else {
+            $(this).html('<i class="fa fa-expand"></i>');
+        }
+    });
+
+
+</script>

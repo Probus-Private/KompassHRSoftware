@@ -1,0 +1,1284 @@
+﻿@model KompassHR.Models.Login
+@{
+    ViewBag.Title = "Login";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+
+
+
+<head>
+    <meta charset="utf-8" />
+    <title>KOMPASSHR</title>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport" />
+    <!-- Basic Meta Tags -->
+    <title>KompassHR</title>
+    <meta name="description" content="KompassHR is a comprehensive HRMS and payroll solution by Probus Software that streamlines employee management, payroll, attendance, compliance, and performance tracking.">
+
+    <meta name="keywords" content="HRMS, payroll software, employee management, leave tracking, attendance software, HR software India, KompassHR, Probus Software, HR automation">
+    <meta name="author" content="Probus Software Pvt. Ltd.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:title" content="KompassHR | Smart HRMS & Payroll Software">
+    <meta property="og:description" content="Integrated HR & payroll software for seamless employee management, leave & attendance tracking, compliance, and performance reviews.">
+    <meta property="og:image" content="~/assets/img/logo/KompassHR.png">
+    <meta property="og:url" content="https://kompasshr.com">
+    <meta property="og:type" content="website">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="KompassHR | HRMS & Payroll Software Solution">
+    <meta name="twitter:description" content="KompassHR is an end-to-end HRMS platform designed to automate HR processes like payroll, attendance, and compliance.">
+    <meta name="twitter:image" content="~/assets/img/logo/KompassHR.png">
+
+    <!-- Favicon -->
+    <link rel="icon" href="~/assets/img/logo/KompassHR.png" type="image/x-icon">
+    <link href="~/assets/SweetAlert/sweetalert2.min.css" rel="stylesheet" />
+    <link href="~/assets/css/vendor.min.css" rel="stylesheet" />
+    <link href="~/assets/css/default/app.min.css" rel="stylesheet" />
+    <!-- ================== END core-css ================== -->
+    <style>
+        /*.has-scroll{
+            display:none;
+        }*/
+        .pace {
+            display: none;
+        }
+
+        .Logobx {
+            width: 130px;
+        }
+
+            .Logobx img {
+                width: 100%;
+            }
+
+        label.error {
+            text-align: left;
+            height: 25px;
+            color: red;
+            font-size: 13px;
+        }
+
+        .error {
+            text-align: left;
+            height: 35px;
+        }
+
+        .Error {
+            text-align: left;
+            height: 25px;
+            color: red;
+            font-size: 13px;
+        }
+    </style>
+
+    <style>
+        .Userloaderbg {
+            background: rgb(0 0 0 / 90%);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .Userloader {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: inline-block;
+            position: relative;
+            border: 3px solid;
+            border-color: #FFF #FFF transparent transparent;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+
+            .Userloader::after,
+            .Userloader::before {
+                content: '';
+                box-sizing: border-box;
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                margin: auto;
+                border: 3px solid;
+                border-color: transparent transparent #FF3D00 #FF3D00;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                box-sizing: border-box;
+                animation: rotationBack 0.5s linear infinite;
+                transform-origin: center center;
+            }
+
+            .Userloader::before {
+                width: 32px;
+                height: 32px;
+                border-color: #FFF #FFF transparent transparent;
+                animation: rotation 1.5s linear infinite;
+            }
+
+        .loadingtext {
+            color: #FFF;
+            display: inline-block;
+            position: relative;
+            font-size: 18px;
+            font-family: Arial, Helvetica, sans-serif;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+
+            .loadingtext::after {
+                content: '';
+                width: 4px;
+                height: 4px;
+                background: currentColor;
+                border-radius: 50%;
+                position: absolute;
+                bottom: 5px;
+                right: -10px;
+                box-sizing: border-box;
+                animation: animloader 1s linear infinite;
+            }
+
+        @@keyframes animloader {
+            0% {
+                box-shadow: 10px 0 rgba(255, 255, 255, 0), 20px 0 rgba(255, 255, 255, 0);
+            }
+
+            50% {
+                box-shadow: 10px 0 white, 20px 0 rgba(255, 255, 255, 0);
+            }
+
+            100% {
+                box-shadow: 10px 0 white, 20px 0 white;
+            }
+        }
+
+        @@keyframes rotation {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @@keyframes rotationBack {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(-360deg);
+            }
+        }
+    </style>
+
+    <style>
+        .zoomable-image {
+            display: block;
+            width: 100%;
+            height: auto;
+            transition: transform 0.3s ease; /* Smooth transition effect */
+        }
+
+            .zoomable-image:hover {
+                transform: scale(1.5); /* Initial zoom effect on hover */
+                z-index: 999; /* Ensure the image appears on top */
+            }
+
+        .extra-zoom:hover {
+            transform: scale(2.5); /* Extra zoom effect on hover */
+        }
+    </style>
+
+    @*This style use for rotate Kompass Image*@
+    <style>
+        #Logobx {
+            display: inline-block;
+            width: 300px; /* Set the width of the circle */
+            height: 300px; /* Set the height of the circle */
+            border-radius: 50%; /* Makes the container a circle */
+            overflow: hidden; /* Ensures that the image is clipped to fit the circle */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Initial rotation animation */
+        @@keyframes rotate360 {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .rotate {
+            animation: rotate360 10s linear infinite;
+        }
+
+        #imageToRotate {
+            width: 100%; /* Make the image fill the container */
+            height: 100%; /* Ensure the image covers the circle */
+            object-fit: cover; /* Ensures the image is cropped to fill the circle */
+        }
+    </style>
+
+    <style>
+        .mfa-input {
+            width: 45px;
+            height: 55px;
+            font-size: 24px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            margin: 0 4px;
+            transition: all 0.2s ease;
+        }
+
+            .mfa-input:focus {
+                border-color: #007bff;
+                outline: none;
+                box-shadow: 0 0 8px rgba(0, 123, 255, 0.4);
+            }
+    </style>
+
+</head>
+
+<body class='pace-top'>
+    <!-- BEGIN #loader -->
+    <div class="Userloaderbg app-loader" id="loader">
+        <span class="Userloader"></span>
+        <span class="loadingtext">Loading</span>
+    </div>
+    @*$(".Userloaderbg").css("display","flex"); // Add Loader
+        $(".Userloaderbg").css("display","none"); // Remove Loader*@
+
+    @*<div id="loader" class="app-loader">
+            <span class="spinner"></span>
+        </div>*@
+    <!-- END #loader -->
+    <!-- BEGIN #app -->
+    <div id="app" class="app">
+        <!-- BEGIN login -->
+        <div class="login login-with-news-feed">
+            <!-- BEGIN news-feed -->
+            <div class="news-feed">
+                <div id="LoginBackground" class="news-image">
+                    <img id="imgLoginBackground" alt="Image" style="height: 100%; width: 100%;" />
+                </div>
+                @*<div id="LoginBackground" class="news-image" style="background-image: url(../../assets/img/login-bg/login-bg-11.jpg)"></div>*@
+                @*<div id="LoginBackground" class="news-image" style="background-image: url()"></div>*@
+                <div class="news-caption">
+                    <h4 class="caption-title"><b>KOMPASS</b>HR</h4>
+                    <p>
+                        Developed by : Probus Software Pvt. Ltd.
+                        @*Download the Color Admin app for iPhone®, iPad®, and Android™. Lorem ipsum dolor sit amet,
+                            consectetur adipiscing elit.*@
+                    </p>
+                </div>
+            </div>
+            <!-- END news-feed -->
+            <!-- BEGIN login-container -->
+            <div class="login-container">
+                <!-- BEGIN login-header -->
+                <div class="login-header mb-30px">
+                    <div class="brand">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <b>KOMPASS</b> HR
+                        </div>
+                    </div>
+                    <div class="Logobx">
+                        <img src="~/assets/img/logo/KompassHR.png" id="ImgCompass" alt="Image" class="zoomable-image" />
+                    </div>
+                </div>
+                <!-- END login-header -->
+                <!-- BEGIN login-content -->
+                <div class="login-content">
+                    <form role="form" action="@Url.Action("Login1", "Login")" id="FormLogin" method="post" autocomplete="on">
+                        <div class="form-floating mb-15px">
+                            @Html.Hidden("lat", "", new { @class = "form-control", id = "txtlat" })
+                            @Html.Hidden("lon", "", new { @class = "form-control", id = "txtlon" })
+                            @Html.Hidden("address", "", new { @class = "form-control", id = "txtAddress" })
+
+
+                            @Html.TextBoxFor(model => model.CustomerCode, new { @class = "form-control  h-45px fs-13px text-uppercase", @id = "ESSCustomerCode", @placeholder = "Enter Customer Code", Maxlength = 20, type = "text" })
+                            <label for="emailAddress" class="d-flex align-items-center fs-13px text-gray-600">
+                                Customer Code
+                            </label>
+                        </div>
+
+                        <div class="form-floating mb-15px">
+                            @Html.TextBoxFor(model => model.ESSLoginID, new { @class = "form-control  h-45px fs-13px", @id = "ESSLoginID", @placeholder = "Enter User ID", Maxlength = 20, type = "text" })
+
+                            <label for="emailAddress" class="d-flex align-items-center fs-13px text-gray-600">
+                                Login ID
+                            </label>
+                        </div>
+                        <div class="form-floating mb-15px" style="position:relative;">
+                            @Html.TextBoxFor(model => model.ESSPassword, new { @class = "form-control h-45px fs-13px", @id = "ESSPassword", @placeholder = "Enter Password", type = "password", Maxlength = 20 })
+                            <label for="password" class="d-flex align-items-center fs-13px text-gray-600">Password</label>
+
+                            @*<button type="button" class="input-group-addon btn btn-gray" id="ShowPassword" title="View Password" style="border-none;border-bottom-width:1px;margin-bottom:0.5px;background-color:lightgray"><i class="fa fa-eye" style="font-size:large;font-weight: bold;color:blue;"></i></button>*@
+                            <button type="button" id="ShowPassword" class="btn btn-default btnpress" style="position:absolute;top:0;right:0;height:100%; color:blue;background-color:lightgray;border:1px solid lightslategray;">
+                                <i class="fa fa-eye" style="font-size:large;font-weight: bold;color:blue;"></i>
+                            </button>
+                        </div>
+                        @*<div class="row mb-15px">
+
+                                <label class="form-label col-form-label col-md-6">
+                                    @Html.CheckBoxFor(model => model.RememberMe, new { id = "ChkRememberMe" })
+                                    &nbsp;  Remember Me
+                                </label>
+                            </div>*@
+                        <!-- ✅ Remember Me Checkbox -->
+                        @*<div class="form-check mb-15px text-start">
+                                <input class="form-check-input" type="checkbox" id="ChkRememberMe" />
+                                <label class="form-check-label" for="ChkRememberMe">
+                                    Remember Me
+                                </label>
+                            </div>*@
+                        <span id="ErrorLoginCheck" class="Error"></span>
+                        <div class="mb-15px">
+                            <button type="button" @*onclick="funLogin()"*@ id="btnLogin" class="btn btn-success d-block h-45px w-100 btn-lg fs-14px">
+                                Sign me in
+                            </button>
+                        </div>
+                        <div class="mb-15px">
+                            <span id="ForgotPassword" style="color:blue; margin-left: 137px ;cursor: pointer;"> Forgot Password</span>
+                        </div>
+                        @*<div class="mb-40px pb-40px text-dark">
+                                Forgot Password ? Click <a href="register_v3.html" class="text-primary">here</a>
+                            </div>*@
+                        <hr class="bg-gray-600 opacity-2" />
+
+                        <div class="col-12">
+                            <div class="step-guide text-center">
+                                <p>📱 <strong>Download the app</strong> by scanning the QR code below or searching in the Play Store or App Store.</p>
+
+                                <!-- Responsive Row -->
+                                <div class="row justify-content-center">
+                                    <!-- QR Code for Android -->
+                                    <div class="col-6 col-md-3 text-center">
+                                        <p class="mb-2"><strong>For Android:</strong></p>
+                                        <img src="~/assets/MenuImages/kompassHR_GooglePlay.png"
+                                             alt="KompassHR Android App"
+                                             class="img-fluid rounded shadow-sm"
+                                             style="max-width:100px; height:auto;" />
+                                    </div>
+
+                                    <!-- QR Code for iOS (with extra margin-left) -->
+                                    <div class="col-6 col-md-3 text-center" style="margin-left:60px;">
+                                        <p class="mb-2"><strong>For iOS:</strong></p>
+                                        <img src="~/assets/MenuImages/kompassHR_ios.png"
+                                             alt="KompassHR iOS App"
+                                             class="img-fluid rounded shadow-sm"
+                                             style="max-width:100px; height:auto;" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <hr class="bg-gray-600 opacity-2" />
+                        <div class="text-gray-600 text-center  mb-0">
+                            &copy; Probus Software Pvt. Ltd. All Right Reserved 2025
+                        </div>
+
+
+
+                        <style>
+                            .card {
+                                background: #ffffff;
+                                border-radius: 8px;
+                                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                                width: 380px;
+                                padding: 5px;
+                                text-align: center;
+                                transition: transform 0.2s;
+                                font-family: Arial, sans-serif;
+                            }
+
+                                .card:hover {
+                                    transform: translateY(-5px);
+                                }
+
+                            .temperature {
+                                font-size: 1.0rem;
+                                font-weight: bold;
+                                color: #2251ffdb;
+                            }
+
+                            .city {
+                                font-size: 0.9rem;
+                                font-weight: 500;
+                                color: #333333;
+                                margin-top: 10px;
+                            }
+
+                            @@media (max-width: 400px) {
+                                .card {
+                                    width: 90%;
+                                }
+                            }
+                        </style>
+
+                        <div class="card" id="divTemperature" hidden>
+                            <div class="temperature">
+                                <span class="city"> <b>City : </b></span>
+                                <span class="city" id="spnCity"></span>
+                                <span class="city"><b>Temp :</b> </span>
+                                <span class="temperature" id="spnTemp"> </span>
+                            </div>
+                        </div>
+
+                    </form>
+                </div>
+                <!-- END login-content -->
+            </div>
+            <!-- END login-container -->
+        </div>
+        <!-- END login -->
+
+
+        <div class="modal fade" id="myModalFinal" data-bs-backdrop="static" data-bs-keyboard="false" data-bs-theme="dark">
+            <div class="modal-dialog modal-md">
+                <div class="modal-content">
+
+                    <div class="modal-header bg-black text-white">
+                        <h4 class="modal-title w-100 text-left">Forgot Password</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <form id="loginForm">
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label for="CustomerCode" class="form-label"><strong>Customer Code :</strong></label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" id="CustomerCode" autocomplete="off" placeholder="Please enter customer code." oninput="this.value = this.value.toUpperCase();" />
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <label for="EmployeeNo" class="form-label"><strong>Employee No :</strong></label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" id="EmployeeNo" autocomplete="off" placeholder="Please enter employee no." />
+                                </div>
+                            </div>
+
+                            <div id="divQueAndEmail" style="display: none;">
+                                <hr />
+                                <div class="row mb-3">
+                                    <div class="col-md-8">
+                                        <label id="GetQuestion" class="form-label fw-bold"></label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label id="GetAttempCount" class="form" value="Remaining Attempt"></label>
+                                    </div>
+                                    @*<div class="col-md-2">
+                                            <label id="RemainingAttempt" class="form-label fw-bold"></label>
+                                        </div>*@
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <input type="text" id="txtGetAnswer" class="form-control" placeholder="Please enter answer" autocomplete="off" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-2">
+                                <div class="col-md-12">
+                                    <span id="ErrorForgotPassword" class="text-danger fw-bold"></span>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" id="GetSequrityQueAns" class="btn btn-success">
+                            Verify Credentials
+                        </button>
+                        <button type="button" id="btnForgotPassword" class="btn btn-primary btn-sm" style="display:none;">
+                            Send Email
+                        </button>
+                        <button type="button" id="btnCancel" class="btn btn-danger btn-sm CloseModel" data-bs-dismiss="modal">
+                            <i class="fa-solid fa-share-from-square"></i> Close
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="mfaModal" tabindex="-1" role="dialog" aria-labelledby="mfaModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content shadow-lg">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="mfaModalLabel">Two-Factor Authentication</h5>
+                        <!-- Close Button -->
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <p class="mb-4">Enter the 6-digit code from your authenticator app.</p>
+                        <form id="mfaForm">
+                            <div class="d-flex justify-content-center align-items-center gap-2">
+                                <div class="d-flex">
+                                    <input type="text" class="mfa-input text-center mx-1 form-control" maxlength="1" />
+                                    <input type="text" class="mfa-input text-center mx-1 form-control" maxlength="1" />
+                                    <input type="text" class="mfa-input text-center mx-1 form-control" maxlength="1" />
+                                    <input type="text" class="mfa-input text-center mx-1 form-control" maxlength="1" />
+                                    <input type="text" class="mfa-input text-center mx-1 form-control" maxlength="1" />
+                                    <input type="text" class="mfa-input text-center mx-1 form-control" maxlength="1" />
+                                </div>
+                                <button type="button" id="pasteButton" class="btn btn-light ms-2" title="Paste from clipboard" hidden>
+                                    <i class="fa-solid fa-paste"></i>
+                                </button>
+                            </div>
+                            <button type="submit" class="btn btn-success mt-4 px-5">Verify</button>
+                            <div id="mfaError" class="text-danger mt-2"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- BEGIN scroll-top-btn -->
+        <a href="javascript:;" class="btn btn-icon btn-circle btn-success btn-scroll-to-top"
+           data-toggle="scroll-to-top"><i class="fa fa-angle-up"></i></a>
+        <!-- END scroll-top-btn -->
+    </div>
+    <!-- ================== BEGIN core-js ================== -->
+    <script src="~/assets/js/vendor.min.js"></script>
+
+    <script src="~/assets/js/app.min.js"></script>
+    <!-- ================== END core-js ================== -->
+    <!-- Add SweetAlert2 CDN -->
+    <script src="~/assets/SweetAlert/sweetalert2.all.min.js"></script>
+    <script src="~/assets/bower_components/moment/moment.js"></script>
+    <script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+    <link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+
+    <!-- ================== BEGIN core-css ================== -->
+    <!-- Add custom styles -->
+    <style>
+        .mfa-input {
+            width: 45px;
+            height: 55px;
+            font-size: 24px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            margin: 0 4px;
+            transition: all 0.2s ease;
+        }
+
+            .mfa-input:focus {
+                border-color: #007bff;
+                outline: none;
+                box-shadow: 0 0 8px rgba(0, 123, 255, 0.4);
+            }
+
+        #pasteButton {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: none;
+            background-color: #f8f9fa;
+            color: #495057;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 10px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+
+            #pasteButton:hover {
+                background-color: #007bff;
+                color: #fff;
+            }
+    </style>
+
+    <script>
+        @{
+            var imageUrl1 = Url.Content("~/assets/img/login/login-bg-1.jpg");
+            var imageUrl2 = Url.Content("~/assets/img/login/login-bg-2.jpg");
+            var imageUrl3 = Url.Content("~/assets/img/login/login-bg-3.jpg");
+            var imageUrl4 = Url.Content("~/assets/img/login/login-bg-4.jpg");
+            //var imageUrl5 = Url.Content("~/assets/img/login/Hrms.gif");
+            //var imageUrl6 = Url.Content("~/assets/img/login/HRMS2.gif");
+            var imageUrl5 = Url.Content("~/assets/img/login/login-bg-6.jpg");
+            var imageUrl6 = Url.Content("~/assets/img/login/login-bg-8.jpg");
+            var imageUrl7 = Url.Content("~/assets/img/login/login-bg-7.jpg");
+        }
+    const d = new Date();
+    let day = d.getDay()
+    var imageUrl = "";
+    switch (day) {
+        case 1:
+            imageUrl = "@imageUrl1";
+            break;
+        case 2:
+            imageUrl = "@imageUrl2";
+            break;
+        case 3:
+            imageUrl = "@imageUrl3";
+            break;
+        case 4:
+            imageUrl = "@imageUrl4";
+            break;
+        case 5:
+            imageUrl = "@imageUrl5";
+            break;
+        case 6:
+            imageUrl = "@imageUrl6";
+            break;
+        case 7:
+            imageUrl = "@imageUrl7";
+            break;
+        default:
+            imageUrl = "@imageUrl1";
+    }
+
+    // Set the src attribute of the imgLoginBackground element
+    $('#imgLoginBackground').attr('src', imageUrl);
+    </script>
+
+    <script>
+    $(document).ready(function () {
+        var PasswordCheck = @Html.Raw(Json.Encode(ViewBag.SendPassword));
+        if(PasswordCheck !=null)
+        {
+            Swal.fire({
+                icon: 'success',
+                text: 'Password send Successfully !',
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup()
+                    popup.classList.remove('swal2-show')
+                    return false;
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                    })
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                    }, 500)
+                    return false;
+                }
+            });
+        }
+
+        $("#btnCancel").click(function(){
+            $("#CustomerCode").val("");
+            $("#EmployeeNo").val("");
+            $("#txtGetAnswer").val("");
+            // $("#txtEmailId").val("");
+            $("#divQueAndEmail").hide();
+            $("#btnForgotPassword").hide();
+            $("#GetSequrityQueAns").show();
+        })
+
+        $("#ShowPassword").hover(
+        function () {
+            $(this).addClass("hover");
+            const type = ESSPassword.getAttribute('type') === 'password' ? 'text' : 'password';
+            ESSPassword.setAttribute('type', type);
+            // toggle the eye slash icon
+            this.classList.toggle('fa-solid-eye-slash');
+        }, function () {
+            $(this).removeClass("hover");
+            const type = ESSPassword.getAttribute('type') === 'password' ? 'text' : 'password';
+            ESSPassword.setAttribute('type', type);
+            // toggle the eye slash icon
+            this.classList.toggle('fa-solid-eye-slash');
+        }
+    );
+
+        window.onload = function() {
+            document.addEventListener("keydown", function(event) {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    funLogin();
+                }
+            });
+        };
+
+
+        $('#btnLogin').on('click', function () {
+            debugger
+            getUserLocation(); // Initialize location fetch
+
+        });
+
+
+
+        // Cookie helpers
+
+
+
+
+    });
+    </script>
+
+    <script>
+  // Show the Forgot Password Modal
+$('#ForgotPassword').on('click', function () {
+    $("#myModalFinal").modal('show');
+});
+
+// Verify Customer Code and Employee No, and fetch Security Question
+$('#GetSequrityQueAns').on('click', function () {
+    var EmployeeNo = $("#EmployeeNo").val().trim();
+    var CustomerCode = $("#CustomerCode").val().trim();
+
+    if (CustomerCode === "") {
+        $("#ErrorForgotPassword").html("Please enter customer code");
+        $("#CustomerCode").focus();
+        return false;
+    }
+    if (EmployeeNo === "") {
+        $("#ErrorForgotPassword").html("Please enter employee no");
+        $("#EmployeeNo").focus();
+        return false;
+    }
+
+    $("#ErrorForgotPassword").html(""); // Clear error
+
+    $.ajax({
+        type: 'GET',
+        url: "@Url.Action("GetSecurityQuestion", "Login")",
+        data: { EmployeeNo, CustomerCode },
+        dataType: 'json',
+        success: function (response) {
+            debugger
+            if (response.status === "locked")
+         {
+            swal("", response.message, "success").then(() => {
+                window.location.href = '@Url.Action("Login", "Login", new { area = "" })';
+            });
+            return;
+        }
+
+            var icon = response.Icon;
+            var message = response.Message;
+
+            if (icon === "error") {
+                $("#ErrorForgotPassword").html(message);
+                return;
+            }
+
+            var question = response.data.Question;
+            var password = response.data.Password;
+            var answer = response.data.Answer;
+            var companyEmail = response.data.CompanyEmail;
+            var personalEmail = response.data.PersonalEmail;
+            var essLoginId = response.data.ESSLoginID;
+            var CustomerCode=response.data.CustomerCode;
+            var AttemptCount=response.data.RemainingAttempt;
+
+            // If both emails are null/empty, show contact HR message
+            if ((!companyEmail || companyEmail === "") && (!personalEmail || personalEmail === "")) {
+                $("#ErrorForgotPassword").html("Please contact HR to register your Email ID.");
+                return;
+            }
+
+            // Show the form section and display the question
+            $("#divQueAndEmail").show();
+            $("#GetSequrityQueAns").hide();
+            $("#btnForgotPassword").show();
+            $("#GetQuestion").html("Que. " + question);
+            $("#GetAttempCount").html("Remaining Attempt:- " + AttemptCount);
+
+            // Store in localStorage
+            localStorage.setItem("GetPassword", password);
+            localStorage.setItem("GetAnswer", answer);
+            localStorage.setItem("CompanyEmailId", companyEmail || "");
+            localStorage.setItem("PersonalEmailId", personalEmail || "");
+            localStorage.setItem("ESSLoginID", essLoginId);
+            localStorage.setItem("CustomerCode", CustomerCode);
+        }
+    });
+});
+
+
+// Final Submit for Forgot Password
+$('#btnForgotPassword').on('click', function () {
+    var securityAnswer = $("#txtGetAnswer").val().trim();
+
+    if (securityAnswer === "") {
+        $("#ErrorForgotPassword").html("Please enter answer");
+        $("#txtGetAnswer").focus();
+        return false;
+    }
+
+    var storedAnswer = localStorage.getItem("GetAnswer");
+    debugger
+    if (securityAnswer.toLowerCase() !== storedAnswer.toLowerCase()) {
+        $("#ErrorForgotPassword").html("Invalid Answer");
+        $("#txtGetAnswer").focus();
+        return false;
+    }
+
+
+    $("#ErrorForgotPassword").html("");
+
+    var employeeNo = $("#EmployeeNo").val().trim();
+    var password = localStorage.getItem("GetPassword");
+    var essLoginId = localStorage.getItem("ESSLoginID");
+    var companyEmail = localStorage.getItem("CompanyEmailId");
+    var personalEmail = localStorage.getItem("PersonalEmailId");
+    var CustomerCode=localStorage.getItem("CustomerCode");
+
+    var emailToUse = companyEmail !== "null" ? companyEmail :
+                     personalEmail !== "null" ? personalEmail :
+                     null;
+
+    if (!emailToUse) {
+        $("#ErrorForgotPassword").html("Please contact HR to register your Email ID.");
+        return false;
+    }
+
+   $("#myModalFinal").modal('hide');
+    $.ajax({
+        async: true,
+        type: 'GET',
+        url: "@Url.Action("ForgotPassword", "Login")",
+        data: {
+            EmployeeNo: employeeNo,
+            SendPassword: password,
+            EmailId: emailToUse,
+            SendESSLoginID: essLoginId,
+            CustomerCode:CustomerCode
+        },
+        dataType: 'json',
+        success: function (data) {
+            debugger
+
+
+           if (data !== "") {
+    swal("", data, "success").then(() => {
+        // Reset Form
+        $("#CustomerCode, #EmployeeNo, #txtGetAnswer").val("");
+        $("#divQueAndEmail").hide();
+        $("#btnForgotPassword").hide();
+        $("#myModalFinal").modal('hide');
+
+        // Redirect after OK click
+        window.location.href = '@Url.Action("Login", "Login", new { area = "" })';
+    });
+
+    return false;
+}
+
+// Redirect fallback
+window.location.href = '@Url.Action("Login", "Login", new { area = "" })';
+        }
+    });
+});
+
+    </script>
+
+    @*This script use for Rotate KompassHR Image*@
+    <script>
+    window.onload = () => {
+        const imageToRotate = document.getElementById('ImgCompass');
+        imageToRotate.classList.add('rotate');
+    };
+    </script>
+
+    <script>
+    const apiKey = 'afed99b212ad321b19c28b479b7db114'; // Your actual API key from OpenWeatherMap
+    const units = 'metric'; // Use 'imperial' for Fahrenheit or 'metric' for Celsius
+
+    // Pass Razor variables to JavaScript for background images
+    var imageUrl1 = '@Url.Content("~/assets/img/login/login-bg-1.jpg")';
+    var imageUrl2 = '@Url.Content("~/assets/img/login/login-bg-2.jpg")';
+    var imageUrl3 = '@Url.Content("~/assets/img/login/login-bg-3.jpg")';
+    var imageUrl4 = '@Url.Content("~/assets/img/login/login-bg-4.jpg")';
+    var imageUrl5 = '@Url.Content("~/assets/img/login/login-bg-16.png")';
+    var imageUrl6 = '@Url.Content("~/assets/img/login/login-bg-6.jpg")';
+    @*var imageUrl5 = '@Url.Content("~/assets/img/login/login-bg-5.jpg")';*@
+    @*var imageUrl6 = '@Url.Content("~/assets/img/login/login-bg-6.jpg")';*@
+    var imageUrl7 = '@Url.Content("~/assets/img/login/login-bg-8.jpg")';
+
+    // Function to fetch weather data by latitude and longitude
+    function getWeatherByLocation(lat, lon) {
+        fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=${units}&appid=${apiKey}`)
+            .then(function(response) {
+                return response.json(); // Convert the response to JSON
+            })
+            .then(function(data) {
+                // Log the response to check the data structure
+                console.log(data);
+
+                // Check if the request was successful (status 200)
+                if (data.cod === 200) {
+                    const temperature = data.main.temp;
+                    const cityName = data.name; // Extract the city name
+
+                    var div = document.getElementById("divTemperature");
+                    if (temperature!="") {
+                        div.style.display = "block"; // Show the div
+                    } else {
+                        div.style.display = "none"; // Hide the div
+                    }
+
+                    // Call the changeBackgroundImage function
+                    changeBackgroundImage(temperature);
+
+                    $("#spnCity").html(cityName);
+                    $("#spnTemp").html(temperature + "°C");
+                    document.getElementById('temperature').innerText = `The current temperature in ${cityName} is ${temperature}°C`;
+                } else {
+                    document.getElementById('temperature').innerText = 'Error: Unable to fetch temperature data.';
+                }
+            })
+            .catch(function(error) {
+                document.getElementById('temperature').innerText = 'Error: Failed to retrieve weather data.';
+                console.error(error); // Log the error to the console for debugging
+            });
+    }
+
+    // Function to change background image based on temperature
+    //function changeBackgroundImage(temperature) {
+    //    console.log('Temperature:', temperature); // Debugging log
+    //    let imageUrl = "";
+
+    //    // Determine the appropriate image URL based on the temperature
+    //    if (temperature < 0) {
+    //        imageUrl = imageUrl1; // Cold weather image
+    //    } else if (temperature >= 0 && temperature <= 20) {
+    //        imageUrl = imageUrl2; // Cool weather image
+    //    } else if (temperature > 20) {
+    //        imageUrl = imageUrl5; // Warm weather image
+    //    }
+    //    $('#imgLoginBackground').attr('src', imageUrl);
+    //}
+
+
+    // Updated getUserLocation function
+    function getUserLocation() {
+        debugger;
+
+        if (!navigator.geolocation) {
+            alert("Geolocation is not supported by your browser.");
+            return;
+        }
+
+        const options = {
+
+            enableHighAccuracy: true,  // Better accuracy (uses GPS if available)
+            timeout: 10000,            // Fail after 10 seconds
+            maximumAge: 0              // No cached position
+        };
+
+    navigator.geolocation.getCurrentPosition(
+    function(position) {
+        debugger
+        const lat = position.coords.latitude;
+        const lon = position.coords.longitude;
+        $("#txtlat").val(lat);
+        $("#txtlon").val(lon);
+
+        funLogin();
+    },
+    function(error) {
+        if (error.code === error.PERMISSION_DENIED || error.code === error.TIMEOUT) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Location Required',
+                text: 'Please enable device location to Login.',
+                confirmButtonText: 'OK',
+                allowOutsideClick: true,
+                allowEscapeKey: true,
+                showCancelButton: false,
+                showConfirmButton: true
+            });
+
+        } else {
+            funLogin();
+             }
+    }
+);
+
+    }
+
+    </script>
+
+    <script>
+    fetch('https://api.ipify.org?format=json')
+    .then(response => response.json())
+    .then(data => {
+
+    });
+    </script>
+
+    @*This script use for Authentication*@
+    <script>
+    $(document).ready(function () {
+        const inputs = $('.mfa-input');
+
+        // Auto-focus to the next box after entering a digit
+        $('.mfa-input').on('keyup', function (e) {
+            var $input = $(this);
+            // Move focus to next input when one character is entered
+            if ($input.val().length === 1) {
+                $input.next('.mfa-input').focus();
+            }
+            // Move focus to previous input on Backspace
+            else if (e.key === "Backspace") {
+                $input.prev('.mfa-input').focus();
+            }
+        });
+
+        // Disable normal paste in the MFA input fields
+        inputs.on('paste', function (e) {
+            e.preventDefault();
+        });
+
+        inputs.on('input', function () {
+            this.value = this.value.replace(/\D/g, '');
+            if (this.value.length === 1) {
+                $(this).next('.mfa-input').focus();
+            }
+        });
+
+        $('#pasteButton').on('click', function () {
+            navigator.clipboard.readText().then(function (text) {
+                const code = text.trim();
+
+                if (/^\d{6}$/.test(code)) {
+                    $('.mfa-input').each(function (i) {
+                        $(this).val(code[i]);
+                    });
+                    $('.mfa-input').last().focus();
+                    $('#mfaError').text('');
+                } else {
+                    $('#mfaError').text("Clipboard doesn't contain a valid 6-digit code.");
+                }
+            }).catch(function (err) {
+                $('#mfaError').text("Clipboard access denied or not supported.");
+            });
+        });
+
+
+        $('#mfaForm').on('submit', function (e) {
+            e.preventDefault();
+            var code = '';
+            $('.mfa-input').each(function () {
+                code += $(this).val();
+            });
+            if (code.length !== 6 || isNaN(code)) {
+                $('#mfaError').text("Please enter a valid 6-digit code.");
+                return;
+            }
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("ValidateMFA", "Login")',
+                data: { code: code },
+                success: function (res) {
+                    if (res.status === "success") {
+                        window.location.href = '@Url.Action("Dashboard", "Dashboard")';
+                    } else {
+                        $('#mfaError').text("Invalid code. Please try again.");
+                        $('.mfa-input').val(''); // Clear inputs
+                        $('.mfa-input').first().focus();
+                    }
+                },
+                error: function () {
+                    $('#mfaError').text("Something went wrong. Please try again.");
+                }
+            });
+        });
+    });
+    </script>
+
+    <script>
+
+
+        function funLogin() {
+            debugger;
+
+            var ESSLoginID = $("#ESSLoginID").val();
+            var ESSPassword = $("#ESSPassword").val();
+            var ESSCustomerCode = $("#ESSCustomerCode").val().toUpperCase();
+            var remember = $('#ChkRememberMe').is(':checked');
+
+            if (remember) {
+                setCookie("CustomerCode", ESSCustomerCode, 30);
+                setCookie("LoginID", ESSLoginID, 30);
+                setCookie("Password", ESSPassword, 30);
+            } else {
+                deleteCookie("CustomerCode");
+                deleteCookie("LoginID");
+                deleteCookie("Password");
+            }
+            //if ($('#ChkRememberMe').is(":checked")) {
+            //    CheckBoxChecked = true
+            //}
+            //else
+            //{
+            //    CheckBoxChecked=false;
+            //}
+
+            if (ESSCustomerCode == "") {
+                $("#ErrorLoginCheck").html("Please enter customer code");
+                return false;
+            }
+            if (ESSLoginID == "") {
+                $("#ErrorLoginCheck").html("Please enter login id");
+                return false;
+            }
+            if (ESSPassword == "") {
+                $("#ErrorLoginCheck").html("Please enter password");
+                return false;
+            }
+            else {
+                $("#ErrorLoginCheck").html("");
+            }
+            //$(".Userloaderbg").css("display", "flex");
+            var IsMobileOrWeb="Web";
+
+            var lat=$("#txtlat").val();
+            var lon=$("#txtlon").val();
+            var address=$("#txtAddress").val();
+            debugger
+            $.ajax({
+                type: 'GET',
+                url: "@Url.Action("Login1", "Login")",
+                data: { ESSLoginID: ESSLoginID, ESSPassword: ESSPassword, ESSCustomerCode: ESSCustomerCode,IsMobileOrWeb:IsMobileOrWeb,lat:lat,lon:lon,address:address},
+                //contentType: "application/json; charset=utf-8",
+                dataType: 'JSON',
+                success: function (data) {
+                    if(data.data !=undefined)
+                    {
+                        var url = '@Url.Action("ErrorPage", "Login")';
+                        window.location.href = url;
+                    }
+                    if (data == "Please enter valid customer code") {
+                        $("#ErrorLoginCheck").html(data);
+                        return false;
+                    }
+                    if (data == "Customer code is invalid") {
+                        $("#ErrorLoginCheck").html(data);
+                        return false;
+                    }
+                    if (data == "Your account has been locked") {
+                        $("#ErrorLoginCheck").html(data);
+                        return false;
+                    }
+                    if (data == "Invalid loginid and password") {
+                        $("#ErrorLoginCheck").html(data);
+                        return false;
+                    }
+                    if (data == "Invalid credentials") {
+                        $("#ErrorLoginCheck").html(data);
+                        return false;
+                    }
+                    else {
+                        $("#ErrorLoginCheck").html("");
+                    }
+                    if (data == "Please enable device location to login.") {
+                        $("#ErrorLoginCheck").html(data);
+                        return false;
+                    }
+                    else {
+                        $("#ErrorLoginCheck").html("");
+                    }
+                    if (data == "Account Locked after 5 failed attempts") {
+                        $("#ErrorLoginCheck").html(data);
+                        return false;
+                    }
+                    else {
+                        $("#ErrorLoginCheck").html("");
+                    }
+                    if (data.status == "CheckAuthentication") {
+                        // optional: access data.mfaData.MFAToken, etc.
+                        $('#mfaModal').modal({
+                            backdrop: 'static',
+                            keyboard: false
+                        }).modal('show');
+                    }
+
+                    if (data.ErrorMsg == "DBError") {
+                        //$(".Userloaderbg").css("display", "none");
+                        $("#ErrorLoginCheck").html(data.data);
+                        return false;
+                    }
+
+                    debugger;
+                    if (data.type =="Web") {
+                        document.cookie = "CustomerCode=" + data.customerCode  + "; path=/; max-age=" + 60 * 60 * 24 * 30;
+                        window.location.href = '@Url.Action("Dashboard", "Dashboard")';
+
+                        @*var url = '@Url.Action("Dashboard", "Dashboard")';
+                var width = screen.availWidth;
+                var height = screen.availHeight;
+                var features = `width=${width},height=${height},top=0,left=0,resizable=no,scrollbars=no,toolbar=no,menubar=no,location=no,status=no`;
+                // var features = `width=${width},height=${height},top=0,left=0,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=yes,status=no`;
+
+                var newWindow = window.open(url, "ProjectWindow", features);
+
+                if (newWindow) {
+                    newWindow.focus(); // Bring popup to front
+                } else {
+                    alert("Popup blocked! Please allow popups for this site.");
+                }*@
+
+                    }
+                    if (data=="Mobile") {
+                        window.location.href = '@Url.Action("MobileDashboard", "MobileDashboard", new { area = "Mobile" })';
+                    }
+                    //var url = '/Dashboard/Dashboard/Dashboard';
+                    //window.location.href = url;
+                }
+            })
+        }
+
+
+
+        function setCookie(name, value, days) {
+            var expires = "";
+            if (days) {
+                var date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + (value || "") + expires + "; path=/";
+        }
+
+        function getCookie(name) {
+            var nameEQ = name + "=";
+            var ca = document.cookie.split(';');
+            for (var i = 0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+
+        function deleteCookie(name) {
+            document.cookie = name + '=; Max-Age=0; path=/;';
+        }
+    </script>
+
+
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA3r4hH526z1plXeKvsOcOzA0xsS8Npies&libraries=geometry,drawing"></script>
+
+</body>
+
+</html>

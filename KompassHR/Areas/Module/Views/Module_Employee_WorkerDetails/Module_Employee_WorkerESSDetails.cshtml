@@ -1,0 +1,948 @@
+﻿@model KompassHR.Areas.Module.Models.Module_Employee.Mas_Employee_ESS
+@{
+    ViewBag.Title = "Module_Employee_WorkerESSDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+
+
+<style>
+    .table {
+        --bs-table-striped-bg: rgba(0, 0, 255, 0.02);
+    }
+
+    .text-nowrap {
+        font-size: 12px;
+    }
+
+    tbody tr td {
+        font-size: 12px;
+        padding: 4px !important;
+    }
+
+    .ListBtn {
+        background-color: transparent;
+        color: #000;
+        font-size: 15px !important;
+        padding: 5px 8px !important;
+        border: none;
+    }
+
+        .ListBtn:hover {
+            background-color: transparent;
+            color: #000;
+        }
+
+            .ListBtn:hover i {
+                transition: all 0.5s;
+                transform: scale(1.5);
+            }
+
+
+
+    .box2 {
+        width: 100px;
+        height: 100px;
+        padding: 15px 0px;
+        font-family: 'Montserrat', sans-serif;
+        position: relative;
+        z-index: 0;
+        margin-bottom: 10px;
+    }
+
+        .box2:hover {
+            border: 2px solid #ff9c19;
+            border-radius: 10px;
+            cursor: pointer;
+            transform: translateY(-10px);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.03), 0px -15px 25px rgba(0, 0, 0, 0.03), 0 15px 25px rgba(0, 0, 0, 0.05);
+        }
+
+            .box2:hover .info i {
+                color: #ff9c19;
+            }
+
+
+        .box2 .info i {
+            font-size: 20px;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 5px;
+            color: #007bff;
+        }
+
+        .box2 .info h7 {
+            position: relative;
+            font-size: 12px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            font-weight: 900 !important;
+            text-transform: capitalize;
+            margin-bottom: 2px;
+            padding: 0 10px;
+            color: #444;
+        }
+
+    .FS-12PX {
+        font-size: 12px !important;
+    }
+
+    .div1 td:nth-child(1) {
+        position: sticky;
+        left: 0;
+    }
+
+    /*.div1 td:nth-child(2) {
+        position: sticky;
+        left: 62px;
+    }*/
+
+    .fixed-side {
+        position: sticky;
+        left: 0px;
+    }
+
+    /*.fixed-side1 {
+        position: sticky;
+        left: 62px;
+    }*/
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    /*tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }*/
+
+    /*.table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }*/
+
+    .card-row-title {
+        color: #e63c3c;
+        font-size: 18px;
+        font-weight: 600;
+        text-transform: capitalize;
+        border-bottom: #009ce7 1px solid;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .empbx h4 {
+        margin-bottom: 5px;
+    }
+
+    .empbx h6 i {
+        font-size: 1rem;
+        margin-right: 5px;
+    }
+
+    .empbx {
+        margin-bottom: 20px;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <!-- BEGIN breadcrumb -->
+    <ol class="breadcrumb float-xl-end">
+        <li class="breadcrumb-item"><a href="@Url.Action("Dashboard", "Dashboard", new { area = "Dashboard" })">Dashboard</a></li>
+        <li class="breadcrumb-item active"><a href="@Url.Action("ESS_Contractor_Menu", "ESS_Contractor_Menu", new { id = 27, ScreenId=307, area = "ESS" })">Contractor Menu</a></li>
+    </ol>
+    <!-- END breadcrumb -->
+    <!-- BEGIN page-header -->
+    <h1 class="page-header"> Worker ESS Login Information </h1>
+    <!-- END page-header -->
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">@*@i.SET_MODULES.FormName*@Worker ESS Login Information - @ViewBag.AddUpdateTitle</h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Provide employees with access to a self-service portal where they can view their attendance records, submit leave requests, check accrued leave balances, and track attendance-related information in real-time.
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdateESS", "Module_Employee_WorkerDetails", new { area = "Module" })' id="SaveESSLoginInformation" method="post">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="empbx">
+                                            <span>
+                                                <h4> <i class="fa-solid fa-user"></i> @Session["WorkerOnboardEmployeeName"] -  @Session["WorkerOnboardEmployeeNo"]  (@Session["WorkerContractorName"]) </h4>
+                                            </span>
+                                            <span>
+                                                <h6> <i class="fa-solid fa-briefcase"></i>  @Session["WorkerOnboardEmpDepartment"] / @Session["WorkerOnboardEmpDesignation"] </h6>
+                                            </span>
+                                            <span>
+                                                <h6> <i class="fa-solid fa-calendar"></i> @Session["WorkerOnboardEmpDoj"] </h6>
+                                            </span>
+                                            <hr>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-15px">
+                                    <div class="col-md-12">
+                                        <div class="card-row-title">
+                                            ESS Login Information
+                                            @*<dive style="float:right;">
+                                                    <button type="button"
+                                                            class="btn btn-info btnpress" id="btnReplicationUser">
+                                                        Republication User
+                                                    </button>
+                                                </dive>*@
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Login ID
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.ESSLoginID, new { @class = "form-control", name = "ESSLoginID", type = "text", id = "txtESSLoginID", autocomplete = "Off", Maxlength = 120 })
+                                                @Html.HiddenFor(model => model.ESSId_Encrypted, new { id = "ESSId_Encrypted" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Password
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-10">
+                                                @Html.TextBoxFor(model => model.ESSPassword, new { @class = "form-control", name = "ESSPassword", type = "password", id = "txtESSPassword", autocomplete = "Off", Maxlength = 50 })
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button" class="btn btn-default btnpress" id="toggleESSPassword">
+                                                    <i class="fa-solid fa-eye"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Security Question
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.ESSSecurityQuestion, new List<SelectListItem> {
+                                                    new SelectListItem { Text = "What is your school name?", Value = "What is your school name?"},
+                                                    new SelectListItem { Text = "What is your mother name?", Value = "What is your mother name?"},
+                                                     new SelectListItem { Text = "What is your best friend name?", Value = "What is your best friend name?"},
+                                                      new SelectListItem { Text = "What is your best teacher name?", Value = "What is your best teacher name?"},
+                                                        new SelectListItem { Text = "What is your birthplace?", Value = "What is your birthplace?"},
+                                                          new SelectListItem { Text = "What is pet name?", Value = "What is pet name?"},
+                                                }, "--Select--", new { id = "ddlESSSecurityQuestion", @class = "form-select", autocomplete = "off", name = "ESSSecurityQuestion" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Answers
+
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.ESSAnswer, new { @class = "form-control", name = "ESSAnswer", type = "text", id = "txtESSAnswer", autocomplete = "Off", Maxlength = 50 })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="col-form-label"> </label>
+                                            <div class="col-md-8">
+                                                @Html.CheckBoxFor(model => model.ESSIsActive, new { id = "ESSIsActive" })
+                                                &nbsp; <label class="form-check-label form-label">
+                                                    Set the employee to active
+                                                    @*//Activate*@
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row mb-15px">
+                                    <div class="col-md-12">
+                                        <div class="card-row-title">
+                                            User Access Policy Assign
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                User Access Policy <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-10">
+                                                @Html.DropDownListFor(model => model.UserAccessPolicyId, new SelectList(ViewBag.GroupName, "Id", "Name"), "--Select--", new { @class = "form-control", name = "UserPolicyAccessId", id = "txtUserPolicyAccessId" })
+                                                @Html.ValidationMessageFor(model => model.UserAccessPolicyId, "", new { @class = "help-block", @id = "ErrorUserAccessPolicyId", @style = "color:red" })
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button" class="btn btn-primary btn-sm" id="btnPolicyAccess" onclick="ViewPolicyAccess()">
+                                                    <i class="fa-solid fa-eye"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @*<div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                &nbsp;
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.CheckBoxFor(model => model.IsAdmin, new { id = "IsAdmin" })
+                                                &nbsp; <label class="form-check-label form-label">
+                                                    Give admin rights
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>*@
+                                    @*<div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="col-form-label"> </label>
+                                                <div class="col-md-8">
+                                                    @Html.CheckBoxFor(model => model.IsAdmin, new { id = "IsAdmin" })
+                                                    &nbsp; <label class="form-check-label form-label">
+                                                        Is Admin
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>*@
+                                </div>
+                                <div class="row mb-20px">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="button" data-bs-toggle="offcanvas"
+                                                                href="#offcanvasExample" id="btnActionList" onclick="EmployeeDetails(this)" class="btn  btnpress ListBtn">
+                                                            <i class="fa-solid fa-list"></i>
+                                                        </button>
+                                                        <button class="btn btn-primary btn-sm" type="button" id="btnSubmit">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                        <a href="@Url.Action("ActiveWorkerList", "Module_Employee_AddWorkers", new { area = "Module" })">
+                                                            <button type="button"
+                                                                    class="btn btn-danger btn-sm" id="btnBack">
+                                                                <i class="fa-solid fa-share-from-square"></i>
+                                                                List
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+<div class="row">
+    @Html.Action("WorkerDetails_SidebarMenu", "Module_Employee_WorkerDetails")
+</div>
+
+<!-- #Start Appprove Reject Modal -dialog -->
+<div class="modal fade" id="myModalFinal" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-black text-white text-center">
+                <h4 class="modal-title text-center">Replication User</h4>
+                @*<div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-icon btn-danger btnClear" data-bs-dismiss="modal"
+                           aria-hidden="true" id="CloseModel">
+                            <i class="fa fa-xmark"></i>
+                        </a>
+                    </div>*@
+            </div>
+            <div class="modal-body">
+                <!-- BEGIN panel -->
+                <div class="modal-body-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveReplicationUser", "Module_Employee_ESSInfo", new { area = "Module" })' id="SaveReplicationUser" method="post">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                From User
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @*@Html.DropDownList("FromUser", new List<SelectListItem>
+                                                    {new SelectListItem { Text=@Session["OnboardEmployeeName"].ToString() ,Value=@Session["OnboardEmployeeName"].ToString() },
+                                                    }, "--Select--", new { @class = "form-select", name = "FromUser", id = "txtFromUser", autocomplete = "Off" })*@
+                                                @Html.DropDownList("FromUser", new SelectList(ViewBag.GetMasEmployee, "Id", "Name"), "--Select--", new { @class = "form-select", name = "FromUser", id = "txtFromUser", autocomplete = "Off" })
+                                                <input type="hidden" id="FromUserCount" name="FromUserCount" value="@ViewBag.count" />
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                To User
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @*@Html.DropDownList("ToUser", new List<SelectListItem>
+                                                    {new SelectListItem { Text=@ViewBag.GetToEmployee.Name ,Value=@ViewBag.GetToEmployee.Id },
+                                                    }, "--Select--", new { @class = "form-select", name = "ToUser", id = "ddlToUser", autocomplete = "Off",Value= ViewBag.GetToEmployee.Name })*@
+                                                @Html.TextBox("ToUser", "", new { @class = "form-control mb-5px", type = "text", id = "txtToUser", name = "ToUser", @readonly = "readonly", @Value = @ViewBag.GetToEmployee })
+                                                <input type="hidden" id="txtToUserCount" name="ToUserCount" value="@ViewBag.countToUser" />  @*@Value = @ViewBag.count*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-top:15px;">
+                                    <div class="col-md-6">
+                                        @*<div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Designation
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownList("ToUser", new SelectList(""), "--Select--", new { @class = "form-select", name = "ToUser", id = "ddldesignation", autocomplete = "Off" })
+                                                </div>
+                                            </div>*@
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button class="btn btn-primary btn-sm" type="submit" id="btnSave">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Save
+                                                        </button>
+                                                        <button type="button" id="btnCancel" class="btn btn-danger btnpress CloseModel" data-bs-dismiss="modal">
+                                                            <i class="fa-solid fa-share-from-square"></i> Close
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div><hr />     @*<div class="LastShortLeaveBx">   </div>*@
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- END panel -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #End modal-dialog -->
+<!-- #Start modal-dialog -->
+<style>
+    #tblAccessPolicy thead th {
+        position: sticky;
+        top: -1px;
+        background-color: rgba(233, 236, 239, 1);
+    }
+</style>
+
+<div class="modal fade" id="myAccessPolicy" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-black text-white">
+                <h4 class="modal-title">Policy Access - List</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+
+                    <div class="col-md-12">
+                        @* <input id="btnAccessPolicy" type="text" class="form-control" placeholder="Search here" style="width:250px;">*@
+                        <div class="row" style="overflow-y: scroll;height: 400px;">
+                            <table class="table table-bordered" id="tblAccessPolicy" style="width: 100%;">
+                                <thead style="background-color: rgba(233, 236, 239, 1) !important;">
+                                    <tr>
+                                        <th class="text-nowrap">Module Name </th>
+                                        <th class="text-nowrap">Type </th>
+                                        <th class="text-nowrap">Form Name</th>
+                                        <th class="text-nowrap">Description </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbodytblAccessPolicy"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- END panel -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger btnpress CloseModelHistory" id="CloseModelHistory" data-bs-dismiss="modal" aria-hidden="true">
+                    <i class="fa-solid fa-share-from-square"></i> Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #End modal-dialog -->
+
+<script>
+    $('#btnReplicationUser').on('click', function () {
+        debugger;
+
+        var FromUserCout=$("#FromUserCount").val();  txtToUserCount
+        var ToUserCount=$("#txtToUserCount").val();
+        if(FromUserCout==0 )
+        {
+            var Message = "No Employee Found For this Designation";
+            var Icon = "warning";
+            debugger;
+            if (Message != null) {
+                if (Icon != null) {
+                    Swal.fire({
+                        icon: Icon,
+                        text: Message,
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup()
+                            popup.classList.remove('swal2-show')
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake')
+                            })
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake')
+                            }, 500)
+                            // return false
+                        }
+                    })//.then(function() {
+                    //    window.location.reload();
+                    //});
+                }
+            }
+
+        }
+        else if(ToUserCount==0 )
+        {
+            var Message = "User has Already Access";
+            var Icon = "warning";
+            debugger;
+            if (Message != null) {
+                if (Icon != null) {
+                    Swal.fire({
+                        icon: Icon,
+                        text: Message,
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup()
+                            popup.classList.remove('swal2-show')
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake')
+                            })
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake')
+                            }, 500)
+                            // return false
+                        }
+                    })//.then(function() {
+                    //    window.location.reload();
+                    //});
+                }
+            }
+
+        }
+        else
+        {
+            $("#myModalFinal").modal('show');
+        }
+
+    });
+    $(document).ready(function () {
+        $(".title").text("Policy Access - List");
+        $("#txtUserPolicyAccessId").select2();
+        debugger;
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        var OnboardEmployeeNo = @Html.Raw(Json.Encode(Session["OnboardEmployeeNo"]));
+        var AddUpdateTitle = @Html.Raw(Json.Encode(ViewBag.AddUpdateTitle));
+        if(AddUpdateTitle=="Update")
+        {
+
+        }
+        else
+        {
+            if(OnboardEmployeeNo!=null)
+            {
+                $("#txtESSLoginID").val(OnboardEmployeeNo);
+            }
+        }
+
+
+        debugger;
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        // return false
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+    });
+</script>
+
+
+<script>
+    //Salary Account
+    var toggleESSPassword = document.querySelector('#toggleESSPassword');
+    var ESSPassword = document.querySelector('#txtESSPassword');
+    $("#toggleESSPassword" ).hover(
+       function() {
+           $( this ).addClass( "hover" );
+           const type = ESSPassword.getAttribute('type') === 'password' ? 'text' : 'password';
+           ESSPassword.setAttribute('type', type);
+           // toggle the eye slash icon
+           this.classList.toggle('fa-solid-eye-slash');
+       }, function() {
+           $( this ).removeClass( "hover" );
+           const type = ESSPassword.getAttribute('type') === 'password' ? 'text' : 'password';
+           ESSPassword.setAttribute('type', type);
+           // toggle the eye slash icon
+           this.classList.toggle('fa-solid-eye-slash');
+       }
+   );
+</script>
+
+<script>
+    //use for add regex function
+    jQuery.validator.addMethod(
+  "regex",
+   function(value, element, regexp) {
+       if (regexp.constructor != RegExp)
+           regexp = new RegExp(regexp);
+       else if (regexp.global)
+           regexp.lastIndex = 0;
+       return this.optional(element) || regexp.test(value);
+   },"erreur expression reguliere"
+);
+
+
+    $("#SaveESSLoginInformation").validate({
+        rules: {
+            ESSLoginID: {
+                required: true,
+            },
+            ESSPassword: {
+                required: true,
+            },
+            UserAccessPolicyId: {
+                required: true,
+            },
+        },
+        messages: {
+            ESSLoginID: {
+                required: "LoginID is required",
+            },
+            ESSPassword: {
+                required: "Password is required",
+            },
+            UserAccessPolicyId: {
+                required: "User access policy is required",
+            },
+        }
+    });
+
+    //Replication Form Validation start
+    $("#SaveReplicationUser").validate({
+        rules: {
+            FromUser: {
+                required: true,
+            },
+            ToUser: {
+                required: true,
+            },
+        },
+        messages: {
+            FromUser: {
+                required: "Select From User is required",
+            },
+            ToUser: {
+                required: " Select To User is required",
+            },
+        }
+    });
+    //Replication Form Validation End
+
+    var form = $("#SaveESSLoginInformation");
+    form.validate();
+
+    $("#btnSubmit").click(function () {
+        debugger;
+        form.valid();
+        if(form.valid()==false)
+        {
+            return false;
+        }
+        var ESSLoginID = $("#txtESSLoginID").val();
+        var ESSId_Encrypted = $("#ESSId_Encrypted").val();
+
+        $.ajax({
+            url: '@Url.Action("IsESSLoginExists", "Module_Employee_WorkerDetails",new { area= "Module" })',
+            method:"Get",
+            data: { ESSId_Encrypted: ESSId_Encrypted,ESSLoginID:ESSLoginID },
+            success:function(response){
+                debugger;
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon=="error") {
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                        }
+                    }
+                }
+                else{
+                    $("#SaveESSLoginInformation").submit();
+
+                }
+            }
+        });
+
+    });
+
+
+    function ViewPolicyAccess()
+    {
+        debugger;
+        var UserPolicyAccessId = $("#txtUserPolicyAccessId").val();
+        if (UserPolicyAccessId=="")
+        {
+            $('#ErrorUserAccessPolicyId').html("User access policy is required"); $("#txtUserPolicyAccessId").focus();  return false;
+        }
+        else{
+            $('#ErrorUserAccessPolicyId').html("");
+        }
+        $.ajax({
+            url: '@Url.Action("GetUserAccessPolicyHistory", "Module_Employee_ESSInfo")',
+            method:"Get",
+            data: { UserPolicyAccessId: UserPolicyAccessId },
+            success:function(data){
+                debugger;
+                //var data =JSON.parse(response);
+                if(data=="")
+                {
+                    Swal.fire({
+                        icon: 'error',
+                        text: 'Record Not Found',
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup()
+                            popup.classList.remove('swal2-show')
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake')
+                            })
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake')
+                            }, 500)
+                            return false
+                        }
+                    });
+                }
+                debugger;
+                $(".Userloaderbg").css("display", "none");
+                if (data && data.length > 0) {
+                    $('#tblAccessPolicy').DataTable({
+                        data: data,
+                        destroy: true,
+                        paging: false,
+                        searching: true,
+                        dom: '<"dataTables_wrapper dt-bootstrap"<"row"<"col-xl-7 d-block d-sm-flex d-xl-block justify-content-center"<"d-block d-lg-inline-flex me-0 me-md-3"l><"d-block d-lg-inline-flex"B>><"col-xl-5 d-flex d-xl-block justify-content-center"fr>>t<"row"<"col-md-5"i><"col-md-7"p>>>',
+                        buttons: [
+                            { extend: 'excel', className: 'btn-sm'},
+                        ],
+                        info: false, // Enable information display
+                        columns: [
+                                   { data: 'ScreenDisplayMenuName' },
+                                   { data: 'ModuleName' },
+                                   { data: 'ScreenMenuType' },
+                                   { data: 'DescriptionForUser' }
+                        ],
+
+                    });
+                    $('#myAccessPolicy').modal('show');
+                } else {
+                    $('#myAccessPolicy').modal('hide');
+                }
+            },
+            error: function () {
+                // Handle errors
+            }
+        });
+
+    }
+
+    $(".CloseModelHistory").click(function () {
+        $('#tblAccessPolicy tr').not(function () { return !!$(this).has('th').length; }).remove();
+    })
+
+    //$("#btnAccessPolicy").on("keyup", function () {
+    //    var value = $(this).val().toLowerCase();
+    //    $("#tbodytblAccessPolicy tr").filter(function () {
+    //        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    //    });
+    //});
+</script>

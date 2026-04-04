@@ -1,0 +1,300 @@
+﻿@model KompassHR.Areas.Setting.Models.Setting_Contractor.Mas_BulkUpdateTypeMapping
+@{
+    ViewBag.Title = "Setting_Contractor_BulkUpdateTypeMapping";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+<script src="~/assets/js/CaptchaVerification.js"></script>
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+<style>
+    label.error, .Error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    .tblAddData td:nth-child(2) {
+        text-align: center;
+    }
+
+    .tblAddData td:nth-child(1) {
+        display: none;
+    }
+
+
+    th:nth-child(2) {
+        width: 100px; /* Set the width for the first column */
+    }
+</style>
+
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Bulk Update Type Mapping
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("ESS_AdminDashboard_Dashboard", "ESS_AdminDashboard_Dashboard", new { id = 32, ScreenId = 121, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Setting_Contractor_Menu", "Setting_Contractor_Menu", new { id = 27, ScreenId = 110, area = "Setting" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Settings">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                 <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">Bulk Update Type Mapping - @ViewBag.AddUpdateTitle </h4>
+                 
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        The Bulk Update Type Mapping form is a vital feature in HRMS applications, designed to organize and manage employee data efficiently. It facilitates bulk updates for type mapping, enabling seamless adjustments and ensuring scalability.
+                    </p>
+                </div>
+
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "Setting_Contractor_BulkUpdateTypeMapping", new { area = "Setting" })' id="SaveBulkUpdateType" method="post">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Employee Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.EmployeeId, new SelectList(ViewBag.GetEmpolyeeName, "Id", "Name"), "--Select--", new { @class = "form-control", name = "EmpolyeeName", id = "txtGetEmpolyeeName" })
+                                                <span id="ErrortxtGetEmpolyeeName" class="Error"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button" id="btnshow" onclick="ShowAllType()" class="btn btn-primary btn-sm">Show</button>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="panel panel-inverse" data-sortable-id="index-1">
+                                            <div class="panel-body">
+                                                <!-- BEGIN table-responsive -->
+                                                <div class="table-scroll div1">
+                                                    <div class="table-wrap">
+                                                        <table class="table table-bordered table-hover mb-0 text-dark align-middle tblAddData">
+                                                            <thead style="background-color: rgba(233, 236, 239, 1) !important;">
+                                                                <tr class="trheading">
+
+                                                                    <th class="text-nowrap" hidden>BulkUpdateTypeId</th>
+                                                                    <th class="text-center"> <input type="checkbox" class="allChecked" name="checkbox" id="AllCheckBox" value="value">&nbsp;All </th>
+                                                                    <th class="text-center">Type Name</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody id="tblBulkUpdateType"></tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="row">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="BtnBx">
+                                                <div>
+                                                    <button type="button" id="btnSubmit" class="btn btn-primary btn-sm">
+                                                        Submit
+                                                    </button>
+                                                    <a href="@Url.Action("GetList", "Setting_Contractor_BulkUpdateTypeMapping", new { area = "Setting" })">
+                                                    <button type="button" class="btn btn-danger btn-sm" id="btnGetList">
+                                                    <i class="fa-solid fa-share-from-square"></i> List
+                                                    </button>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+
+    $(document).ready(function () {
+        debugger;
+        $("#txtGetEmpolyeeName").change(function () {
+            $("#tblBulkUpdateType").empty();
+        });
+        $("#txtGetEmpolyeeName").select2();
+    });//ready fnction
+
+
+    function ShowAllType() {
+        debugger
+        var EmployeeId = $("#txtGetEmpolyeeName").val();
+        if (EmployeeId == "") {
+            $("#ErrortxtGetEmpolyeeName").html("Employee name required");
+        }
+        else {
+            $("#ErrortxtGetEmpolyeeName").html("");
+        }
+        $.ajax({
+            type: 'GET',
+            data: { EmployeeId: EmployeeId },
+            url: '@Url.Action("GetBulkType", "Setting_Contractor_BulkUpdateTypeMapping")',
+            success: function (data) {
+                debugger;
+                $('#tblBulkUpdateType tr').not(function () { return !!$(this).has('th').length; }).remove();
+                for (var i = 0; i < data.length; i++) {
+                    var table = document.getElementById("tblBulkUpdateType");
+                    var rowcount = table.rows.length;
+                    var row = table.insertRow(rowcount);
+                    row.insertCell(0).innerHTML = "" + data[i][1].Value + "";
+                    row.insertCell(1).innerHTML = '<input ' + (data[i][0].Value ? 'checked' : ' ') + ' type="checkbox" class="chk" />';
+                    row.insertCell(2).innerHTML = "" + data[i][2].Value + "";
+                }
+            }
+        });
+
+    }
+
+
+    $("#AllCheckBox").on("click", function () {
+        debugger;
+        var isChecked = $(this).prop('checked');
+        $("#tblBulkUpdateType tr").each(function () {
+            $(this).find("input").prop('checked', isChecked);
+        });
+    });
+
+</script>
+<script>
+
+
+
+    //use for add regex function
+    jQuery.validator.addMethod(
+  "regex",
+        function (value, element, regexp) {
+            if (regexp.constructor != RegExp)
+                regexp = new RegExp(regexp);
+            else if (regexp.global)
+                regexp.lastIndex = 0;
+            return this.optional(element) || regexp.test(value);
+        }, "erreur expression reguliere"
+);
+
+    $("#SaveBulkUpdateType").validate({
+        rules: {
+            EmployeeId: {
+                required: true,
+            },
+        },
+        messages: {
+            EmployeeId: {
+                required: "Empolyee Name is required"
+            },
+        }
+    });
+
+
+
+    var form = $("#SaveBulkUpdateType");
+    form.validate();
+    $("#btnSubmit").click(function () {
+        debugger
+        form.valid();
+        if (form.valid() == false) {
+            return false;
+        }
+        $(".Userloaderbg").css("display", "flex");
+        var table = document.getElementById("tblBulkUpdateType");
+        var empolyee = $("#txtGetEmpolyeeName").val();
+        var rowCount = table.rows.length;
+        var BulkUpdateTypeMapping = [];
+        debugger;
+        var data = {};
+        for (i = 0; i <= rowCount - 1; i++) {
+            debugger;
+            var data = {};
+            data.EmployeeID = empolyee;
+            data.IsActive = table.rows[i].cells[1].children[0].checked;
+            data.TypeId = table.rows[i].cells[0].innerHTML;
+            BulkUpdateTypeMapping.push(data);
+        }
+
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("SaveUpdate", "Setting_Contractor_BulkUpdateTypeMapping")',
+            //url: "SaveUpadte",
+            data: JSON.stringify({ BulkUpdateTypeMapping: BulkUpdateTypeMapping }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            success: function (response) {
+                debugger;
+                var data = JSON.parse(response);
+                var Message1 = data.Message;
+                var Icon1 = data.Icon;
+                if (Icon1 != null) {
+                    if (Message1 != null) {
+                        Swal.fire({
+                            icon: Icon1,
+                            text: Message1,
+                            allowOutsideClick: () => {
+                                const popup = Swal.getPopup()
+                                popup.classList.remove('swal2-show')
+                                setTimeout(() => {
+                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                })
+                                setTimeout(() => {
+                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                }, 500)
+                                // return false
+                            }
+                        }).then(function () {
+                            var url = '@Url.Action("Setting_Contractor_BulkUpdateTypeMapping", "Setting_Contractor_BulkUpdateTypeMapping")';
+                            window.location.href = url;
+                        })
+                    }
+                }
+            }
+        });
+    });
+</script>

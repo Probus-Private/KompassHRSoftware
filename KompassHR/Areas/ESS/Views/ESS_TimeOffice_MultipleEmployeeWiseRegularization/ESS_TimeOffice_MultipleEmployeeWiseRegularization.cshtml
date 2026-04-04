@@ -1,0 +1,1087 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_TimeOffice.EmployeeWiseAttendance
+@{
+    ViewBag.Title = "ESS_TimeOffice_MultipleEmployeeWiseRegularization";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+
+
+<style>
+       .fa-share-from-square {
+        transform: rotate(180deg);
+    }   
+    .select2.select2-container {
+        width: 100% !important;
+    }
+    /*select Row CSS Start*/
+    body table.dataTable tbody tr.selected td {
+        background: #fff7cc !important;
+        color: black !important;
+        font-weight: 600;
+    }
+
+    table.dataTable.table-hover > tbody > tr.selected:hover > * {
+        box-shadow: inset 0 0 0 9999px #D0D3D4 !important;
+    }
+
+    /*Table Row Hover   rgba(0, 0, 0, 0.075);*/
+    table.dataTable.table-hover > tbody > tr:hover > * {
+        box-shadow: inset 0 0 0 9999px #D0D3D4 !important;
+    }
+    /*Table select Row BackGround Color */
+    table.dataTable > tbody > tr.selected > * {
+        box-shadow: inset 0 0 0 9999px #D0D3D4 !important;
+        color: white;
+    }
+
+    /*.table{
+           --bs-table-active-bg: #9bc2ce !important;
+       }*/
+    /*tr:nth-child(even) {
+             --bs-table-accent-bg: #D0D3D4   !important;
+             }*/
+    /*select Row CSS End*/
+    .dataTables_scrollBody::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+        margin-top: 0px;
+    }
+
+    .dataTables_scrollBody::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .dataTables_scrollBody::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+        height: 10px;
+    }
+
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    label.error, .Error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    .div1 td:nth-child(1) {
+        position: sticky;
+        left: 0;
+        border-collapse: collapse;
+        background-color: #eee;
+    }
+
+    .fixed-side {
+        position: sticky;
+        left: 0;
+        background-color: #eee;
+        border-collapse: collapse;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    .fa-share-from-square {
+        transform: rotate(180deg);
+    }
+
+     #tblMultipleEmployeeLog input[type="text"] {
+        height: 25px; /* Adjust the height as needed */
+    }
+
+    #tblMultipleEmployeeLog input[type="time"] {
+        height: 25px; /* Adjust the height as needed */
+    }
+
+     #tblMultipleEmployeeLog input[type="datetime-local"] {
+        height: 25px; /* Adjust the height as needed */
+    }
+
+    #tblMultipleEmployeeLog input[type="date"] {
+        height: 25px; /* Adjust the height as needed */
+    }
+
+
+
+    /*.divEmployeeLog {
+        height: 250px; /* Adjust height as needed *
+        overflow-y: auto;
+    }*/
+
+    /*.tblheadEmployeeLog {
+        position: sticky;
+        top: 0;
+        border-color: black;
+    }*/
+
+    .dataTables_wrapper .dataTables_scroll table.dataTable th, .dataTables_wrapper .dataTables_scroll tr.even td,
+    .dataTables_wrapper .dataTables_scroll table.dataTable th, .dataTables_wrapper .dataTables_scroll tr.odd td {
+        border-color: black !important;
+        background-color: white !important;
+    }
+
+    .dataTables_wrapper .dataTables_scroll .dataTables_scrollFootInner table.table-bordered tr th:first-child, .dataTables_wrapper .dataTables_scroll .dataTables_scrollHeadInner table.table-bordered tr th:first-child {
+        border-color: black !important;
+    }
+
+
+    .table-responsive {
+        height: 120px;
+    }
+</style>
+
+
+<div id="content" class="app-content">
+    <!-- BEGIN breadcrumb -->
+    <ol class="breadcrumb float-xl-end">
+        <li class="breadcrumb-item"><a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">Dashboard</a></li>
+        <li class="breadcrumb-item active"><a href="@Url.Action("ESS_TimeOffice_AttendanceRegularization_SubMenu", "ESS_TimeOffice_AttendanceRegularization_SubMenu", new { id = 5, ScreenId= 363, area = "ESS" })">Regularization Menu</a></li>
+    </ol>
+    <!-- END breadcrumb -->
+    <!-- BEGIN page-header -->
+    <h1 class="page-header">Employee Wise Attendance Regularization</h1>
+    <!-- END page-header -->
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">Employee Wise Attendance Regularization<b></b> </h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action="/ESS/ESS_TimeOffice_EmployeeWiseRegularization/ESS_TimeOffice_EmployeeWiseRegularization" id="formRegularization" method="post">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <abel class="form-label col-form-label col-md-4">
+                                                Company Name
+                                            </abel>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.CmpId, new SelectList(ViewBag.CompanyName, "Id", "Name"), new { @class = "form-select", name = "CompanyName", id = "ddlCompanyName" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Business Unit
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.BranchId, new SelectList(ViewBag.GetBusinessUnit, "Id", "Name"), @*"--Select--",*@ new { @class = "form-select", type = "text", name = "BusinessUnit", id = "ddlBranchId" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <button type="button" class="btn btn-success btn-sm" onclick="addRow()">
+                                            <i class="fas fa-plus"></i> Add
+                                        </button>
+
+                                        <button type="button" class="btn btn-success btn-sm" style="margin-left:25px;" onclick="AddRiplicaRow()">
+                                            <i class="fa-solid fa-copy"></i> Copy Replica
+                                        </button>
+
+                                        <button type="button" class="btn btn-warning btn-sm" href="#offcanvasExample" id="btnLoadLog"  data-bs-toggle="offcanvas" style="margin-left:25px;">
+                                            <i class="fa-solid fa-eye fa-sm blink"></i> Show Log
+                                        </button>
+
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="table-scroll divEmployeeLog">
+                                        <div class="table-wrap">
+                                            <table class="table table-bordered table-hover mb-0 text-dark align-middle" id="tblMultipleEmployeeLog" style="width: 100%;">
+                                                <thead class="table-active horizontal-scroll tblheadEmployeeLog" style="background-color: rgba(233, 236, 239, 1) !important;">
+                                                    <tr class="trheading">
+                                                        <th class="text-start text-center">Action</th>
+                                                        <th class="text-start text-center">Sr.No.</th>
+                                                        <th class="text-start text-center">Employee No.</th>
+                                                        <th class="text-start text-center">Date</th>
+                                                        <th class="text-start text-center">In-Time</th>
+                                                        <th class="text-start text-center">Out-Time</th>
+                                                        <th class="text-start text-center" style="width: 300px;">Remark</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @*@foreach (var d in ViewBag.EmployeeLog)
+                                                        {
+                                                            <tr onclick="tblEmployeeLogRowColor(this)">
+                                                                <td class="text-nowrap text-center">@d.LoDate</td>
+                                                                <td class="text-nowrap text-center">@d.Direction</td>
+                                                                <td hidden>TimeSend 24Hr</td>
+                                                                <td><i class="fa-regular fa-circle-up"></i></td>
+                                                                <td><i class="fa-regular fa-circle-up"></i></td>
+                                                            </tr>
+                                                        }*@
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <span class="Error" id="ErrortblEmployeeWise" style="margin-top: 12px; margin-right:31px; font-size:15px;"></span>
+
+                                                    <button type="button" id="btnSubmit" class="btn btn-primary btn-sm">
+                                                        <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                    </button>
+
+                                                    <a href="@Url.Action("ESS_TimeOffice_AttendanceRegularization_SubMenu", "ESS_TimeOffice_AttendanceRegularization_SubMenu", new { id=5 , ScreenId=363 , area = "ESS" })">
+                                                        <button type="button" class="btn btn-danger">
+                                                            <i class="fa-solid fa-share-from-square"></i> Back
+                                                        </button>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+<!-- Start panel -->
+<div class="row">
+    <div class="col-lg-12">
+        <div class="offcanvas offcanvas-end" id="offcanvasExample" data-bs-backdrop="false" data-bs-scroll=true>
+            <div class="offcanvas-header" style="border-bottom: 1px solid #d3d3d38a;">
+                <h6 class="offcanvas-title text-center" id="EmpName1"
+                    style="width: 100%;">
+                    <span id="EmpName"></span>
+                </h6>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
+            </div>
+            <div class="offcanvas-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row mb-15px">
+                            <label class="form-label col-form-label col-md-5">
+                                From date
+                                <span class="important">*</span>
+                            </label>
+                            <div class="col-md-7">
+                                @Html.TextBox("LogFromDate", null, new { @class = "form-control", id = "LogFromDate", type = "date" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row mb-15px">
+                            <label class="form-label col-form-label col-md-5">
+                                To date
+                                <span class="important">*</span>
+                            </label>
+                            <div class="col-md-7">
+                                @Html.TextBox("LogToDate", null, new { @class = "form-control", id = "LogToDate", type = "date" })
+                            </div>
+                            <span class="Error" id="ErrorLogFromToDate" style="display:none"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="row mb-15px">
+                            <label class="form-label col-form-label col-md-5">
+
+                            </label>
+                            <div class="col-md-7">
+                                <button type="button" class="btn btn-primary btn-sm" id="btnload" onclick="LoadEmployeeLog()">
+                                    <i class="fa-solid fa-spinner"></i>&nbsp; Load Log
+                                </button>
+                            </div>
+                            <span class="Error" id="ErrorLogFromToDate" style="display:none"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12 overflow-auto">
+
+                        <table class="table table-bordered table-hover mb-0 text-dark align-middle" id="tblEmployeeLog" style="width:100%;">
+                            <thead style="background-color: rgba(233, 236, 239, 1) !important;">
+                                <tr class="text-center">
+                                    <th class="text-nowrap text-center">Log Date</th>
+                                    <th class="text-nowrap text-center">In-Out</th>
+                                    <th class="text-nowrap text-center" hidden></th>
+                                    <th class="text-nowrap text-center">In</th>
+                                    <th class="text-nowrap text-center">Out</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @*@foreach (var d in ViewBag.EmployeeLog)
+                                    {
+                                        <tr onclick="tblEmployeeLogRowColor(this)">
+                                            <td class="text-nowrap text-center">@d.LoDate</td>
+                                            <td class="text-nowrap text-center">@d.Direction</td>
+                                            <td hidden>TimeSend 24Hr</td>
+                                            <td><i class="fa-regular fa-circle-up"></i></td>
+                                            <td><i class="fa-regular fa-circle-up"></i></td>
+                                        </tr>
+                                    }*@
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+                <br />
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END panel -->
+
+<script>
+    $(document).ready(function () {
+        $("#ddlCompanyName").select2();
+        $("#ddlBranchId").select2();
+
+        $("#ddlCompanyName").on("change", function () {
+            debugger;
+            $("#ddlBranchId").empty();
+            var CmpId = $("#ddlCompanyName").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: 'GetBusinessUnit',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    debugger;
+                    if (data != null) {
+                        $("#ddlBranchId").find("option").remove();
+                        //$("#ddlBranchId").append("<option value=''> --Select-- </option>");
+                        $.each(data, function (i, p) {
+                            $("#ddlBranchId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        });
+        $(document).on('change', '#txtInTime, #txtOutTime', function () {
+            debugger;
+            var currentRow = $(this).closest("tr");
+            var GetDate = currentRow.find("td").eq(3).find("input").val();
+            var GetInTimes = currentRow.find("td").eq(4).find("input").val();
+            var GetOutTimes = currentRow.find("td").eq(5).find("input").val();
+
+            var GetInDate = GetInTimes.substring(0, 10);
+            var GetOutDate = GetOutTimes.substring(0, 10);
+            var GetInTime = GetInTimes.substring(11);
+            var GetOutTime = GetOutTimes.substring(11);
+
+            //if (GetInTimes == "") {
+            //    row.find('#ErrortxtInTime').css('display', 'flex');
+            //    row.find('#ErrortxtInTime').html("Invalid In Time");
+            //    hasError = true; return false;
+            //}
+            //else {
+            //    $("#ErrortxtInTime").html("");
+            //    hasError = false;
+            //}
+
+            //if (tblRowData.InOut_OutTime == "") {
+            //    row.find('#ErrortxtOutTime').css('display', 'flex');
+            //    row.find('#ErrortxtOutTime').html("Invalid Out Time");
+            //    hasError = true; return false;
+            //}
+            //else {
+            //    $("#ErrortxtOutTime").html("");
+            //    hasError = false;
+            //}
+
+            //For Date Check
+            if (GetInDate === GetOutDate) // IF SAME DATE
+            {
+                //FOR CHECK TIME SHOULD NOT GRETER
+                if (GetInTime > GetOutTime) {
+                    //currentRow.find('#txtInTime').css('color', 'red');
+                    currentRow.find('#ErrortxtOutTime').css('display', 'flex');
+                    currentRow.find('#ErrortxtOutTime').html("Not Less Than In Time");
+                    return false; hasError = true;
+                }
+                else {
+                    //currentRow.find('#txtInTime').css('color', 'black');
+                    currentRow.find('#ErrortxtOutTime').css('display', 'none');
+                    currentRow.find('#ErrortxtOutTime').html("");
+                    hasError = "";
+                }
+            }
+            else if (GetInDate != GetOutDate)// IF DIFFRENT DATE
+            {
+                var fromDate = new Date(GetInDate);
+                var toDate = new Date(GetOutDate);
+                // COMPARE THE DATES
+                if (fromDate > toDate) {
+                    //currentRow.find('#txtInTime').css('color', 'red');
+                    currentRow.find('#ErrortxtOutTime').css('display', 'flex');
+                    currentRow.find('#ErrortxtOutTime').html("Not Less Than In Date");
+                    var hasError = true; return false;
+                }
+                else {
+                    //currentRow.find('#txtInTime').css('color', 'black');
+                    currentRow.find('#ErrortxtOutTime').css('display', 'none');
+                    currentRow.find('#ErrortxtOutTime').html("");
+                    var hasError = false;
+                }
+            }
+        });
+
+
+        $('#tblEmployeeLog').DataTable({
+            scrollY: 300,
+            scrollCollapse: false,
+            paging: false,
+            scrollX: false,
+            ordering: false, // Disable sorting
+            searching: false, // Enable searching
+            "bInfo": false
+        });
+
+        //FINAL SUBMIT
+        $("#btnSubmit").click(function () {
+            debugger;
+            var hasError = "";
+            var CmpId = $('select#ddlCompanyName option:selected').val();
+            var BranchId = $('select#ddlBranchId option:selected').val();
+            var tbldata = [];
+            $("#tblMultipleEmployeeLog tbody tr").each(function (index) {
+                //var rowNumber = index + 1;
+                var row = $(this).closest("tr");
+                var tblRowData = {};
+                tblRowData.InOut_EmployeeNo = row.find("td").eq(2).find("input").val();
+                tblRowData.InOut_AttendanceDate = row.find("td").eq(3).find("input").val();
+                tblRowData.InOut_InTime = row.find("td").eq(4).find("input").val();
+                tblRowData.InOut_OutTime = row.find("td").eq(5).find("input").val();
+                tblRowData.InOut_inoutnote = row.find("td").eq(6).find("input").val();
+
+
+                var cells = row.find("td");
+                var employeeNo = row.find("td").eq(2).find("input").val(); // First cell (Employee No.)
+                var date = row.find("td").eq(3).find("input").val();       // Second cell (Date)
+                //var rowIdentifier = employeeNo + "-" + date;
+                //const seen = new Set();
+                //if (seen.has(rowIdentifier)) {
+                //    row.find('#txtEmployeeNo').css('color', 'black').focus();
+                //    row.find("#ErrortxtEmployeeNo").css('display', 'flex');
+                //    row.find("#ErrortxtEmployeeNo").html("Duplicate record not allow");
+                //    hasError = true;
+                //    return false;
+                //} else {
+                //    seen.add(rowIdentifier);
+                //    hasError = false;
+                //}
+
+                if (tblRowData.InOut_EmployeeNo == "")
+                {
+                    row.find('#txtEmployeeNo').css('color', 'black').focus();
+                    row.find("#ErrortxtEmployeeNo").css('display', 'flex');
+                    row.find("#ErrortxtEmployeeNo").html("Employee No. Required");
+                    hasError = true;
+                    return false;
+                }
+                else
+                {
+                    row.find("#ErrortxtEmployeeNo").css('display', 'none');
+                    row.find("#ErrortxtEmployeeNo").html("");
+                    hasError = false;
+                }
+
+                if (tblRowData.InOut_AttendanceDate == "") {
+                    row.find('#txtDate').css('color', 'black').focus();
+                    row.find("#ErrortxtDate").css('display', 'flex');
+                    row.find("#ErrortxtDate").html("Date Is Required");
+                    hasError = true;
+                    return false;
+                }
+                else {
+                    row.find("#ErrortxtDate").css('display', 'none');
+                    row.find("#ErrortxtDate").html("");
+                    hasError = false;
+                }
+
+                var CheckInTimeError = row.find("#ErrortxtInTime").html();
+                if (CheckInTimeError != "") {
+                    row.find('#txtInTime').css('color', 'black').focus();
+                    hasError = true;
+                    return false;
+                }
+                else {
+                    row.find('#txtInTime').css('color', 'black'); // Reset color
+                    hasError = false;
+                }
+
+                var CheckOutTimeError = row.find("#ErrortxtOutTime").html();
+                if (CheckOutTimeError != "") {
+                    row.find('#txtOutTime').css('color', 'black').focus();
+                    hasError = true;
+                    return false;
+                }
+                else {
+                    row.find('#txtOutTime').css('color', 'black'); // Reset color
+                    hasError = false;
+                }
+                //var CheckOutTimeError = row.find("#ErrortxtOutTime").html();
+                //if (CheckOutTimeError != "") {
+                //    row.find('#txtOutTime').css('color', 'black').focus();
+                //    hasError = true;
+                //    return false;
+                //}
+                //else {
+                //    row.find('#txtOutTime').css('color', 'black'); // Reset color
+                //    hasError = false;
+                //}
+                tbldata.push(tblRowData);
+            });
+            console.log(tbldata);
+            if (hasError == true) {
+                return false;
+            }
+            //CHECK TABLE IS EMPTY
+            if (tbldata.length == 0) {
+                hasError = true;
+                Swal.fire({
+                    icon: "error",
+                    text: "No Record In A Table",
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                }).then(function () {
+                    $(".Userloaderbg").css("display", "none");
+                    return false;
+                });
+            }
+
+            if (hasError == true) {
+                return false;
+            }
+            
+            $(".Userloaderbg").css("display", "flex");
+            $.ajax({
+                url: '@Url.Action("FinalSubmit", "ESS_TimeOffice_MultipleEmployeeWiseRegularization")',
+                method: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "text",
+                data: JSON.stringify({ tbldata: tbldata, CmpId : CmpId, BranchId: BranchId }),
+                success: function (response) {
+                    debugger;
+                    data = JSON.parse(response);
+                    if (data != null) {
+                        data = JSON.parse(response);
+                        var Message1 = data.Message;
+                        var Icon1 = data.Icon;
+                        if (Message1 != null) {
+                            $(".Userloaderbg").css("display", "none");
+                            if (Message1 != null) {
+                                Swal.fire({
+                                    icon: Icon1,
+                                    text: Message1,
+                                    allowOutsideClick: () => {
+                                        const popup = Swal.getPopup()
+                                        popup.classList.remove('swal2-show')
+                                        setTimeout(() => {
+                                            popup.classList.add('animate__animated', 'animate__headShake')
+                                        })
+                                        setTimeout(() => {
+                                            popup.classList.remove('animate__animated', 'animate__headShake')
+                                        }, 500)
+                                        return false
+                                    }
+                                }).then(function () {
+                                    if (Icon1 == "success")
+                                    {
+                                        window.location.reload();
+                                    }
+                                    else
+                                    {
+                                        return false;
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    function addRow() {
+        debugger;
+        var table = document.getElementById("tblMultipleEmployeeLog").getElementsByTagName('tbody')[0];
+        var currentDate = new Date().toISOString().split('T')[0];
+        var SrNo = table.rows.length + 1;
+
+        var tableContent0 = '<tr>';
+        var tableContent1 = '<td class="text-center" style="background-color:#eee"><i class="fa-regular fa-trash-can fa-xl" onclick="removeRow(this)" id="btnDelete" style="color:#ff5b57"></i></td>';
+        var tableContent2 = '<td class="text-nowrap text-center">' + SrNo + '</td>';
+        var tableContent3 = '<td><input id="txtEmployeeNo" type="text" class="form-control" onclick="getRowNumber(this)"> <span class="Error" id="ErrortxtEmployeeNo" style="display:none"></span></td>';
+        var tableContent4 = '<td><input id="txtDate" type="date" value="' + currentDate + '" class="form-control" max="' + currentDate + '" onclick="getRowNumber(this)"><span class="Error" id="ErrortxtDate" style="display:none"></span></td>';
+        var tableContent5 = '<td><input type="datetime-local" class="form-control InTime" id="txtInTime" value="" name="timeInput" onclick="getRowNumber(this)" style="width:170px"><span class="Error" id="ErrortxtInTime" style="display:none"></span></td>';
+        var tableContent6 = '<td><input type="datetime-local" class="form-control OutTime" id="txtOutTime" value="" name="timeInput" onclick="getRowNumber(this)" style="width:170px"><span class="Error" id="ErrortxtOutTime" style="display:none"></span></td>';
+        var tableContent7 = '<td style="width: 300px;"><input id="txtRemark" type="text" class="form-control"></td>';
+        var tableContent8 = '</tr>';
+
+        // Append the new row
+        var newRow = table.insertRow();
+        newRow.innerHTML = tableContent0 + tableContent1 + tableContent2 + tableContent3 + tableContent4 + tableContent5 + tableContent6 + tableContent7 + tableContent8;
+
+        // Calculate min and max dates for datetime-local inputs
+        var myMaxDate = new Date();
+        myMaxDate.setDate(myMaxDate.getDate() + 1);
+        var MaxDate = myMaxDate.toISOString().split('.')[0];
+
+        var myMinDate = new Date();
+        var MinDate = myMinDate.toISOString().split('.')[0];
+
+        var MinDate1 = MinDate.substring(0, 16); // yyyy-MM-ddTHH:mm format
+
+        // Set min and max attributes for the newly added datetime-local inputs
+        newRow.querySelector('#txtInTime').setAttribute('min', MinDate1);
+        newRow.querySelector('#txtInTime').setAttribute('max', MaxDate);
+        newRow.querySelector('#txtOutTime').setAttribute('min', MinDate1);
+        newRow.querySelector('#txtOutTime').setAttribute('max', MaxDate);
+    }
+
+    $(document).on('change', '#txtDate', function () {
+        debugger;
+        var currentRow = $(this).closest("tr");
+        var GetDate = currentRow.find("td").eq(3).find("input").val();
+        // Calculate min and max dates for datetime-local inputs
+        var myMaxDate = new Date(GetDate);
+        myMaxDate.setDate(myMaxDate.getDate() + 1);
+        var MaxDate = myMaxDate.toISOString().split('.')[0];
+
+        var myMinDate = new Date(GetDate);
+        var MinDate = myMinDate.toISOString().split('.')[0];
+
+        var MinDate1 = MinDate.substring(0, 16); // yyyy-MM-ddTHH:mm format
+        // Set min and max attributes for the newly added datetime-local inputs
+        currentRow.find('#txtInTime').attr('min', MinDate1);
+        currentRow.find('#txtInTime').attr('max', MaxDate);
+        currentRow.find('#txtOutTime').attr('min', MinDate1);
+        currentRow.find('#txtOutTime').attr('max', MaxDate);
+    });
+
+
+    function removeRow(button) {
+        var row = button.parentNode.parentNode;
+        row.parentNode.removeChild(row);
+    }
+</script>
+
+<script>
+    var rowIndex;
+    function getRowNumber(input) {
+        debugger;
+        var row = input.parentNode.parentNode; // Get the parent row of the clicked input
+        rowIndex = row.rowIndex; // Get the index of the row
+        console.log("Row number: " + rowIndex); // Output the row number to console (you can change this as needed)
+        clearInputStyles(input);
+        //inputTypeId = row.find("input").attr("id");
+        input.style.backgroundColor = 'lightgray';
+
+    }
+    function ValidateLogDate() {
+        debugger;
+        var CmpId = $('select#ddlCompanyName option:selected').val();
+        var BranchId = $('select#ddlBranchId option:selected').val();
+
+        var input = document.getElementById("LogFromDate").value;
+        var input1 = document.getElementById("LogToDate").value;
+        fromDateObj = new Date(input);
+        toDateObj = new Date(input1);
+        var time_difference = toDateObj.getTime() - fromDateObj.getTime();
+        var days_differences = time_difference / (1000 * 60 * 60 * 24);
+        var days_difference = days_differences + 1;
+
+        var from = $("#LogFromDate").val();
+        var to = $("#LogToDate").val();
+        if (Date.parse(from) > Date.parse(to)) {
+            $('#ErrorLogFromToDate').css('display', 'flex');
+            $("#ErrorLogFromToDate").html("From date should not be greater than todate");
+            return false;
+        }
+        else {
+            $("#ErrorLogFromToDate").html("");
+            $('#ErrorLogFromToDate').css('display', 'none');
+        }
+        if (days_difference > 31) {
+            $('#ErrorLogFromToDate').css('display', 'flex');
+            $("#ErrorLogFromToDate").html("You should not allow greter than 31 days");
+            return false;
+        }
+        else {
+            $("#ErrorLogFromToDate").html("");
+            $('#ErrorLogFromToDate').css('display', 'none');
+        }
+    };
+    //LOAD EMPLOYEE LOG FOR VERIFY
+    function LoadEmployeeLog() {
+        debugger;
+        var $row = $('#tblMultipleEmployeeLog tbody tr:eq(' + (rowIndex - 1) + ')');
+        var EmployeeNo = $row.find('td:eq(2)').find('input[type="text"]').val();
+
+        if (EmployeeNo == "") {
+            $('#ErrorLogFromToDate').css('display', 'flex');
+            $("#ErrorLogFromToDate").html("Employee No. Is Empty");
+            return false;
+        }
+        else {
+            $("#ErrorLogFromToDate").html("");
+            $('#ErrorLogFromToDate').css('display', 'none');
+        }
+               
+        var LogFromDate = $("#LogFromDate").val();
+        var LogToDate = $("#LogToDate").val();
+
+        if (LogFromDate == "") {
+            $('#ErrorLogFromToDate').css('display', 'flex');
+            $("#ErrorLogFromToDate").html("Please Select From Date");
+            return false;
+        }
+        else {
+            $("#ErrorLogFromToDate").html("");
+            $('#ErrorLogFromToDate').css('display', 'none');
+        }
+        if (LogToDate == "") {
+            $('#ErrorLogFromToDate').css('display', 'flex');
+            $("#ErrorLogFromToDate").html("Please Select To Date");
+            return false;
+        }
+        else {
+            $("#ErrorLogFromToDate").html("");
+            $('#ErrorLogFromToDate').css('display', 'none');
+        }
+        ValidateLogDate();
+
+        var checkAllValiidate = $("#ErrorLogFromToDate").html();
+        if (checkAllValiidate!="")
+        {
+            return false;
+        }
+        var CmpId = $('select#ddlCompanyName option:selected').val();
+        var BranchId = $('select#ddlBranchId option:selected').val();
+        
+        $.ajax({
+            type: 'GET',
+            dataType: 'JSON',
+            contentType: "application/json; charset=utf-8",
+            url: '@Url.Action("GetEmployeeLogAndShift", "ESS_TimeOffice_MultipleEmployeeWiseRegularization")',
+            data: { EmployeeNo: EmployeeNo, LogFromDate: LogFromDate, LogToDate: LogToDate, CmpId: CmpId, BranchId: BranchId },
+            success: function (data) {
+                debugger;
+                
+                if (data.data == false)
+                {
+                    $('#ErrorLogFromToDate').css('display', 'flex');
+                    $("#ErrorLogFromToDate").html("Invalid Employee No. For Selected Branch");
+                    return false;
+                }
+                else {
+                    $("#ErrorLogFromToDate").html("");
+                    $('#ErrorLogFromToDate').css('display', 'none');
+                }
+                $("#tblEmployeeLog  tbody tr").detach();
+                var Logdata = data.Logdata;
+                var EmployeeName = data.EmployeeName;
+                $("#EmpName").html("Name : " +EmployeeName);
+
+                var tableLogContent = '';
+
+                for (var i = 0; i < Logdata.length; i++) {
+                    tableLogContent += '<tr id="LogSelectRow_NotUse">';
+                    tableLogContent += '<td class="text-nowrap">' + convertDateTime12Hr(Logdata[i][0].Value) + '</td>';
+                    tableLogContent += '<td class="text-nowrap text-center">' + Logdata[i][1].Value + '</td>';
+                    tableLogContent += '<td hidden>' + convertDateTime(Logdata[i][0].Value) + '</td>';
+                    tableLogContent += '<td  class="text-nowrap text-center"><i class="fa-solid fa-square-check fa-lg" style="color:#5cce40;padding:0px;cursor:pointer;" onclick="funLogInOutTime(\'IN\', \'' + convertDateTime(Logdata[i][0].Value) + '\')"></i></td>';
+                    tableLogContent += '<td  class="text-nowrap text-center"><i class="fa-solid fa-square-check fa-lg" style="color:#fe6966;padding:0px;cursor:pointer;" onclick="funLogInOutTime(\'OUT\', \'' + convertDateTime(Logdata[i][0].Value) + '\')"></i></td>';
+                }
+                $('#tblEmployeeLog tbody').append(tableLogContent);
+            }
+        });
+    }
+
+    function AddRiplicaRow() {
+        debugger;
+        // Get the row data of the specified index
+        var $row = $('#tblMultipleEmployeeLog tbody tr:eq(' + (rowIndex - 1) + ')');
+        var $clone = $row.clone();
+        // Clear the specific columns in the cloned row
+        $clone.find('td:eq(2)').find('input[type="text"]').val("");
+        
+        // Append the cloned row to the end of the table
+        $('#tblMultipleEmployeeLog tbody').append($clone);
+        // Update the row numbers
+        $('#tblMultipleEmployeeLog tbody tr').each(function (index, row) {
+            $(this).find('td:eq(1)').text(index + 1);
+        });
+    }
+
+
+    function clearInputStyles(input) {
+        var inputs = document.querySelectorAll('#tblMultipleEmployeeLog input[type="text"]');
+        var dates = document.querySelectorAll('#tblMultipleEmployeeLog input[type="date"]');
+        var datetime = document.querySelectorAll('#tblMultipleEmployeeLog input[type="datetime-local"]');
+        inputs.forEach(function (input) {
+            input.style.backgroundColor = ''; // Set background color to empty string to clear it
+        });
+        dates.forEach(function (input) {
+            input.style.backgroundColor = ''; // Set background color to empty string to clear it
+        });
+        datetime.forEach(function (input) {
+            input.style.backgroundColor = ''; // Set background color to empty string to clear it
+        });
+    }
+
+
+    //THIS CODE IS USE FOR REMOVE ROW IN A TABLE
+    function removeRow(button) {
+        $(button).closest('tr').remove();
+        // Recalculate Sr. No. for remaining rows
+        $('#tblMultipleEmployeeLog tbody tr').each(function (index) {
+            $(this).find('td:eq(1)').text(index + 1);
+        });
+    }
+
+
+    $("#LogFromDate, #LogToDate").on("change", function () {
+        debugger;
+        var input = document.getElementById("LogFromDate").value;
+        var input1 = document.getElementById("LogToDate").value;
+        fromDateObj = new Date(input);
+        toDateObj = new Date(input1);
+        var time_difference = toDateObj.getTime() - fromDateObj.getTime();
+        var days_differences = time_difference / (1000 * 60 * 60 * 24);
+        var days_difference = days_differences + 1;
+
+        var from = $("#LogFromDate").val();
+        var to = $("#LogToDate").val();
+        if (Date.parse(from) > Date.parse(to)) {
+            $('#ErrorLogFromToDate').css('display', 'flex');
+            $("#ErrorLogFromToDate").html("From date should not be greater than todate");
+            return false;
+        }
+        else {
+            $('#ErrorLogFromToDate').css('display', 'none');
+            $("#ErrorLogFromToDate").html("");
+        }
+        if (days_difference > 31) {
+            $('#ErrorLogFromToDate').css('display', 'flex');
+            $("#ErrorLogFromToDate").html("You should not allow greter than 31 days");
+            return false;
+        }
+        else {
+            $('#ErrorLogFromToDate').css('display', 'none');
+            $("#ErrorLogFromToDate").html("");
+        }
+    });
+
+    $(document).on('change', '#txtEmployeeNo', function () {
+        var currentRow = $(this).closest("tr");
+        var EmployeeNo = currentRow.find("td").eq(2).find("input").val();
+        if (EmployeeNo != "")
+        {
+            currentRow.find('#ErrortxtEmployeeNo').css('display', 'none');
+            currentRow.find('#ErrortxtEmployeeNo').html("");
+        }
+    });
+
+    //This Function use for only show in td tag
+    function convertDateTime(data) {
+        var getdate = parseInt(data.replace("/Date(", "").replace(")/", ""));
+        var date = millisecToDateTime(getdate);
+        return date;
+    }
+    function millisecToDateTime(milliDate) {
+        var date = new Date(milliDate);
+        var mnth = ("0" + (date.getMonth() + 1)).slice(-2);
+        var day = ("0" + date.getDate()).slice(-2);
+        var hours = ("0" + date.getHours()).slice(-2);
+        var minutes = ("0" + date.getMinutes()).slice(-2);
+        var yyyyMMdd = [date.getFullYear(), mnth, day].join("-");
+        var hhmm = [hours, minutes].join(":");
+        return yyyyMMdd + "T" + hhmm;
+    }
+
+    //This Function use for bind in input type
+    function convertDateTime12Hr(data) {
+        var getdate = parseInt(data.replace("/Date(", "").replace(")/", ""));
+        var date1 = millisecToDateTime12Hour(getdate);
+        return date1;
+    }
+    function millisecToDateTime12Hour(milliDate) {
+        var date = new Date(milliDate);
+        var mnth = ("0" + (date.getMonth() + 1)).slice(-2);
+        var day = ("0" + date.getDate()).slice(-2);
+        var hours = date.getHours();
+        var minutes = ("0" + date.getMinutes()).slice(-2);
+
+        var ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        hours = ("0" + hours).slice(-2);
+
+        var yyyyMMdd = [date.getFullYear(), mnth, day].join("-");
+        var hhmm = [hours, minutes].join(":");
+        return yyyyMMdd + " " + hhmm + " " + ampm;
+    }
+
+    function funLogInOutTime(GetInOut, GetTime) {
+        debugger;
+
+        var $row = $('#tblMultipleEmployeeLog tbody tr:eq(' + (rowIndex - 1) + ')');
+        if (GetInOut == "IN") {
+            $row.find("td").eq(4).find("input").val(GetTime);
+        }
+        else if (GetInOut == "OUT") {
+            $row.find("td").eq(5).find("input").val(GetTime);
+        }
+    }
+</script>

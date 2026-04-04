@@ -1,0 +1,1169 @@
+﻿
+@{
+    ViewBag.Title = "App_GetList";
+    Layout = "~/Views/Shared/_MobileLayout.cshtml";
+}
+
+<link href="~/assets/MyCSS/Tailwindcss.css" rel="stylesheet" />
+<style>
+    .gradientLine-Div {
+        display: flex;
+        align-items: center;
+        margin: 10px 0;
+    }
+
+    .gradientLine1,
+    .gradientLine2 {
+        flex: 1; /* Better than fixed width to adapt responsively */
+        height: 1px;
+        background: linear-gradient(to left, #000000, #66666600);
+    }
+
+    .gradientLine2 {
+        background: linear-gradient(to right, #000000, #66666600);
+    }
+
+    .gradientLine-Div div strong {
+        white-space: nowrap;
+    }
+
+
+    .profile-card {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        background: #fff;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+    }
+
+        .profile-card .header {
+            padding: 15px;
+            position: relative;
+            color: white;
+        }
+
+    .org-level {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(0,0,0,0.4);
+        padding: 4px 8px;
+        border-radius: 10px;
+        font-size: 12px;
+    }
+
+    .profile-card .content {
+        padding: 15px;
+    }
+
+    .profile-card .name {
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .profile-card .subtitle {
+        font-size: 14px;
+        color: #555;
+        margin-bottom: 5px;
+    }
+
+    .app-header-fixed {
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+
+    .app-content {
+        padding: 5px 5px;
+    }
+</style>
+
+<style>
+    /* Fixed circular "+" button for all screen sizes */
+    .mobile-fixed-add-btn {
+        position: fixed;
+        bottom: 15px;
+        right: 15px;
+        z-index: 1050;
+        width: 50px;
+        height: 50px;
+    }
+
+        .mobile-fixed-add-btn .btn {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+    .app {
+        background-color: white;
+    }
+</style>
+
+<style>
+    .timeline {
+        max-width: 400px;
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+        .timeline:before {
+            left: 32px;
+        }
+
+    .timeline-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+
+    .iconGreen {
+        width: 24px;
+        height: 24px;
+        background-color: green;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        margin-right: 15px;
+    }
+
+    .iconRed {
+        width: 24px;
+        height: 24px;
+        background-color: #ff5b57;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        margin-right: 15px;
+    }
+
+    .text {
+        flex-grow: 1;
+    }
+
+        .text p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .text small {
+            color: gray;
+            font-size: 12px;
+        }
+
+    .button {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+        .button button {
+            background-color: #a8d935;
+            border: none;
+            padding: 10px 20px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+            .button button:hover {
+                background-color: #8cc62f;
+            }
+
+   body {
+        background-color: white !important;
+    }
+</style>
+
+<div class="col-md-2">
+    <a href="@Url.Action("App_Attendance_Outdoor", "App_Attendance_Outdoor", new { area = "App", ScreenId = 146 })" class="mobile-fixed-add-btn">
+        <button type="button" class="btn btn-primary shadow">
+            <i class="fa-solid fa-plus fa-lg"></i>
+        </button>
+    </a>
+</div>
+
+<div class="container mx-auto px-2 py-2">
+    <!-- Search Input -->
+    <!-- Fixed Search Bar -->
+    <div class="fixed top-0 left-0 w-full bg-white z-50 shadow">
+        <div class="flex justify-center py-2">
+            <div class="w-full max-w-md">
+                <input type="text" id="searchDate" class="form-control w-full px-4 py-2 border rounded-md"
+                       placeholder="Search by Date (e.g., 20/Aug/2024)">
+            </div>
+        </div>
+    </div>
+    <div class="pt-10">
+        <!-- Card Grid -->
+        <div class="flex flex-wrap justify-center gap-2">
+
+            @foreach (var d in ViewBag.OutDoorCompanyAll)
+            {
+                var leaveMasterId = d?.LeaveMasterId ?? 0;
+                var cancelStatus = d?.CancelStatus;
+                var status = d?.Status ?? "";
+                string topBorderColor = d.Status != null && d.Status.Contains("Approved") ? "green-500"
+                        : d.Status != null && d.Status.Contains("Rejected") ? "red-500"
+                        : d.Status != null && d.Status.Contains("Pending") ? "orange"
+                        : "";
+                string bgClass = $"bg-{topBorderColor}";
+                string borderClass = $"border-t-4 border-{topBorderColor}";
+            <div class="bg-white rounded-xl shadow-md p-3 w-full sm:max-w-md md:max-w-sm border-t-4 @borderClass outdoor-card">
+                <!-- Top Section -->
+                <div class="flex justify-between items-start mb-1">
+                    <div>
+                        <div class="text-sm-0"><i class="fa-solid fa-hashtag text-purple-600"></i> Doc No. : @d.DocNo</div>
+                        <div class="text-base font-semibold text-gray-800">
+                            @(d != null ? $"{"OutDoor"} ({d.OutDoorCompanyType})" : "")
+                        </div>
+
+                    </div>
+                    <div class="flex items-center justify-end space-x-2">
+                        <div>
+                            <div class="text-white text-center px-4 py-1 rounded-full text-sm font-semibold @bgClass">
+                                @d.Status
+                            </div>
+                            <div class="text-xs text-gray-500 mt-1 text-right">
+                                @d.ApprovedDay
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Table-style Layout -->
+                <table class="w-full text-sm text-gray-700 table-auto">
+                    <tbody>
+                        <tr class="align-top">
+                            <td class="py-2 w-6 text-center align-middle">
+                                <i class="fas fa-calendar-alt text-blue-600"></i>
+                            </td>
+                            <td class="font-medium whitespace-nowrap pr-1">For Date</td>
+                            <td class="px-1">:</td>
+                            <td class="break-words text-wrap max-w-xs sm:max-w-md ForDate">@d.ForDate</td>
+                        </tr>
+
+                        <tr class="align-top">
+                            <td class="py-2 w-6 text-center align-middle">
+                                <i class="fas fa-briefcase text-purple-600"></i>
+                            </td>
+                            <td class="font-medium whitespace-nowrap pr-1">Shift</td>
+                            <td class="px-1">:</td>
+                            <td class="break-words text-wrap max-w-xs sm:max-w-md">@d.OutDoorCompanyShiftName</td>
+                        </tr>
+                        <tr class="align-top">
+                            <td class="py-2 w-6 text-center align-middle">
+                                <i class="fas fa-lightbulb text-yellow-500"></i>
+                            </td>
+                            <td class="font-medium whitespace-nowrap pr-1">Reason</td>
+                            <td class="px-1">:</td>
+                            <td class="break-words text-wrap max-w-xs sm:max-w-md">@d.Reason</td>
+                        </tr>
+
+                        <tr class="align-top border-b">
+                            <td class="py-2 w-6 text-center align-middle">
+                                <i class="fas fa-user-tie text-indigo-600"></i>
+                            </td>
+                            <td class="font-medium whitespace-nowrap pr-1">Approver</td>
+                            <td class="px-1">:</td>
+                            <td class="break-words text-wrap max-w-xs sm:max-w-md">@d.ApprovedBy</td>
+                        </tr>
+
+
+                    </tbody>
+                </table>
+
+
+                <!-- Footer Buttons -->
+                <div class="flex flex-wrap justify-start items-center gap-3 mt-2">
+                    <i class="fa-solid fa-sitemap fa-2xl cursor-pointer" onclick="ApproveStatus(@d.OutDoorCompanyId)"></i>
+                    <a href="@Url.Action("App_OutdoorDetails", "App_Attendance_Outdoor", new { OutDoorCompanyId_Encrypted = d.OutDoorCompanyId_Encrypted })"
+                       class="text-blue-600 border border-blue-500 px-2 py-1 rounded-md hover:bg-blue-50">
+                        <i class="fa-solid fa-bars"></i> View Details
+                    </a>
+                    @if (d.Status.Contains("Pending"))
+                           {
+                            <button onclick="DeleteOutDoor('@d.OutDoorCompanyId_Encrypted','@d.OutDoorCompanyId','@d.Status')" class="text-red-600 border border-red-500 px-3 py-1 rounded-md hover:bg-red-50">
+                                <i class="fa fa-trash"></i> Delete
+                            </button>
+                           }
+                           else
+                           {
+                            if (cancelStatus == "Requested" || cancelStatus == "Canceled")
+                            {
+                            <button class="btn btn-outline-secondary btn-sm px-2 py-1 rounded-md" disabled>@cancelStatus</button>
+                            }
+                            else
+                            {
+                            <a href="#modal-dialogForHoldReject1"
+                               onclick="CancelRequestFun(@d.OutDoorCompanyId,'@d.Status')"
+                               class="text-blue-600 border border-blue-500 px-2 py-1 rounded-md hover:bg-blue-50">
+                                <i class="fa fa-xmark"></i> Cancel
+                            </a>
+                            }
+                           }
+
+                </div>
+            </div>
+                    }
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="RequestInfoModal" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-body p-3" style="position: relative;">
+                <!-- Close Button -->
+                <div class="position-absolute top-0 end-0 m-2" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-sm btn-danger rounded-circle" id="CloseModel" aria-label="Close">
+                        <i class="fa fa-xmark"></i>
+                    </button>
+                </div>
+                <!-- Content -->
+                <div id="timelineMainDiv" class="mt-4">
+                    <!-- Dynamic timeline content here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="Divcontent" class="app-content">
+    <div class="row">
+        <div class="col-md-6">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1" id="contentpass">
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-12 text-center"><h4><b><span id="txtCompanyName"></span></b></h4></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-12 text-center" style="background-color:#dee2e6"><h4><b>OUT PERMISSION GATE PASS</b></h4></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-12"><b>To, The HR Department (Time office/Security)</b></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-12"><b>Date :</b> <span id="txtOutDoorDate"></span></label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-12"><b>Time :</b> <span id="txtTime"></span></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-12"><b>Name : </b><span id="txtEmployeeName"></span></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-12"><b>Employee No :</b> <span id="txtEmployeeNo"></span></label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-12"><b>Department :</b> <span id="txtDepartment"></span></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-12"><b>Reason :</b> <span id="txtReason"></span></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-12 text-center"><b>Manager/Approver Informations</b></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-12 "><b>Manager/Approver Name :</b> <span id="txtApproverName"></span></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-12"><b>Employee No :</b> <span id="txtApproverEmployeeNo"></span></label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-12"><b>Department : </b><span id="txtApproverDepartment"></span></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-12"><b>Status : </b><span id="txtStatus"></span></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+<div id="content" class="app-content col-md-6" hidden>
+    <div class="card">
+        <div id="card">
+            <div class="invoice">
+                <div class="invoiceMargin">
+                    <!-- BEGIN invoice-company -->
+                    @*<div class="row hidden-print">
+                            <div class="col-12  hidden-print">
+                                <div class="invoice-company  hidden-print">
+                                    <span class="float-end hidden-print">
+                                        <a href="javascript:;" type="button" id="printBtn" class="btn btn-sm btn-white mb-10px" onclick="printDiv();">
+                                            <i class="fa fa-print t-plus-1 fa-fw fa-lg"></i> Print
+                                        </a>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>*@
+                    <div class="invoice-company">
+                        <div class="row">
+                            <div class="col-4">
+                                <span class="CompanyName" style="font-weight: 800;">
+
+                                </span>
+                            </div>
+                            <div class="col-4" style="font-weight: 800;">
+                                <span class="Type d-flex justify-content-center"></span>
+                            </div>
+                            @*<div class="col-4">
+                                    <span class="DocType d-flex justify-content-end" style="font-weight: 800;"> Visitor Gate Pass </span>
+                                </div>*@
+                        </div>
+                    </div>
+                    <!-- END invoice-company -->
+                    <!-- BEGIN invoice-header -->
+                    <div class="invoice-Numbers">
+                        <div class="row">
+                            <div class="col-3 col-33">
+                                <div class="invoice-number-details">
+                                    <div class="row">
+                                        <div class="col-5 col-55">
+                                            Visitor No
+                                        </div>
+                                        <div class="col-1">
+                                            :
+                                        </div>
+                                        <div class="col-6 col-44">
+                                            <span class="GatepassNumber">
+
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-5 col-55">
+                                <div class="invoice-TimeZone">
+                                    <div class="row">
+                                        <div class="col-12 text-center">
+                                            <span> Date :  &nbsp;&nbsp;</span>
+                                            <span> In Time : &nbsp;&nbsp; </span>
+                                            <span> Out Time : </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4 col-33">
+                                <div class="invoice-number-details">
+                                    <div class="row" style="display: flex; align-items: center;">
+                                        <div class="col-5 col-40" style="flex: 1;">
+                                            <span class="float-end">
+                                                Badge No
+                                            </span>
+                                        </div>
+                                        <div class="col-1" style="flex: 0;">:</div>
+                                        <div class="col-6 col-44" style="flex: 1;">
+                                            <span class="GatepassNumber">
+
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- BEGIN invoice-content -->
+                    <div class="invoice-content">
+                        <div class="row">
+                            <div class="col-5 col-55">
+                                <div class="invoice-details">
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <span class="heading">
+                                                Visitor
+                                            </span>
+                                        </div>
+                                        <div class="col-1">
+                                            :
+                                        </div>
+                                        <div class="col-8">
+                                            <span class="value">
+
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <span class="heading">
+                                                Mobile No
+                                            </span>
+                                        </div>
+                                        <div class="col-1">
+                                            :
+                                        </div>
+                                        <div class="col-8">
+                                            <span class="value">
+
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <span class="heading">
+                                                Vechile No.
+                                            </span>
+                                        </div>
+                                        <div class="col-1">
+                                            :
+                                        </div>
+                                        <div class="col-8">
+                                            <span class="value">
+
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <span class="heading">
+                                                Purpose
+                                            </span>
+                                        </div>
+                                        <div class="col-1">
+                                            :
+                                        </div>
+                                        <div class="col-8">
+                                            <span class="value">
+
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <span class="heading">
+                                                Company
+                                            </span>
+                                        </div>
+                                        <div class="col-1">
+                                            :
+                                        </div>
+                                        <div class="col-8">
+                                            <span class="value">
+
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-7 col-77">
+                                <div class="invoice-details">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <span class="heading" style="font-weight: 800;">
+                                                Host
+                                            </span>
+                                        </div>
+                                        <div class="col-1">
+                                            :
+                                        </div>
+                                        <div class="col-7">
+                                            <span class="value" style="font-weight: 800;">
+
+
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <span class="heading" style="font-weight: 800;">
+                                                Department
+                                            </span>
+                                        </div>
+                                        <div class="col-1">
+                                            :
+                                        </div>
+                                        <div class="col-7">
+                                            <span class="value" style="font-weight: 800;">
+
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END invoice-content -->
+                    <!-- BEGIN invoice-footer -->
+                    <div class="invoice-footer">
+                        <div class="invoice-sign">
+                            <div class="row">
+                                <div class="col-4"> Visitor Sign.</div>
+                                <div class="col-4"> Security Sign. </div>
+                                <div class="col-4"> Host Sign.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END invoice-footer -->
+
+                </div>
+
+
+
+            </div>
+            <!-- END invoice -->
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="RequestInfoModal" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-body p-3" style="position: relative;">
+                <!-- Close Button -->
+                <div class="position-absolute top-0 end-0 m-2" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-sm btn-danger rounded-circle" id="CloseModel" aria-label="Close">
+                        <i class="fa fa-xmark"></i>
+                    </button>
+                </div>
+                <!-- Content -->
+                <div id="timelineMainDiv" class="mt-4">
+                    <!-- Dynamic timeline content here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="CancelModal" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header bg-black text-white">
+                <h5 class="modal-title">Request For Cancellation</h5>
+                <div class="panel-heading-btn">
+                    <a href="javascript:;" class="btn btn-icon btn-danger btnClear" data-bs-dismiss="modal"
+                       aria-hidden="true" id="CloseModel">
+                        <i class="fa fa-xmark"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="modal-body-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            @* @Html.DropDownListFor(model => model.PunchMissingEmployeeID, new SelectList(ViewBag.GetAdditionalList, "Id", "Name"), new { id = "LeaveMasterLeaveYearId", name = "LeaveMasterLeaveYearId", @class = "form-select", autocomplete = "off" })*@
+                                            <h6> Select Approver Name <span class="important">*</span></h6>
+
+                                            @Html.DropDownList("Id", new SelectList(ViewBag.GetManagerEmployee, "Id", "Name"), "--Select--", new { @class = "form-control", Id = "ddlManagerName" })
+                                            <h1></h1>
+                                            <span id="ErrorMessage" class="Error" style="color:red"></span>
+                                            <h6> Enter Remark <span class="important">*</span></h6>
+
+                                            <textarea id="txtApproveRejectRemark" class="form-control" rows="4"></textarea>
+                                            <span id="AreaErrorMessage" class="Error" style="color:red"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="SendCancelRequest()" id="btnReject" class="btn btn-primary btn-sm">
+                    <i class="fa-solid fa-floppy-disk"> </i> Submit
+                </button>
+                @*<button type="button" id="btnCancel" class="btn btn-danger btnpress CloseModel" data-bs-dismiss="modal">
+                        <i class="fa-solid fa-share-from-square"></i> Cancel
+                    </button>*@
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#Divcontent").hide();
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        $('title').html("Outdoor");
+        debugger;
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick:false
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+    });
+
+
+
+    function DeleteOutDoor(OutDoorCompanyId_Encrypted,OutDoorCompanyId,Status) {
+        if(Status!="Pending")
+        {
+            Swal.fire({
+                icon: "error",
+                text: "Approved/Rejected request can't delete",
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup()
+                    popup.classList.remove('swal2-show')
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                    })
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                    }, 500)
+                    return false
+                }
+            });
+            return false;
+        }
+        const DeleteButtons = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        DeleteButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+            allowOutsideClick: () => {
+                const popup = Swal.getPopup()
+                popup.classList.remove('swal2-show')
+                setTimeout(() => {
+                    popup.classList.add('animate__animated', 'animate__headShake')
+                })
+                setTimeout(() => {
+                    popup.classList.remove('animate__animated', 'animate__headShake')
+                }, 500)
+                return false
+            }
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $(".Userloaderbg").css("display", "flex");
+                window.location.href = '@Url.Action("App_OutDoorComapnyDelete", "App_Attendance_Outdoor")?OutDoorCompanyId_Encrypted=' + OutDoorCompanyId_Encrypted+'&OutDoorCompanyId='+OutDoorCompanyId;
+
+            } else if (
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+
+            }
+        })
+    }
+</script>
+
+<script>
+    function ApproveStatus(DocId) {
+        $.ajax({
+            url: '@Url.Action("App_RequestStatus", "App_Attendance_Outdoor")',
+            method: "GET",
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            data: { DocId: DocId },
+            success: function (response) {
+                debugger
+                $('#RequestInfoModal').modal('show');
+                var data = JSON.parse(response);
+                var timelineHtml = '';
+                for (var i = 0; i < data.length; i++) {
+                    var icon = '';
+                    var iconColor='';
+                    var textColor = '';
+                    if (data[i][5].Value === 'success') {
+                        icon = '✔';
+                        iconColor ="iconGreen";
+                        textColor = 'Green';
+                    } else if (data[i][5].Value === 'error') {
+                        icon = '✘';
+                        iconColor ="iconRed";
+                        textColor = 'Red';
+                    } else {
+                        icon = '⏳';
+                        iconColor ="iconRed";
+                        textColor = 'Black';
+                    }
+
+                    timelineHtml += '<div class="timeline-item">' +
+                                '<div class="' + iconColor + '"><span class="timelineIcon">' + icon + '</span></div>' +
+                                '<div class="text">' +
+                                '<b><p class="timelineRemark" style="color:' + textColor + ';">' + data[i][2].Value + '</p></b>' +
+                                '<small class="timelineEmployeeName" style="color:Black;">' + data[i][3].Value + '</small><br />' +
+                                 '<small class="timelineDate" style="color:Black;">' + data[i][1].Value + '</small>' +
+                                '</div>' +
+                                '</div>';
+                }
+                $('#timelineMainDiv').html(timelineHtml);
+            }
+        });
+    }
+
+
+
+</script>
+
+<script>
+    function CancelRequestFun(OutDoorCompanyId,Status)
+    {
+        if(Status=="Pending" || Status=="Cancel")
+        {
+            if(Status=="Pending")
+            {
+                var Message="Pending request can't cancel";
+                var Icon="error";
+            }
+            else{
+                var Message="Request already cancel";
+                var Icon="error";
+            }
+
+            Swal.fire({
+                icon: Icon,
+                text: Message,
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup()
+                    popup.classList.remove('swal2-show')
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                    })
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                    }, 500)
+                    return false
+                }
+            });
+            return false;
+        }
+        debugger;
+        localStorage.setItem('OutDoorCompanyId',OutDoorCompanyId);
+        $("#CancelModal").modal('show');
+    }
+
+    function SendCancelRequest()
+    {
+        //$("#CancelModal").modal('show');
+        var ddlManagerName = $('select#ddlManagerName option:selected').val();
+        var txtApproveRejectRemark = $('#txtApproveRejectRemark').val();
+        if(ddlManagerName=="")
+        {
+            $("#ErrorMessage").html("Select approver name");
+            $("#ddlManagerName").focus();
+            return false;
+        }
+        else
+        {
+            $("#ErrorMessage").html("");
+        }
+
+        if(txtApproveRejectRemark=="")
+        {
+            $("#AreaErrorMessage").html("Remark is required.");
+            $("#txtApproveRejectRemark").focus();
+            return false;
+        }
+        else
+        {
+            $("#AreaErrorMessage").html("");
+        }
+
+        const Approved = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        Approved.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes Submit!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+
+            allowOutsideClick: () => {
+                const popup = Swal.getPopup()
+                popup.classList.remove('swal2-show')
+                setTimeout(() => {
+                    popup.classList.add('animate__animated', 'animate__headShake')
+                })
+                setTimeout(() => {
+                    popup.classList.remove('animate__animated', 'animate__headShake')
+                }, 500)
+                return false
+            }
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                debugger;
+                var GetODId = localStorage.getItem('OutDoorCompanyId');
+
+                var ddlManagerId = $("#ddlManagerName").val();
+                var Origin="OD";
+                Remark = $("#txtApproveRejectRemark").val();
+                $("#CancelModal").modal('hide');
+                $(".Userloaderbg").css("display", "flex");
+                $.ajax({
+                    url: "@Url.Action("App_CancelRequest", "App_Attendance_Outdoor")",
+                    method:"get",
+                    data:{OutDoorCompanyId:GetODId,ddlManagerId:ddlManagerId,Remark:Remark,Origin:Origin},
+                    success:function(response){
+                        debugger;
+                        var Message1 = response.Message;
+                        var Icon1 = response.Icon;
+                        if (response.Icon=="error") {
+                            $(".Userloaderbg").css("display", "none");
+                            if (Message1 != null) {
+                                if (Message1 != null) {
+                                    Swal.fire({
+                                        icon: Icon1,
+                                        text: Message1,
+                                        allowOutsideClick: () => {
+                                            const popup = Swal.getPopup()
+                                            popup.classList.remove('swal2-show')
+                                            setTimeout(() => {
+                                                popup.classList.add('animate__animated', 'animate__headShake')
+                                            })
+                                            setTimeout(() => {
+                                                popup.classList.remove('animate__animated', 'animate__headShake')
+                                            }, 500)
+                                            return false
+                                        }
+                                    })
+                                    .then((result) => {
+                                        if (result.isConfirmed) {
+                                            debugger;
+                                            $("#CancelModal").modal('hide');
+                                            $("#txtApproveRejectRemark").val("")
+                                            window.location.href = '@Url.Action("App_GetList", "App_Attendance_Outdoor", new { area = "App" })';
+                                        } else if (
+                                            /* Read more about handling dismissals below */
+                                            result.dismiss === Swal.DismissReason.cancel
+                                        ) {
+
+                                        }
+                                    })
+                                }
+                            }
+                        }
+                        else{
+                            var Message1 = response.Message;
+                            var Icon1 = response.Icon;
+                            if (response.Icon=="success") {
+                                if (Message1 != null) {
+                                    if (Message1 != null) {
+                                        Swal.fire({
+                                            icon: Icon1,
+                                            text: Message1,
+                                            allowOutsideClick: () => {
+                                                const popup = Swal.getPopup()
+                                                popup.classList.remove('swal2-show')
+                                                setTimeout(() => {
+                                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                                })
+                                                setTimeout(() => {
+                                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                                }, 500)
+                                                return false
+                                            }
+                                        })
+                                        .then((result) => {
+                                            if (result.isConfirmed) {
+                                                debugger
+                                                window.location.href = '@Url.Action("App_GetList", "App_Attendance_Outdoor", new { area = "App" })';
+                                            } else if (
+                                                /* Read more about handling dismissals below */
+                                                result.dismiss === Swal.DismissReason.cancel
+                                            ) {
+
+                                            }
+                                        })
+
+                                        $("#CancelModal").modal('hide');
+                                        $("#txtApproveRejectRemark").val("");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+            } else if (
+                /* Read more about handling dismissals below */
+                            result.dismiss === Swal.DismissReason.cancel
+                        ) {
+                $("#CancelModal").modal('hide');
+                $("#ddlManagerName").val(null);
+                $("#txtApproveRejectRemark").val("");
+            }
+        })
+    }
+</script>
+
+<script>
+    function InvoiceFun(DocId)
+    {
+        $.ajax({
+            url: '@Url.Action("App_OutInvoiceView", "App_Attendance_Outdoor")',
+            method: "GET",
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            data: { DocId: DocId },
+            success: function (response) {
+                debugger
+                var data =JSON.parse(response)
+                //var txtOutDoorDate=data[0][10].Value;
+                //var txtTime=data[0][12].Value;
+                //var txtEmployeeName=data[0][5].Value;
+                //var txtEmployeeNo=data[0][7].Value;
+                //var txtDepartment=data[0][5].Value;
+                //var txtReason=data[0][13].Value;
+                //var txtApproverName=data[0][17].Value;
+                //var txtApproverEmployeeNo=data[0][23].Value;
+                //var txtApproverDepartment=data[0][19].Value;
+                $("#txtCompanyName").html(data[0][24].Value);
+                $("#txtOutDoorDate").html(data[0][10].Value);
+                $("#txtTime").html(data[0][12].Value);
+                $("#txtEmployeeName").html(data[0][5].Value);
+                $("#txtEmployeeNo").html(data[0][7].Value);
+                $("#txtDepartment").html(data[0][19].Value);
+                $("#txtReason").html(data[0][13].Value);
+                $("#txtApproverName").html(data[0][17].Value);
+                $("#txtApproverEmployeeNo").html(data[0][23].Value);
+                $("#txtApproverDepartment").html(data[0][19].Value);
+                $("#txtStatus").html(data[0][14].Value);
+
+                var element = document.getElementById('contentpass');
+                console.log('Element:', element); // Debugging log
+                console.log('Content:', element.innerHTML); // Log the content
+
+                var opt = {
+                    margin: 0, // Set top, right, bottom, left margins
+                    filename: 'OutPermissionGatePass.pdf',
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2, useCORS: true }, // Higher scale for clarity
+                    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+                };
+
+                // Check if the element exists
+                if (element) {
+                    html2pdf().set(opt).from(element).save().then(() => {
+                        console.log('PDF downloaded successfully.');
+                    }).catch(err => {
+                        console.error('Error downloading PDF:', err);
+                    });
+                } else {
+                    console.error('Element with ID contentpass not found.');
+                }
+            }
+        });
+    }
+</script>
+
+<script>
+    document.getElementById('searchDate').addEventListener('input', function () {
+        const searchValue = this.value.trim().toLowerCase();
+        const cards = document.querySelectorAll('.outdoor-card');
+
+        cards.forEach(card => {
+            const dateElement = card.querySelector('.ForDate');
+            const dateText = dateElement ? dateElement.innerText.trim().toLowerCase() : '';
+
+            if (dateText.includes(searchValue)) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+</script>

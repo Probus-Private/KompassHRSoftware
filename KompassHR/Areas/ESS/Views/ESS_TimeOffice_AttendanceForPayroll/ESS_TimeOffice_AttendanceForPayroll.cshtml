@@ -1,0 +1,924 @@
+﻿@model KompassHR.Areas.Reports.Models.DailyAttendanceReportFilter
+@{
+    ViewBag.Title = "ESS_TimeOffice_AttendanceForPayroll";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+
+
+<style>
+    .dataTables_scrollBody::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+        margin-top: 20px;
+    }
+
+    .dataTables_scrollBody::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .dataTables_scrollBody::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+        height: 10px;
+    }
+
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    label.error, .Error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    /*.div1 td:nth-child(6) {
+        position: sticky !important;
+        left: 579px !important;
+    }
+
+    .fixed-side5 {
+        position: sticky !important;
+        left: 579px !important;
+        z-index: 1;
+    }
+
+    .div1 td:nth-child(5) {
+        position: sticky !important;
+        left: 434px !important;
+    }
+
+    .fixed-side4 {
+        position: sticky !important;
+        left: 434px !important;
+        z-index: 1;
+    }
+
+    .div1 td:nth-child(4) {
+        position: sticky !important;
+        left: 320.5px !important;
+    }
+
+    .fixed-side3 {
+        position: sticky !important;
+        left: 320.5px !important;
+        z-index: 1;
+    }
+
+    .div1 td:nth-child(3) {
+        position: sticky !important;
+        left: 203px !important;
+    }
+
+    .fixed-side2 {
+        position: sticky !important;
+        left: 203px !important;
+        z-index: 1;
+    }*/
+
+    .div1 td:nth-child(2) {
+        position: sticky !important;
+        left: 270px !important;
+    }
+
+    .fixed-side1 {
+        position: sticky !important;
+        left: 270px !important;
+        z-index: 1;
+    }
+
+    .div1 td:nth-child(1) {
+        position: sticky !important;
+        left: 0px !important;
+    }
+
+    .fixed-side {
+        position: sticky !important;
+        left: 0px !important;
+        z-index: 1;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        /*background-color: rgba(233, 236, 239, 1) !important;*/
+        background-color: rgba(233, 236, 239, 0.7) !important;
+    }
+
+    th:nth-child(1), td:nth-child(1) {
+        width: 100px; /* Set the width for the first column */
+    }
+</style>
+
+
+
+
+
+<div id="content" class="app-content">
+    <ol class="breadcrumb float-xl-end">
+        <li class="breadcrumb-item"><a href="/Dashboard/Dashboard/Dashboard">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="/ESS/ESS_TimeOffice_Menu/ESS_TimeOffice_Menu/?id=5">Report Menu</a></li>
+    </ol>
+    <h1 class="page-header"> Attendance For Payroll</h1>
+    <div class="row">
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="panel panel-inverse" data-sortable-id="index-1">
+                    <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                        <h4 class="panel-title">@*@i.SET_MODULES.FormName*@  Attendance For Payroll </h4>
+                        <div class="panel-heading-btn">
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                        </div>
+                    </div>
+                    <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                        <p class="pb-0">
+
+                        </p>
+                    </div>
+                    <div class="panel-body" style="max-height: fit-content;">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <form role="form" action="/ESS/ESS_TimeOffice_AttendanceForPayroll/ESS_TimeOffice_AttendanceForPayroll" id="AttendanceForPayroll" method="post">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Company Name
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.CmpId, new SelectList(ViewBag.CompanyName, "Id", "Name"), new { @class = "form-select", name = "CompanyName", id = "ddlCmpId" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Business Unit
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.BranchId, new SelectList(ViewBag.BranchName, "Id", "Name"), "All", new { @class = "form-select", type = "text", name = "BranchId", id = "ddlBranchId" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Department Name
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.DepartmentId, new SelectList(ViewBag.DepartmentName, "Id", "Name"), "All", new { @class = "form-select", name = "DepartmentId", id = "ddlDepartmentId" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Sub Department Name
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.SubDepartmentId, new SelectList(ViewBag.SubDepartmentName, "Id", "Name"), "All", new { @class = "form-select", type = "text", name = "SubDepartmentId", id = "ddlSubDepartmentId" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Designation Name
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.DesignationId, new SelectList(ViewBag.DesignationName, "Id", "Name"), "All", new { @class = "form-select", name = "DesignationId", id = "ddlDesignationId" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Grade Name
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.GradeId, new SelectList(ViewBag.GradeName, "Id", "Name"), "All", new { @class = "form-select", type = "text", name = "GradeId", id = "ddlGradeId" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Line Master
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.LineId, new SelectList(ViewBag.LineName, "Id", "Name"), "All", new { @class = "form-select", name = "LineId", id = "ddlLineId" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Employee Name
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.EmployeeID, new SelectList(ViewBag.EmployeeName, "Id", "Name"), "All", new { @class = "form-select", name = "EmployeeID", id = "ddlEmployeeID" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    From date
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.FromDate, new { @class = "form-control", id = "txtFromDate", type = "date", name = "FromDate" })
+                                                    <span id="ErrortxtFromDate" class="Error"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    To Date
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-6">
+                                                    @Html.TextBoxFor(model => model.ToDate, new { @class = "form-control", id = "txtToDate", type = "date", name = "ToDate" })
+
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <button type="button" class="btn btn-primary btn-sm" id="btnload" onclick="LoadEmployee()">
+                                                        Show
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <hr class="mt-15px">
+                                    <div class="row">
+                                        <div class="table-scroll div1">
+                                            <div class="table-wrap">
+                                                <table class="table table-bordered table-hover mb-0 " id="tblAttendanceForPayroll" style="width: 100%;">
+                                                    <thead class="table-active horizontal-scroll" style="background-color: rgba(233, 236, 239, 1) !important;">
+                                                        <tr class="trheading text-center">
+                                                         
+                                                            @*<th class="text-nowrap text-center">Sr.No.</th>*@
+                                                            <th class="fixed-side" style="border-color:black !important;">Employee Name</th>
+                                                            <th class="fixed-side1" style="border-color:black !important;">Employee No</th>
+                                                            <th class="text-nowrap text-center" style="border-color:black !important;">Business Unit</th>
+                                                            <th class="text-nowrap text-center" style="border-color:black !important;">Department</th>
+                                                            <th class="text-nowrap text-center" style="border-color:black !important;">Grade </th>
+                                                            <th class="text-nowrap text-center" style="border-color:black !important;">Business Area </th>
+                                                            <th class="text-nowrap text-center" style="border-color:black !important;">MonthDays</th>
+                                                            <th class="text-nowrap text-center" style="border-color:black !important;">WD</th>
+                                                            <th class="text-nowrap text-center" style="border-color:black !important;">WO</th>
+                                                            <th class="text-nowrap text-center" style="border-color:black !important;">PH</th>
+                                                            <th class="text-nowrap text-center" style="border-color:black !important;">CF</th>
+                                                            <th class="text-nowrap text-center" style="border-color:black !important;">CO</th>
+                                                            <th class="text-nowrap text-center" style="border-color:black !important;">EL</th>
+                                                            <th class="text-nowrap text-center" style="border-color:black !important;">InLate</th>
+                                                            <th class="text-nowrap text-center" style="border-color:black !important;">OutEarly</th>
+                                                            <th class="text-nowrap text-center" style="border-color:black !important;">ShortHrs</th>
+                                                            <th class="text-nowrap text-center" style="border-color:black !important;">GatepassPersonal</th>
+                                                            <th class="text-nowrap text-center" style="border-color:black !important;">ActualAbsent</th>
+                                                            <th class="text-nowrap text-center" style="border-color:black !important;">ValidMin</th>
+                                                            <th class="text-nowrap text-center" style="border-color:black !important;">ValidDays</th>
+                                                            <th class="text-nowrap text-center" style="border-color:black !important;">LOP</th>
+                                                            <th class="text-nowrap text-center" style="border-color:black !important;">ALWP</th>
+                                                            <th class="text-nowrap text-center" style="border-color:black !important;">PayableDay</th>
+                                                            <th class="text-nowrap text-center" style="border-color:black !important;">OTHRSOffDay</th>
+                                                            <th class="text-nowrap text-center" style="border-color:black !important;">OTSecret</th>
+                                                                                                                      
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="tblAttendancePayroll">
+                                                        @foreach (var d in ViewBag.AttendanceForPayroll)
+                                                        {
+                                                            <tr>
+                                                                @*<td class="text-nowrap">@d.SrNo</td>*@
+                                                                <td class="fixed-side" style="background-color:white !important; border-color:black !important;min-width:270px;">@d.employeename</td>
+                                                                <td class="fixed-side1" style="background-color:white !important; border-color:black !important;">@d.EmployeeNo</td>
+                                                                <td class="text-nowrap" style="background-color:white !important; border-color:black !important;">@d.BusinessUnit</td>
+                                                                <td class="text-nowrap" style="background-color:white !important; border-color:black !important;">@d.Department</td>
+                                                                <td class="text-nowrap" style="background-color:white !important; border-color:black !important;">@d.Grade</td>
+                                                                <td class="text-nowrap" style="background-color:white !important; border-color:black !important;">@d.BusinessArea</td>
+                                                                <td class="text-nowrap" style="background-color:white !important; border-color:black !important;">
+                                                                    <input type="text" class="form-control" id="txtMonthDays" name="MonthDays" value="@d.MonthDays">
+                                                                </td>
+                                                                <td class="text-nowrap" style="background-color:white !important; border-color:black !important;">
+                                                                    <input type="text" class="form-control" id="txtWD" name="WD" value="@d.WD" style="width:90px;">
+                                                                </td>
+                                                                <td class="text-nowrap" style="background-color:white !important; border-color:black !important;">
+                                                                    <input type="text" class="form-control" id="txtWD" name="WD" value="@d.WO" style="width:90px;">
+                                                                </td>
+                                                                <td class="text-nowrap" style="background-color:white !important; border-color:black !important;">
+                                                                    <input type="text" class="form-control" id="txtWD" name="WD" value="@d.PH" style="width:90px;">
+                                                                </td>
+                                                                <td class="text-nowrap" style="background-color:white !important; border-color:black !important;">
+                                                                    <input type="text" class="form-control" id="txtWD" name="WD" value="@d.CF" style="width:90px;">
+                                                                </td>
+                                                                <td class="text-nowrap" style="background-color:white !important; border-color:black !important;">
+                                                                    <input type="text" class="form-control" id="txtCO" name="CO" value="@d.CO" style="width:90px;">
+                                                                </td>
+                                                                <td class="text-nowrap" style="background-color:white !important; border-color:black !important;">
+                                                                    <input type="text" class="form-control" id="txtEL" name="EL" value="@d.EL" style="width:90px;">
+                                                                </td>
+                                                                <td class="text-nowrap" style="background-color:white !important; border-color:black !important;">
+                                                                    <input type="text" class="form-control" id="txtInLate" name="InLate" value="@d.InLate">
+                                                                </td>
+                                                                <td class="text-nowrap" style="background-color:white !important; border-color:black !important;">
+                                                                    <input type="text" class="form-control" id="txtOutEarly" name="OutEarly" value="@d.OutEarly">
+                                                                </td>
+                                                                <td class="text-nowrap" style="background-color:white !important; border-color:black !important;">
+                                                                    <input type="text" class="form-control" id="txtShortHrs" name="ShortHrs" value="@d.ShortHrs">
+                                                                </td>
+                                                                <td class="text-nowrap" style="background-color:white !important; border-color:black !important;">
+                                                                    <input type="text" class="form-control" id="txtGatepassPersonal" name="GatepassPersonal" value="@d.GatepassPersonal">
+                                                                </td>
+                                                                <td class="text-nowrap" style="background-color:white !important; border-color:black !important;">
+                                                                    <input type="text" class="form-control" id="txtGatepassPersonal" name="GatepassPersonal" value="@d.ActualAbsent">
+                                                                </td>
+                                                                <td class="text-nowrap" style="background-color:white !important; border-color:black !important;">
+                                                                    <input type="text" class="form-control" id="txtValidMin" name="ValidMin" value="@d.ValidMin">
+                                                                </td>
+                                                                <td class="text-nowrap" style="background-color:white !important; border-color:black !important;">
+                                                                    <input type="text" class="form-control" id="txtValidMin" name="ValidMin" value="@d.ValidDays">
+                                                                </td>
+                                                                <td class="text-nowrap" style="background-color:white !important; border-color:black !important;">
+                                                                    <input type="text" class="form-control" id="txtValidMin" name="ValidMin" value="@d.LOP" style="width:90px;">
+                                                                </td>
+                                                                <td class="text-nowrap" style="background-color:white !important; border-color:black !important;">
+                                                                    <input type="text" class="form-control" id="txtALWP" name="ALWP" value="@d.ALWP" style="width:90px;">
+                                                                </td>
+                                                                <td class="text-nowrap" style="background-color:white !important; border-color:black !important;">
+                                                                    <input type="text" class="form-control" id="txtPayableDay" name="PayableDay" value="@d.PayableDay">
+                                                                </td>
+                                                                <td class="text-nowrap" style="background-color:white !important; border-color:black !important;">
+                                                                    <input type="text" class="form-control" id="txtOTHRSOffDay" name="OTHRSOffDay" value="@d.OTHRSOffDay">
+                                                                </td>
+                                                                <td class="text-nowrap" style="background-color:white !important; border-color:black !important;">
+                                                                    <input type="text" class="form-control" id="txtOTHRSOffDay" name="OTHRSOffDay" value="@d.OTSecret">
+                                                                </td>
+
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="LastShortLeaveBx">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="BtnBx">                                                        
+                                                        <button type="button" id="btnAttendanceForPayrollSubmit"
+                                                                class="btn btn-primary btn-sm">
+                                                            <i class="fa-solid fa-floppy-disk"></i>  Submit
+                                                        </button>                                                        
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+               
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+    $(document).ready(function () {
+        var FD = document.getElementById("txtFromDate").value;
+        var TD = document.getElementById("txtToDate").value;
+        $('title').html("Attendance For Payroll ("+FD+" To "+TD+")");
+        var CheckEmptyDate = document.getElementById('txtFromDate').value;
+        if (CheckEmptyDate == "") {
+            document.getElementById('txtFromDate').value = SetTodaysDate;
+            document.getElementById('txtToDate').value = SetTodaysDate;
+        }
+
+        $("#ddlBranchId").select2();
+        $("#ddlCmpId").select2();
+        $("#ddlDepartmentId").select2();
+        $("#ddlSubDepartmentId").select2();
+        $("#ddlDesignationId").select2();
+        $("#ddlLineId").select2();
+        $("#ddlGradeId").select2();
+        $("#ddlEmployeeID").select2();
+
+        $("#ddlCmpId").on("change", function () {
+            debugger;
+            $("#ddlBranchId").find("option").remove();
+            var CmpId = $("#ddlCmpId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetBusinessUnit", "ESS_TimeOffice_AttendanceForPayroll")',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    debugger;
+                    if (data == false) {
+                        $("#ddlBranchId").find("option").remove();
+                        $("#ddlLineId").find("option").remove();
+                        $("#ddlEmployeeID").find("option").remove();
+                        $("#ddlBranchId").append("<option value=''>All </option>");
+                        $("#ddlEmployeeID").append("<option value=''>All </option>");
+                        $("#ddlLineId").append("<option value=''>All </option>");
+                    }
+                    else {
+                        var EmployeeName = data.EmployeeName;
+                        var LineMaster = data.List_LineMaster;
+                        var Branch = data.Branch;
+                        if (Branch != null) {
+                            //var data1 = data.data;
+                            $("#ddlBranchId").append("<option value=''>All </option>");
+                            $.each(Branch, function (i, p) {
+                                $("#ddlBranchId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+                        }
+                    }
+                }
+            })
+
+        });
+        var ShowData = @Html.Raw(Json.Encode(TempData["ShowData"]));
+        if(ShowData1=true)
+        {
+            var CmpId = $("#ddlCmpId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetBusinessUnit", "ESS_TimeOffice_AttendanceForPayroll")',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    debugger;
+                    if (data == false) {
+                        $("#ddlBranchId").find("option").remove();
+                        $("#ddlLineId").find("option").remove();
+                        $("#ddlEmployeeID").find("option").remove();
+                        $("#ddlBranchId").append("<option value=''>All </option>");
+                        $("#ddlEmployeeID").append("<option value=''>All </option>");
+                        $("#ddlLineId").append("<option value=''>All </option>");
+                    }
+                    else {
+                        $("#ddlBranchId").find("option").remove();
+                        $("#ddlLineId").find("option").remove();
+                        $("#ddlEmployeeID").find("option").remove();
+                        var EmployeeName = data.EmployeeName;
+                        var LineMaster = data.List_LineMaster;
+                        var Branch = data.Branch;
+                        if (Branch != null) {
+                            //var data1 = data.data;
+                            $("#ddlBranchId").append("<option value=''>All </option>");
+                            $.each(Branch, function (i, p) {
+                                $("#ddlBranchId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+                        }
+
+                        debugger;
+                        if (EmployeeName != null) {
+                            $("#ddlEmployeeID").append("<option value=''>All </option>");
+                            $.each(EmployeeName, function (i, p) {
+                                $("#ddlEmployeeID").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+                        }
+                        debugger;
+                        if (LineMaster != null) {
+                           $("#ddlLineId").append("<option value=''>All </option>");
+                            $.each(LineMaster, function (i, p) {
+                                $("#ddlLineId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+                        }
+                    }
+
+                }
+            })
+
+        }
+
+
+
+
+        $("#ddlDepartmentId").on("change", function () {
+            debugger;
+            $("#ddlSubDepartmentId").find("option").remove();
+            var DepartmentId = $("#ddlDepartmentId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetSubDepartment", "ESS_TimeOffice_AttendanceForPayroll")',
+                data: { DepartmentId: DepartmentId },
+                success: function (data) {
+                    debugger;
+                    if (data == false) {
+                        $("#ddlSubDepartmentId").find("option").remove();
+                        $("#ddlSubDepartmentId").append("<option value=''>All </option>");
+                    }
+                    else {
+                        if (data != null) {
+                            $("#ddlSubDepartmentId").append("<option value=''>All </option>");
+                            $.each(data, function (i, p) {
+                                $("#ddlSubDepartmentId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+                        }
+                    }
+                }
+            })
+        });
+
+        $("#ddlBranchId").on("change", function () {
+            debugger;
+            $("#ddlLineId").find("option").remove();
+            $("#ddlEmployeeID").find("option").remove();
+            var CmpId = $("#ddlCmpId").val();
+            var UnitBranchId = $("#ddlBranchId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetUnit", "ESS_TimeOffice_AttendanceForPayroll")',
+                data: { CmpId: CmpId, UnitBranchId: UnitBranchId },
+                success: function (data) {
+                    debugger;
+                    if (data == false) {
+                        $("#ddlLineId").find("option").remove();
+                        $("#ddlEmployeeID").find("option").remove();
+                        $("#ddlEmployeeID").append("<option value=''>All </option>");
+                        $("#ddlLineId").append("<option value=''>All </option>");
+                    }
+                    else {
+                        var EmployeeName = data.EmployeeName;
+                        var LineMaster = data.List_LineMaster;
+                        if (EmployeeName != null) {
+                            $("#ddlEmployeeID").append("<option value=''>All </option>");
+                            $.each(EmployeeName, function (i, p) {
+                                $("#ddlEmployeeID").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+                        }
+                        debugger;
+                        if (LineMaster != null) {
+                            $("#ddlLineId").append("<option value=''>All </option>");
+                            $.each(LineMaster, function (i, p) {
+                                $("#ddlLineId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+                        }
+                    }
+                }
+            })
+
+
+        });
+
+        $("#txtFromDate, #txtToDate").on("change", function () {
+            debugger;
+            var input = document.getElementById("txtFromDate").value;
+            var input1 = document.getElementById("txtToDate").value;
+            //define two date object variables with dates inside it
+            fromDateObj = new Date(input);
+            toDateObj = new Date(input1);
+            //calculate time difference
+            var time_difference = toDateObj.getTime() - fromDateObj.getTime();
+            //calculate days difference by dividing total milliseconds in a day
+            var days_differences = time_difference / (1000 * 60 * 60 * 24);
+            var days_difference = days_differences + 1;
+            // Check if toDate is greater than fromDate
+            var from = $("#txtFromDate").val();
+            var to = $("#txtToDate").val();
+            if (Date.parse(from) > Date.parse(to)) {
+
+                $("#ErrortxtFromDate").html("From date should not be greater than todate");
+                return false;
+            }
+            else {
+                $("#ErrortxtFromDate").html("");
+            }
+            if (days_difference > 31) {
+                $("#ErrortxtFromDate").html("You should not allow greter than 31 days");
+            }
+        });
+
+
+
+        $('#tblAttendanceForPayroll').DataTable({
+            //dom: 'Bfrtip',
+            //dom: '<"row"<"col-sm-4"B><"col-sm-4"l><"col-sm-4"f>>' + 't' + '<"row"<"col-sm-6"l><"col-sm-6">>',
+            //buttons: [
+            //  {
+            //      extend: 'excel',
+            //      text: 'Excel',
+            //      customize: function(xlsx) {
+            //          var sheet = xlsx.xl.worksheets['sheet1.xml'];
+            //          var loop = 0;
+
+
+
+            //          $('row', sheet).each(function () {
+            //              if (loop == 0) {
+            //                  // Apply style to cells in the first row
+            //                  $(this).find("c").attr('s', '20');
+
+            //              }
+            //              if (loop == 1) {
+            //                  // Apply style to cells in the first row
+            //                  $(this).find("c").attr('s', '18'); //
+            //              }
+            //              else{
+            //                  $(this).css( 'background-color', 'green' );
+
+
+            //              }
+
+            //              loop++;
+            //          });
+
+            //      }
+            //  },
+            //   'copy',
+            //   'csv',
+            //    'pdf',
+            //    'print'
+            //],
+            scrollY: 300,
+            scrollCollapse: true,
+            paging: false,
+            scrollX: true,
+            searching: true, // Enable searching
+            select:true,
+
+        });
+    }); //Ready Function
+
+
+
+    //use for add regex function
+    jQuery.validator.addMethod(
+    "regex",
+     function (value, element, regexp) {
+         if (regexp.constructor != RegExp)
+             regexp = new RegExp(regexp);
+         else if (regexp.global)
+             regexp.lastIndex = 0;
+         return this.optional(element) || regexp.test(value);
+     }, "erreur expression reguliere"
+  );
+
+    $('#AttendanceForPayroll').validate({
+        rules: {
+            CmpId: {
+                required: true,
+                },
+
+            FromDate: {
+                required: true,
+            },
+            ToDate: {
+                required: true,
+            },
+
+
+        },
+        messages: {
+            CmpId: {
+                required: "Company name is required",
+            },
+
+            FromDate: {
+                required: "From date is required",
+            },
+            ToDate: {
+                required: "To date is required",
+            },
+
+
+        },
+    });
+
+    var form = $("#AttendanceForPayroll");
+    form.validate();
+    function LoadEmployee() {
+        debugger;
+
+        form.valid();
+        if (form.valid() == false) {
+            $("#txtToDate").removeClass("error");
+            $("#txtFromDate").removeClass("error");
+            return false;
+        }
+        var EmptyCheck = $("#ErrortxtFromDate").text();
+        if (EmptyCheck != "") {
+            return false;
+        }
+        $(".Userloaderbg").css("display", "flex");
+        $("#AttendanceForPayroll").submit();
+    }
+    
+
+</script>
+<script>
+    $("#btnAttendanceForPayrollSubmit").click(function () {
+        debugger;
+        //$(".Userloaderbg").css("display", "flex");
+        alert("nmdkdeo");
+        var tbldata = [];
+        $("#tblAttendanceForPayroll tbody tr").each(function () {
+            var row = $(this);
+            var tblRowData = {};
+            ////tblRowData.EmployeeId = row.find("td").eq(0).html();
+            tblRowData.EmployeeNo = row.find("td").eq(1).html();
+            tblRowData.BusinessUnit = row.find("td").eq(2).html();
+            tblRowData.Department = row.find("td").eq(3).html();
+            tblRowData.Grade = row.find("td").eq(4).html();
+            //tblRowData.BusinessArea  = row.find("td").eq(5).html();
+            //tblRowData.MonthDays = row.find("td").eq(6).find("input").val();
+            //tblRowData.WD = row.find("td").eq(7).find("input").val();
+            //tblRowData.WO = row.find("td").eq(8).find("input").val();
+            //tblRowData.PH =row.find("td").eq(9).find("input").val();
+            //tblRowData.CF = row.find("td").eq(10).find("input").val();
+            //tblRowData.CO =row.find("td").eq(11).find("input").val();
+            //tblRowData.EL = row.find("td").eq(12).find("input").val();
+            //tblRowData.InLate = row.find("td").eq(13).find("input").val();
+            //tblRowData.OutEarly = row.find("td").eq(14).find("input").val();
+            //tblRowData.ShortHrs = row.find("td").eq(15).find("input").val();
+            //tblRowData.GatepassPersonal = row.find("td").eq(16).find("input").val();
+            //tblRowData.ActualAbsent = row.find("td").eq(17).find("input").val();
+            //tblRowData.ValidMin = row.find("td").eq(18).find("input").val();
+            //tblRowData.ValidDays = row.find("td").eq(19).find("input").val();
+            //tblRowData.LOP = row.find("td").eq(20).find("input").val();
+            //tblRowData.ALWP = row.find("td").eq(21).find("input").val();
+            //tblRowData.PayableDay = row.find("td").eq(22).find("input").val();
+            //tblRowData.OTHRSOffDay = row.find("td").eq(23).find("input").val();
+            //tblRowData.OTSecret = row.find("td").eq(24).find("input").val();
+
+            tbldata.push(tblRowData);
+            
+        });
+        //console.log(tbldata);
+       
+        $.ajax({
+            url: '@Url.Action("SaveAttendanceForPayroll", "ESS_TimeOffice_AttendanceForPayroll")',
+            method: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            data: JSON.stringify({ tbldata: tbldata }),
+            success: function (response) {
+                debugger;
+                data = JSON.parse(response);
+                if (data != null) {
+                    data = JSON.parse(response);
+                    var Message1 = data.Message;
+                    var Icon1 = data.Icon;
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+        });
+
+    });
+</script>
+
+
+
+
+
+
+
+

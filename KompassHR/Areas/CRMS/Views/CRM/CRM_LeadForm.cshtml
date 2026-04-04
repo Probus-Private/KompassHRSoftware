@@ -1,0 +1,1040 @@
+﻿@*@model OceanFM.Models.ACCMAIN*@
+@model KompassHR.Areas.CRMS.Models.ACCMAIN
+
+@using Newtonsoft.Json
+
+@{
+    ViewBag.Title = "CRM_LeadForm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    bool defaultStatus = (Model?.TenderApplicable ?? false);
+}
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote.min.css" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.18/summernote.min.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+
+<link href="~/assets/plugins/summernote/dist/summernote-lite.css" rel="stylesheet" />
+<script src="~/assets/plugins/summernote/dist/summernote-lite.min.js"></script>
+
+<style>
+    .modal-backdrop {
+        filter: none !important;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    input[type="radio"] {
+        display: none;
+    }
+
+    .star {
+        font-size: 2em;
+        color: gray;
+        cursor: pointer;
+    }
+
+    input[type="radio"]:checked + .star {
+        color: gold;
+    }
+
+        input[type="radio"]:checked + .star ~ .star {
+            color: gray;
+        }
+
+    .btn-attractive {
+        background-color: #673ab7;
+        color: white;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 5px;
+        transition: background-color 0.3s, transform 0.3s;
+    }
+
+        .btn-attractive:hover {
+            background-color: #441a91;
+            transform: scale(1.05);
+            color: white;
+        }
+
+        .btn-attractive:focus, .btn-attractive:active {
+            outline: none;
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+        }
+
+    .note-editable {
+        border: 1px solid lightgray;
+    }
+
+    @@media (min-width: 992px) {
+        #ccDiv {
+            flex: 0 0 auto;
+            width: 100px;
+        }
+    }
+
+    @@media (min-width: 992px) {
+        #contactDiv44 {
+            flex: 0 0 auto;
+            width: 666px;
+        }
+    }
+</style>
+
+<style>
+    .leadbx {
+        padding: 20px;
+        border: 1px solid lightgray;
+        border-radius: 10px;
+    }
+
+        .leadbx h5 {
+            margin-bottom: 10px;
+        }
+
+        .leadbx .list-unstyled li {
+            margin-bottom: 10px;
+        }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row">
+        <ol style="list-style: none; padding: 0; margin: 0; ">
+            <li style="float:right; margin-right: 15px;">
+                <a href="@Url.Action("Lead_Dashboard", "CRM",  new { id = 45,ScreenId=803, area = "CRMS" })">
+                    <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                </a>
+            </li>
+        </ol>
+    </div>
+    <br />
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading">
+                    <h4 class="panel-title"> Add New Lead -</b></h4>
+                    <div class="panel-heading-btn">
+                        <a href="@Url.Action("Lead_Dashboard", "CRM", new { area = "CRMS" })" class="btn btn-xs btn-icon btn-default">
+                            <i class="fa fa-home fa-lg"></i>
+                        </a>
+                    </div>
+                    &nbsp;
+                    @if (ViewBag.EncryptedId != null)
+                    {
+                        <div class="panel-heading-btn">
+                            <a href="@Url.Action("Lead_Details", "CRM", new { EncryptedId = ViewBag.EncryptedId, area = "CRM" })" class="btn btn-xs btn-icon btn-default">
+                                <i class="fa fa-angle-left fa-lg"></i>
+                            </a>
+                        </div>
+                    }
+                    &nbsp;
+
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default"
+                           data-toggle="panel-expand"><i class="fa fa-expand fa-lg"></i></a>
+                    </div>
+
+                </div>
+
+
+                <div class="panel-body">
+                    <form role="form" action="/CRMS/CRM/CRM_LeadForm" id="SaveLeadForm" method="post" data-parsley-validate="" enctype="multipart/form-data">
+                        <div class="form-group row mb-3">
+                            <label class="col-lg-4 col-form-label form-label" for="message">Company: <span class="text-danger">*</span></label>
+                            <div class="col-lg-8">
+                                @Html.DropDownListFor(model => model.CompanyId, new SelectList(ViewBag.CmpName, "Fid", "CompanyName"), "Select", new { @class = "form-control form-select", name = "CompanyId", Id = "txtCompanyName" })
+                            </div>
+                        </div>
+                        <div class="form-group row mb-3">
+                            <label class="col-lg-4 col-form-label form-label" for="message">Business Unit : <span class="text-danger">*</span></label>
+                            <div class="col-lg-8">
+                                @Html.DropDownListFor(model => model.BUCode, new SelectList(ViewBag.BUCodeList, "Fid", "CompanyName"), "Select", new { @class = "form-control form-select", name = "BUCode", Id = "txtBUCode" })
+                            </div>
+                        </div>
+                        <div class="form-group row mb-3">
+                            <label class="col-lg-4 col-form-label form-label" for="message">Lead Title : <span class="text-danger">*</span></label>
+                            <div class="col-lg-8">
+                                @Html.TextBoxFor(model => model.LeadName, new { @class = "form-control", name = "LeadName", type = "text", id = "txtLeadName", autocomplete = "Off" })
+                                @Html.HiddenFor(model => model.Encrypted_Id, new { id = "Encrypted_Id" })
+                                @Html.HiddenFor(model => model.Fid, new { id = "Fid" })
+                                @Html.Hidden("IsDirectAccount", false)
+                                @Html.Hidden("Stage", "Identification")
+                                @Html.Hidden("MAS_STAGES_FID", 1)
+                                @Html.HiddenFor(model => model.Fid, new { id = "Fid" })
+                            </div>
+                        </div>
+
+                        @*@if (ViewBag.EncryptedId == null || ViewBag.List.AccStage == "Identification")
+                        {
+                            <div class="form-group row mb-3">
+                                <label class="col-lg-4 col-form-label form-label" for="message">Company Name : <span class="text-danger">*</span></label>
+                                <div class="col-lg-6 mb-2">
+                                    @Html.TextBoxFor(model => model.CompanyName, new { @class = "form-control", type = "text", name = "CompanyName", id = "txtCompanyName", autocomplete = "Off" })
+                                </div>
+                                <div class="col-lg-2">
+                                    <button type="button" id="Detailsss" class="btn btn-primary me-1 mb-1" onclick="Details()">Details</button>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="form-group row mb-3">
+                                <label class="col-lg-4 col-form-label form-label" for="message">Company Name :</label>
+                                <div class="col-lg-6 mb-2">
+                                    @Html.TextBoxFor(model => model.CompanyName, new { @class = "form-control", type = "text", name = "CompanyName", id = "txtCompanyName", autocomplete = "Off", ReadOnly = "ReadOnly" })
+                                </div>
+                                <div class="col-lg-2 mb-2">
+                                    <button type="button" id="Detailsss" class="btn btn-primary me-1 mb-1" onclick="Details()">Details</button>
+                                </div>
+                            </div>
+                        }*@
+
+                        <div class="form-group row mb-3">
+                            <label class="col-lg-4 col-form-label form-label" for="message">Lead Type : <span class="text-danger">*</span></label>
+                            <div class="col-lg-8">
+                                @Html.DropDownListFor(model => model.LeadType, new SelectList(new List<Object>
+                            {
+                            new { value = "New" , text = "New" },
+                            new { value = "Existing" , text = "Existing" },},
+                            "value", "text"), "Select", new { @class = "form-control", name = "LeadType", id = "txtLeadType", autocomplete = "Off" })
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-3">
+                            <label class="col-lg-4 col-form-label form-label" for="message">Company Category : <span class="text-danger">*</span></label>
+                            <div class="col-lg-8">
+                                @Html.DropDownListFor(model => model.CompanyCategory, new SelectList(new List<Object>
+                            {
+                            new { value = "Large" , text = "Large" },
+                            new { value = "Growth"  , text = "Growth"  },
+                            new { value = "Medium" , text = "Medium" },
+                            new { value = "Small" , text = "Small" },},
+                            "value", "text"), "Select", new { @class = "form-control", name = "CompanyCategory", id = "txtCompanyCategory", autocomplete = "Off" })
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-3">
+                            <label class="col-lg-4 col-form-label form-label" for="message">Organization Type : <span class="text-danger">*</span></label>
+                            <div class="col-lg-8">
+                                @Html.DropDownListFor(model => model.OrganisationType, new SelectList(new List<Object>
+                            {
+                            new { value = "Limited" , text = "Limited" },
+                            new { value = "Private"  , text = "Private"  },
+                            new { value = "Government" , text = "Government" },
+                            new { value = " PSU" , text = "PSU" },
+                            new { value = " LLP" , text = "LLP" },},
+                            "value", "text"), "Select", new { @class = "form-control", name = "OrganisationType", id = "txtOrganisationType", autocomplete = "Off" })
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-3">
+                            <label class="col-lg-4 col-form-label form-label" for="message">Lead Source : <span class="text-danger">*</span></label>
+                            <div class="col-lg-8">
+                                @Html.DropDownListFor(model => model.MAS_LEADSOURCE_Fid, new SelectList(ViewBag.LeadSourceList, "Fid", "LeadSource"), "Select", new { @class = "form-control", name = "MAS_LEADSOURCE_Fid", Id = "txtMAS_LEADSOURCE_Fid" })
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-3" id="otherTextboxContainer" style="display:none;">
+                            <label class="col-lg-4 col-form-label form-label" for="otherProfession">Reference Name :</label>
+                            <div class="col-lg-8">
+                                @Html.TextBoxFor(model => model.ReferenceName, new { @class = "form-control", type = "text", name = "ReferenceName", id = "otherProfession", autocomplete = "Off" })
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-3">
+                            <label class="col-lg-4 col-form-label form-label" for="message">Industry Vertical :</label>
+                            <div class="col-lg-8">
+                                @Html.DropDownListFor(model => model.MAS_INDUSTRYTYPE_Fid, new SelectList(ViewBag.IndustryTypeList, "Fid", "IndustryType"), "Select", new { @class = "form-control form-select", name = "MAS_INDUSTRYTYPE_Fid", Id = "txtMAS_INDUSTRYTYPE_Fid" })
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-3">
+                            <label class="col-lg-4 col-form-label form-label" for="message">Priority : <span class="text-danger">*</span></label>
+                            <div class="col-lg-8">
+                                @Html.DropDownListFor(model => model.LeadPriority, new SelectList(new List<Object>
+                            {
+                            new { value = "Hot" , text = "Hot" },
+                            new { value = "Warm"  , text = "Warm"  },
+                            new { value = "Cold" , text = "Cold" },},
+                            "value", "text"), "Select", new { @class = "form-control", name = "LeadPriority", id = "txtLeadPriority", autocomplete = "Off" })
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-3">
+                            <label class="col-lg-4 col-form-label form-label">Is Tender Applicable : </label>
+                            <div class="col-lg-8">
+                                @Html.DropDownListFor(model => model.TenderApplicable, new SelectList(new List<object>() {
+                                                        new { text = "Yes", value = true },
+                                                        new { text = "No", value = false }
+                                                          }, "value", "text", defaultStatus), "--Select--", new { @class = "form-control form-select", @id = "TenderApplicable" })
+                                @Html.ValidationMessageFor(model => model.TenderApplicable, "", new { @class = "help-block", id = "ErrorTenderApplicable", @style = "color:red" })
+                            </div>
+                        </div>
+
+
+                        <div class="form-group row mb-3 mb-3 pol">
+                            <label class="col-lg-4 col-form-label form-label"> Tender Number : <span class="text-danger">*</span></label>
+                            <div class="col-lg-8">
+                                @Html.TextBoxFor(model => model.TenderNumber, new { @class = "form-control", id = "TenderNumber", autocomplete = "Off" })
+                                @Html.ValidationMessageFor(model => model.TenderNumber, "", new { @class = "help-block", id = "ErrorTenderNumber", @style = "color:red" })
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-3 pol">
+                            <label class="col-lg-4 col-form-label form-label"> Tender Source : <span class="text-danger">*</span></label>
+                            <div class="col-lg-8">
+                                @Html.TextBoxFor(model => model.Tendersource, new { @class = "form-control", id = "Tendersource", autocomplete = "Off" })
+                                @Html.ValidationMessageFor(model => model.Tendersource, "", new { @class = "help-block", id = "ErrorTendersource", @style = "color:red" })
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-3">
+                            <label class="col-lg-4 col-form-label form-label"> Expected Contract Value : </label>
+                            <div class="col-lg-2">
+
+                                @Html.DropDownListFor(model => model.ECVCurrency,
+                    new SelectList(ViewBag.CountryCodeList, "Fid", "Currency"),
+                    "--Select--",
+                    new { @class = "form-control form-select", id = "txtCurrency" })
+                            </div>
+                            <div class="col-lg-6">
+                                @Html.TextBoxFor(model => model.ExpectedContractValue, new { @class = "form-control", id = "ExpectedContractValue", autocomplete = "Off", onkeypress = "return (event.charCode == 8 || event.charCode == 0) ? null : event.charCode >= 48 && event.charCode <= 57" })
+                                @Html.ValidationMessageFor(model => model.ExpectedContractValue, "", new { @class = "help-block", id = "ErrorExpectedContractValue", @style = "color:red" })
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-3">
+                            <label class="col-lg-4 mb-2 col-form-label form-label" for="message">Company Email :</label>
+                            <div class="col-lg-8">
+                                @Html.TextBoxFor(model => model.CompanyEmail, new { @class = "form-control", type = "text", name = "CompanyEmail", id = "txtCompanyEmail", autocomplete = "Off" })
+                                @Html.ValidationMessageFor(model => model.CompanyEmail, "", new { @class = "help-block", id = "ErrortxtEmailId", @style = "color:red" })
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-3">
+                            <label class="col-lg-4 mb-2 col-form-label form-label" for="message">Contact No :<span class="text-danger">*</span></label>
+                            <div class="col-lg-8">
+                                @Html.TextBoxFor(model => model.CompanyContactNumber, new { @class = "form-control", name = "CompanyContactNumber", id = "txtCompanyContactNumber", autocomplete = "Off", type = "text" })
+                                @Html.ValidationMessageFor(model => model.CompanyContactNumber, "", new { @class = "help-block", id = "ErrortxtContactNumber", @style = "color:red" })
+                            </div>
+                        </div>
+
+                        @*<div class="form-group row mb-3">
+                            <label class="col-lg-4 mb-2 col-form-label form-label" for="message">Contact No : <span class="text-danger">*</span></label>
+                            <div class="col-lg-8">
+                                <div class="d-flex">
+                                 
+                                    <div class="col-md-2">
+                                        @Html.DropDownList("CountryCode", new SelectList(ViewBag.CountryCodeList, "CountryCode", "CountryCode"), new { @class = "form-control form-select", id = "txtCountryCode", required = "required" })
+                                    </div>
+                                    &nbsp;
+                             
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(model => model.CompanyContactNumber, new { @class = "form-control", name = "CompanyContactNumber", id = "txtCompanyContactNumber", autocomplete = "Off", type = "text" })
+                                    </div>
+                                </div>
+                                @Html.ValidationMessageFor(model => model.CompanyContactNumber, "", new { @class = "help-block", id = "ErrortxtContactNumber", @style = "color:red" })
+                            </div>
+                        </div>*@
+
+                        <div class="form-group row mb-3">
+                            <label class="col-lg-4 mb-2 col-form-label form-label" for="message">Website</label>
+                            <div class="col-lg-8">
+                                @Html.TextBoxFor(model => model.Website, new { @class = "form-control", type = "text", name = "Website", id = "Website", autocomplete = "Off" })
+                                @Html.ValidationMessageFor(model => model.Website, "", new { @class = "help-block", id = "ErrorWebsite", @style = "color:red" })
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-3">
+                            <label class="col-lg-4 mb-2 col-form-label form-label">Company Logo<span class="text-danger"></span></label>
+                            <div class="col-lg-8">
+                                <input class="form-control" type="file" name="CompanyLogoPic" id="ProfilePic" accept="image/jpeg,image/jpg,image/png" />
+                            </div>
+
+                            @*@if (ViewBag.Pic != "")
+                                {
+                                    <a href="@Url.Action("GetViewFile", "CRM", new { FilePath = ViewBag.Pic, area="CRM" })" target="_blank">View File</a>
+                                }
+                                else
+                                {
+                                    <span>No File Attached</span>
+                                }*@
+                        </div>
+
+
+
+                        <div class="form-group row mb-3">
+                            <label class="col-lg-4 col-form-label form-label" for="message">CIN No. :</label>
+                            <div class="col-lg-8">
+                                @Html.TextBoxFor(model => model.CINNo, new { @class = "form-control", name = "CINNo", id = "txtCINNo", autocomplete = "Off", maxlength = 50 })
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-3">
+                            <label class="col-lg-4 col-form-label form-label" for="message">Company Rating :</label>
+                            <div class="col-lg-8">
+                                <input type="radio" id="star-1" name="CompanyRating" value="1" @(Model?.CompanyRating == 1 ? "checked" : "") />
+                                <label for="star-1" class="star">&#9733;</label>
+
+                                <input type="radio" id="star-2" name="CompanyRating" value="2" @(Model?.CompanyRating == 2 ? "checked" : "") />
+                                <label for="star-2" class="star">&#9733;</label>
+
+                                <input type="radio" id="star-3" name="CompanyRating" value="3" @(Model?.CompanyRating == 3 ? "checked" : "") />
+                                <label for="star-3" class="star">&#9733;</label>
+
+                                <input type="radio" id="star-4" name="CompanyRating" value="4" @(Model?.CompanyRating == 4 ? "checked" : "") />
+                                <label for="star-4" class="star">&#9733;</label>
+
+                                <input type="radio" id="star-5" name="CompanyRating" value="5" @(Model?.CompanyRating == 5 ? "checked" : "") />
+                                <label for="star-5" class="star">&#9733;</label>
+                            </div>
+                        </div>
+
+                        @*<div class="form-group row mb-3">
+                            <label class="col-lg-4 col-form-label form-label" for="message">Summary:</label>
+                            <div class="col-lg-8">
+                                @Html.TextArea("Summary", "", new { @class = "summernote", name = "Summary", style = "border: 1px solid #000;", id = "txtSummary", autocomplete = "Off", @placeholder = "Description....", contenteditable = "true" })
+                            </div>
+                        </div>*@
+                        <div class="form-group row mb-3">
+                            <label class="col-lg-4 col-form-label form-label" for="txtSummary">Summary:</label>
+                            <div class="col-lg-8">
+                                @Html.TextAreaFor(model => model.Summary, new
+                                {
+                               @class = "summernote",
+                               id = "txtSummary",
+                               style = "border: 1px solid #000;",
+                               autocomplete = "off",
+                               placeholder = "Description...."
+                               })
+                            </div>
+                        </div>
+
+                        <div class="form-group row text-center">
+                            <label class="col-lg-4 col-form-label form-label">&nbsp;</label>
+                            <div class="col-lg-8 d-flex justify-content-center">
+                                <button type="button" class="btn btn-success" id="btnSubmit">Submit</button>
+                            </div>
+                        </div>
+
+                        <br />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="companyModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="companyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <!-- Center vertically -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-body">
+                    <h4>Lead Details</h4>
+                    <div class="leadbx">
+                        <h5>Summary</h5>
+                        <ul class="list-unstyled">
+                            <li><strong><i class="fa-solid fa-user"></i> Lead Name:</strong> <span id="ModalLeadName"></span></li>
+                            <li><strong><i class="fa-solid fa-briefcase"></i> Company Name:</strong> <span id="ModalCompanyName"></span> </li>
+                            <li><strong><i class="fa-solid fa-circle-user"></i> Sales Person:</strong> <span id="ModalSalesPerson"></span></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@*<script>
+    $(document).ready(function() {
+
+            debugger
+            $('#Summary').summernote({
+                height: 300,                 // set editor height
+                minHeight: null,             // set minimum height of editor
+                maxHeight: null,             // set maximum height of editor
+                focus: true,
+                callbacks: {
+                    onInit: function () {
+                        debugger
+                        $('.note-editable').attr('contenteditable', true); // Make the content readonly
+                    }
+                }
+            });
+        //}
+    });
+</script>*@
+
+<script>
+
+    $("#txtCompanyName").on("change", function () {
+        debugger
+        $("#txtBUCode").empty();
+        
+        var CmpId = $("#txtCompanyName").val();
+
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("GetBusinessUnit", "CRM")',
+            data: { CmpId: CmpId },
+            success: function (data) {
+
+                if (data && data.Branch) {
+                    $("#txtBUCode").append("<option value=''>Select</option>");
+                    $.each(data.Branch, function (i, p) {
+                        $("#txtBUCode").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                    });
+                }
+
+            }
+        });
+    });
+
+    function Details() {
+        debugger;
+        var CompanyName = $("#txtCompanyName").val();
+        $.ajax({
+            url: "CompanyDetails",
+            method: "get",
+            data: { DetailsId: CompanyName },
+            success: function(response) {
+                debugger;
+                try {
+                    if (typeof response === "string") {
+                        response = JSON.parse(response);
+                    }
+
+                    const fieldMap = {
+                        'LeadName': '#ModalLeadName',
+                        'CompanyName': '#ModalCompanyName',
+                        'EmployeeName': '#ModalSalesPerson'
+                    };
+
+                    $('#companyModal').modal('show');
+
+                    response.forEach(function(item) {
+                        if (fieldMap[item.Key]) {
+                            $(fieldMap[item.Key]).text(item.Value);
+                        }
+                    });
+                } catch (e) {
+                    console.error('Parsing error:', e);
+                    alert('There was an error retrieving the company details. Please try again later.');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('AJAX request failed:', status, error);
+                alert('An error occurred while retrieving company details. Please try again later.');
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        $("#Detailsss").hide();
+        $('#txtCompanyEmail').change(function (event) {
+            debugger
+            $('#ErrortxtEmailId').html("");
+            var txtEmailId = document.getElementById('txtCompanyEmail').value;
+
+            if (/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(txtEmailId))
+            {
+                return true;
+            }
+            else
+            {
+                $('#ErrortxtEmailId').html("Please Enter Valid E-mail ID");
+                $('#txtCompanyEmail').val("");
+                $('#txtCompanyEmail').focus();
+                return false;
+            }
+        });
+    });
+
+</script>
+
+<script>
+
+    document.getElementById('txtCompanyContactNumber').addEventListener('input', function (e) {
+        debugger
+        var value = e.target.value;
+        if ((value.match(/\+/g) || []).length > 1) {
+            // Remove all '+' signs and then add one at the start
+            e.target.value = value.replace(/\+/g, '').replace(/^\d/, '+' + '$&');
+        } else {
+            // Replace any non-digit characters except for the first '+' (if present)
+            e.target.value = value.replace(/[^\d+]/g, '');
+        }
+    });
+    debugger
+
+
+    var Id=$("#Encrypted_Id").val();
+    if(Id=="")
+    {
+        $("#MoreDetailsPanel").hide();
+    }
+    else
+    {
+        $("#MoreDetailsPanel").show();
+        $("#MoreDetailsPanel").focus();
+    }
+
+
+    $("#SaveLeadForm").validate({
+        rules: {
+            LeadName: {
+                required: true
+            },
+            BUCode:{
+                required: true
+            },
+            CompanyId:{
+                required: true
+            },
+            LeadType:{
+                required:true
+            },
+            CompanyCategory:{
+                required: true
+            },
+            OrganisationType:{
+                required: true
+            },
+            MAS_LEADSOURCE_Fid:{
+                required: true
+            },
+            //MAS_INDUSTRYTYPE_Fid:{
+            //    required: true
+            //},
+            LeadPriority:{
+                required: true
+            },
+            //CompanyEmail:{
+            //    required: true,
+            //    email:true,
+            //},
+            CompanyContactNumber:{
+                required: true
+            },
+            //CINNo:{
+            //    required:true
+            //},
+            CompanyRating:{
+                required: true
+            },
+            //Summary:{
+            //    required: true
+            //},
+            ReferenceName:{
+                required: true
+            },
+            Tendersource:{required : true},
+            TenderNumber:{required : true},
+            TenderApplicable:{required : true},
+
+        },
+        messages: {
+            LeadName: {
+                required: "Lead name is required"
+            },
+            BUCode:{
+                required: "Business name is required"
+            },
+            CompanyId:{
+                required: "Company name is required"
+            },
+            LeadType:{
+                required: "Lead Type is required"
+            },
+            CompanyCategory:{
+                required: "Company category is required"
+            },
+            OrganisationType:{
+                required: "Organisation type is required"
+            },
+            MAS_LEADSOURCE_Fid:{
+                required: "Lead source is required"
+            },
+            //MAS_INDUSTRYTYPE_Fid:{
+            //    required: "Industry type is required"
+            //},
+            LeadPriority:{
+                required: "Lead priority is required"
+            },
+            //CompanyEmail:{
+            //    required: "Company email is required",
+            //    regex: " Please enter valid email id",
+            //},
+            CompanyContactNumber:{
+                required: "Conatct No. is required"
+            },
+            //CINNo:{
+            //    required: "CIN No is required"
+            //},
+            CompanyRating:{
+                required: "Company rating is required"
+            },
+            //Summary:{
+            //    required: "Summary is required"
+            //},
+            ReferenceName:{
+                required: "Reference Name is required"
+            },
+            Tendersource:{
+                required: "Tender Source is required"
+            },
+            TenderNumber:{
+                required: "Tender Number is required"
+            },
+            TenderApplicable:{
+                required: "Tender Applicable is required"
+            }
+        }
+    });
+
+    var form = $("#SaveLeadForm");
+    form.validate();
+
+    $(document).ready(function () {
+        debugger
+        $('html, body').scrollTop(0);
+
+
+        $('#txtMAS_LEADSOURCE_Fid').change(function () {
+            debugger
+            var selectedValue = $(this).find(":selected").text();
+
+            // Check if the selected value is 'Other' (assuming 'Other' corresponds to a specific value)
+            if (selectedValue === 'Referral') {
+                // Show the textbox for 'Other' profession
+                $('#otherTextboxContainer').show();
+
+                // Enable the textbox if 'Other' is selected, so it can be filled out
+                $('#otherProfession').prop('disabled', false);
+            } else {
+                // Hide the textbox when 'Other' is not selected
+                $('#otherTextboxContainer').hide();
+
+                // Disable the textbox so it cannot be filled out when not needed
+                $('#otherProfession').prop('disabled', true);
+            }
+        });
+
+        $('#txtMAS_LEADSOURCE_Fid').trigger('change');
+
+        $("#btnSubmit").click(function () {
+            debugger;
+            if (form.valid()) {
+                var Encrypted_Id = $("#Encrypted_Id").val();
+                var CompanyEmail=$("#txtCompanyEmail").val();
+                var CompanyContactNumber=$("#txtCompanyContactNumber").val();
+                var LeadName = $("#txtLeadName").val();
+                var CompanyName = $("#txtCompanyName").val();
+                var Summary = $("#txtSummary").val();
+                $.ajax({
+                    //url: "IsLeadExist",
+                    url:"/CRMS/CRM/IsLeadExist", 
+                    method: "get",
+                    data: { Encrypted_Id: Encrypted_Id,CompanyEmail:CompanyEmail,CompanyContactNumber:CompanyContactNumber, LeadName:LeadName, CompanyName:CompanyName},
+                    success: function (response) {
+                        debugger;
+                        var Message1 = response.Message;
+                        var Icon1 = response.Icon;
+                        if (response.Icon == "error") {
+                            if (Message1 != null) {
+                                if (Message1 != null) {
+                                    Swal.fire({
+                                        icon: Icon1,
+                                        text: Message1,
+                                        allowOutsideClick: () => {
+                                            const popup = Swal.getPopup()
+                                            popup.classList.remove('swal2-show')
+                                            setTimeout(() => {
+                                                popup.classList.add('animate__animated', 'animate__headShake')
+                                            })
+                                            setTimeout(() => {
+                                                popup.classList.remove('animate__animated', 'animate__headShake')
+                                            }, 500)
+                                            return false
+                                        }
+                                    });
+                                }
+                            }
+                        }
+                        else {
+                            $("#SaveLeadForm").submit();
+                        }
+                    }
+                });
+            }
+            else
+            {
+                return false;
+            }
+        });
+
+
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+    });
+
+
+</script>
+
+<script>
+
+    $(document).ready(function () {
+        const $stars = $('.star');
+        const $radios = $('input[type="radio"]');
+
+        // Function to update star colors based on the selected rating
+        function updateStars(rating) {
+            $stars.each(function (index) {
+                $(this).css('color', index < rating ? 'gold' : 'gray');
+            });
+        }
+
+        // On click, update radio buttons and star colors
+        $stars.each(function (index) {
+            $(this).on('click', function () {
+                const rating = index + 1;
+                $radios.each(function (idx) {
+                    this.checked = idx < rating;
+                });
+                updateStars(rating);
+            });
+
+            // On mouse over, temporarily highlight stars
+            $(this).on('mouseover', function () {
+                const rating = index + 1;
+                updateStars(rating);
+            });
+
+            // On mouse out, reset to the current checked rating
+            $(this).on('mouseout', function () {
+                const $checkedRadio = $('input[type="radio"]:checked');
+                const rating = $checkedRadio.length ? parseInt($checkedRadio.val()) : 0;
+                updateStars(rating);
+            });
+        });
+
+        // Initialize star colors based on the initially checked radio button
+        const $checkedRadio = $('input[type="radio"]:checked');
+        const initialRating = $checkedRadio.length ? parseInt($checkedRadio.val()) : 0;
+        updateStars(initialRating);
+    });
+
+
+</script>
+
+<script>
+   
+    $(document).ready(function () {
+        debugger
+        var companyList;
+
+     
+        function getCompanyList() {
+            return new Promise(function(resolve, reject) {
+                $.ajax({
+                    url: "GetCompanyList",
+                    method: "get",
+                    success: function (response) {
+                        debugger
+                        resolve(response.CompanyNameList); // Resolve with the company list
+                    },
+                    error: function(xhr, status, error) {
+                        debugger
+                        reject(error); // Reject on error
+                    }
+                });
+            });
+        }
+
+        // Call the function and use .then() to process the result
+        getCompanyList().then(function(companyListJson) {
+            debugger
+            companyList = companyListJson.map(function(item) {
+                debugger
+                return {
+                    label: item[1].Value,
+                    value: item[1].Value,
+                    detailsUrl: item[0].Value
+                };
+            });
+
+            //console.log(companyList);  // Now you can access companyList here
+        }).catch(function(error) {
+            console.error("Error fetching company list:", error);
+        });
+
+        $('#TenderApplicable').change(function() {
+            debugger;
+            var PoliceVerificationStatus = $('#TenderApplicable').val();
+
+            if (PoliceVerificationStatus === "False") {
+                $(".pol").hide();
+
+            } else {
+                $(".pol").show();
+            }
+        });
+
+        $('#TenderApplicable').change();
+
+        $("#txtCompanyName").autocomplete({
+
+            source: function(request, response) {
+                debugger
+                var term = request.term ? request.term.toLowerCase() : ""; // Ensure term is defined
+                var filteredList = companyList.filter(function(item) {
+                    return item.label && item.label.toLowerCase().includes(term); // Check item.label for null
+                });
+
+
+                if (filteredList.length === 0) {
+                    filteredList.push({
+                        label: "Add \"" + request.term + "\" to list",
+                        value: request.term,
+                        isCustom: true
+                    });
+                }
+
+                response(filteredList);
+            },
+            select: function(event, ui) {
+                $("#txtCompanyName").val(ui.item.value);
+
+                if (!ui.item.isCustom) {
+                    $("#Detailsss").show();
+                    $("#txtCompanyName").blur();
+                    $("#txtCompanyName").data("selected", true);
+                } else {
+                    event.preventDefault();
+                    $("#Detailsss").hide();
+                }
+
+                return false;
+            }
+        }).autocomplete("instance")._renderItem = function(ul, item) {
+            debugger
+            var $item = $("<li>")
+                .append("<div>" + item.label +
+                        (item.isCustom ? "" : "" ) +
+                        "</div>")
+                .appendTo(ul);
+            debugger
+            if (!item.isCustom) {
+                $item.find(".details-link").on("click", function() {
+                    var DetailsId = $(this).val();
+                    $.ajax({
+                        url: "CompanyDetails",
+                        method: "get",
+                        data: { DetailsId: DetailsId },
+                        success: function(response) {
+                            const fieldMap = {
+                                'LeadName': '#ModalLeadName',
+                                'CompanyName': '#ModalCompanyName',
+                                'EmployeeName': '#ModalSalesPerson'
+                            };
+                            $('#companyModal').modal('show');
+                            response.forEach(function(item) {
+                                if (fieldMap[item.Key]) {
+                                    $(fieldMap[item.Key]).text(item.Value);
+                                }
+                            });
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('AJAX request failed:', status, error);
+                        }
+                    });
+                });
+            }
+
+            return $item;
+        };
+
+        $("#txtCompanyName").on("focus", function() {
+            if ($(this).data("selected")) {
+                $(this).val("");
+                $(this).data("selected", false);
+                $(this).autocomplete("search", "");
+                $("#Detailsss").hide();
+            }
+        });
+    });
+
+   
+
+</script>
+
+<script>
+    //$(".summernote").summernote({
+    //    placeholder: '',
+    //    height: "300"
+    //});
+   
+
+    if ($('.summernote').length) {
+        $('.summernote').summernote({
+            height: 300
+        });
+
+        // If editing, set the content manually from the hidden textarea value
+        const existingContent = $('#txtSummary').val();
+        $('.summernote').summernote('code', existingContent);
+    }
+</script>
+
+

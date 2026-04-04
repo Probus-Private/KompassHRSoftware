@@ -1,0 +1,369 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_Recruitment.Recruitment_ResourceRequest
+
+@{
+    ViewBag.Title = "ESS_Recruitment_ResourcesRequestReport";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Required library for validation -->
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.19.5/jquery.validate.min.js"></script>
+
+<style>
+    label.error, .Error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Resource Request Report
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_Recruitment_ReportsMenu", "ESS_Recruitment_ReportsMenu", new {id = 1, ScreenId=256, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">Resources Request Report </h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+
+                    </p>
+                </div>
+
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("ESS_Recruitment_ResourcesRequestReport", "ESS_Recruitment_ResourcesRequestReport", new { area = "ESS" })' id="ResourceRequestReport" method="post">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">
+                                                Company Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-9">
+                                                @Html.DropDownListFor(model => model.CmpId, new SelectList(ViewBag.ComapnyProfile, "Id", "Name"), "--Select--", new { id = "ddlCompanyName", @class = "form-select", autocomplete = "off", name = "CompanyId" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">
+                                                Buisness Unit
+                                            </label>
+                                            <div class="col-md-9">
+                                                @Html.DropDownListFor(model => model.BranchId, new SelectList(ViewBag.GetMasBranch, "Id", "Name"), "All", new { @class = "form-select", type = "text", id = "ddlBuniessUnit", name = "BranchId" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">Start Date <span class="important">*</span></label>
+                                            <div class="col-md-9">
+                                                @*@Html.TextBoxFor(model => model.StartDate, new { @class = "form-control", @id = "StartDate", name = "StartDate", type = "date" })*@
+                                                @Html.TextBoxFor(model => model.StartDate, new { @class = "form-control", @id = "StartDate", name = "StartDate", type = "month" })
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">End Date <span class="important">*</span></label>
+                                            <div class="col-md-9">
+                                                @*@Html.TextBoxFor(model => model.EndDate, new { @class = "form-control", @id = "EndDate", name = "EndDate", autocomplete = "off", type = "date" })*@
+                                                @Html.TextBoxFor(model => model.EndDate, new { @class = "form-control", @id = "EndDate", name = "EndDate", autocomplete = "off", type = "month" })
+
+
+                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-10">
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="button" class="btn btn-success" id="btlExportToExcel" onclick="downloadExcelFile()">
+                                                            <i class="fa-regular fa-file-excel fa-xl"></i> Export To Excel
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        debugger;
+        $("#ddlCompanyName").select2();
+        $("#ddlBuniessUnit").select2();
+        $("#ddlCompanyName").on("change", function () {
+            $("#ddlBuniessUnit").find("option").remove();
+            var CmpId = $("#ddlCompanyName").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetBusinessUnit", "ESS_Recruitment_ResourcesRequestReport")',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    debugger;
+                    if (data != null) {
+                        $("#ddlBuniessUnit").append("<option value=''>All</option>");
+                        $.each(data, function (i, p) {
+                            debugger;
+                            $("#ddlBuniessUnit").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        })
+
+
+
+        //use for add regex function
+        jQuery.validator.addMethod(
+      "regex",
+            function (value, element, regexp) {
+                if (regexp.constructor != RegExp)
+                    regexp = new RegExp(regexp);
+                else if (regexp.global)
+                    regexp.lastIndex = 0;
+                return this.optional(element) || regexp.test(value);
+            }, "erreur expression reguliere"
+    );
+
+        $("#ResourceRequestReport").validate({
+            rules: {
+                StartDate: {
+                    required: true,
+                },
+                EndDate: {
+                    required: true,
+                },
+                CompanyId: {
+                    required: true,
+                },
+            },
+            messages: {
+                StartDate: {
+                    required: "Start Date is required"
+                },
+                EndDate: {
+                    required: "End Date is required"
+                },
+                CompanyId: {
+                    required: "Company name is required",
+                },
+            }
+        });
+
+        var form = $("#ResourceRequestReport");
+        form.validate();
+
+    });
+
+    @*function downloadExcelFile() {
+        debugger
+    //var form = $("#ResourceRequestReport");
+
+    //if (!form.valid()) {
+    //    return false; // Prevent export if form is invalid
+    //}
+    
+    $(".Userloaderbg").css("display", "flex");
+    var BranchId = encodeURIComponent($("#ddlBuniessUnit").val());
+    var CmpId = encodeURIComponent($("#ddlCompanyName").val());
+    var StartDate = encodeURIComponent($("#StartDate").val());
+    var EndDate = encodeURIComponent($("#EndDate").val());
+    var url = `@Url.Action("DownloadExcelFile", "ESS_Recruitment_ResourcesRequestReport")?CmpId=${CmpId}&BranchId=${BranchId}&StartDate=${StartDate}&EndDate=${EndDate}`;
+
+    $.ajax({
+        url: url,
+        method: 'GET',
+        xhrFields: {
+            responseType: 'blob'
+        },
+        success: function (data) {
+            $(".Userloaderbg").css("display", "none");
+            if (data.size == 0) {
+                Swal.fire({
+                    icon: 'error',
+                    text: 'Record Not Found',
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                });
+                return false;
+            }
+            var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            var anchorElement = document.createElement('a');
+            var url = window.URL.createObjectURL(blob);
+            anchorElement.href = url;
+            anchorElement.download = 'ResourceRequestReports.xlsx';
+            anchorElement.click();
+            window.URL.revokeObjectURL(url);
+        },
+        error: function (xhr, status, error) {
+            console.error('Error downloading file:', error);
+        }
+    });
+}*@
+
+
+
+    function downloadExcelFile() {
+        debugger
+        $(".Userloaderbg").css("display", "flex");
+
+        var BranchId = encodeURIComponent($("#ddlBuniessUnit").val());
+        var CmpId = encodeURIComponent($("#ddlCompanyName").val());
+
+        var startMonth = $("#StartDate").val();  
+        var endMonth = $("#EndDate").val();     
+
+        if (!startMonth || !endMonth) {
+            Swal.fire({ icon: 'error', text: 'Please select both Start and End Month.' });
+            $(".Userloaderbg").hide();
+            return false;
+        }
+
+        // Convert to yyyy-MM-dd
+        function toYYYYMMDD(day, ym) {
+            if (!ym || ym.indexOf("-") === -1) return "";
+            const parts = ym.split("-");
+            if (parts.length !== 2) return "";
+
+            const year = parts[0];
+            const month = parts[1];
+
+            return `${year}-${month}-${day}`;
+        }
+
+        function lastDayOfMonth(ym) {
+            if (!ym || ym.indexOf("-") === -1) return 0;
+
+            const parts = ym.split("-");
+            if (parts.length !== 2) return 0;
+
+            const year = parseInt(parts[0]);
+            const month = parseInt(parts[1]);
+
+            return new Date(year, month, 0).getDate();
+        }
+
+        let StartDate, EndDate;
+
+        if (startMonth === endMonth) {
+            let last = lastDayOfMonth(startMonth);
+            StartDate = toYYYYMMDD("01", startMonth);
+            EndDate = toYYYYMMDD(last, startMonth);
+        } else {
+            let lastEndMonth = lastDayOfMonth(endMonth);
+            StartDate = toYYYYMMDD("01", startMonth);
+            EndDate = toYYYYMMDD(lastEndMonth, endMonth);
+        }
+
+        StartDate = encodeURIComponent(StartDate);
+        EndDate = encodeURIComponent(EndDate);
+
+        var url = `@Url.Action("DownloadExcelFile", "ESS_Recruitment_ResourcesRequestReport")?CmpId=${CmpId}&BranchId=${BranchId}&StartDate=${StartDate}&EndDate=${EndDate}`;
+
+        $.ajax({
+            url: url,
+            method: 'GET',
+            xhrFields: { responseType: 'blob' },
+            success: function (data) {
+                $(".Userloaderbg").css("display", "none");
+
+                if (data.size == 0) {
+                    Swal.fire({ icon: 'error', text: 'Record Not Found' });
+                    return false;
+                }
+
+                var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                var anchorElement = document.createElement('a');
+                var url = window.URL.createObjectURL(blob);
+                anchorElement.href = url;
+                anchorElement.download = 'ResourceRequestReports.xlsx';
+                anchorElement.click();
+                window.URL.revokeObjectURL(url);
+            },
+            error: function (xhr, status, error) {
+                console.error('Error downloading file:', error);
+            }
+        });
+    }
+
+</script>

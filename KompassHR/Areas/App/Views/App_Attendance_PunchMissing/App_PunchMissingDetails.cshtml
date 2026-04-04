@@ -1,0 +1,445 @@
+﻿
+@{
+    ViewBag.Title = "App_PunchMissingDetails";
+    Layout = "~/Views/Shared/_MobileLayout.cshtml";
+}
+
+<link href="~/assets/MyCSS/Tailwindcss.css" rel="stylesheet" />
+<style>
+    .app-header-fixed {
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+
+    .app-content {
+        padding: 5px 5px;
+    }
+
+    .pace-running {
+        background-color: #fff;
+    }
+</style>
+
+<style>
+    /* Fixed circular "+" button for all screen sizes */
+    .mobile-fixed-add-btn {
+        position: fixed;
+        bottom: 15px;
+        right: 15px;
+        z-index: 1050;
+        width: 50px;
+        height: 50px;
+    }
+
+        .mobile-fixed-add-btn .btn {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+</style>
+
+<div class="flex flex-wrap gap-2 justify-center max-w-6xl mx-auto px-2">
+    @{
+        var PendingList = ViewBag.PendingList as IEnumerable<dynamic>;
+        var d = PendingList?.FirstOrDefault();
+    }
+
+    @{
+        var punchMissingId = d?.PunchMissingId ?? 0;
+        var cancelStatus = d?.CancelStatus;
+        var status = d?.Status ?? "";
+
+
+        string topBorderColor = d.Status != null && d.Status.Contains("Approved") ? "green-500"
+                    : d.Status != null && d.Status.Contains("Rejected") || d.Status.Contains("Cancel") ? "red-500"
+                        : d.Status != null && d.Status.Contains("Pending") ? "orange"
+                        : "";
+
+        string bgClass = $"bg-{topBorderColor}";
+        string borderClass = $"border-t-4 border-{topBorderColor}";
+    }
+
+    <div class="bg-white rounded-xl shadow-md p-3 w-full sm:w-1/2 lg:w-1/3 @borderClass">
+        @*<div class="bg-white rounded-xl shadow-md p-4 w-full sm:w-1/2 lg:w-1/3">*@
+        <!-- Top Section -->
+        <div class="flex justify-between items-start mb-3">
+            <div>
+                <div class="text-base font-semibold text-gray-800">
+                    Punch Missing
+                </div>
+                
+            </div>
+            <div class="text-right">
+                <div class="text-white text-center px-4 py-1 rounded-full text-sm font-semibold @bgClass">
+                    @d.Status
+                </div>
+                <div class="text-xs text-gray-500 mt-1">@d.ApprovedDay</div>
+            </div>
+        </div>
+
+        <!-- Table-style Layout -->
+        <table class="w-full text-sm text-gray-700">
+            <tbody>
+                <tr>
+                    <td class="py-2 w-5"><i class="fa-solid fa-hashtag text-purple-600"></i></td>
+                    <td class="font-medium">Doc No.</td>
+                    <td class="px-2">:</td>
+                    <td class="truncate">@d.DocNo</td>
+                </tr>
+                <tr>
+                    <td class="py-2 w-5"><i class="fa-solid fa-calendar-days text-purple-600"></i></td>
+                    <td class="font-medium">Applied On</td>
+                    <td class="px-2">:</td>
+                    <td class="truncate">@d.CreatedDate</td>
+                </tr>
+                <tr>
+                    <td class="py-2"><i class="fas fa-briefcase text-purple-600"></i></td>
+                    <td class="font-medium">Shift</td>
+                    <td class="px-2">:</td>
+                    <td>@d.PunchMissingShiftName</td>
+                </tr>
+                @*<tr>
+                    <td class="py-2 w-5"><i class="fa-solid fa-user-tie text-blue-600"></i></td>
+                    <td class="font-medium">Name</td>
+                    <td class="px-2">:</td>
+                    <td class="truncate">@d.EmployeeName</td>
+                </tr>
+                <tr>
+                    <td class="py-2"><i class="fa-solid fa-id-card text-purple-600"></i></td>
+                    <td class="font-medium">Emp. No.</td>
+                    <td class="px-2">:</td>
+                    <td>@d.EmployeeNo</td>
+                </tr>*@
+                <tr>
+                    <td class="py-2"><i class="fa-solid fa-cash-register text-green-500"></i></td>
+                    <td class="font-medium"> In/Out Type</td>
+                    <td class="px-2">:</td>
+                    <td class="truncate">
+                        @d.PunchMissingInOut
+                    </td>
+                </tr>
+                <tr>
+                    <td class="py-2"><i class="fa-solid fa-calendar-days text-amber-600"></i></td>
+                    <td class="font-medium">For Date</td>
+                    <td class="px-2">:</td>
+                    <td>@d.AttendanceDate</td>
+                </tr>
+                <tr>
+                    <td class="py-2"><i class="fa-solid fa-clock text-purple-600"></i></td>
+                    <td class="font-medium">For Time</td>
+                    <td class="px-2">:</td>
+                    <td>@d.ForLogTime</td>
+                </tr>
+               
+                @*<tr>
+                        <td class="py-2"><i class="fas fa-thumbs-up text-indigo-600"></i></td>
+                        <td class="font-medium">Status</td>
+                        <td class="px-2">:</td>
+                        <td>
+                            <span class="badge @(status != null && status.Contains("Approved") ? "bg-success" : status != null && status.Contains("Rejected") ? "bg-danger" : "bg-secondary")">
+                                @status
+                            </span>
+                        </td>
+                    </tr>*@
+                <tr>
+                    <td class="py-2"><i class="fas fa-lightbulb text-yellow-500"></i></td>
+                    <td class="font-medium">Reason</td>
+                    <td class="px-2">:</td>
+                    <td>@d.Reason</td>
+                </tr>
+                <tr>
+                    <td class="py-2"><i class="fa-solid fa-user-tie text-orange-600"></i></td>
+                    <td class="font-medium">Approver</td>
+                    <td class="px-2">:</td>
+                    <td>@d.ApprovedBy</td>
+                </tr>
+                <tr>
+                    <td class="py-2"><i class="fa-solid fa-calendar-days text-blue-600"></i></td>
+                    <td class="font-medium">Approve On</td>
+                    <td class="px-2">:</td>
+                    <td>@(d != null ? $"{d.ApproveRejectDate} - {d.ApprovedAutoManually}" : "")</td>
+                </tr>
+
+                <tr class="border-b">
+                    <td class="py-2"><i class="fa-solid fa-comment-dots text-red-600"></i></td>
+                    <td class="font-medium">Remark</td>
+                    <td class="px-2">:</td>
+                    <td>@(d != null ? $"{d?.ApproveRejectRemark} " : "")</td>
+                </tr>
+               
+            </tbody>
+        </table>
+
+        <!-- Footer Buttons -->
+        <div class="flex justify-end gap-3 mt-2">
+          
+            <button type="button" class="text-red-600 border border-red-500 px-2 py-1 rounded-md hover:bg-red-50" id="btnGetList" onclick="btnGetLists();">
+                <i class="fa-solid fa-share-from-square"></i> List
+            </button>
+
+            @*@if (cancelStatus == "Requested" || cancelStatus == "Canceled")
+            {
+                <button class="btn btn-outline-secondary btn-sm" disabled>@cancelStatus</button>
+            }
+            else
+            {
+                <a href="#modal-dialogForHoldReject1" onclick="CancelRequestFun(@d.PunchMissingId,'@d.Status')"
+                   class="text-blue-600 border border-blue-500 px-3 py-1 rounded-md hover:bg-blue-50">
+                    <i class="fa fa-xmark"></i> Cancel
+                </a>
+            }
+
+            <button onclick="DeletePunchMissing('@d.PunchMissingId_Encrypted','@d.Status')" class="text-red-600 border border-red-500 px-3 py-1 rounded-md hover:bg-red-50">
+                <i class="fa fa-trash"></i> Delete
+            </button>*@
+        </div>
+    </div>
+
+</div>
+
+<!-- #Start Cancel Request dialog -->
+<div class="modal fade" id="CancelModal" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header bg-black text-white">
+                <h4 class="modal-title"> Remark For Cancel</h4>
+            </div>
+            <div class="modal-body">
+                <div class="modal-body-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            @* @Html.DropDownListFor(model => model.PunchMissingEmployeeID, new SelectList(ViewBag.GetAdditionalList, "Id", "Name"), new { id = "LeaveMasterLeaveYearId", name = "LeaveMasterLeaveYearId", @class = "form-select", autocomplete = "off" })*@
+                                            <h6> Select Approver Name</h6>
+
+                                            @Html.DropDownList("Id", new SelectList(ViewBag.GetManagerEmployee, "Id", "Name"), "--Select--", new { @class = "form-control", Id = "ddlManagerName" })
+                                            <h1></h1>
+                                            <span id="ErrorMessage" class="Error" style="color:red"></span>
+                                            <h6> Enter Remark </h6>
+                                            <textarea id="txtApproveRejectRemark" class="form-control" rows="4"></textarea>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="SendCancelRequest()" id="btnReject" class="btn btn-primary btn-sm">
+                    <i class="fa-solid fa-floppy-disk"> </i> Submit
+                </button>
+                <button type="button" id="btnCancel" class="btn btn-danger btnpress btn-sm CloseModel" data-bs-dismiss="modal">
+                    <i class="fa-solid fa-share-from-square"></i> Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #End Cancel Request dialog -->
+
+<script>
+    function btnGetLists() {
+        var url = '@Url.Action("App_Attendance_PunchMissingApprovalpendingList", "App_Attendance_PunchMissing")';
+        window.location.href = url;
+    }
+
+
+
+    function CancelRequestFun(PunchMissingId, Status) {
+        debugger;
+        if (Status == "Pending" || Status == "Cancel") {
+            if (Status == "Pending") {
+                var Message = "Pending request can't cancel";
+                var Icon = "error";
+            }
+            else {
+                var Message = "Request already cancel";
+                var Icon = "error";
+            }
+
+            Swal.fire({
+                icon: Icon,
+                text: Message,
+                allowOutsideClick: false
+            });
+            return false;
+        }
+        localStorage.setItem('PunchMissingId', PunchMissingId);
+        $("#CancelModal").modal('show');
+    }
+
+
+    function DeletePunchMissing(PunchMissingId_Encrypted, Status) {
+        debugger;
+        if (Status != "Pending") {
+            Swal.fire({
+                icon: "error",
+                text: "Approved/Rejected request can't delete",
+                allowOutsideClick: false
+            });
+            return false;
+        }
+        const DeleteButtons = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        DeleteButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+            allowOutsideClick: false
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '@Url.Action("Delete", "App_Attendance_PunchMissing")?PunchMissingId_Encrypted=' + PunchMissingId_Encrypted;
+
+            } else if (
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+
+            }
+        })
+    }
+</script>
+
+<script>
+    function SendCancelRequest() {
+        //$("#CancelModal").modal('show');
+        var ddlManagerName = $('select#ddlManagerName option:selected').val();
+        if (ddlManagerName == "") {
+            $("#ErrorMessage").html("Please select approver name");
+            $("#ddlManagerName").focus();
+            return false;
+        }
+        else {
+            $("#ErrorMessage").html("");
+        }
+
+        const Approved = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        Approved.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes Submit!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+
+            allowOutsideClick: false
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                debugger;
+                $("#CancelModal").modal('hide');
+                $(".Userloaderbg").css("display", "flex");
+                var GetPunchMissingId = localStorage.getItem('PunchMissingId');
+
+                var ddlManagerId = $("#ddlManagerName").val();
+                var Origin = "PM";
+                Remark = $("#txtApproveRejectRemark").val();
+                $("#CancelModal").modal('hide');
+                $(".Userloaderbg").css("display", "flex");
+                $.ajax({
+                    url: "@Url.Action("CancelRequest", "App_Attendance_PunchMissing")",
+                    method: "get",
+                    data: { PunchMissingId: GetPunchMissingId, ddlManagerId: ddlManagerId, Remark: Remark, Origin: Origin },
+                    success: function (response) {
+                        debugger;
+                        var Message1 = response.Message;
+                        var Icon1 = response.Icon;
+                        if (response.Icon == "error") {
+                            if (Message1 != null) {
+                                if (Message1 != null) {
+                                    Swal.fire({
+                                        icon: Icon1,
+                                        text: Message1,
+                                        allowOutsideClick: false
+                                    })
+                                    .then((result) => {
+                                        if (result.isConfirmed) {
+                                            $("#CancelModal").modal('hide');
+                                            $("#txtApproveRejectRemark").val("")
+                                            window.location.reload();
+
+                                            //window.location.href = '@Url.Action("MbLeaveMasterDetails", "App_Attendance_PunchMissing")';
+                                        } else if (
+                                            /* Read more about handling dismissals below */
+                                            result.dismiss === Swal.DismissReason.cancel
+                                        ) {
+
+                                        }
+                                    })
+                                }
+                            }
+                        }
+                        else {
+                            var Message1 = response.Message;
+                            var Icon1 = response.Icon;
+                            if (response.Icon == "success") {
+                                if (Message1 != null) {
+                                    if (Message1 != null) {
+                                        Swal.fire({
+                                            icon: Icon1,
+                                            text: Message1,
+                                            allowOutsideClick: false
+                                        })
+                                        .then((result) => {
+                                            if (result.isConfirmed) {
+                                                window.location.reload();
+
+                                                //window.location.href = '@Url.Action("MbLeaveMasterDetails", "App_Attendance_PunchMissing")';
+                                            } else if (
+                                                /* Read more about handling dismissals below */
+                                                result.dismiss === Swal.DismissReason.cancel
+                                            ) {
+
+                                            }
+                                        })
+
+                                        $("#CancelModal").modal('hide');
+                                        $("#txtApproveRejectRemark").val("");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+            } else if (
+                /* Read more about handling dismissals below */
+                                result.dismiss === Swal.DismissReason.cancel
+                            ) {
+                $("#CancelModal").modal('hide');
+                $("#ddlManagerName").val(null);
+                $("#txtApproveRejectRemark").val("");
+            }
+        })
+    }
+</script>
+

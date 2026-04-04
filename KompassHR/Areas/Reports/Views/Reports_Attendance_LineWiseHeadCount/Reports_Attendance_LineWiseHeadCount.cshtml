@@ -1,0 +1,508 @@
+﻿@model KompassHR.Areas.Reports.Models.HeadCountSummary
+@{
+    ViewBag.Title = "Reports_Attendance_LineWiseHeadCount";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+
+
+
+
+
+
+<style>    
+  
+      
+    .dataTables_scrollBody::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+        margin-top: 20px;
+    }
+
+    .dataTables_scrollBody::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .dataTables_scrollBody::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+        height: 10px;
+    }
+
+   .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    
+     .fixed-side1 {
+        position: sticky !important;
+        left: 5px !important;
+        z-index: 1;
+    }
+    .div1 td:nth-child(2) {
+        position: sticky;
+        left: 0px;
+    } 
+
+
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+    
+</style>
+
+
+
+<div id="content" class="app-content">
+    <ol class="breadcrumb float-xl-end">
+        <li class="breadcrumb-item"><a href="/Dashboard/Dashboard/Dashboard">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="/Reports/Reports_Attendance_HeadCountSummary/Reports_Attendance_HeadCountSummary/?ScreenSubId=342">Report Menu</a></li>
+    </ol>
+    <h1 class="page-header"> Line Wise Head Count Report </h1>
+    <div class="row">
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="panel panel-inverse" data-sortable-id="index-1">
+                    <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                        <h4 class="panel-title">Line Wise Head Count Report</h4>
+                        <div class="panel-heading-btn">
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                        </div>
+                    </div>
+                    <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                        <p class="pb-0">
+
+                        </p>
+                    </div>
+                    <div class="panel-body" style="max-height: fit-content;">
+                        <div class="row justify-content-center">
+                            @*<hr class="mt-15px">*@
+                            <div class="row justify-content-center">
+                                <form role="form" action="/Reports/Reports_Attendance_LineWiseHeadCount/Reports_Attendance_LineWiseHeadCount" id="rptLineHeadCount" method="post">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Company Name
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.CmpId, new SelectList(ViewBag.CompanyName, "Id", "Name"), new { @id = "ddlCompanyName", name = "CmpID", @class = "form-select", autocomplete = "off" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Bunieness Unit
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.BranchId, new SelectList(ViewBag.BusinessUnit, "Id", "Name"), "All", new { @id = "txtBranchId", name = "LeaveOpeningBalanceBranchID", @class = "form-select", autocomplete = "off" })
+                                                </div>                                              
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="row mb-15px">
+                                                    <label class="form-label col-form-label col-md-4">
+                                                        From Date
+                                                        <span class="important">*</span>
+                                                    </label>
+                                                    <div class="col-md-8">
+                                                        @Html.TextBoxFor(model => model.FromDate, new { @class = "form-control", name = "FromDate", type = "date", id = "txtFromDate" })
+                                                        <span id="ErrortxtFromDate" class="Error"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row mb-15px">
+                                                    <label class="form-label col-form-label col-md-4">
+                                                        To Date
+                                                        <span class="important">*</span>
+                                                    </label>
+                                                    <div class="col-md-6">
+                                                        @Html.TextBoxFor(model => model.ToDate, new { @class = "form-control", name = "ToDate", type = "date", id = "txtToDate" })                                                        
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <div class="row mb-15px">
+                                                            <div class="col-md-8">
+                                                                <button type="button" onclick="LineWiseReport()" class="btn btn-sm btn-success">Show</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <hr class="mt-15px">
+                            <div class="row">
+                                <div class="">
+                                    <div class="table-wrap">
+                                        <table class="table table-bordered table-hover mb-0 " id="tblLineWiseHeadCount" style="width: 100%;">
+                                            <thead class="table-active horizontal-scroll" style="background-color: rgba(233, 236, 239, 1) !important;">
+                                                @if (ViewBag.LineWiseHeadCount != null )
+                                                {
+                                                    <tr id="headerRow" >
+                                                        <th hidden class="text-nowrap text-center" >Business Unit Id</th>
+                                                        <th class="fixed-side1 text-nowrap ">Business Unit</th>
+                                                        <th hidden class="text-nowrap ">Line Id</th>
+                                                        <th class="text-nowrap">Line Name</th>
+                                                        <th class="text-nowrap">Total Month Employe</th>
+                                                        <th class="text-nowrap">Active Employee Day 15</th>
+                                                        <th class="text-nowrap">Day 15</th> 
+                                                                                                                                                                                                                                                     
+                                                        
+                                                    </tr>
+                                                }
+                                               
+                                            </thead>
+                                            <tbody id="tblDeptWiseReport" class="table-body-scroll">
+                                                @if (ViewBag.LineWiseHeadCount != null)
+                                                {
+                                                    foreach (var d in ViewBag.LineWiseHeadCount)
+                                                    {
+                                                        <tr >
+                                                            <td hidden class="text-nowrap">@d.Branchid</td>
+                                                            <td class="fixed-side1" style="height:30px;">@d.BranchName</td>  
+                                                            <td hidden class="text-nowrap">@d.LineId</td>
+                                                            <td class="text-nowrap">@d.LineName</td>
+                                                            <td class="text-nowrap">@d.TotalMonthEmp</td>
+                                                            <td class="text-nowrap">@d.ActiveEmployeeDay15</td>
+                                                            <td class="text-nowrap">@d.Day15</td> 
+                                                                                                                                                                                                                                      
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+
+    $(document).ready(function () {            
+
+       
+
+        var FD = document.getElementById("txtFromDate").value;
+        var TD = document.getElementById("txtToDate").value;
+        $('title').html("Line Wise Head Count Report ("+FD+" To "+TD+")");
+        var CheckEmptyDate = document.getElementById('txtFromDate').value;
+        if (CheckEmptyDate == "") {
+            document.getElementById('txtFromDate').value = SetTodaysDate;
+            document.getElementById('txtToDate').value = SetTodaysDate;
+        }
+
+        $("#ddlCompanyName").select2();
+        $("#txtBranchId").select2();
+
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                });
+            }
+        }
+
+        $("#ddlCompanyName").on("change", function () {
+            debugger;
+            $("#txtBranchId").find("option").remove();
+            var CmpId = $("#ddlCompanyName").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetBusinessUnit", "Reports_Attendance_LineWiseHeadCount")',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    debugger;
+                    if (data !=null) {
+                       // $("#txtBranchId").append("<option value=0>All </option>");
+                        $.each(data, function(i, p) {
+                            $("#txtBranchId").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                        });
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        });
+
+        var ShowData = @Html.Raw(Json.Encode(TempData["ShowData"]));
+        if(ShowData!=true)
+        {
+
+            var CmpId = $("#ddlCompanyName").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetBusinessUnit", "Reports_Attendance_LineWiseHeadCount")',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    debugger;
+                    if (data !=null) {
+                        // $("#txtBranchId").append("<option value=0>--Select-- </option>");
+                        $.each(data, function(i, p) {
+                            $("#txtBranchId").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                        });
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        }
+
+        $("#txtFromDate, #txtToDate").on("change", function () {
+            debugger;
+            var input = document.getElementById("txtFromDate").value;
+            var input1 = document.getElementById("txtToDate").value;
+            //define two date object variables with dates inside it
+            fromDateObj = new Date(input);
+            toDateObj = new Date(input1);
+            //calculate time difference
+            var time_difference = toDateObj.getTime() - fromDateObj.getTime();
+            //calculate days difference by dividing total milliseconds in a day
+            var days_differences = time_difference / (1000 * 60 * 60 * 24);
+            var days_difference = days_differences + 1;
+            // Check if toDate is greater than fromDate
+            var from = $("#txtFromDate").val();
+            var to = $("#txtToDate").val();
+            if (Date.parse(from) > Date.parse(to)) {
+
+                $("#ErrortxtFromDate").html("From date should not be greater than todate");
+                return false;
+            }
+            else {
+                $("#ErrortxtFromDate").html("");
+            }
+            if (days_difference > 31) {
+                $("#ErrortxtFromDate").html("You should not allow greter than 31 days");
+            }
+        });           
+
+        
+
+        $('#tblLineWiseHeadCount').DataTable({
+            dom: '<"row"<"col-sm-4"B><"col-sm-4"l><"col-sm-4"f>>' + 't' + '<"row"<"col-sm-6"l><"col-sm-6">>',
+            buttons: [
+                'copy', 
+                'excel',
+                'csv', 
+                'pdf', 
+                'print' 
+            ],
+            scrollY: 300,
+            scrollCollapse: true,
+            paging: false,
+            scrollX: true,
+            searching: true, // Enable searching
+           
+           
+        });    
+       
+
+    });//Ready Funcation
+    </script>
+
+
+    <script>
+    //use for add regex function
+    jQuery.validator.addMethod(
+    "regex",
+     function (value, element, regexp) {
+         if (regexp.constructor != RegExp)
+             regexp = new RegExp(regexp);
+         else if (regexp.global)
+             regexp.lastIndex = 0;
+         return this.optional(element) || regexp.test(value);
+     }, "erreur expression reguliere"
+  );
+
+    $('#rptLineHeadCount').validate({
+        rules: {
+            CmpId: {
+                required: true,
+            },
+
+            FromDate: {
+                required: true,
+            },
+            //ToDate: {
+            //    required: true,
+            //},
+        },
+        messages: {
+            CmpId: {
+                required: "Company name is required",
+            },
+
+            FromDate: {
+                required: "From date is required",
+            },
+            //ToDate: {
+            //    required: "To date is required",
+            //},
+        },
+    });
+
+    var form = $("#rptLineHeadCount");
+
+    form.validate();
+    function LineWiseReport() {
+        debugger;
+
+        form.valid();
+        if (form.valid() == false) {
+            $("#txtToDate").removeClass("error");
+            $("#txtFromDate").removeClass("error");
+            return false;
+        }
+        var EmptyCheck = $("#ErrortxtFromDate").text();
+        if (EmptyCheck != "") {
+            return false;
+        }
+        $(".Userloaderbg").css("display", "flex");
+        $("#rptLineHeadCount").submit();
+    }
+    </script>
+
+
+
+
+
+
+
