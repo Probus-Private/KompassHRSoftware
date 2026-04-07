@@ -129,6 +129,13 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_PMS
                 {
                     return RedirectToAction("Login", "Login", new { Area = "" });
                 }
+                int screenId = Request.QueryString["ScreenId"] != null ? Convert.ToInt32(Request.QueryString["ScreenId"]) : 692;
+                bool CheckAccess = new BulkAccessClass().CheckAccess(screenId, Convert.ToInt32(Session["UserAccessPolicyId"]));
+                if (!CheckAccess)
+                {
+                    Session["AccessCheck"] = "False";
+                    return RedirectToAction("Dashboard", "Dashboard", new { area = "" });
+                }
                 param.Add("@p_KPIId_Encrypted", "List");
                 var data = DapperORM.DynamicList("sp_List_PMS_KPIMaster", param);
                 ViewBag.GetList = data;

@@ -369,7 +369,17 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_HRSpace
                     result = DapperORM.ExecuteSP<dynamic>("sp_HRSpace_CautionLetter", paramp).FirstOrDefault();
                 }
                 string Letter = result?.Letter?.ToString() ?? "";
+                // Letter = Regex.Replace(Letter, @"<tr>\s*<td.*?>\s*(<br>|&nbsp;)?\s*</td>\s*</tr>", "", RegexOptions.IgnoreCase);
+                //Letter=  Regex.Replace(Letter, @"<tr>\s*(<td[^>]*>\s*(?:<br>|&nbsp;|\s)*\s*</td>\s*)+</tr>","",RegexOptions.IgnoreCase);
+                // Letter = Letter.Replace("<tbody>", "").Replace("</tbody>", "");
 
+                // Remove fully empty rows only
+                Letter = Regex.Replace(Letter,
+    @"<tr[^>]*>\s*(<td[^>]*>\s*(?:&nbsp;|<br>|<p><br></p>|\s)*</td>\s*)+</tr>",
+    "",
+    RegexOptions.IgnoreCase);
+
+                // Now inject dynamic content
                 var letterModel = new HRSpace_LetterDetails
                 {
                     Description = Letter,

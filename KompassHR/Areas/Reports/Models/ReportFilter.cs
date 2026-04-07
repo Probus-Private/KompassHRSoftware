@@ -47,7 +47,13 @@ namespace KompassHR.Areas.Reports.Models
         public string Status { get; set; }
     }
 
-
+    public class Contractor_InvoiceReport
+    {
+        public int? CmpId { get; set; }
+        public int? BranchId { get; set; }
+        public int? ContractorId { get; set; }
+        public DateTime InvoiceMonth { get; set; }
+    }
 
     public class Atten_LogNotFound
     {
@@ -84,6 +90,24 @@ namespace KompassHR.Areas.Reports.Models
         public int WeekOffAdjustDate { get; set; }
     }
 
+    public class MusterAttendanceActualAttendance
+    {
+        public int? CmpId { get; set; }
+        public int BranchId { get; set; }
+        public int EmployeeId { get; set; }
+        public DateTime MonthYear { get; set; }
+
+    }
+
+    public class KIPLCheckInOut
+    {
+        public int? CmpId { get; set; }
+        public int BranchId { get; set; }
+        public int EmployeeId { get; set; }
+        public DateTime FromDate { get; set; }
+        public DateTime ToDate { get; set; }
+
+    }
 
     public class EmployeeWiseReportFilter
     {
@@ -350,6 +374,22 @@ namespace KompassHR.Areas.Reports.Models
         public int? DepartmentId { get; set; }
         public int? DesignationId { get; set; }
         public double AgencyId { get; set; }
+    }
+
+    public class ShortListedAndRejectedCandidateReport
+    {
+        public int? CmpId { get; set; }
+        public int? BranchId { get; set; }
+        public string ResumeStatus { get; set; }
+    }
+
+    public class PostInterviewStatusReport
+    {
+
+        public int? CmpId { get; set; }
+        public int? BranchId { get; set; }
+        public string InterviewStatus { get; set; }
+
     }
 
     public class EmployeeAgeBond

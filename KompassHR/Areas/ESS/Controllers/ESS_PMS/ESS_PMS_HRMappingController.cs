@@ -18,6 +18,17 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_PMS
         {
             try
             {
+                if (Session["EmployeeId"] == null)
+                {
+                    return RedirectToAction("Login", "Login", new { Area = "" });
+                }
+                int screenId = Request.QueryString["ScreenId"] != null ? Convert.ToInt32(Request.QueryString["ScreenId"]) : 866;
+                bool CheckAccess = new BulkAccessClass().CheckAccess(screenId, Convert.ToInt32(Session["UserAccessPolicyId"]));
+                if (!CheckAccess)
+                {
+                    Session["AccessCheck"] = "False";
+                    return RedirectToAction("Dashboard", "Dashboard", new { area = "" });
+                }
                 var GetComapnyName = new BulkAccessClass().GetCompanyName();
                 ViewBag.CompanyName = GetComapnyName;
                 var CMPID = GetComapnyName[0].Id;

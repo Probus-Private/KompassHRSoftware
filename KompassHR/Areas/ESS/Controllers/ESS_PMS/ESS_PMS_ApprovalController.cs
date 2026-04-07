@@ -57,7 +57,7 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_PMS
                     return RedirectToAction("Login", "Login", new { area = "" });
                 }
                 // CHECK IF USER HAS ACCESS OR NOT
-                int screenId = Request.QueryString["ScreenId"] != null ? Convert.ToInt32(Request.QueryString["ScreenId"]) : 128;
+                int screenId = Request.QueryString["ScreenId"] != null ? Convert.ToInt32(Request.QueryString["ScreenId"]) : 626;
                 bool CheckAccess = new BulkAccessClass().CheckAccess(screenId, Convert.ToInt32(Session["UserAccessPolicyId"]));
                 if (!CheckAccess)
                 {

@@ -385,5 +385,29 @@ namespace KompassHR.Areas.App.Controllers.App_Dashboard
             }
         }
 
+        public ActionResult App_CRM()
+        {
+            try
+            {
+                try
+                {
+                    if (Session["EmployeeId"] == null)
+                    {
+                        return RedirectToAction("App_SessionExpire", "App_Login", new { area = "App" });
+                    }
+                    return View();
+                }
+                catch (Exception ex)
+                {
+                    Session["GetErrorMessage"] = ex.Message;
+                    return RedirectToAction("App_ErrorPage", "App_Login", new { area = "App" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return View();
+            }
+        }
+
     }
 }

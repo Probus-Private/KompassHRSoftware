@@ -193,12 +193,10 @@ namespace KompassHR.Areas.Module.Controllers.Module_Payroll
                 {
                     return RedirectToAction("Login", "Login", new { area = "" });
                 }
-
-               
+              
                 DynamicParameters PersonalInfo = new DynamicParameters();
                 PersonalInfo.Add("@p_SalaryID", SalaryID);
                 var GetPersonal = DapperORM.ExecuteSP<dynamic>("sp_Rpt_Payroll_Payslip_Personal", PersonalInfo).ToList();
-
 
                 DynamicParameters DeductionInfo = new DynamicParameters();
                 DeductionInfo.Add("@p_SalaryID", SalaryID);
@@ -207,7 +205,6 @@ namespace KompassHR.Areas.Module.Controllers.Module_Payroll
                 DynamicParameters AttendanceInfo = new DynamicParameters();
                 AttendanceInfo.Add("@p_SalaryID", SalaryID);
                 var GetAttendance = DapperORM.ReturnList<Payroll_Atten_Info>("sp_Rpt_Payroll_PaySlip_Attendance", AttendanceInfo).ToList();
-
 
                 DynamicParameters EarningInfo = new DynamicParameters();
                 EarningInfo.Add("@p_SalaryID", SalaryID);

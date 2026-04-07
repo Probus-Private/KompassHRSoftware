@@ -112,12 +112,7 @@ namespace KompassHR.Areas.Module.Controllers.Module_Preboarding
                     Session["AccessCheck"] = "False";
                     return RedirectToAction("Dashboard", "Dashboard", new { area = "" });
                 }
-                //DynamicParameters param1 = new DynamicParameters();
-                //param1.Add("@p_DocId_Encrypted", DocId_Encrypted);
-                //param1.Add("@p_Origin", Type);
-                //var GetClaimApproval = DapperORM.ExecuteSP<dynamic>("sp_List_Claim_Profiles", param1).FirstOrDefault();
-                //ViewBag.TravelClaimApprovalList = GetClaimApproval;
-
+                
 
                 DynamicParameters MulQuery = new DynamicParameters();
                 MulQuery.Add("@p_DocId_Encrypted", DocId_Encrypted);
@@ -127,6 +122,43 @@ namespace KompassHR.Areas.Module.Controllers.Module_Preboarding
                     ViewBag.TravelClaimApprovalList = multi.Read<dynamic>().FirstOrDefault();
                     ViewBag.PreviousExpenses = multi.Read<dynamic>().ToList();
                     ViewBag.ApprovalHistory = multi.Read<dynamic>().ToList();
+                }
+                return View();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        #endregion
+
+        #region View AdvanceClaim Print Form
+        public ActionResult ViewForAdvanceClaimRequestApprover(string DocId_Encrypted, string Type)
+        {
+            try
+            {
+                if (Session["EmployeeId"] == null)
+                {
+                    return RedirectToAction("Login", "Login", new { Area = "" });
+                }
+                // CHECK IF USER HAS ACCESS OR NOT
+                int screenId = Request.QueryString["ScreenId"] != null ? Convert.ToInt32(Request.QueryString["ScreenId"]) : 689;
+                bool CheckAccess = new BulkAccessClass().CheckAccess(screenId, Convert.ToInt32(Session["UserAccessPolicyId"]));
+                if (!CheckAccess)
+                {
+                    Session["AccessCheck"] = "False";
+                    return RedirectToAction("Dashboard", "Dashboard", new { area = "" });
+                }
+
+
+                DynamicParameters MulQuery = new DynamicParameters();
+                MulQuery.Add("@p_DocId_Encrypted", DocId_Encrypted);
+                MulQuery.Add("@p_Origin", "AdvanceClaim");
+                
+                using (var multi = DapperORM.DynamicMultipleResultList("sp_List_AdvanceClaim_Profiles", MulQuery))
+                {
+                    ViewBag.ClaimDetails = multi.Read<dynamic>().FirstOrDefault();
+                    ViewBag.AdvanceDetails = multi.Read<dynamic>().ToList();
                 }
                 return View();
             }
@@ -204,12 +236,14 @@ namespace KompassHR.Areas.Module.Controllers.Module_Preboarding
                 {
                     DapperORM.DynamicQuerySingle("update Claim_Travel set  ModifiedBy='" + Session["EmployeeName"] + "',ModifiedDate=GETDATE() ,OperationApproveRejectBy='" + Session["EmployeeId"] + "',OperationApproveRejectDate= GETDATE() ,OperationApproveRejectRemark='"+ Remark + "' ,OperationStatus='"+ Status +"'  where TravelClaimId_Encrypted='" + Encrypted + "'");
                 }
-
                 else if (Origin == "GeneralClaim")
                 {
                     DapperORM.DynamicQuerySingle("update Claim_GeneralClaim set  ModifiedBy='" + Session["EmployeeName"] + "',ModifiedDate=GETDATE() ,OperationApproveRejectBy='" + Session["EmployeeId"] + "',OperationApproveRejectDate= GETDATE() ,OperationApproveRejectRemark='" + Remark + "' ,OperationStatus='" + Status + "'  where GeneralClaimId_Encrypted='" + Encrypted + "'");
                 }
-               
+                else if (Origin == "AdvanceClaim")
+                {
+                    DapperORM.DynamicQuerySingle("update Claim_Advance set  ModifiedBy='" + Session["EmployeeName"] + "',ModifiedDate=GETDATE() ,OperationApproveRejectBy='" + Session["EmployeeId"] + "',OperationApproveRejectDate= GETDATE() ,OperationApproveRejectRemark='" + Remark + "' ,OperationStatus='" + Status + "'  where AdvanceClaimId_Encrypted='" + Encrypted + "'");
+                }
                 TempData["Message"] = "Record updated successfully";
                 TempData["Icon"] = "success";
                 return Json(new { Message = TempData["Message"], Icon = TempData["Icon"] }, JsonRequestBehavior.AllowGet);                

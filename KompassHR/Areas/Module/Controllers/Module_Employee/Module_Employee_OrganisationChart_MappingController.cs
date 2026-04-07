@@ -113,19 +113,26 @@ namespace KompassHR.Areas.Module.Controllers.Module_Employee
             {
                 if (RequestArray != null && RequestArray.Count > 0)
                 {
-                    using (var connection = new SqlConnection(DapperORM.connectionString))
-                    {
-                        connection.Open();
+                    //using (var connection = new SqlConnection(DapperORM.connectionString))
+                    //{
+                    //    connection.Open();
 
-                        foreach (var item in RequestArray)
-                        {
-                            string query = $@"
-                            UPDATE Organisation_Chart 
-                            SET OrganisationEmployeeId = {item.EmployeeId} 
-                            WHERE OrganisationChartId = {item.OrgChartId}";
-                            connection.Execute(query, item);
-                        }
+                    //    foreach (var item in RequestArray)
+                    //    {
+                    //        string query = $@"
+                    //        UPDATE Organisation_Chart 
+                    //        SET OrganisationEmployeeId = {item.EmployeeId} 
+                    //        WHERE OrganisationChartId = {item.OrgChartId}";
+                    //        connection.Execute(query, item);
+                    //    }
+                    //}
+                    foreach(var item in RequestArray)
+                    {
+                        DynamicParameters paramid = new DynamicParameters();
+                        paramid.Add("@query", "UPDATE Organisation_Chart SET OrganisationEmployeeId = '" + item.EmployeeId + "' WHERE OrganisationChartId = '" + item.OrgChartId + "'");
+                        var OrgChart = DapperORM.ExecuteSP<dynamic>("sp_QueryExcution", paramid).FirstOrDefault();
                     }
+
                     TempData["Message"] = "Record save successfully";
                     TempData["Icon"] = "success";
                     return Json(new { success = true, message = TempData["Message"], icon = TempData["Icon"] });

@@ -404,5 +404,22 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_Recruitment
         }
         #endregion
 
+        public ActionResult RevisedOfferLetterList(string Id)
+        {
+            try
+            {
+                var param2 = new DynamicParameters();
+                param2.Add("@query", "select res.CandidateName,DepartmentName,DesignationName,res.EmailId,res.MobileNo,let.CTC,GrossAmount,InHandAmount from Recruitment_OfferLetterGeneration let left join Recruitment_Resume res on let.OfferLetterGenResumeId=res.ResumeId left join Mas_Department dept on let.OfferLetterGenDepartmentId =dept.DepartmentId left join Mas_Designation desg on let.OfferLetterGenDesignationId=desg.DesignationId WHERE res.ResumeId_Encrypted='" + Id + "'");
+                var List = DapperORM.ReturnList<dynamic>("sp_QueryExcution", param2).ToList();
+                ViewBag.List = List;
+                return View();
+            }
+            catch (Exception ex)
+            {
+                Session["GetErrorMessage"] = ex.Message;
+                return RedirectToAction("ErrorPage", "Login");
+            }
+        }
+
     }
 }

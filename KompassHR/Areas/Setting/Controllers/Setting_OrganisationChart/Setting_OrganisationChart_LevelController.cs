@@ -90,19 +90,9 @@ namespace KompassHR.Areas.Setting.Controllers.Setting_OrganisationChart
                 {
                     return RedirectToAction("Login", "Login", new { area = "" });
                 }
-
-                //param.Add("@query", "select max(Organisation_Chart.OrganisationLevelId) as Id,Organisation_Level.OrganisationLevel as Name from Organisation_Chart left join Organisation_Level on Organisation_Level.OrganisationLevelId=Organisation_Chart.OrganisationLevelId where OrganisationTypeId="+OrganisationTypeId+" and Organisation_Chart.Deactivate=0  group by Organisation_Level.OrganisationLevel ");
-                //var level = DapperORM.ReturnList<AllDropDownBind>("sp_QueryExcution", param).ToList();
-                //ViewBag.level = level;
-                //select MAX(OrganisationLevelId)from Organisation_Chart where OrganisationTypeId = 2
-
-                //param.Add("@query", "select MAX(OrganisationLevelId) from Organisation_Chart where OrganisationTypeId = "+ OrganisationTypeId + " and  Deactivate=0 ");
-                //var maxcount = DapperORM.ExecuteSP<dynamic>("sp_QueryExcution", param).FirstOrDefault();
-                //ViewBag.maxcount = maxcount;
-
-                var id = sqlcon.ExecuteScalar("select MAX(OrganisationLevelId) from Organisation_Chart where OrganisationTypeId = " + OrganisationTypeId + " and  Deactivate=0");
-
-                var count = id;
+               
+                var result = DapperORM.DynamicQuerySingle(@"select MAX(OrganisationLevelId) as MaxId from Organisation_Chart where OrganisationTypeId = " + OrganisationTypeId + " and Deactivate = 0");
+                int count = result != null ? Convert.ToInt32(result.MaxId) : 0;
                 param.Add("@query", "select top (" + count + " +1) (Organisation_Level.OrganisationLevelId) Id, Organisation_Level.OrganisationLevel as Name from Organisation_Level where  Deactivate=0 ");
                 var level = DapperORM.ReturnList<AllDropDownBind>("sp_QueryExcution", param).ToList();
                 ViewBag.level = level;
