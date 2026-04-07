@@ -10,7 +10,7 @@
     Layout = "~/Views/Shared/_LayoutPageSmartHR.cshtml";
 }
 <script>
- $(document).ready(function () {
+    $(document).ready(function () {
 
         $('.nav-link').removeClass('active');
         $('.tab-pane').removeClass('show active');
@@ -921,7 +921,7 @@
                 <span class="input-icon-addon">
                     <i class="ti ti-calendar text-gray-9"></i>
                 </span>
-                <input type="text" class="form-control datetimepicker" value="15-04-2025">
+                <input type="text" class="form-control datetimepicker" value="15-04-2026">
             </div>
             <div class="ms-2 mb-2 head-icons">
                 <a href="javascript:void(0);" class="" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Collapse" id="collapse-header">
@@ -938,18 +938,18 @@
                 <div class="card-header bg-dark">
                     <div class="d-flex align-items-center flex-wrap gap-2">
                         <span class="avatar avatar-lg avatar-rounded border border-white border-2 flex-shrink-0 me-2 position-relative">
-                            <img src="~/assets/AkashAsset/img/user-01.jpg" alt="Img">
+                            <img src="~/assets/AkashAsset/img/avatar-02.jpg" alt="Img">
 
                             <span class="position-absolute employee-verify-badge bg-white fs-14 d-inline-flex align-items-center justify-content-center rounded-circle">
                                 <i class="ti ti-discount-check-filled text-success"></i>
                             </span>
                         </span>
                         <div>
-                            <h5 class="text-white mb-1">Stephan Peralt</h5>
+                            <h5 class="text-white mb-1">DHEERENDRA KUMAR JOSHI</h5>
                             <div class="d-flex align-items-center">
-                                <p class="text-white fs-12 mb-0">Senior Product Designer</p>
+                                <p class="text-white fs-12 mb-0">Manager</p>
                                 <span class="mx-1"><i class="ti ti-point-filled text-primary"></i></span>
-                                <p class="fs-12">UI/UX Design</p>
+                                <p class="fs-12">Head of Operations</p>
                             </div>
                         </div>
                     </div>
@@ -957,19 +957,57 @@
                 <div class="card-body rounded-top">
                     <div class="mb-3">
                         <span class="d-block mb-1 fs-13">Phone Number</span>
-                        <p class="text-gray-9">+1 324 3453 545</p>
+                        <div class="d-flex align-items-center gap-2">
+                            <p class="text-gray-9 mb-0" id="phoneText">+91 912XX XXXXX</p>
+                            <button type="button" class="btn btn-sm btn-light" onclick="togglePhone()">
+                                <i id="phoneIcon" class="ti ti-eye"></i>
+                            </button>
+                        </div>
                     </div>
+
                     <div class="mb-3">
                         <span class="d-block mb-1 fs-13">Email Address</span>
-                        <p class="text-gray-9">steperde124@example.com</p>
+                        <div class="d-flex align-items-center gap-2">
+                            <p class="text-gray-9 mb-0" id="emailText">dh******@@example.in</p>
+                            <button type="button" class="btn btn-sm btn-light" onclick="toggleEmail()">
+                                <i id="emailIcon" class="ti ti-eye"></i>
+                            </button>
+                        </div>
                     </div>
+
+                    <!-- Number Email Hide and Show  -->
+
+                    <script>
+                        let phoneVisible = false;
+                        let emailVisible = false;
+
+                        const fullPhone = "+91 91234 56789";
+                        const maskedPhone = "+91 912XX XXXXX";
+
+                        const fullEmail = "dheerendra.joshi@example.in";
+                        const maskedEmail = "dh******@@example.in";
+
+                        function togglePhone() {
+                            phoneVisible = !phoneVisible;
+                            document.getElementById("phoneText").innerText = phoneVisible ? fullPhone : maskedPhone;
+                            document.getElementById("phoneIcon").className = phoneVisible ? "ti ti-eye-off" : "ti ti-eye";
+                        }
+
+                        function toggleEmail() {
+                            emailVisible = !emailVisible;
+                            document.getElementById("emailText").innerText = emailVisible ? fullEmail : maskedEmail;
+                            document.getElementById("emailIcon").className = emailVisible ? "ti ti-eye-off" : "ti ti-eye";
+                        }
+                    </script>
+
+
                     <div class="mb-3">
                         <span class="d-block mb-1 fs-13">Report Office</span>
-                        <p class="text-gray-9">Doglas Martini</p>
+                        <p class="text-gray-9">Rajesh Sharma</p>
                     </div>
                     <div>
                         <span class="d-block mb-1 fs-13">Joined on</span>
-                        <p class="text-gray-9">15 Jan 2024</p>
+                        <p class="text-gray-9">15 Feb 2023</p>
                     </div>
                 </div>
             </div>
@@ -1129,35 +1167,107 @@
     <div class="row">
         <div class="col-xl-4 col-lg-4 col-md-6 col-sm-12 d-flex">
             <div class="card flex-fill border-primary attendance-bg">
+
+
                 <div class="card-body">
                     <div class="mb-4 text-center">
                         <h6 class="fw-medium text-gray-5 mb-1">Attendance</h6>
-                        <h4>08:35 AM, 11 Mar 2025</h4>
+                        <h4 id="currentTime"></h4>
                     </div>
-                    <div class="attendance-circle-progress attendance-progress mx-auto mb-3"
-                         data-value="65">
+
+                    <div class="attendance-circle-progress attendance-progress mx-auto mb-3" id="progressCircle">
                         <span class="progress-left">
-                            <span class="progress-bar border-success"
-                                  style="transform: rotate(54deg);"></span>
+                            <span class="progress-bar border-success" id="leftBar"></span>
                         </span>
                         <span class="progress-right">
-                            <span class="progress-bar border-success"
-                                  style="transform: rotate(180deg);"></span>
+                            <span class="progress-bar border-success" id="rightBar"></span>
                         </span>
                         <div class="total-work-hours text-center w-100">
                             <span class="fs-13 d-block mb-1">Total Hours</span>
-                            <h6>5:45:32</h6>
+                            <h6 id="workHours">00:00:00</h6>
                         </div>
                     </div>
+
                     <div class="text-center">
-                        <div class="badge badge-dark badge-md mb-3">Production : 3.45 hrs</div>
+                        <div class="badge badge-dark badge-md mb-3" id="productionTime">Production : 00:00 hrs</div>
                         <h6 class="fw-medium d-flex align-items-center justify-content-center mb-4">
                             <i class="ti ti-fingerprint text-primary me-1"></i>
-                            Punch In at 10.00 AM
+                            Punch In at  <span id="punchInText"> --</span>
                         </h6>
-                        <a href="#" class="btn btn-primary w-100">Punch Out</a>
+                        <button class="btn btn-primary w-100" onclick="togglePunch()" id="punchBtn">Punch In</button>
                     </div>
                 </div>
+                <!-- clock Punch and animation Logic   -->
+
+                <script>
+                    let punchInTime = null;
+                    let timerInterval = null;
+
+                    function updateCurrentTime() {
+                        const now = new Date();
+                        document.getElementById("currentTime").innerText =
+                            now.toLocaleTimeString() + ", " + now.toDateString();
+                    }
+
+                    setInterval(updateCurrentTime, 1000);
+                    updateCurrentTime();
+
+                    function formatTime(ms) {
+                        let totalSeconds = Math.floor(ms / 1000);
+                        let hrs = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
+                        let mins = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+                        let secs = String(totalSeconds % 60).padStart(2, '0');
+                        return `${hrs}:${mins}:${secs}`;
+                    }
+
+                    function updateWork() {
+                        const now = new Date();
+                        const diff = now - punchInTime;
+
+                        document.getElementById("workHours").innerText = formatTime(diff);
+
+                        // Assuming 1-hour work day
+                        let percent = Math.min((diff / (1 * 60 * 60 * 1000)) * 100, 100);
+                        updateCircle(percent);
+
+                        document.getElementById("productionTime").innerText =
+                            "Production : " + (diff / (60 * 60 * 1000)).toFixed(2) + " hrs";
+                    }
+
+                    function updateCircle(percent) {
+                        let left = document.getElementById("leftBar");
+                        let right = document.getElementById("rightBar");
+
+                        if (percent <= 50) {
+                            right.style.transform = `rotate(${percent * 3.6}deg)`;
+                            left.style.transform = `rotate(0deg)`;
+                        } else {
+                            right.style.transform = `rotate(180deg)`;
+                            left.style.transform = `rotate(${(percent - 50) * 3.6}deg)`;
+                        }
+                    }
+
+                    function togglePunch() {
+                        const btn = document.getElementById("punchBtn");
+
+                        if (!punchInTime) {
+                            punchInTime = new Date();
+                            document.getElementById("punchInText").innerText =
+                                punchInTime.toLocaleTimeString();
+
+                            btn.innerText = "Punch Out";
+
+                            timerInterval = setInterval(updateWork, 1000);
+                        } else {
+                            clearInterval(timerInterval);
+                            punchInTime = null;
+
+                            btn.innerText = "Punch In";
+                            document.getElementById("workHours").innerText = "00:00:00";
+                            updateCircle(0);
+                        }
+                    }
+                </script>
             </div>
         </div>
         <div class="col-xl-8 col-lg-8 col-md-6 col-sm-12 d-flex">
@@ -1351,10 +1461,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="collapse " id="collapseProjects">
+                <div class="collapse" id="collapseProjects">
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="card mb-4 shadow-none mb-md-0">
                                     <div class="card-body">
                                         <div class="d-flex align-items-center justify-content-between mb-3">
@@ -1393,103 +1503,8 @@
                                                 <div class="ms-2">
                                                     <h6 class="fw-normal">
                                                         <a href="javascript:void(0);">
-                                                            Anthony
-                                                            Lewis
-                                                        </a>
-                                                    </h6>
-                                                    <span class="fs-13 d-block">Project Leader</span>
-                                                </div>
-                                            </div>
-                                            <div class="d-flex align-items-center mb-3">
-                                                <a href="javascript:void(0);"
-                                                   class="avatar bg-soft-primary rounded-circle">
-                                                    <i class="ti ti-calendar text-primary fs-16"></i>
-                                                </a>
-                                                <div class="ms-2">
-                                                    <h6 class="fw-normal">14 Jan 2024</h6>
-                                                    <span class="fs-13 d-block">Deadline</span>
-                                                </div>
-                                            </div>
-                                            <div class="d-flex align-items-center justify-content-between bg-transparent-light border border-dashed rounded p-2 mb-3">
-                                                <div class="d-flex align-items-center">
-                                                    <span class="avatar avatar-sm bg-success-transparent rounded-circle me-1">
-                                                        <i class="ti ti-checklist fs-16"></i>
-                                                    </span>
-                                                    <p>Tasks : <span class="text-gray-9">6 </span> /10</p>
-                                                </div>
-                                                <div class="avatar-list-stacked avatar-group-sm">
-                                                    <span class="avatar avatar-rounded">
-                                                        <img class="border border-white"
-                                                             src="~/assets/AkashAsset/img/avatar-06.jpg"
-                                                             alt="img">
-                                                    </span>
-                                                    <span class="avatar avatar-rounded">
-                                                        <img class="border border-white"
-                                                             src="~/assets/AkashAsset/img/avatar-07.jpg"
-                                                             alt="img">
-                                                    </span>
-                                                    <span class="avatar avatar-rounded">
-                                                        <img class="border border-white"
-                                                             src="~/assets/AkashAsset/img/avatar-08.jpg"
-                                                             alt="img">
-                                                    </span>
-                                                    <a class="avatar bg-primary avatar-rounded text-fixed-white fs-12 fw-medium"
-                                                       href="javascript:void(0);">
-                                                        +2
-                                                    </a>
-                                                </div>
-                                            </div>
-                                            <div class="bg-soft-secondary p-2 rounded d-flex align-items-center justify-content-between">
-                                                <p class="text-secondary mb-0 text-truncate">Time Spent</p>
-                                                <h5 class="text-secondary text-truncate">
-                                                    65/120 <span class="fs-14 fw-normal">Hrs</span>
-                                                </h5>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="card shadow-none mb-0">
-                                    <div class="card-body">
-                                        <div class="d-flex align-items-center justify-content-between mb-3">
-                                            <h6>Office Management</h6>
-                                            <div class="dropdown">
-                                                <a href="javascript:void(0);"
-                                                   class="d-inline-flex align-items-center"
-                                                   data-bs-toggle="dropdown">
-                                                    <i class="ti ti-dots-vertical"></i>
-                                                </a>
-                                                <ul class="dropdown-menu dropdown-menu-end p-3">
-                                                    <li>
-                                                        <a href="javascript:void(0);"
-                                                           class="dropdown-item rounded-1"
-                                                           data-bs-toggle="modal" data-bs-target="#edit_task">
-                                                            <i class="ti ti-edit me-2"></i>Edit
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="javascript:void(0);"
-                                                           class="dropdown-item rounded-1"
-                                                           data-bs-toggle="modal"
-                                                           data-bs-target="#delete_modal">
-                                                            <i class="ti ti-trash me-2"></i>Delete
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <div class="d-flex align-items-center mb-3">
-                                                <a href="javascript:void(0);" class="avatar">
-                                                    <img src="~/assets/AkashAsset/img/user-33.jpg"
-                                                         class="img-fluid rounded-circle" alt="img">
-                                                </a>
-                                                <div class="ms-2">
-                                                    <h6 class="fw-normal">
-                                                        <a href="javascript:void(0);">
-                                                            Anthony
-                                                            Lewis
+                                                            Aarav
+                                                            Patel
                                                         </a>
                                                     </h6>
                                                     <span class="fs-13 d-block">Project Leader</span>
@@ -2129,8 +2144,8 @@
                             <div class="ms-2">
                                 <h6 class="fs-14 fw-medium text-truncate mb-1">
                                     <a href="#">
-                                        Alexander
-                                        Jermai
+                                        Arjun
+                                        Sharma
                                     </a>
                                 </h6>
                                 <p class="fs-13">UI/UX Designer</p>
@@ -2157,8 +2172,8 @@
                             <div class="ms-2">
                                 <h6 class="fs-14 fw-medium text-truncate mb-1">
                                     <a href="#">
-                                        Doglas
-                                        Martini
+                                        Rohani
+                                        Gupta
                                     </a>
                                 </h6>
                                 <p class="fs-13">Product Designer</p>
@@ -2185,8 +2200,8 @@
                             <div class="ms-2">
                                 <h6 class="fs-14 fw-medium text-truncate mb-1">
                                     <a href="#">
-                                        Daniel
-                                        Esbella
+                                        Priyanka
+                                        Singh
                                     </a>
                                 </h6>
                                 <p class="fs-13">Project Manager</p>
@@ -2213,8 +2228,8 @@
                             <div class="ms-2">
                                 <h6 class="fs-14 fw-medium text-truncate mb-1">
                                     <a href="#">
-                                        Daniel
-                                        Esbella
+                                        Vikram
+                                        Malhotra
                                     </a>
                                 </h6>
                                 <p class="fs-13">Team Lead</p>
@@ -2241,8 +2256,8 @@
                             <div class="ms-2">
                                 <h6 class="fs-14 fw-medium text-truncate mb-1">
                                     <a href="#">
-                                        Stephan
-                                        Peralt
+                                        Ishaan
+                                        Verma
                                     </a>
                                 </h6>
                                 <p class="fs-13">Team Lead</p>
@@ -2268,7 +2283,7 @@
                             </a>
                             <div class="ms-2">
                                 <h6 class="fs-14 fw-medium text-truncate mb-1">
-                                    <a href="#">Andrew Jermia</a>
+                                    <a href="#">Ananya Reddy</a>
                                 </h6>
                                 <p class="fs-13">Project Lead</p>
                             </div>
@@ -2442,7 +2457,7 @@
                                 <img src="~/assets/AkashAsset/img/user-35.jpg" alt="Img">
                             </span>
                             <div class="mb-3">
-                                <h6 class="text-white fw-medium mb-1">Andrew Jermia</h6>
+                                <h6 class="text-white fw-medium mb-1">Ankita Jadhav</h6>
                                 <p>IOS Developer</p>
                             </div>
                             <a href="#" class="btn btn-sm btn-primary">Send Wishes</a>
@@ -2464,8 +2479,8 @@
                             <h5 class="mb-1">Next Holiday</h5>
                             <p class="text-gray-9">Diwali, 15 Sep 2025</p>
                         </div>
-                       
-                          <a href="@Url.Action("HolidayList", "Dashboard", new { area = "" })" class="btn btn-white btn-sm px-3">View All</a>
+
+                        <a href="@Url.Action("HolidayList", "Dashboard", new { area = "" })" class="btn btn-white btn-sm px-3">View All</a>
                     </div>
                 </div>
             </div>
