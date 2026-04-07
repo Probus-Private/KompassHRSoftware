@@ -158,7 +158,12 @@
             <span class="float-end hidden-print">
                 <button type="button" class="btn btn-success" onclick="OpenModal('Approved')">Approve</button>
 
+                <button type="button" class="btn btn-primary" onclick="OpenModal('Revised')">Revised</button>
+
                 <button type="button" class="btn btn-danger" onclick="OpenModal('Rejected')">Reject</button>
+
+                
+
             </span>
             <div style="color:white">.</div>
         </div>
@@ -172,6 +177,9 @@
                     <i class="fa-solid fa-envelope"> </i>&nbsp;&nbsp;<b>Email:</b>&nbsp;  @ViewBag.OfferLetterApprovalList.EmailId
                     @Html.HiddenFor(model => model.OfferLetterGenId_Encrypted, new { id = "txtOfferLetterGenId_Encrypted" })
                     @Html.HiddenFor(model => model.OfferLetterGenId, new { id = "txtOfferLetterGenId" })
+                    @Html.HiddenFor(model => model.OfferLetterGenResumeId, new { id = "txtOfferLetterGenResumeId",Value= @ViewBag.OfferLetterApprovalList.OfferLetterGenResumeId })
+
+
                 </address>
             </div>
             <div class="invoice-to">
@@ -354,22 +362,30 @@
                     var Status="Approved";
                     var Remark=$("#txtFinalApproveRejectRemark").val();
                     var OfferLetterGenId_Encrypted=$("#txtOfferLetterGenId_Encrypted").val();
+                    var OfferLetterGenResumeId=$("#txtOfferLetterGenResumeId").val();
                     var url = '@Url.Action("SaveUpdate", "ESS_Recruitment_OfferLetterApproval")?OfferLetterGenId_Encrypted=' + OfferLetterGenId_Encrypted +'&Status=' +Status+'&Remark='+Remark;
                     window.location.href = url;
                 }
-                else
+               else  if(StatusMark=="Revised")
+                {
+                    var Status="Revised";
+                    var Remark=$("#txtFinalApproveRejectRemark").val();
+                    var OfferLetterGenId_Encrypted=$("#txtOfferLetterGenId_Encrypted").val();
+                    var OfferLetterGenResumeId=$("#txtOfferLetterGenResumeId").val();
+                    var url = '@Url.Action("RevisedOfferLetter", "ESS_Recruitment_OfferLetterApproval")?OfferLetterGenId_Encrypted=' + OfferLetterGenId_Encrypted +'&Status=' +Status+'&Remark='+Remark+'&OfferLetterGenResumeId='+OfferLetterGenResumeId;
+                    window.location.href = url;
+                }
+                else if (StatusMark == "Rejected") {
                 {
                     var Status="Rejected";
                     var Remark=$("#txtFinalApproveRejectRemark").val();
                     var OfferLetterGenId_Encrypted=$("#txtOfferLetterGenId_Encrypted").val();
+                    var OfferLetterGenResumeId=$("#txtOfferLetterGenResumeId").val();
+
                     var url = '@Url.Action("SaveUpdate", "ESS_Recruitment_OfferLetterApproval")?OfferLetterGenId_Encrypted=' + OfferLetterGenId_Encrypted +'&Status=' +Status + '&Remark='+Remark;
                     window.location.href = url;
                 }
-            } else if (
-                /* Read more about handling dismissals below */
-                    result.dismiss === Swal.DismissReason.cancel
-                ) {
-
+            } 
             }
         })
     }

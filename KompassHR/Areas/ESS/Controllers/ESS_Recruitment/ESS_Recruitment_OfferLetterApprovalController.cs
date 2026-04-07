@@ -308,5 +308,26 @@ string.IsNullOrWhiteSpace(Convert.ToString(GetToolEmail.FromEmailId)))
         }
         #endregion
 
+        #region Revised offer letter
+
+        public ActionResult RevisedOfferLetter(string OfferLetterGenId_Encrypted,int? OfferLetterGenResumeId,string Remark)
+        {
+            try
+            {
+                var UpdateOffer = DapperORM.DynamicQuerySingle("Update Recruitment_OfferLetterGeneration set Deactivate=1,OffterLetterStatus='Revised',OffterLetterRejectRemark='" + Remark + "' where OfferLetterGenId_Encrypted='" + OfferLetterGenId_Encrypted + "'");               
+                var UpdateResume = DapperORM.DynamicQuerySingle("Update Recruitment_Resume set OfferLetterId = 0 where ResumeId = '"+ OfferLetterGenResumeId + "'");
+                TempData["Message"] = "Offer Letter revised succesfully";
+                TempData["Icon"] = "success";
+                return RedirectToAction("ESS_Recruitment_OfferLetterApproval", "ESS_Recruitment_OfferLetterApproval");
+            }
+            catch (Exception ex)
+            {
+                Session["GetErrorMessage"] = ex.Message;
+                return RedirectToAction("ErrorPage", "Login");
+            }
+        }
+
+        #endregion
+
     }
 }

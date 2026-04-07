@@ -300,7 +300,7 @@ WHERE team.Deactivate = 0
         }
 
         [HttpGet]
-        public ActionResult IsObjectiveExist(string ObjectiveTitle, string Origin, string ObjectiveId_Encrypted)
+        public ActionResult IsObjectiveExist(string ObjectiveTitle, string Origin)
         {
             try
             {
@@ -308,10 +308,8 @@ WHERE team.Deactivate = 0
                 {
                     var param = new DynamicParameters();
                     param.Add("@p_process", "IsValidation");
-                    param.Add("@p_ObjectiveId_Encrypted", ObjectiveId_Encrypted);
                     param.Add("@p_ObjectiveTitle", ObjectiveTitle);
                     param.Add("@p_Origin", Origin);
-                    param.Add("@p_EmployeeId", Session["EmployeeId"]);
                     param.Add("@p_MachineName", Dns.GetHostName().ToString());
                     param.Add("@p_CreatedUpdateBy", Session["EmployeeName"]);
                     param.Add("@p_msg", dbType: DbType.String, direction: ParameterDirection.Output, size: 500);
@@ -458,6 +456,8 @@ WHERE team.Deactivate = 0
                 return Json(new { error = true, message = ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
+
+
 
 
     }

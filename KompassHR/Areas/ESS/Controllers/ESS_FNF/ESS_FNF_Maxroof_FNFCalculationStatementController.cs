@@ -154,24 +154,17 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_FNF
                 param.Add("@p_Designation", Maxroof_FNFCalculations.Designation);
                 param.Add("@p_Grade", Maxroof_FNFCalculations.Grade);
                 param.Add("@p_BusinessUnit", Maxroof_FNFCalculations.BusinessUnit);
-
                 param.Add("@p_JoiningDate", Maxroof_FNFCalculations.JoiningDate);
-                param.Add("@p_ReginationDate", Maxroof_FNFCalculations.ReginationDate);
+                param.Add("@p_ReginationDate", Maxroof_FNFCalculations.ResignationDate);
                 param.Add("@p_LastWorkingDate", Maxroof_FNFCalculations.LastWorkingDate);
                 param.Add("@p_RelievingDate", Maxroof_FNFCalculations.RelievingDate);
                 param.Add("@p_NoticePeriodEndDate", Maxroof_FNFCalculations.NoticePeriodEndDate);
-
                 param.Add("@p_DailyMonthly", Maxroof_FNFCalculations.DailyMonthly);
                 param.Add("@p_Bond_Applicable", Maxroof_FNFCalculations.Bond_Applicable);
                 param.Add("@p_BondEndDate", Maxroof_FNFCalculations.BondEndDate);
                 param.Add("@p_BondAmt", Maxroof_FNFCalculations.BondAmt);
-
                 param.Add("@P_A_Salary_Applicable", Maxroof_FNFCalculations.A_Salary_Applicable);
                 param.Add("@P_A_SalaryDate", Maxroof_FNFCalculations.A_SalaryDate);
-                param.Add("@P_B_Salary_Applicable", Maxroof_FNFCalculations.B_Salary_Applicable);
-                param.Add("@P_B_SalaryDate", Maxroof_FNFCalculations.B_SalaryDate);
-                param.Add("@P_C_Salary_Applicable", Maxroof_FNFCalculations.C_Salary_Applicable);
-                param.Add("@P_C_SalaryDate", Maxroof_FNFCalculations.C_SalaryDate);
                 param.Add("@P_FY_Preivous_Bonus_Year_Applicable", Maxroof_FNFCalculations.FY_Preivous_Bonus_Year_Applicable);
                 param.Add("@P_FY_Preivous_Bonus_Year", Maxroof_FNFCalculations.FY_Preivous_Bonus_Year);
                 param.Add("@P_FY_Current_Bonus_Year_Applicable", Maxroof_FNFCalculations.FY_Current_Bonus_Year_Applicable);
@@ -180,19 +173,13 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_FNF
                 param.Add("@P_LeaveMasterLeaveYearId", Maxroof_FNFCalculations.LeaveMasterLeaveYearId);
                 param.Add("@p_UnpaidSalaryA_Date", Maxroof_FNFCalculations.UnpaidSalaryA_Date);
                 param.Add("@p_UnpaidSalaryA_Amount", Maxroof_FNFCalculations.UnpaidSalaryA_Amount);
-                param.Add("@p_UnpaidSalaryB_Date", Maxroof_FNFCalculations.UnpaidSalaryB_Date);
-                param.Add("@p_UnpaidSalaryB_Amount", Maxroof_FNFCalculations.UnpaidSalaryB_Amount);
-                param.Add("@p_UnpaidSalaryC_Date", Maxroof_FNFCalculations.UnpaidSalaryC_Date);
-                param.Add("@p_UnpaidSalaryC_Amount", Maxroof_FNFCalculations.UnpaidSalaryC_Amount);
                 param.Add("@p_TotalUnpaidSalaryAmount", Maxroof_FNFCalculations.TotalUnpaidSalaryAmount);
-
                 param.Add("@p_LastSalaryPaidMonth", Maxroof_FNFCalculations.LastSalaryPaidMonth);
                 param.Add("@p_PLDays", Maxroof_FNFCalculations.PLDays);
                 param.Add("@p_PayableDays", Maxroof_FNFCalculations.PayableDays);
                 param.Add("@p_MonthDays", Maxroof_FNFCalculations.MonthDays);
                 param.Add("@p_LOPDays", Maxroof_FNFCalculations.LOPDays);
                 param.Add("@p_EffectiveWorkDays", Maxroof_FNFCalculations.EffectiveWorkDays);
-
                 param.Add("@p_PreivousBonus_Remark", Maxroof_FNFCalculations.PreivousBonus_Remark);
                 param.Add("@p_PreivousBonus_Amount", Maxroof_FNFCalculations.BonusPreviousYearAmount);
                 param.Add("@p_CurrentBonus_Remark", Maxroof_FNFCalculations.CurrentBonus_Remark);
@@ -201,23 +188,11 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_FNF
                 param.Add("@p_PreivousLeave_Remark", Maxroof_FNFCalculations.LeavePreviousYear);
                 param.Add("@p_PreivousLeave_Days", Maxroof_FNFCalculations.PreivousLeave_Days);
                 param.Add("@p_PreivousLeave_Amount", Maxroof_FNFCalculations.LeavePreviousYearAmount);
-
                 param.Add("@p_CurrentLeave_Remark", Maxroof_FNFCalculations.LeaveCurrentYear);
                 param.Add("@p_CurrentLeave_Days", Maxroof_FNFCalculations.CurrentLeave_Days);
                 param.Add("@p_Current_Amount", Maxroof_FNFCalculations.LeaveCurrentYearAmount);
                 param.Add("@p_TotalLeave_Amount", Maxroof_FNFCalculations.TotalLeave_Amount);
-
-                param.Add("@p_GrossSalary", Maxroof_FNFCalculations.GrossSalary);
-                param.Add("@p_BasicSalary", Maxroof_FNFCalculations.BasicSalary);
-                param.Add("@p_DearnessAllowance", Maxroof_FNFCalculations.DearnessAllowance);
-                param.Add("@p_HouseRentAllowance", Maxroof_FNFCalculations.HouseRentAllowance);
-                param.Add("@p_ConveyanceAllowance", Maxroof_FNFCalculations.ConveyanceAllowance);
-                param.Add("@p_MedicalAllowance", Maxroof_FNFCalculations.MedicalAllowance);
-                param.Add("@p_SpecialAllowance", Maxroof_FNFCalculations.SpecialAllowance);
-                param.Add("@p_EducationAllowance", Maxroof_FNFCalculations.EducationAllowance);
                 param.Add("@p_TotalIncome", Maxroof_FNFCalculations.TotalIncome);
-                param.Add("@p_PF", Maxroof_FNFCalculations.PF);
-                param.Add("@p_ProfTax", Maxroof_FNFCalculations.ProfTax);
                 param.Add("@p_Advance", Maxroof_FNFCalculations.AdvanceRecovered);
                 param.Add("@p_TDS", Maxroof_FNFCalculations.SalaryTDS);
                 param.Add("@p_TotalDeduction", Maxroof_FNFCalculations.TotalDeduction);
@@ -225,6 +200,13 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_FNF
                 param.Add("@p_NetPayInWord", Maxroof_FNFCalculations.NetPayInWord);
                 param.Add("@p_Gratuity_Applicable", Maxroof_FNFCalculations.Gratuity_Applicable);
                 param.Add("@p_Gratuity_Service", Maxroof_FNFCalculations.Gratuity_Service);
+                param.Add("@p_NetPayInWord", Maxroof_FNFCalculations.NetPayInWord);
+                param.Add("@p_Gratuity_Applicable", Maxroof_FNFCalculations.Gratuity_Applicable);
+                param.Add("@p_Gratuity_Service", Maxroof_FNFCalculations.Gratuity_Service);
+                param.Add("@p_GratuityAmount", Maxroof_FNFCalculations.GratuityAmount);
+                param.Add("@p_GratuityAmountInWord", Maxroof_FNFCalculations.GratuityAmountInWord);
+                param.Add("@p_FinalNetPayable", Maxroof_FNFCalculations.FinalNetPayable);
+                param.Add("@p_FinalNetPayableInWord", Maxroof_FNFCalculations.FinalNetPayableInWord);
                 param.Add("@p_FNFMakerId", Session["EmployeeId"]);
                 param.Add("@p_FNFMakerRemark", Maxroof_FNFCalculations.Remark);
                 param.Add("@p_ResignationId", Maxroof_FNFCalculations.ResignationId);
@@ -232,11 +214,12 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_FNF
                 param.Add("@p_CreatedUpdateBy", Session["EmployeeName"]);
                 param.Add("@p_msg", dbType: DbType.String, direction: ParameterDirection.Output, size: 200);
                 param.Add("@p_Icon", dbType: DbType.String, direction: ParameterDirection.Output, size: 10);
-
+                param.Add("@p_Id", dbType: DbType.String, direction: ParameterDirection.Output, size: 500);
                 var Result = DapperORM.ExecuteReturn("sp_MaxRoof_SUD_FNF_FNFCalculationStatement", param);
                 TempData["Message"] = param.Get<string>("@p_msg");
                 TempData["Icon"] = param.Get<string>("@p_Icon");
-                return RedirectToAction("GetList", "ESS_FNF_Maxroof_FNFCalculationStatement");
+                string p_Id = param.Get<string>("@p_Id");
+                return Json(new { Message = TempData["Message"], Icon = TempData["Icon"] }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
@@ -303,7 +286,6 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_FNF
                 paramFNFCalculation.Add("@P_EmployeeId", Session["EmployeeId"]);
                 var FNFCompleteList = DapperORM.ReturnList<dynamic>("sp_MaxRoof_FNF_List_FNFCalculation", paramFNFCalculation).ToList();
                 ViewBag.GetFNFCompleteList = FNFCompleteList;
-
                 TempData["FNFCompleteCount"] = FNFCompleteList?.Count() ?? 0;
 
                 DynamicParameters paramCheckerFNF = new DynamicParameters();
@@ -313,7 +295,6 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_FNF
                 ViewBag.GetCheckerFNFPendingList = CheckerFNFPendingList;
 
                 TempData["CheckerFNFPendingCount"] = CheckerFNFPendingList?.Count() ?? 0;
-
                 DynamicParameters paramAccountFNF = new DynamicParameters();
                 paramAccountFNF.Add("@p_Process", "Account");
                 paramAccountFNF.Add("@P_EmployeeID", Session["EmployeeId"]);
@@ -321,7 +302,6 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_FNF
                 ViewBag.GetAccountFNFPendingList = AccountFNFPendingList;
 
                 TempData["AccountFNFPendingCount"] = AccountFNFPendingList?.Count() ?? 0;
-
                 if ((Convert.ToInt32(GetFNFMakerCheckerAccount.FNFMakerId) == Convert.ToInt32(Session["EmployeeId"])) && (Convert.ToInt32(GetFNFMakerCheckerAccount.FNFCheckerId) == Convert.ToInt32(Session["EmployeeId"])))
                 {
                     DynamicParameters paramMakerChecker = new DynamicParameters();
@@ -400,6 +380,7 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_FNF
                     }
 
                 }
+
                 DynamicParameters NPTdata = new DynamicParameters();
                 NPTdata.Add("@query", "Select Id, MonthDays as Name from tbl_NoticePeriodType_MonthDays");
                 var GetNPTdata = DapperORM.ReturnList<AllDropDownBind>("sp_QueryExcution", NPTdata);
@@ -447,7 +428,7 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_FNF
         #endregion
 
         #region PreViewStatement
-        public ActionResult PreViewStatement(double? FNFCal_EmployeeId, int ResignationId)
+        public ActionResult PreViewStatement(int? FNFCald ,double? FNFCal_EmployeeId, int ResignationId)
         {
             try
             {
@@ -468,6 +449,14 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_FNF
                 paramFNFCalculation.Add("@P_ResignationId", ResignationId);
                 var FNFCalculationsList = DapperORM.ReturnList<dynamic>("sp_MaxRoof_FNF_List_FNFCalculation", paramFNFCalculation).FirstOrDefault();
                 ViewBag.GetFNFCalculationsdetailsList = FNFCalculationsList;
+
+                DynamicParameters EarningInfo = new DynamicParameters();
+                EarningInfo.Add("@P_FNFCald", FNFCald);
+                ViewBag.earnings = DapperORM.ReturnList<dynamic>("sp_MaxRoof_FNF_Earnings", EarningInfo).ToList();
+
+                DynamicParameters DeductionInfo = new DynamicParameters();
+                DeductionInfo.Add("@P_FNFCald", FNFCald);
+                ViewBag.deductions = DapperORM.ReturnList<dynamic>("sp_MaxRoof_FNF_Deduction", DeductionInfo).ToList();
 
                 if (FNFCalculationsList.EmployeeCheckerStatus != "Pending")
                 {
@@ -710,7 +699,7 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_FNF
 
         #region Get_MaxRoof_FNFDetails
         [HttpGet]
-        public ActionResult Get_MaxRoof_FNFDetails(int FNFCal_EmployeeId, string A_Salary_Applicable, DateTime? A_SalaryDate, string B_Salary_Applicable, DateTime? B_SalaryDate, string C_Salary_Applicable, DateTime? C_SalaryDate,
+        public ActionResult Get_MaxRoof_FNFDetails(int FNFCal_EmployeeId, string A_Salary_Applicable, DateTime? A_SalaryDate,
             string FY_Preivous_Bonus_Year_Applicable, string FY_Preivous_Bonus_Year, string FY_Current_Bonus_Year_Applicable, string FY_Current_Bonus_Year, int? LeaveMasterLeaveYearId, string LeaveYear_Applicable)
         {
             try
@@ -719,23 +708,28 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_FNF
                 {
                     return RedirectToAction("Login", "Login", new { area = "" });
                 }
-                DynamicParameters paramFNFCalculation = new DynamicParameters();
-                paramFNFCalculation.Add("@P_A_Salary_Applicable", A_Salary_Applicable);
-                paramFNFCalculation.Add("@P_A_SalaryDate", A_SalaryDate);
-                paramFNFCalculation.Add("@P_B_Salary_Applicable", B_Salary_Applicable);
-                paramFNFCalculation.Add("@P_B_SalaryDate", B_SalaryDate);
-                paramFNFCalculation.Add("@P_C_Salary_Applicable", C_Salary_Applicable);
-                paramFNFCalculation.Add("@P_C_SalaryDate", C_SalaryDate);
-                paramFNFCalculation.Add("@P_FY_Preivous_Bonus_Year_Applicable", FY_Preivous_Bonus_Year_Applicable);
-                paramFNFCalculation.Add("@P_FY_Preivous_Bonus_Year", FY_Preivous_Bonus_Year);
-                paramFNFCalculation.Add("@P_FY_Current_Bonus_Year_Applicable", FY_Current_Bonus_Year_Applicable);
-                paramFNFCalculation.Add("@P_FY_Current_Bonus_Year", FY_Current_Bonus_Year);
-                paramFNFCalculation.Add("@P_LeaveYear_Applicable", LeaveYear_Applicable);
-                paramFNFCalculation.Add("@P_LeaveMasterLeaveYearId", LeaveMasterLeaveYearId);
-                paramFNFCalculation.Add("@P_EmployeeId", FNFCal_EmployeeId);
-                var GetFnfDetails = DapperORM.ReturnList<dynamic>("sp_MaxRoof_FNF_GetDetail_Show", paramFNFCalculation).FirstOrDefault();
-                ViewBag.GetFnfDetails = GetFnfDetails;
-                return Json(new { GetFnfDetails = GetFnfDetails }, JsonRequestBehavior.AllowGet);
+
+                dynamic GetFnfDetails = null;
+                List<FNF_Earning_Info> GetEarning = new List<FNF_Earning_Info>();
+                List<FNF_Deduction_Info> GetDeduction = new List<FNF_Deduction_Info>();
+                DynamicParameters MulQuery = new DynamicParameters();
+                MulQuery.Add("@P_A_Salary_Applicable", A_Salary_Applicable);
+                MulQuery.Add("@P_A_SalaryDate", A_SalaryDate);
+                MulQuery.Add("@P_FY_Preivous_Bonus_Year_Applicable", FY_Preivous_Bonus_Year_Applicable);
+                MulQuery.Add("@P_FY_Preivous_Bonus_Year", FY_Preivous_Bonus_Year);
+                MulQuery.Add("@P_FY_Current_Bonus_Year_Applicable", FY_Current_Bonus_Year_Applicable);
+                MulQuery.Add("@P_FY_Current_Bonus_Year", FY_Current_Bonus_Year);
+                MulQuery.Add("@P_LeaveYear_Applicable", LeaveYear_Applicable);
+                MulQuery.Add("@P_LeaveMasterLeaveYearId", LeaveMasterLeaveYearId);
+                MulQuery.Add("@P_EmployeeId", FNFCal_EmployeeId);
+                using (var multi = DapperORM.DynamicMultipleResultList("sp_MaxRoof_FNF_GetDetail_Show", MulQuery))
+                {
+                    GetFnfDetails = multi.Read<dynamic>().FirstOrDefault();
+                    GetEarning = multi.Read<FNF_Earning_Info>().ToList();
+                    GetDeduction = multi.Read<FNF_Deduction_Info>().ToList();
+                }
+
+                return Json(new { GetFnfDetails = GetFnfDetails, GetEarning = GetEarning, GetDeduction = GetDeduction }, JsonRequestBehavior.AllowGet);
 
             }
             catch (Exception ex)
@@ -834,12 +828,19 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_FNF
                 paramFNFCalculation.Add("@P_ResignationId", ResignationId);
                 Maxroof_FNFCalculations = DapperORM.ReturnList<Maxroof_FNFCalculations>("sp_MaxRoof_FNF_List_FNFCalculation", paramFNFCalculation).FirstOrDefault();
                 ViewBag.EmployeeDetails = Maxroof_FNFCalculations;
+
+                DynamicParameters EarningInfo = new DynamicParameters();
+                EarningInfo.Add("@P_FNFCald", FNFCald);
+                Maxroof_FNFCalculations.earnings = DapperORM.ReturnList<FNF_Earning_Info>("sp_MaxRoof_FNF_Earnings", EarningInfo).ToList();
+
+                DynamicParameters DeductionInfo = new DynamicParameters();
+                DeductionInfo.Add("@P_FNFCald", FNFCald);
+                Maxroof_FNFCalculations.deductions = DapperORM.ReturnList<FNF_Deduction_Info>("sp_MaxRoof_FNF_Deduction", DeductionInfo).ToList();
+
                 ViewBag.Process = Process;
 
                 TempData["A_SalaryDate"] = Maxroof_FNFCalculations.A_SalaryDate.HasValue ? Maxroof_FNFCalculations.A_SalaryDate.Value.ToString("yyyy-MM") : "";
-                TempData["B_SalaryDate"] = Maxroof_FNFCalculations.B_SalaryDate.HasValue ? Maxroof_FNFCalculations.B_SalaryDate.Value.ToString("yyyy-MM") : "";
-                TempData["C_SalaryDate"] = Maxroof_FNFCalculations.C_SalaryDate.HasValue ? Maxroof_FNFCalculations.C_SalaryDate.Value.ToString("yyyy-MM") : "";
-
+             
                 var GetCmpID = "Select CmpID from Mas_Employee where Deactivate=0 and EmployeeId='" + FNFCal_EmployeeId + "'";
                 var CmpID = DapperORM.DynamicQuerySingle(GetCmpID);
 
@@ -1195,7 +1196,7 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_FNF
 
 
         #region CancelFNF
-        public ActionResult CancelFNF(double? FNFCald)
+        public ActionResult CancelFNF(double? FNFCald,string remark)
         {
             try
             {
@@ -1208,14 +1209,14 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_FNF
                 var createdBy = Session["EmployeeName"]?.ToString().Replace("'", "''");
                 var machineName = Dns.GetHostName().Replace("'", "''");
 
-                strBuilder.AppendLine("UPDATE dbo.FNF_Calculation_MaxRoof SET CreatedBy = '" + Session["EmployeeId"] + "' ,ModifiedDate = GETDATE(),Deactivate = 0,IsSendForApproval = 0 ,EmployeeMakerId=NULL,EmployeeCheckerId=NULL WHERE FNFCald = '" + FNFCald + "';");
+                strBuilder.AppendLine("UPDATE dbo.FNF_Calculation_MaxRoof SET CancelBy = '" + Session["EmployeeName"] + "' ,CancelDate = GETDATE(),IsCancel = 1,Deactivate=1,IsSendForApproval = 0 ,IsFNFCalulation=0, CancelRemark='" + remark+"' , EmployeeMakerId=NULL,EmployeeCheckerId=NULL WHERE FNFCald = '" + FNFCald + "';");
                 string abc = "";
                 if (objcon.SaveStringBuilder(strBuilder, out abc))
                 {
                     TempData["Message"] = "Record Cancel successfully.";
                     TempData["Icon"] = "success";
                 }
-              
+
                 return RedirectToAction("GetList", "ESS_FNF_Maxroof_FNFCalculationStatement");
             }
             catch (Exception ex)

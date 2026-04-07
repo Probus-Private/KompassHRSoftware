@@ -93,6 +93,37 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_Recruitment
         }
         #endregion
 
+        #region
+        public ActionResult UploadedCandidateDetails(string ResourceId_Encrypted)
+        {
+            try
+            {
+                if (Session["EmployeeId"] == null)
+                {
+                    return RedirectToAction("Login", "Login", new { area = "" });
+                }
+                
+                
+                param.Add("@p_ResourceId_Encrypted", ResourceId_Encrypted);
+                var ResourcePool = DapperORM.ExecuteSP<dynamic>("sp_UploadedCandidateDetails", param).ToList();
+                if (ResourcePool != null)
+                {
+                    ViewBag.ResourcePool = ResourcePool;
+                }
+                else
+                {
+                    ViewBag.ResourcePool = "";
+                }
+                return View();
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+        #endregion
+
         #region GetInvoice
         [HttpGet]
         public ActionResult GetInvoice(string ResourceId_Encrypted, int? ResourceId)

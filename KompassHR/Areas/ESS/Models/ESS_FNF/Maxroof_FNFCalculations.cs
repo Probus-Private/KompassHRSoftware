@@ -29,7 +29,7 @@ namespace KompassHR.Areas.ESS.Models.ESS_FNF
         public string BusinessUnit { get; set; }
         public DateTime? JoiningDate { get; set; }
         public double ResignationId { get; set; }
-        public DateTime? ReginationDate { get; set; }
+        public DateTime? ResignationDate { get; set; }
         public DateTime? LastWorkingDate { get; set; }
         public DateTime? RelievingDate { get; set; }
         public string DailyMonthly { get; set; }
@@ -87,18 +87,8 @@ namespace KompassHR.Areas.ESS.Models.ESS_FNF
         public string LeaveCurrentYearAmount { get; set; }
         public string TotalLeave_Amount { get; set; }
 
-        public string GrossSalary { get; set; }
-        public string BasicSalary { get; set; }
-        public string DearnessAllowance { get; set; }
-        public string HouseRentAllowance { get; set; }
-        public string ConveyanceAllowance { get; set; }
-        public string MedicalAllowance { get; set; }
-        public string SpecialAllowance { get; set; }
-        public string EducationAllowance { get; set; }
-        public string AttendanceAllowance { get; set; }
         public string TotalIncome { get; set; }
-        public string PF { get; set; }
-        public string ProfTax { get; set; }
+
         public string AdvanceRecovered { get; set; }
         public string SalaryTDS { get; set; }
 
@@ -108,14 +98,34 @@ namespace KompassHR.Areas.ESS.Models.ESS_FNF
         public string NetPayInWord { get; set; }
         public string Gratuity_Applicable { get; set; }
         public string Gratuity_Service { get; set; }
+        public string GratuityAmount { get; set; }
+        public string GratuityAmountInWord { get; set; }
         public string Remark { get; set; }
+        public string FinalNetPayable { get; set; }
+        public string FinalNetPayableInWord { get; set; }
 
         public List<RecordList> RecordList { get; set; }
+        public List<FNF_Earning_Info> earnings { get; set; }
+        public List<FNF_Deduction_Info> deductions { get; set; }
     }
 
     public class RecordList
     {
         public string FNFCald { get; set; }
         public string Status { get; set; }
+    }
+
+    public class FNF_Deduction_Info
+    {
+        public string Head { get; set; }
+        public string DisplayHead { get; set; }
+        public string DeductionAmt { get; set; }
+    }
+
+    public class FNF_Earning_Info
+    {
+        public string Head { get; set; }
+        public string DisplayHead { get; set; }
+        public string EarningAmt { get; set; }
     }
 }
