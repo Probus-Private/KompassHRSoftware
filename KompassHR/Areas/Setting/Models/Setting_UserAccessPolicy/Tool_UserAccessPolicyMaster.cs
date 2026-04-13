@@ -20,6 +20,5 @@ namespace KompassHR.Areas.Setting.Models.Setting_UserAccessPolicy
         
         public string ModuleName { get; set; }
         public bool Allcheckbox { get; set; }
-        
     }
 }

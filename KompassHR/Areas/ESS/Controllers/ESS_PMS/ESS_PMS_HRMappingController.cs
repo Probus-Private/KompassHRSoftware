@@ -117,7 +117,7 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_PMS
         //    }
         //}
 
-        public ActionResult GetEmployees(int CmpId, int? BranchId, int? DeptId, int? DesgId, long ResponsibleHR)
+        public ActionResult GetEmployees(int CmpId, int BranchId, int? DeptId, int? DesgId, long ResponsibleHR)
         {
             if (Session["EmployeeId"] == null)
                 return RedirectToAction("Login", "Login", new { area = "" });
@@ -142,10 +142,7 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_PMS
             /* 2️⃣ Load ALL employees condition-wise (COMMON SP) */
             string qry = "";
             qry += " AND Mas_Employee.CmpID = " + CmpId;
-            if (BranchId.HasValue && BranchId.Value != 0)
-            {
-                qry += " AND Mas_Employee.EmployeeBranchId = " + BranchId;
-            }
+            qry += " AND Mas_Employee.EmployeeBranchId = " + BranchId;
 
             if (DeptId.HasValue)
                 qry += " AND Mas_Department.DepartmentId = " + DeptId.Value;
