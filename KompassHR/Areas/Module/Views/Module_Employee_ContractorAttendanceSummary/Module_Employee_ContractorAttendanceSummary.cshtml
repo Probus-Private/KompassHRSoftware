@@ -7,35 +7,6 @@
 }
 
 <style>
-    /*select Row CSS Start*/
-    body table.dataTable tbody tr.selected td {
-        background: #fff7cc !important;
-        color: black !important;
-        font-weight: 600;
-    }
-
-    table.dataTable.table-hover > tbody > tr.selected:hover > * {
-        box-shadow: inset 0 0 0 9999px #D0D3D4 !important;
-    }
-
-    /*Table Row Hover   rgba(0, 0, 0, 0.075);*/
-    table.dataTable.table-hover > tbody > tr:hover > * {
-        box-shadow: inset 0 0 0 9999px #D0D3D4 !important;
-    }
-    /*Table select Row BackGround Color */
-    table.dataTable > tbody > tr.selected > * {
-        box-shadow: inset 0 0 0 9999px #D0D3D4 !important;
-        color: white;
-    }
-
-    /*.table{
-               --bs-table-active-bg: #9bc2ce !important;
-           }*/
-    /*tr:nth-child(even) {
-                 --bs-table-accent-bg: #D0D3D4   !important;
-                 }*/
-
-    /*select Row CSS End*/
 
 
     .dataTables_scrollBody::-webkit-scrollbar-track {
@@ -107,9 +78,7 @@
         border: 1px solid lightgray !important;
     }
 
-    /*.trheading {
-            background-color: rgba(233, 236, 239, 0.5) !important;
-        }*/
+
 
     tr td {
         padding: 4px !important;
@@ -156,7 +125,7 @@
         height: 35px;
     }
 
-    .div1 td:nth-child(2) {
+    /*.div1 td:nth-child(2) {
         position: sticky !important;
         left: 270px !important;
     }
@@ -176,7 +145,7 @@
         position: sticky !important;
         left: 0px !important;
         z-index: 1;
-    }
+    }*/
 
     .table-scroll th, .table-scroll td {
         padding: 5px 10px;
@@ -188,13 +157,85 @@
 
     .table-scroll th {
         background-color: rgba(233, 236, 239, 1) !important;
-        /*background-color: rgba(233, 236, 239, 0.7) !important;
-        }
-
-
-        th:nth-child(1), td:nth-child(1) {
-            width: 100px; /* Set the width for the first column */
     }
+
+    /* Left-click highlight */
+.TabledataBulkClass tbody tr.selected td {
+    background:  #fff7cc!important;
+    color: black !important;
+    font-weight: 600;
+}
+
+/* Remove ONLY the blue hover color from DataTables */
+table.dataTable.table-hover > tbody > tr:hover > * {
+    box-shadow: none !important;   /* removes blue */
+}
+
+/* Keep selected row color (yellow) always */
+table.dataTable > tbody > tr.selected > * {
+    background: #fff7cc !important;
+    box-shadow: none !important;
+}
+
+/* When selected row is hovered, keep same yellow */
+table.dataTable.table-hover > tbody > tr.selected:hover > * {
+    background: #fff7cc !important;
+    box-shadow: none !important;
+}
+
+
+/* Make table container scroll */
+/*.table-scroll {
+    overflow-x: auto !important;
+    overflow-y: auto !important;
+    max-height: 500px;
+    position: relative;
+}
+
+.table-wrap {
+    overflow: visible !important;
+}*/
+
+/* Header must be sticky */
+thead th {
+    position: sticky;
+    top: 0;
+    background: #fff !important;
+}
+
+/* Default width for all visible columns */
+th[data-vindex], td[data-vindex] {
+    min-width: 100px !important;
+
+    white-space: nowrap;
+}
+    .dataTables_wrapper .dataTables_scroll table.dataTable th {
+    
+    background-color: rgba(233, 236, 239, 1) !important;
+
+    }
+/* Freeze 1st visible column */
+th[data-vindex="1"], td[data-vindex="1"] {
+    position: sticky !important;
+    left: 0;
+    z-index: 9 !important;
+
+}
+
+/* Freeze 2nd visible column */
+th[data-vindex="2"], td[data-vindex="2"] {
+    position: sticky !important;
+    left: 153px;
+z-index: 9 !important;
+}
+
+/* Freeze 3rd visible column */
+th[data-vindex="3"], td[data-vindex="3"] {
+    position: sticky !important;
+    left: 370px;
+z-index: 9 !important;
+  }
+
 </style>
 
 <div id="content" class="app-content">
@@ -251,6 +292,8 @@
                                                 </div>
                                             </div>
                                         </div>
+
+
                                         <div class="col-md-6">
                                             <div class="row mb-15px">
                                                 <label class="form-label col-form-label col-md-3">
@@ -283,23 +326,44 @@
                                                 <label class="form-label col-form-label col-md-3">
                                                     Invoice Month <span class="important">*</span>
                                                 </label>
-                                                <div class="col-md-7">
+                                                <div class="col-md-9">
                                                     @Html.TextBoxFor(model => model.InvoiceMonth, new { @class = "form-select", type = "Month", name = "InvoiceMonth", id = "txtInvoiceMonth" })
                                                 </div>
-                                                <div class="col-md-2">
+                                                @*<div class="col-md-2">
                                                     <button type="button" id="btnshow" class="btn btn-success btn-sm">
                                                         Show
                                                     </button>
+                                                </div>*@
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="row">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="button" id="btnshow" class="btn btn-success btn-sm">
+                                                            Show
+                                                        </button>
+
+                                                        <button type="button" class="btn btn-success" id="btlExportToExcel" onclick="downloadExcelFile()">
+                                                            <i class="fa-regular fa-file-excel fa-xl"></i> Export To Excel
+                                                        </button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
 
 
+
                                     @*<table class="table table-bordered">*@
                                     <div class="table-scroll div1">
                                         <div class="table-wrap">
-                                            <table class="table table-bordered table-hover mb-0 text-dark align-middle tblAddData TabledataBulkClass" style="width: 100%;">
+                                            <table class="table table-bordered table-hover mb-0 text-dark align-middle tblAddData   TabledataBulkClass" >
+                                                
                                                 <thead style="background-color: rgba(233, 236, 239, 1) !important;">
                                                     <tr>
 
@@ -309,6 +373,9 @@
                                                             var firstRow = ViewBag.AttendanceSummary[0];
                                                             var keys = ((IDictionary<string, object>)firstRow).Keys.ToList();
                                                             int hideCount = ViewBag.HideCount;
+
+
+                                                            int visibleIndex = 0;
 
                                                             for (int i = 0; i < keys.Count; i++)  // ✅ NO @
                                                             {
@@ -320,7 +387,8 @@
                                                                     }
                                                                     else
                                                                     {
-                                                                        <th>@keys[i]</th>
+                                                                        visibleIndex++;
+                                                                        <th data-vindex="@visibleIndex">@keys[i]</th>
                                                                     }
                                                                 }
                                                             }
@@ -328,7 +396,8 @@
                                                     </tr>
                                                 </thead>
 
-                                                <tbody id="tblEmployee" style="max-height: 250px; overflow-y: auto;">
+                                                @*<tbody id="tblEmployee" style="max-height: 250px; overflow-y: auto;">*@
+                                                <tbody id="tblEmployee">
                                                     @if (ViewBag.AttendanceSummary != null && ViewBag.AttendanceSummary.Count > 0)
                                                     {
                                                         foreach (var row in ViewBag.AttendanceSummary)
@@ -339,6 +408,9 @@
 
                                                             <tr>
                                                                 @{
+
+                                                                    int visibleIndex = 0; // count visible columns only
+
                                                                     for (int i = 0; i < keys.Count; i++)
                                                                     {
                                                                         if (keys[i] != "Hide")
@@ -349,7 +421,11 @@
                                                                             }
                                                                             else
                                                                             {
-                                                                                <td data-col="@keys[i]">@rowDict[keys[i]]</td>
+                                                                                visibleIndex++; // only visible columns increment
+
+                                                                                <td data-col="@keys[i]" data-vindex="@visibleIndex">
+                                                                                    @rowDict[keys[i]]
+                                                                                </td>
                                                                             }
                                                                         }
                                                                     }
@@ -694,6 +770,7 @@
         $("#formMonthlyAttendance").submit();
     })
 </script>
+
 <script>
     $(document).ready(function () {
 
@@ -714,3 +791,99 @@
         });
     });
 </script>
+
+<script>
+    function downloadExcelFile() {
+        debugger
+        $("#errCmpId, #errBranchId, #errInvoiceMonth").text("");
+
+        var isValid = true;
+
+        // Get Values
+        var CmpId = $("#ddlCmpId").val();
+        var BranchId = $("#ddlBranchId").val();
+        var ContractorId = $("#ddlContractorId").val();
+        var InvoiceMonth = $("#txtInvoiceMonth").val();
+
+        // Validations
+        if (CmpId === "" || CmpId === null) {
+            $("#errCmpId").text("Please select company");
+            isValid = false;
+        }
+
+        if (BranchId === "" || BranchId === null || BranchId === "0") {
+            $("#errBranchId").text("Please select business unit");
+            isValid = false;
+        }
+
+
+        if (InvoiceMonth === "" || InvoiceMonth === null) {
+            $("#errInvoiceMonth").text("Please select  month Year");
+            isValid = false;
+        }
+
+
+
+    $(".Userloaderbg").css("display", "flex");
+
+    var url = `@Url.Action("DownloadSummaryExcelFile", "Module_Employee_ContractorAttendanceSummary")?BranchId=${BranchId}&ContractorId=${ContractorId}&CmpId=${CmpId}&InvoiceMonth=${InvoiceMonth}`;
+
+    $.ajax({
+        url: url,
+        method: 'GET',
+        xhrFields: { responseType: 'blob' },
+        success: function (data, status, xhr) {
+
+            $(".Userloaderbg").css("display", "none");
+
+            // Check file name
+            var disposition = xhr.getResponseHeader("Content-Disposition");
+            if (disposition && disposition.indexOf("FileNotFound.txt") !== -1) {
+                Swal.fire({ icon: 'error', text: 'Record Not Found' });
+                return;
+            }
+
+            // Download normally
+            var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            var downloadUrl = URL.createObjectURL(blob);
+
+            var a = document.createElement('a');
+            a.href = downloadUrl;
+            a.download = 'AttendanceSummary.xlsx';
+            a.click();
+
+            URL.revokeObjectURL(downloadUrl);
+        },
+        error: function (xhr, status, error) {
+            console.error('Error downloading file:', error);
+            $(".Userloaderbg").css("display", "none");
+        }
+    });
+}
+</script>
+
+<script>
+    // LEFT CLICK highlight only
+    $('.TabledataBulkClass tbody').on('click', 'tr', function (e) {
+        if (e.which === 1) { // Left click
+            $('.TabledataBulkClass tbody tr').removeClass('selected');
+            $(this).addClass('selected');
+        }
+    });
+
+    // Block RIGHT & MIDDLE CLICK from selecting
+    $('.TabledataBulkClass tbody').on('mousedown', 'tr', function (e) {
+        if (e.which === 2 || e.which === 3) { // Middle or Right click
+            e.stopImmediatePropagation();
+            e.preventDefault();
+            return false;
+        }
+    });
+</script>
+
+
+
+
+
+
+

@@ -489,5 +489,201 @@ namespace KompassHR.Areas.Module.Controllers.Module_Employee
             }
         }
         #endregion
+
+
+
+        #region DownloadSummaryExcelFile
+        public ActionResult DownloadSummaryExcelFile(int? CmpId, int? BranchId, int? ContractorId, DateTime InvoiceMonth)
+        {
+            try
+            {
+                if (Session["EmployeeId"] == null)
+                {
+                    return RedirectToAction("Login", "Login", new { Area = "" });
+                }
+
+                var workbook = new XLWorkbook();
+                var worksheet = workbook.Worksheets.Add("AttendanceSummary");
+
+                // -------------------------
+                // ✅ FETCH COMPANY NAME
+                // -------------------------
+                DynamicParameters paramComp = new DynamicParameters();
+                paramComp.Add("@Query", "SELECT CompanyName FROM Mas_CompanyProfile WHERE CompanyId = '" + CmpId + "'");
+                var compResult = DapperORM.ExecuteSP<dynamic>("Sp_QueryExcution", paramComp).FirstOrDefault();
+                string companyName = compResult?.CompanyName ?? "";
+
+                // -------------------------
+                // ✅ FETCH BRANCH NAME
+                // -------------------------
+                DynamicParameters paramBranch = new DynamicParameters();
+                paramBranch.Add("@Query", "SELECT BranchName FROM Mas_Branch WHERE BranchId = '" + BranchId + "'");
+                var branchResult = DapperORM.ExecuteSP<dynamic>("Sp_QueryExcution", paramBranch).FirstOrDefault();
+                string branchName = branchResult?.BranchName ?? "";
+
+                // -------------------------
+                // ✅ GET DATA
+                // -------------------------
+                DynamicParameters paramList = new DynamicParameters();
+                paramList.Add("@p_ContractorId", ContractorId);
+                paramList.Add("@p_MonthYear", InvoiceMonth);
+                paramList.Add("@p_CmpId", CmpId);
+                paramList.Add("@p_BranchId", BranchId);
+
+                var GetData = DapperORM.ExecuteSP<dynamic>("SP_Invoice_Conctrator_Attendance_Show", paramList).ToList();
+
+                if (GetData.Count == 0)
+                {
+                    byte[] emptyFileContents = new byte[0];
+                    return File(emptyFileContents, "application/octet-stream", "FileNotFound.txt");
+                }
+
+                DapperORM dprObj = new DapperORM();
+                DataTable dt = dprObj.ConvertToDataTable(GetData);
+
+                int totalColumns = dt.Columns.Count;
+
+                // -------------------------
+                // ✅ HEADER ROW 1
+                // -------------------------
+                worksheet.Cell(1, 1).Value = companyName + " - " + branchName;
+                worksheet.Range(1, 1, 1, totalColumns).Merge();
+                worksheet.Cell(1, 1).Style.Font.Bold = true;
+                worksheet.Cell(1, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+
+                // -------------------------
+                // ✅ HEADER ROW 2
+                // -------------------------
+                worksheet.Cell(2, 1).Value = "Attendance Summary - (" + InvoiceMonth.ToString("MMM/yyyy") + ")";
+                worksheet.Range(2, 1, 2, totalColumns).Merge();
+                worksheet.Cell(2, 1).Style.Font.Bold = true;
+                worksheet.Cell(2, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+
+                // -------------------------
+                // ❄ FREEZE FIRST 2 ROWS
+                // -------------------------
+                worksheet.SheetView.FreezeRows(2);
+
+                // -------------------------
+                // ✅ INSERT TABLE FROM ROW 3
+                // -------------------------
+                worksheet.Cell(3, 1).InsertTable(dt, false);
+                worksheet.Columns(1, 18).Hide();
+                // -------------------------
+                // HEADER (ROW 3)
+                // -------------------------
+                var headerRange = worksheet.Range(3, 1, 3, totalColumns);
+                headerRange.Style.Fill.BackgroundColor = XLColor.FromArgb(205, 222, 172);
+                headerRange.Style.Font.Bold = true;
+                headerRange.Style.Font.FontColor = XLColor.Black;
+                headerRange.Style.Font.FontSize = 10;
+
+                // -------------------------
+                // Apply standard formatting
+                // -------------------------
+                var usedRange = worksheet.RangeUsed();
+                usedRange.Style.Font.FontSize = 10;
+                usedRange.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                usedRange.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+
+                worksheet.Columns().AdjustToContents();
+
+                using (var stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    stream.Position = 0;
+                    return File(stream.ToArray(),
+                                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                "Report.xlsx");
+                }
+            }
+            catch (Exception ex)
+            {
+                Session["GetErrorMessage"] = ex.Message;
+                return RedirectToAction("ErrorPage", "Login");
+            }
+        }
+        #endregion
+
+        //#region DownloadSummaryExcelFile
+        //public ActionResult DownloadSummaryExcelFile(int? CmpId, int? BranchId, int? ContractorId, DateTime InvoiceMonth)
+        //{
+        //    try
+        //    {
+        //        if (Session["EmployeeId"] == null)
+        //        {
+        //            return RedirectToAction("Login", "Login", new { Area = "" });
+        //        }
+        //        var workbook = new XLWorkbook();
+        //        var worksheet = workbook.Worksheets.Add("AttendanceSummary");
+
+        //        worksheet.Range(1, 1, 1, 10).Merge();
+        //        worksheet.SheetView.FreezeRows(2);
+        //        DataTable dt = new DataTable();
+        //        List<dynamic> data = new List<dynamic>();
+
+        //        DynamicParameters paramList = new DynamicParameters();
+        //        paramList.Add("@p_ContractorId", ContractorId);
+        //        paramList.Add("@p_MonthYear", InvoiceMonth);
+        //        paramList.Add("@p_CmpId", CmpId);
+        //        paramList.Add("@p_BranchId", BranchId);
+        //        var GetData = DapperORM.ExecuteSP<dynamic>("SP_Invoice_Conctrator_Attendance_Show", paramList).ToList();
+        //        if (GetData.Count == 0)
+        //        {
+        //            byte[] emptyFileContents = new byte[0];
+        //            return File(emptyFileContents, "application/octet-stream", "FileNotFound.txt");
+        //        }
+        //        DapperORM dprObj = new DapperORM();
+        //        dt = dprObj.ConvertToDataTable(GetData);
+        //        worksheet.Cell(2, 1).InsertTable(dt, false);
+
+        //        worksheet.Columns(1, 18).Hide();
+
+        //        int totalRows = worksheet.RowsUsed().Count();
+
+        //        var lastRow = worksheet.Row(totalRows + 1);
+        //        lastRow.Style.Font.Bold = false;
+
+        //        lastRow.Style.Font.FontColor = XLColor.Black;
+        //        lastRow.Style.Font.FontSize = 10;
+        //        var usedRange = worksheet.RangeUsed();
+        //        usedRange.Style.Fill.BackgroundColor = XLColor.White;
+        //        usedRange.Style.Border.TopBorder = XLBorderStyleValues.Thin;
+        //        usedRange.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+        //        usedRange.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+        //        usedRange.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+        //        usedRange.Style.Font.FontSize = 10;
+        //        usedRange.Style.Font.FontColor = XLColor.Black;
+        //        worksheet.Cell(1, 1).Value = "Attendance Summary";
+
+        //        //worksheet.Cell(1, 1).Value = "Late Mark AdjustmentReport Report - (" + Month.ToString("dd/MMM/yyyy") + ")";
+        //        worksheet.Cell(1, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+        //        worksheet.Cell(1, 1).Style.Font.Bold = true;
+        //        worksheet.Columns().AdjustToContents();
+        //        var headerRange = worksheet.Range(2, 1, 2, dt.Columns.Count);
+        //        headerRange.Style.Fill.BackgroundColor = XLColor.FromArgb(205, 222, 172);
+        //        headerRange.Style.Font.FontSize = 10;
+        //        headerRange.Style.Font.FontColor = XLColor.FromArgb(1, 0, 0);
+        //        headerRange.Style.Font.Bold = true;
+
+        //        using (var stream = new MemoryStream())
+        //        {
+        //            workbook.SaveAs(stream);
+        //            stream.Position = 0;
+
+        //            return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Report.xlsx");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Session["GetErrorMessage"] = ex.Message;
+        //        return RedirectToAction("ErrorPage", "Login");
+        //    }
+        //}
+        //#endregion
+
+
+
+
     }
 }

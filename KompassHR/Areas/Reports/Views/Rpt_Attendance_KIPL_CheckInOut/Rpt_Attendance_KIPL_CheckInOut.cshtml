@@ -1,7 +1,7 @@
-﻿@model KompassHR.Areas.Reports.Models.Contractor_InvoiceReport
+﻿@model KompassHR.Areas.Reports.Models.KIPLCheckInOut
 
 @{
-    ViewBag.Title = "Report_Contractor_InvoiceReport";
+    ViewBag.Title = "Rpt_Attendance_KIPL_CheckInOut";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -26,15 +26,6 @@
         box-shadow: inset 0 0 0 9999px #D0D3D4 !important;
         color: white;
     }
-
-    /*.table{
-           --bs-table-active-bg: #9bc2ce !important;
-       }*/
-    /*tr:nth-child(even) {
-             --bs-table-accent-bg: #D0D3D4   !important;
-             }*/
-
-    /*select Row CSS End*/
 
 
     .dataTables_scrollBody::-webkit-scrollbar-track {
@@ -105,10 +96,6 @@
         padding: 5px 8px !important;
         border: 1px solid lightgray !important;
     }
-
-    /*.trheading {
-        background-color: rgba(233, 236, 239, 0.5) !important;
-    }*/
 
     tr td {
         padding: 4px !important;
@@ -187,7 +174,6 @@
 
     .table-scroll th {
         background-color: rgba(233, 236, 239, 1) !important;
-        
     }
 </style>
 
@@ -195,7 +181,7 @@
     <div class="row" style="margin-bottom: 10px;">
         <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
             <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
-                Contractor Invoice Report
+               KIPL Check In Out Report
             </h1>
             <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
                 <li style="margin-right: 10px;">
@@ -204,7 +190,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="@Url.Action("Report_Contractor_ReportMenu", "Report_Contractor_ReportMenu", new {id =27, ScreenId=932, area = "Reports" })">
+                    <a href="@Url.Action("Report_Attendance_RptMenu", "Report_Attendance_RptMenu", new {id =5, ScreenId=237, area = "Reports" })">
                         <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
                     </a>
                 </li>
@@ -217,7 +203,7 @@
             <div class="col-lg-12 col-md-12">
                 <div class="panel panel-inverse" data-sortable-id="index-1">
                     <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
-                        <h4 class="panel-title">Contractor Invoice Report</h4>
+                        <h4 class="panel-title">KIPL Check In Out Report</h4>
                         <div class="panel-heading-btn">
                             <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
                             <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
@@ -227,13 +213,13 @@
                     </div>
                     <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
                         <p class="pb-0">
-                            Contractor Invoice Report....
+                           KIPL Check In Out Report....
                         </p>
                     </div>
                     <div class="panel-body" style="max-height: fit-content;">
                         <div class="row justify-content-center">
                             <div class="row justify-content-center">
-                                <form role="form" action="/Reports/Report_Contractor_InvoiceReport/Report_Contractor_InvoiceReport" id="ShowAttendanceSummary" method="post">
+                                <form role="form" action="/Reports/Rpt_Attendance_KIPL_CheckInOut/Rpt_Attendance_KIPL_CheckInOut" id="ShowAttendanceReport" method="post">
 
                                     <div class="row">
                                         <div class="col-md-6">
@@ -269,34 +255,49 @@
                                         <div class="col-md-6">
                                             <div class="row mb-15px">
                                                 <label class="form-label col-form-label col-md-4">
-                                                    Contractor
+                                                    Employee Name
                                                     <span class="important">*</span>
                                                 </label>
                                                 <div class="col-md-8">
-                                                    @Html.DropDownListFor(model => model.ContractorId, new SelectList(ViewBag.ContractorName, "Id", "Name"), "All", new { @class = "form-select", type = "text", name = "ContractorId", id = "ddlContractorId" })
-                                                    <span id="errContractorId" class="text-danger"></span>
+                                                    @Html.DropDownListFor(model => model.EmployeeId, new SelectList(ViewBag.EmployeeName, "Id", "Name"), "All", new { @class = "form-select", type = "text", name = "EmployeeId", id = "ddlEmployeeId" })
+                                                    <span id="errEmployeeId" class="text-danger"></span>
 
                                                 </div>
                                             </div>
+                                        </div>
                                         </div>
 
 
                                         @*<div class="col-md-6">*@
+                                    <div class="row">
                                         <div class="col-md-6">
                                             <div class="row mb-15px">
                                                 <label class="form-label col-form-label col-md-4">
-                                                    Invoice Month
+                                                    From Date
                                                     <span class="important">*</span>
                                                 </label>
                                                 <div class="col-md-8">
-                                                    @Html.TextBoxFor(model => model.InvoiceMonth, new { @class = "form-select", type = "Month", name = "InvoiceMonth", id = "txtInvoiceMonth" })
-                                                    <span id="errInvoiceMonth" class="text-danger"></span>
+                                                    @Html.TextBoxFor(model => model.FromDate, new { @class = "form-select", type = "Date", name = "FromDate", id = "txtFromDate" })
+                                                    <span id="errFromDate" class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    To Date
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.ToDate, new { @class = "form-select", type = "Date", name = "ToDate", id = "txtToDate" })
+                                                    <span id="errToDate" class="text-danger"></span>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-
-
 
                                     <div class="row">
                                         <div class="LastShortLeaveBx">
@@ -332,22 +333,7 @@
 
         $("#ddlBranchId").select2();
         $("#ddlCmpId").select2();
-        $("#ddlContractorId").select2();
-
-
-        
-
-        
-        var today = new Date();
-        var yyyy = today.getFullYear();
-        var mm = String(today.getMonth() + 1).padStart(2, '0'); 
-
-        var defaultMonthYear = yyyy + '-' + mm;
-
-        if (!$('#txtInvoiceMonth').val()) {
-            $('#txtInvoiceMonth').val(defaultMonthYear);
-        }
-
+        $("#ddlEmployeeId").select2();
 
         var Message = @Html.Raw(Json.Encode(TempData["Message"]));
         var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
@@ -382,7 +368,7 @@
                 type: 'GET',
                 dataType: 'JSON',
                 contentType: "application/json; charset=utf-8",
-                url: '@Url.Action("GetBusinessUnit", "Report_Contractor_InvoiceReport")',
+                url: '@Url.Action("GetBusinessUnit", "Rpt_Attendance_KIPL_CheckInOut")',
                 data: { CmpId: CmpId },
                 success: function (data) {
                     debugger;
@@ -398,9 +384,9 @@
 
 
 
-        @*$("#ddlBranchId").on("change", function () {
+        $("#ddlBranchId").on("change", function () {
             debugger;
-            $("#ddlContractorId").find("option").remove();
+            $("#ddlEmployeeId").find("option").remove();
 
             var BranchId = $("#ddlBranchId").val();
 
@@ -410,22 +396,22 @@
                 type: 'GET',
                 dataType: 'JSON',
                 contentType: "application/json; charset=utf-8",
-                url: '@Url.Action("GetContractorName", "Module_Employee_ContractorInvoice")',
+                url: '@Url.Action("GetEmployeeName", "Rpt_Attendance_KIPL_CheckInOut")',
                 data: { CmpId: CmpId,BranchId:BranchId },
                 success: function (data) {
                     debugger;
                     if (data != null) {
-                        $("#ddlContractorId").append("<option value='0'>All </option>");
+                        $("#ddlEmployeeId").append("<option value='0'>All </option>");
                         $.each(data, function (i, p) {
-                            $("#ddlContractorId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            $("#ddlEmployeeId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
                         });
                     }
                 }
             })
-        });*@
+        });
 
 
-        $("#ddlBranchId").on("change", function () {
+        @*$("#ddlBranchId").on("change", function () {
             debugger;
             $("#ddlContractorId").find("option").remove();
             var BranchId = $("#ddlBranchId").val();
@@ -433,7 +419,7 @@
 
             $.ajax({
                 type: 'GET',
-                url: '@Url.Action("GetContractorName", "Report_Contractor_InvoiceReport")',
+                url: '@Url.Action("GetEmployeeName", "Rpt_Attendance_MusterAttendance_ActualAttendance")',
                 data: { BranchId: BranchId,CmpId:CmpId},
                 success: function (data) {
                     var $ContractorDropdown = $("#ddlContractorId");
@@ -455,7 +441,7 @@
                     $("#ddlContractorId").empty().append("<option>Error loading modules</option>");
                 }
             });
-        });
+        });*@
 
 
     });
@@ -464,16 +450,17 @@
 
 <script>
     function downloadExcelFile() {
-
-        $("#errCmpId, #errBranchId, #errContractorId, #errInvoiceMonth").text("");
+    debugger
+        $("#errCmpId, #errBranchId, #errEmployeeId, #errFromDate , #errToDate").text("");
 
         var isValid = true;
 
         // Get Values
         var CmpId = $("#ddlCmpId").val();
         var BranchId = $("#ddlBranchId").val();
-        var ContractorId = $("#ddlContractorId").val();
-        var InvoiceMonth = $("#txtInvoiceMonth").val();
+        var EmployeeId = $("#ddlEmployeeId").val();
+        var FromDate = $("#txtFromDate").val();
+        var ToDate = $("#txtToDate").val();
 
         // Validations
         if (CmpId === "" || CmpId === null) {
@@ -486,19 +473,56 @@
             isValid = false;
         }
 
-        //if (ContractorId === "" || ContractorId === null) {
-        //    $("#errContractorId").text("Please select contractor");
+        //if (EmployeeId === "" || EmployeeId === null) {
+        //    $("#errEmployeeId").text("Please select Employee");
         //    isValid = false;
         //}
 
-        if (InvoiceMonth === "" || InvoiceMonth === null) {
-            $("#errInvoiceMonth").text("Please select invoice month");
+        if (FromDate === "" || FromDate === null) {
+            $("#errFromDate").text("Please select  From Date");
             isValid = false;
         }
 
-      
+        if (ToDate === "" || ToDate === null) {
+            $("#errToDate").text("Please select  To Date");
+            isValid = false;
+        }
 
-    $(".Userloaderbg").css("display", "flex");
+        function parseDate(input) {
+            var parts = input.split("-"); 
+            return new Date(parts[0], parts[1] - 1, parts[2]); 
+        }
+
+        var today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        var from = parseDate(FromDate);
+        var to = parseDate(ToDate);
+
+        // From Date > Today
+        if (from > today) {
+            $("#errFromDate").text("From Date cannot be greater than today");
+            isValid = false;
+        }
+
+        // To Date > Today
+        if (to > today) {
+            $("#errToDate").text("To Date cannot be greater than today");
+            isValid = false;
+        }
+
+        // From > To
+        if (from > to) {
+            $("#errToDate").text("To Date cannot be earlier than From Date");
+            isValid = false;
+        }
+
+        if (!isValid) {
+            $(".Userloaderbg").css("display", "none");
+            return;
+        }
+
+  //  $(".Userloaderbg").css("display", "flex");
 
     //var CmpId = encodeURIComponent($("#ddlCmpId").val());
     //var BranchId = encodeURIComponent($("#ddlBranchId").val());
@@ -507,7 +531,7 @@
 
 
 
-    var url = `@Url.Action("DownloadExcelFile", "Report_Contractor_InvoiceReport")?BranchId=${BranchId}&ContractorId=${ContractorId}&CmpId=${CmpId}&InvoiceMonth=${InvoiceMonth}`;
+    var url = `@Url.Action("DownloadExcelFile", "Rpt_Attendance_KIPL_CheckInOut")?BranchId=${BranchId}&EmployeeId=${EmployeeId}&CmpId=${CmpId}&FromDate=${FromDate}&ToDate=${ToDate}`;
 
     $.ajax({
         url: url,
@@ -530,7 +554,7 @@
 
             var a = document.createElement('a');
             a.href = downloadUrl;
-            a.download = 'ContractorInvoiceReport.xlsx';
+            a.download = 'KIPLCheckInOutReport.xlsx';
             a.click();
 
             URL.revokeObjectURL(downloadUrl);

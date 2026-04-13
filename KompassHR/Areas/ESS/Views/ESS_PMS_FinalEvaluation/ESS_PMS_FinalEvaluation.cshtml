@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "Final Evaluation";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    int totalCols = ViewBag.IsStandardRequired ? 11 : 9;
 }
 
 <style>
@@ -140,7 +141,7 @@
     @Html.HiddenFor(m => m.YearId, new { id = "YearId",Value= @ViewBag.YearId })
     @Html.HiddenFor(m => m.EmployeeId, new { id = "EmployeeId", Value = @ViewBag.EmployeeId })
     @Html.HiddenFor(m => m.ReviewerId, new { id = "ReviewerId", Value = ViewBag.reviewerId })
-    @Html.HiddenFor(m => m.OutOfRating, new { id = "ReviewerId", Value = ViewBag.OutOfRating })
+    @Html.HiddenFor(m => m.OutOfRating, new { id = "OutOfRating", Value = ViewBag.OutOfRating })
     @Html.HiddenFor(m => m.KRAFinalRating, new { id = "KRAFinalRating" })
     @Html.HiddenFor(m => m.CompetencyFinalRating, new { id = "CompetencyFinalRating" })
     @Html.HiddenFor(m => m.TotalFinalRating, new { id = "TotalFinalRating" })
@@ -208,10 +209,16 @@
                     <th>KRA</th>
                     <th>UOM</th>
                     <th>Target Type</th>
+@if (ViewBag.IsStandardRequired)
+{
                     <th>Standard</th>
+}
                     <th>Target</th>
                     <th>Actual</th>
+@if (ViewBag.IsStandardRequired)
+{
                     <th>50% Between</th>
+}
                     <th>Rating</th>
                     <th>Weightage</th>
                     <th>Score</th>
@@ -225,25 +232,32 @@
                         <td class="left">@d.KRA</td>
                         <td>@d.UOM</td>
                         <td>@d.TargetType</td>
+@if (ViewBag.IsStandardRequired)
+{
                         <td class="standard" data-standard="@d.StandardValue">
                             @d.StandardValue
-                        </td>                        <td class="target" data-target="@d.EffectiveTarget">@d.EffectiveTarget</td>
+                        </td>   
+}
+                          <td class="target" data-target="@d.EffectiveTarget">@d.EffectiveTarget</td>
                         <td class="actual" data-actual="@d.ActualValue">@d.ActualValue</td>
+@if (ViewBag.IsStandardRequired)
+{
                         <td class="mid">@d.MidValue</td>
-                        <td class="rating">0</td>
+}
+                        <td class="rating">@d.Rating</td>
                         <td class="weightage" data-weightage="@d.Weightage">@d.Weightage</td>
-                        <td class="total">0</td>
+                        <td class="total">@d.Score</td>
                     </tr>
                 }
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="9" class="label">Total</td>
+                    <td colspan="@(totalCols - 2)" class="label">Total</td>
                     <td id="totalWeightage" class="weightage">0</td>
                     <td id="totalScore" class="total">0</td>
                 </tr>
                 <tr>
-                    <td colspan="10" class="label">Average Rating</td>
+                    <td colspan="@(totalCols - 1)" class="label">Average Rating</td>
                     <td id="avgRating" class="final">0</td>
                 </tr>
             </tfoot>
@@ -363,82 +377,63 @@
          document.getElementById("finalCompetencyScore").innerText = finalScore;
          document.getElementById("finalScoreText").innerText = finalScore;
      }
-
      document.addEventListener("DOMContentLoaded", calculateCompetencyScore);
 
-     function getExcelRating(standard, target, actual) {
+     //function getExcelRating(standard, target, actual) {
 
-         const mid = standard + ((target - standard) / 2);
-         let rating = 0;
+     //    const mid = standard + ((target - standard) / 2);
+     //    let rating = 0;
 
-         // Case 1: Standard < Target (normal case)
-         if (standard < target) {
+     //    // Case 1: Standard < Target (normal case)
+     //    if (standard < target) {
 
-             if (actual < standard) {
-                 rating = 1;
-             }
-             else if (actual >= standard && actual < mid) {
-                 rating = 2;
-             }
-             else if (actual >= mid && actual < target) {
-                 rating = 3;
-             }
-             else {
-                 rating = 4;
-             }
+     //        if (actual < standard) {
+     //            rating = 1;
+     //        }
+     //        else if (actual >= standard && actual < mid) {
+     //            rating = 2;
+     //        }
+     //        else if (actual >= mid && actual < target) {
+     //            rating = 3;
+     //        }
+     //        else {
+     //            rating = 4;
+     //        }
 
-         }
-             // Case 2: Standard > Target (reverse scale)
-         else {
+     //    }
+     //        // Case 2: Standard > Target (reverse scale)
+     //    else {
 
-             if (actual > standard) {
-                 rating = 1;
-             }
-             else if (actual <= standard && actual > mid) {
-                 rating = 2;
-             }
-             else if (actual <= mid && actual > target) {
-                 rating = 3;
-             }
-             else {
-                 rating = 4;
-             }
-         }
+     //        if (actual > standard) {
+     //            rating = 1;
+     //        }
+     //        else if (actual <= standard && actual > mid) {
+     //            rating = 2;
+     //        }
+     //        else if (actual <= mid && actual > target) {
+     //            rating = 3;
+     //        }
+     //        else {
+     //            rating = 4;
+     //        }
+     //    }
 
-         return { rating, mid };
-     }
+     //    return { rating, mid };
+     //}
 
      function calculateAll() {
 
-         var totalWeightage = 0;
-         var totalScore = 0;
+         let totalWeightage = 0;
+         let totalScore = 0;
 
          document.querySelectorAll(".kra-row").forEach(function (row) {
 
-             var standard = parseFloat(
-                 row.querySelector(".standard").dataset.standard
-             ) || 0;
+             let rating = parseFloat(row.querySelector(".rating").innerText) || 0;
+             let weightage = parseFloat(row.querySelector(".weightage").dataset.weightage) || 0;
 
-             var target = parseFloat(
-                 row.querySelector(".target").dataset.target
-             ) || 0;
+             let score = rating * weightage;
 
-             var actual = parseFloat(
-                 row.querySelector(".actual").dataset.actual
-             ) || 0;
-
-             var weightage = parseFloat(
-                 row.querySelector(".weightage").dataset.weightage
-             ) || 0;
-
-             var result = getExcelRating(standard, target, actual);
-
-             var rating = result.rating;
-             var mid = result.mid;
-             var score = rating * weightage;
-
-             row.querySelector(".mid").innerText = mid.toFixed(2);
-             row.querySelector(".rating").innerText = rating;
+             // ✅ Only update score (rating comes from DB)
              row.querySelector(".total").innerText = score.toFixed(2);
 
              totalWeightage += weightage;
@@ -448,15 +443,13 @@
          document.getElementById("totalWeightage").innerText = totalWeightage.toFixed(2);
          document.getElementById("totalScore").innerText = totalScore.toFixed(2);
 
-         var avg =
-             totalWeightage > 0
-                 ? (totalScore / totalWeightage).toFixed(2)
-                 : "0.00";
+         let avg = totalWeightage > 0
+             ? (totalScore / totalWeightage).toFixed(2)
+             : "0.00";
 
          document.getElementById("avgRating").innerText = avg;
          document.getElementById("FinalRatingScore").innerText = avg;
      }
-
      document.addEventListener("DOMContentLoaded", function () {
          calculateAll();
      });

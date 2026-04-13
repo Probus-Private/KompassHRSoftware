@@ -370,20 +370,21 @@
                                     <div class="col-md-8">
                                         @*@Html.TextBoxFor(model => model.Target, new { id = "txtTarget", @class = "form-control", placeholder = "Enter target value" })*@
                                      
-                                        @Html.TextBoxFor(model => model.Target, new
-                                   {
-                                       id = "txtTarget",
-                                       @class = "form-control",
-                                       placeholder = "Enter target value",
-                                       onkeypress = "return isNumberDecimal(event)",
-                                       oninput = "validatePositiveNumber(this)"
-                                   })   
+                                       @Html.TextBoxFor(model => model.Target, new
+                                  {
+                                      id = "txtTarget",
+                                      @class = "form-control",
+                                      placeholder = "Enter target value",
+                                      onkeypress = "return isNumberDecimal(event)",
+                                      oninput = "validatePositiveNumber(this)",
+                                      onpaste = "setTimeout(() => validatePositiveNumber(this), 0)"
+                                  })
                                            <span id="teamtarget"></span>
 
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            @*<div class="col-md-6">
                                 <div class="row align-items-center">
                                     <label class="form-label col-form-label col-md-4" for="Visibility">
                                         Visibility <span class="important">*</span>
@@ -393,6 +394,19 @@
                                             new SelectListItem {Text ="Private", Value="Private"},
                                             new SelectListItem {Text ="Public", Value="Public"}
                                         }, "--Select--", new { @class = "form-select", name = "Visibility", @id = "txtVisibility" })
+                                    </div>
+                                </div>
+                            </div>*@
+                            <div class="col-md-6">
+                                <div class="row align-items-center">
+                                    <label class="form-label col-form-label col-md-4" for="Visibility">
+                                        Target Direction <span class="important">*</span>
+                                    </label>
+                                    <div class="col-md-8">
+                                        @Html.DropDownList("TargetDirection", new List<SelectListItem>{
+                                            new SelectListItem {Text ="Higher is better", Value="Higher is better"},
+                                            new SelectListItem {Text ="Lower is better", Value="Lower is better"}
+                                        }, "--Select--", new { @class = "form-select", name = "TargetDirection", @id = "txtTargetDirection" })
                                     </div>
                                 </div>
                             </div>
@@ -984,6 +998,9 @@
             Target: {
                 required: true
             },
+            TargetDirection:{
+                required: true
+            },
             Visibility: {
                 required: true
             },
@@ -1034,6 +1051,9 @@
             },
             Target: {
                 required: "Please enter target value"
+            },
+            TargetDirection:{
+                required: "Please select Target Direction"
             },
             Visibility: {
                 required: "Please select Visibility"
@@ -1170,7 +1190,7 @@
             }
         });
     }
-</script>label.error
+</script>
 
 <script>
     function isNumberDecimal(evt) {
@@ -1183,8 +1203,20 @@
     }
 
     function validatePositiveNumber(input) {
-        if (input.value < 0) {
-            input.value = input.value.replace('-', '');
+        let value = input.value;
+
+        // Remove anything except digits and dot
+        value = value.replace(/[^0-9.]/g, '');
+
+        // Allow only one decimal point
+        let parts = value.split('.');
+        if (parts.length > 2) {
+            value = parts[0] + '.' + parts[1];
         }
+
+        // Remove negative sign if pasted
+        value = value.replace('-', '');
+
+        input.value = value;
     }
 </script>

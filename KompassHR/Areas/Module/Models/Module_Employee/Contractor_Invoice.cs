@@ -8,7 +8,14 @@ namespace KompassHR.Areas.Module.Models.Module_Employee
 
     public class Contractor_Invoice
         {
-            public int? CmpId { get; set; }
+
+        public Contractor_Invoice()
+        {
+            ContractorInvoice = new List<EmployeeInvoiceData>();
+        }
+
+
+        public int? CmpId { get; set; }
             public int? BranchId { get; set; }
             public int? ContractorId { get; set; }
             public DateTime InvoiceMonth { get; set; }
@@ -61,7 +68,7 @@ namespace KompassHR.Areas.Module.Models.Module_Employee
         public Decimal Total_OtherRate1Amount { get; set; }
         public Decimal Total_OtherRate2Amount { get; set; }
         public Decimal TotalAmount { get; set; }
-        public double ServiceCharges { get; set; }
+        public string ServiceCharges { get; set; }
         public Decimal Rate { get; set; }
         public Decimal Percentage { get; set; }
         public bool IsGross { get; set; }

@@ -33,9 +33,15 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_PMS
                     Session["AccessCheck"] = "False";
                     return RedirectToAction("Dashboard", "Dashboard", new { area = "" });
                 }
-                var yearQuery = "SELECT Fid FROM PMS_Year WHERE IsActive = 1";
+                var yearQuery = "SELECT Fid, IsStandardValueRequired FROM PMS_Year WHERE IsActive = 1";
                 var yearObj = DapperORM.DynamicQuerySingle(yearQuery);
                 int yearId = Convert.ToInt32(yearObj.Fid);
+
+
+                bool isStandardRequired = Convert.ToBoolean(yearObj.IsStandardValueRequired);
+
+                ViewBag.IsStandardRequired = isStandardRequired;
+
                 var param1 = new DynamicParameters();
                 param1.Add("@p_EmployeeId", EmployeeId);
                 param1.Add("@p_PMSYearId", yearId);
