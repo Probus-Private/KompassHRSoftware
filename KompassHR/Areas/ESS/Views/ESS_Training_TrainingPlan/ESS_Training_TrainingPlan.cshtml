@@ -1,0 +1,992 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_Training.Training_TrainingPlan
+@{
+    ViewBag.Title = "ESS_Training_TrainingPlan";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Required library for validation -->
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+<script src="~/assets/js/CaptchaVerification.js"></script>
+<script src="~/assets/plugins/datatables.net/js/jquery.dataTables.min.js"></script>
+<script src="~/assets/plugins/datatables.net/js/jquery.dataTables.js"></script>
+<style>
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        /*overflow: auto;*/
+    }
+
+    .dataTables_scrollBody::-webkit-scrollbar {
+        width: 10px !important;
+        background-color: #F5F5F5;
+    }
+    /* Horizontal scrollbar */
+    .dataTables_scrollBody::-webkit-scrollbar {
+        height: 10px;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    .card-row-title {
+        color: #e63c3c;
+        font-size: 18px;
+        font-weight: 600;
+        text-transform: capitalize;
+        border-bottom: #009ce7 1px solid;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Training Plan
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_LMS_Training_Training", "ESS_LMS_Training_Training",  new { id = 38,ScreenId=589, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <!-- END page-header -->
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading">
+                    <h4 class="panel-title">Training Plan - @ViewBag.AddUpdateTitle </h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Training plan created here.
+                    </p>
+                </div>
+
+
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("ESS_Training_TrainingPlan", "ESS_Training_TrainingPlan", new { area = "ESS" })' id="TrainingPlan" method="post">
+
+                                <div class="row mb-10px">
+                                    <div class="col-md-12">
+                                        <div class="card-row-title">
+                                            Training Calendar Information
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Training Calendar
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.TrainingCalenderId, new SelectList(ViewBag.TrainingCalender, "Id", "Name"), "--Select--", new { id = "ddlTrainingCalenderID", name = "TrainingCalenderID", @class = "form-select", autocomplete = "off", onchange = "ShowAssignedEmployeeToCalender();" })
+                                                <span id="ddlTrainingCalenderID-error" class="text-danger" style="display:none;"></span>
+                                                 @Html.HiddenFor(model => model.TrainingPlan_MasterId_Encrypted, new { @class = "form-control", id = "TrainingPlan_MasterId_Encrypted" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Venue/Location/Link
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.Location, new { @class = "form-control", name = "Location", @id = "txtLocation", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label class="form-label col-form-label">Month Year: </label>
+                                        <span id="lblMonthYear" class="form-control-static"></span>
+                                        @Html.HiddenFor(model => model.DepartmentId, new { @class = "form-control", id = "DepartmentId" })
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label col-form-label">Frequency :</label>
+                                        <span id="lblFrequency" class="form-control-static"></span>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label class="form-label col-form-label">Mode of Training :</label>
+                                        <span id="lblModeOfTraining" class="form-control-static"></span>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label col-form-label">Training Category :</label>
+                                        <span id="lblTrainingCategory" class="form-control-static"></span>
+                                        <span id="lblTrainingCategoryId" class="form-control-static" hidden></span>
+
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Who provide the training <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.TrainingProviderSource,
+                                                 new SelectList(new List<SelectListItem>
+                                                 {
+                                                    new SelectListItem { Value = "", Text = "--Select--", Disabled = true, Selected = true },
+                                                    new SelectListItem { Value = "Internal", Text = "Internal" },
+                                                    new SelectListItem { Value = "External", Text = "External" },
+                                                    new SelectListItem { Value = "Agency", Text = "Agency" }
+                                                 }, "Value", "Text"),
+                                                 new { id = "txtTrainingProviderSource", name = "TrainingProviderSource", @class = "form-select", autocomplete = "off", onchange = "OnTrainingProviderSourceChanged()" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Internal Trainer Dropdown -->
+                                    <div class="col-md-6" id="ddltraineremployee" style="display: none;">
+                                        <label class="form-label col-form-label col-md-12">Internal Trainer <span class="important">*</span></label>
+                                        <div class="col-md-12">
+                                            @Html.DropDownListFor(model => model.TrainingProviderId, new SelectList(ViewBag.GetIntenalTraineeEmployee, "Id", "Name"), "--Select--", new { id = "ddlEmployeeID", name = "EmployeeID", @class = "form-select", autocomplete = "off" })
+                                            <span class="text-danger" id="errorInternal"></span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Agency Dropdown -->
+                                    <div class="col-md-6" id="ddlagency" style="display: none;">
+                                        <label class="form-label col-form-label col-md-12">Training Agency <span class="important">*</span></label>
+                                        <div class="col-md-12">
+                                            @Html.DropDownListFor(model => model.TrainingAgencyId, new SelectList(ViewBag.GetAgency, "Id", "Name"), "--Select--", new { id = "ddlTrainingAgencyID", name = "TrainingAgencyID", @class = "form-select", autocomplete = "off" })
+                                            <span class="text-danger" id="errorAgency"></span>
+                                        </div>
+                                    </div>
+
+                                    <!-- External Trainer Dropdown -->
+                                    <div class="col-md-6" id="ddltrainer" style="display: none;">
+                                        <label class="form-label col-form-label col-md-12">External Trainer <span class="important">*</span></label>
+                                        <div class="col-md-12">
+                                            @Html.DropDownListFor(model => model.TrainerId, new SelectList(ViewBag.GetTrainer, "Id", "Name"), "--Select--", new { id = "ddlTrainerID", name = "TrainerID", @class = "form-select", autocomplete = "off" })
+                                            <span class="text-danger" id="errorTrainer"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr class="mt-0">
+                                <div class="row">
+                                    <div class="row mb-10px">
+                                        <div class="col-md-12">
+                                            <div class="card-row-title">
+                                                Training Plan Information
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">Start Date & Time <span class="important">*</span></label>
+                                            <div class="col-md-4">
+                                                @Html.TextBoxFor(model => model.StartDate, new { @class = "form-control", @id = "TrainingStartDate", name = "TrainingStartDate",type = "date" })
+                                             </div>
+                                            <div class="col-md-4">
+                                                @Html.TextBoxFor(model => model.StartTime, new { @name = "StartTime", @class = "form-control", @id = "txtStartTime", type = "time" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">End Date & Time <span class="important">*</span></label>
+                                            <div class="col-md-4">
+                                                @Html.TextBoxFor(model => model.EndDate, new { @class = "form-control", @id = "TrainingEndDate", name = "TrainingEndDate", autocomplete = "off", type = "date"})
+                                                <span id="errorEndDateTime" style="display:none;color:red"></span>
+                                            </div>
+                                            <div class="col-md-4">
+                                                @Html.TextBoxFor(model => model.EndTime, new { @class = "form-control", @id = "txtEndTime", name = "EndTime", autocomplete = "off", type = "time"})
+                                                <span id="errorEndTime"  style="display:none;color:red"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Batch Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.Batch, new { @class = "form-control", name = "Batch", @id = "txtBatch", autocomplete = "Off", @maxlength = 100, @required = "required" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-10px">
+                                            <div class="col-md-8">
+                                                <button type="button" class="btn btn-primary btn-sm" id="btnload" onclick="ShowEmployee();">
+                                                    Show
+                                                </button>
+                                                <a href="javascript:void(0);" onclick="goToTrainingList();" class="btn btn-success btn-sm" id="btnGetUserAccessPolicyList">
+                                                    <i class="fa-solid fa-share-from-square"></i> Batch List
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <hr class="mt-0">
+                                <div class="panel-body">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <!-- BEGIN table-responsive -->
+                                            <div class="table-scroll div1">
+                                                <div class="table-wrap">
+                                                    <table id="tblEmployees" class="table table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="text-center">
+                                                                    <label>
+                                                                        <input type="checkbox" id="AllCheckBox" class="allChecked"> <b>&nbsp;All</b>
+                                                                    </label>
+                                                                </th>
+                                                                <th hidden>EmployeeId</th>
+                                                                <th>Employee Name</th>
+                                                                <th>Designation</th>
+                                                                <th>Department</th>
+                                                                <th>Mobile No</th>
+                                                                <th>Email Id</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody id="tblLoadEmployee">
+                                                            @if (ViewBag.GetCalenderAssignedEmpolyeeList != null)
+                                                            {
+                                                                foreach (var d in ViewBag.GetCalenderAssignedEmpolyeeList)
+                                                                {
+                                                                    <tr>
+                                                                        <td class="text-center">
+                                                                            @{
+                                                                                var check = Convert.ToBoolean(d.IsActive) ? "checked" : "";
+                                                                            }
+                                                                            <input type="checkbox" class="rowCheckbox" id="chkIsActive_@d.EmployeeId" @check />
+                                                                        </td>
+                                                                        <td hidden>@d.EmployeeId</td>
+                                                                        <td>@d.EmployeeName</td>
+                                                                        <td>@d.DesignationName</td>
+                                                                        <td>@d.DepartmentName</td>
+                                                                        <td>@d.PrimaryMobile</td>
+                                                                        <td>@d.PersonalEmailId</td>
+                                                                    </tr>
+                                                                                    }
+                                                                                }
+                                                        </tbody>
+                                                    </table>
+
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <hr />
+                                <div class="row">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="BtnBx">
+                                                <div>
+                                                    <button type="button" id="btnSubmit" class="btn btn-primary btn-sm">
+                                                        Submit
+                                                    </button>
+                                                    <a href="@Url.Action("GetTrainingPlanList", "ESS_Training_TrainingPlan", new { id = 22, ScreenId = 555, area = "ESS" })">
+                                                        <button type="button" id="btnGetList"
+                                                                class="btn btn-danger btn-sm">
+                                                            <i class="fa-solid fa-share-from-square"></i>
+                                                            List
+                                                        </button>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#TrainingStartDate,#TrainingEndDate, #txtEndTime,#txtStartTime').on('change', function () {
+            validateDateTimeRange();
+        });
+
+        $("#ddlTrainingCalenderID").select2();
+        $("#ddlEmployeeID").select2();
+        $("#ddlTrainingfrequencyID").select2();
+        $("#ddlTrainingAgencyID").select2();
+
+        $('.TablePageAccess').DataTable({
+            scrollY: 400,
+            scrollCollapse: true,
+            paging: false,
+            scrollX: true,
+            searching: true, 
+            stripeClasses: [] 
+        });
+    });
+   
+    function goToTrainingList() {
+        var TrainingCalenderId = $('#ddlTrainingCalenderID').val();
+        var errorSpan = $('#ddlTrainingCalenderID-error');
+
+        if (!TrainingCalenderId || TrainingCalenderId === "--Select--") {
+            errorSpan.text("Please select a training calendar.");
+            errorSpan.show();
+            return;
+        } else {
+            errorSpan.text("");
+            errorSpan.hide();
+        }
+
+        var url = '@Url.Action("GetList", "ESS_Training_TrainingPlan", new { area = "ESS" })';
+        url += '?TrainingCalenderId=' + TrainingCalenderId;
+
+        window.location.href = url;
+    }
+
+    function validateDateTimeRange() {
+        const startDate = $('#TrainingStartDate').val();
+        const startTime = $('#txtStartTime').val();
+        const endDate = $('#TrainingEndDate').val();
+        const endTime = $('#txtEndTime').val();
+
+        const errorEndDate = $('#errorEndDateTime');
+        const errorEndTime = $('#errorEndTime');
+
+        // Clear any previous messages
+        errorEndDate.hide().text('');
+        errorEndTime.hide().text('');
+
+        if (!startDate || !endDate) return; 
+
+        const startDateObj = new Date(startDate);
+        const endDateObj = new Date(endDate);
+
+        if (endDateObj < startDateObj) {
+            errorEndDate.text('End date cannot be less than Start date.').show();
+        } else if (endDateObj.getTime() === startDateObj.getTime()) {
+            if (!startTime || !endTime) return;
+
+            const startTimeParts = startTime.split(':');
+            const endTimeParts = endTime.split(':');
+
+            const startTotalMinutes = parseInt(startTimeParts[0]) * 60 + parseInt(startTimeParts[1]);
+            const endTotalMinutes = parseInt(endTimeParts[0]) * 60 + parseInt(endTimeParts[1]);
+
+            if (endTotalMinutes <= startTotalMinutes) {
+                errorEndTime.text('End time cannot be less than Start time.').show();
+            }
+        }
+    }
+   
+</script>
+
+<script>
+    // Select/Deselect all checkboxes
+    $(document).on('change', '#AllCheckBox', function () {
+        var table = $('#tblEmployees').DataTable();
+        var isChecked = $(this).is(':checked');
+
+        table.rows({ search: 'applied' }).nodes().each(function (row) {
+            $(row).find('.rowCheckbox').prop('checked', isChecked);
+        });
+    });
+
+    $(document).on('change', '.rowCheckbox', function () {
+        const all = $('.rowCheckbox').length;
+        const checked = $('.rowCheckbox:checked').length;
+        $('#AllCheckBox').prop('checked', all === checked);
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        window.ShowAssignedEmployeeToCalender = function () {
+            var TrainingCalenderId = document.getElementById("ddlTrainingCalenderID").value; // Fetch dropdown value
+
+            if (!TrainingCalenderId) {
+                alert("Please select a Training Calendar.");
+                return;
+            }
+            $.ajax({
+                url: '@Url.Action("GetTrainingCalenderDetails", "ESS_Training_TrainingPlan")', // Ensure correct Razor syntax
+                type: 'GET',
+                data: { TrainingCalenderId: TrainingCalenderId }, 
+                success: function (data) {
+                    debugger;
+                    const details = data.TrainingDetails;
+                    $('#lblMonthYear').text(data.FormattedMonthYear);
+                    $('#lblFrequency').text(details.Trainingfrequency);
+                    $('#lblModeOfTraining').text(details.ModeOfTraining);
+                    $('#lblTrainingCategory').text(details.TrainingCategory);
+                    $('#lblTrainingCategoryId').text(details.TraningCategoryId);
+                    $('#txtLocation').val(details.Location);
+                    $('#txtTrainingProviderSource').val(details.TrainingProviderSource);
+                    $('#DepartmentId').val(details.DepartmentId);
+                    $('#ddlEmployeeID, #ddlTrainerID, #ddlTrainingAgencyID').empty().append("<option value=''>--Select--</option>");
+                    var selectedId = details.TrainingProviderId;
+                    $('#ddlEmployeeID, #ddlTrainerID, #ddlTrainingAgencyID').empty().append("<option value=''>--Select--</option>");
+                    if (details.TrainingProviderSource === 'Internal') {
+                        $('#ddltraineremployee').show();
+                        var categoryID = $('#lblTrainingCategoryId').text();
+                            $("#ddlEmployeeID").find("option").remove();
+                            $.ajax({
+                                url: '@Url.Action("GetInternalTrainer", "ESS_Training_TrainingPlan")',
+                                method: "GET",
+                                data: { categoryID: categoryID },
+                                success: function (data) {
+                                    if (data != null) {
+                                        $("#ddlEmployeeID").append("<option value=''>--Select--</option>");
+                                        $.each(data, function (i, p) {
+                                            $("#ddlEmployeeID").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                                        });
+
+                                        if (selectedId) {
+                                            $("#ddlEmployeeID").val(selectedId);
+                                        }
+                                    }
+                                },
+                                error: function (xhr, status, error) {
+                                    console.log("AJAX Error:", xhr.responseText);
+                                }
+                            });
+                    } else if (details.TrainingProviderSource === 'External') {
+                        $('#ddltrainer').show();
+                            $("#ddlTrainerID").find("option").remove();
+
+                            $.ajax({
+                                url: '@Url.Action("GetTrainer", "ESS_Training_TrainingPlan")',
+                                method: "GET",
+                                success: function (data) {
+                                    if (data != null) {
+                                        $("#ddlTrainerID").append("<option value=''>--Select--</option>");
+                                        $.each(data, function (i, p) {
+                                            $("#ddlTrainerID").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                                        });
+
+                                        if (selectedId) {
+                                            $("#ddlTrainerID").val(selectedId);
+                                        }
+                                    }
+                                },
+                                error: function (xhr, status, error) {
+                                    console.log("AJAX Error:", xhr.responseText);
+                                }
+                            });
+                    } else if (details.TrainingProviderSource === 'Agency') {
+                        $('#ddlagency').show();
+                            $("#ddlTrainingAgencyID").find("option").remove();
+                            $.ajax({
+                                url: '@Url.Action("GetAgency", "ESS_Training_TrainingPlan")',
+                                method: "GET",
+                                success: function (data) {
+                                    if (data != null) {
+                                        $("#ddlTrainingAgencyID").append("<option value=''>--Select--</option>");
+                                        $.each(data, function (i, p) {
+                                            $("#ddlTrainingAgencyID").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                                        });
+
+                                        if (selectedId) {
+                                            $("#ddlTrainingAgencyID").val(selectedId);
+                                        }
+                                    }
+                                },
+                                error: function (xhr, status, error) {
+                                    console.log("AJAX Error:", xhr.responseText);
+                                }
+                            });
+                    }
+                }
+            });
+            if ($.fn.DataTable.isDataTable('#tblEmployees')) {
+                $('#tblEmployees').DataTable().destroy();
+            }
+            var tbody = $('#tblLoadEmployee');
+            tbody.empty();
+        };
+    });
+
+    function OnTrainingProviderSourceChanged() {
+        debugger;
+        var selectedValue = document.getElementById("txtTrainingProviderSource").value;
+        var categoryID = $('#lblTrainingCategoryId').text();
+
+        document.getElementById("ddltraineremployee").style.display = "none";
+        document.getElementById("ddlagency").style.display = "none";
+        document.getElementById("ddltrainer").style.display = "none";
+
+        document.getElementById("errorInternal").innerText = "";
+        document.getElementById("errorAgency").innerText = "";
+        document.getElementById("errorTrainer").innerText = "";
+
+        // Show the relevant dropdown based on selection
+        if (selectedValue === "Internal") {
+            document.getElementById("ddltraineremployee").style.display = "block";
+            var selectedTrainerId = '@Model.TrainingProviderId';
+
+            $("#ddlEmployeeID").find("option").remove();
+            $.ajax({
+                url: '@Url.Action("GetInternalTrainer", "ESS_Training_TrainingPlan")',
+                method: "GET",
+                data: { categoryID: categoryID },
+                success: function (data) {
+                    if (data != null) {
+                        $("#ddlEmployeeID").append("<option value=''>--Select--</option>");
+                        $.each(data, function (i, p) {
+                            $("#ddlEmployeeID").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log("AJAX Error:", xhr.responseText);
+                }
+            });
+
+        } else if (selectedValue === "Agency") {
+            document.getElementById("ddlagency").style.display = "block";
+            $("#ddlTrainingAgencyID").find("option").remove();
+            $.ajax({
+                url: '@Url.Action("GetAgency", "ESS_Training_TrainingPlan")',
+                method: "GET",
+                success: function (data) {
+                    if (data != null) {
+                        $("#ddlTrainingAgencyID").append("<option value=''>--Select--</option>");
+                        $.each(data, function (i, p) {
+                            $("#ddlTrainingAgencyID").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log("AJAX Error:", xhr.responseText);
+                }
+            });
+        } else if (selectedValue === "External") {
+            document.getElementById("ddltrainer").style.display = "block";
+            $("#ddlTrainerID").find("option").remove();
+            $.ajax({
+                url: '@Url.Action("GetTrainer", "ESS_Training_TrainingPlan")',
+                method: "GET",
+                success: function (data) {
+                    if (data != null) {
+                        $("#ddlTrainerID").append("<option value=''>--Select--</option>");
+                        $.each(data, function (i, p) {
+                            $("#ddlTrainerID").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+
+                        if (selectedTrainerId) {
+                            $("#ddlTrainerID").val(selectedTrainerId);
+                        }
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log("AJAX Error:", xhr.responseText);
+                }
+            });
+        }
+    }
+    $("#btnSubmit").click(function () {
+        debugger
+        $(".Userloaderbg").css("display", "flex");
+        var table = document.getElementById("tblLoadEmployee");
+        var TrainingCalenderId = $("#ddlTrainingCalenderID").val();
+        var batch = $("#txtBatch").val().trim();
+        var StartDate = $("#TrainingStartDate").val();
+        var StartTime = $("#txtStartTime").val();
+        var EndDate = $("#TrainingEndDate").val();
+        var EndTime = $("#txtEndTime").val();
+        var location = $("#txtLocation").val();
+        var TrainingProviderSource = $("#txtTrainingProviderSource").val();
+        let trainingProviderId, TrainingProvidedBy = "";
+        if (TrainingProviderSource == "Internal") {
+             trainingProviderId = $("#ddlEmployeeID").val();
+             TrainingProvidedBy = $("#ddlEmployeeID option:selected").text();
+        }
+        else if (TrainingProviderSource == "Agency") {
+             trainingProviderId = $("#ddlTrainingAgencyID").val();
+             TrainingProvidedBy = $("#ddlTrainingAgencyID option:selected").text();
+        }
+        else {
+             trainingProviderId = $("#ddlTrainerID").val();
+             TrainingProvidedBy = $("#ddlTrainerID option:selected").text();
+        }
+        var table = $('#tblEmployees').DataTable();
+        var CalenderEmployeeList = [];
+
+        table.rows().every(function () {
+            var row = this.node();
+            var checkbox = $(row).find('.rowCheckbox');
+
+            if (checkbox.prop('checked')) {
+                var data = {};
+                data.TrainingCalenderId = TrainingCalenderId;
+                data.IsActive = true;
+                data.Batch = batch;
+                data.EmployeeId = $(row).find('td').eq(1).text().trim();
+                CalenderEmployeeList.push(data);
+            }
+        });
+
+        if (CalenderEmployeeList.length === 0) {
+            Swal.fire({
+                text: 'Please select at least one employee.',
+                icon: 'info',
+                allowOutsideClick: false
+            });
+            $(".Userloaderbg").hide();
+            return false;
+        }
+
+        $.ajax({
+            url: "IsBatchAlreadyExists",
+            method: "get",
+            data: { TrainingCalenderId: TrainingCalenderId, Batch: batch },
+            success: function (response) {
+                debugger;
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon == "error") {
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                  
+                                    return false
+                                }
+
+                            });
+                        }
+                    }
+                }
+                else {
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("SaveUpadte", "ESS_Training_TrainingPlan")',
+                        data: JSON.stringify({
+                            CalenderEmployeeList: CalenderEmployeeList,
+                            TrainingCalenderId: TrainingCalenderId,
+                            Batch: batch,
+                            StartDate: StartDate,
+                            StartTime: StartTime,
+                            EndDate: EndDate,
+                            EndTime: EndTime,
+                            Location:location,
+                            TrainingProviderSource: TrainingProviderSource,
+                            TrainingProviderId: trainingProviderId,
+                            TrainingProvidedBy: TrainingProvidedBy,
+                        }),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "text",
+                        success: function (response) {
+                            debugger;
+                            var data = JSON.parse(response);
+                            var Message1 = data.Message;
+                            var Icon1 = data.Icon;
+                            if (Icon1 != null) {
+                                if (Message1 != null) {
+                                    Swal.fire({
+                                        icon: Icon1,
+                                        text: Message1,
+                                        allowOutsideClick: () => {
+                                            const popup = Swal.getPopup()
+                                            popup.classList.remove('swal2-show')
+                                            setTimeout(() => {
+                                                popup.classList.add('animate__animated', 'animate__headShake')
+                                            })
+                                            setTimeout(() => {
+                                                popup.classList.remove('animate__animated', 'animate__headShake')
+                                            }, 500)
+                                            // return false
+                                        }
+                                    }).then(function () {
+                                        var url = '@Url.Action("ESS_Training_TrainingPlan", "ESS_Training_TrainingPlan")';
+                                        window.location.href = url;
+                                    })
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    });
+
+    jQuery.validator.addMethod(
+   "regex",
+       function (value, element, regexp) {
+           if (regexp.constructor != RegExp)
+               regexp = new RegExp(regexp);
+           else if (regexp.global)
+               regexp.lastIndex = 0;
+           return this.optional(element) || regexp.test(value);
+       }, "erreur expression reguliere"
+    );
+
+    $('#TrainingPlan').validate({
+        rules: {
+            TrainingCalenderId: {
+                required: true,
+            },
+            TrainingProviderSource: {
+                required: true,
+            },
+           StartDate: {
+                required: true,
+            },
+            StartTime: {
+                required: true,
+            },
+            EndDate: {
+                required: true,
+            },
+            EndTime: {
+                required: true,
+            },
+            Batch: {
+                required: true,
+            },
+        },
+        messages: {
+            TrainingCalenderId: {
+                required: "Please Select Training Calender.",
+            },
+            TrainingProviderSource: {
+                required: "Please Select Training Provider Source.",
+            },
+          StartDate: {
+                required: "Start Date is required",
+            },
+            StartTime: {
+                required: "Start Time is required",
+            },
+            EndDate: {
+                required: "End Date is required",
+            },
+            EndTime: {
+                required: "End Date is required",
+            },
+            Batch: {
+                required: "Batch is required",
+            },
+        },
+    });
+    var form = $("#TrainingPlan");
+    form.validate();
+
+    function ShowEmployee() {
+        debugger;
+        form.valid();
+        if (form.valid() == false) {
+            $("#txtEstablishedDate").removeClass("error");
+            return false;
+        }
+
+        var trainingCalId = $("#ddlTrainingCalenderID").val();
+        var departmentIds = $("#DepartmentId").val();
+
+        $.ajax({
+            url: '@Url.Action("GetEmployeeDetails", "ESS_Training_TrainingPlan")',
+            type: 'GET',
+            data: {
+                TrainingCalenderId: trainingCalId,
+                DepartmentIds: departmentIds
+            },
+            success: function (data) {
+                debugger
+                // Destroy existing DataTable instance (important!)
+                if ($.fn.DataTable.isDataTable('#tblEmployees')) {
+                    $('#tblEmployees').DataTable().destroy();
+                }
+
+                var tbody = $('#tblLoadEmployee');
+                tbody.empty();
+
+                if (data && data.length > 0) {
+                    $.each(data, function (i, d) {
+                        var checked = d.IsActive ? 'checked' : '';
+                        var row = `<tr>
+                        <td class="text-center">
+                            <input type="checkbox" class="rowCheckbox" id="chkIsActive_${d.EmployeeId}" ${checked} style="cursor:pointer" />
+                        </td>
+                        <td hidden>${d.EmployeeId}</td>
+                        <td>${d.EmployeeName}</td>
+                        <td>${d.DesignationName}</td>
+                        <td>${d.DepartmentName}</td>
+                        <td>${d.PrimaryMobile}</td>
+                        <td>${d.PersonalEmailId}</td>
+                    </tr>`;
+                        tbody.append(row);
+                    });
+                }
+
+                $('#tblEmployees').DataTable({
+                    "paging": true,
+                    "searching": true,
+                    "ordering": false
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error("Error loading employees:", error);
+            }
+        });
+    }
+</script>

@@ -1,0 +1,399 @@
+﻿
+@model KompassHR.Areas.Reports.Models.EmployeeWiseReportFilter
+
+@{
+    ViewBag.Title = "Reports_Asset_EmployeeWiseReport";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    label.error, .Error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .font-bold {
+        font-weight: 700 !important;
+    }
+</style>
+
+
+@*<script src="~/scripts/jquery-1.10.2.js"></script>*@
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Employee Wise Report
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Report_Assets_RptMenu", "Report_Assets_RptMenu", new {id = 47, ScreenId=841, area = "Reports" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Employee Wise Report</h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Export report of Employee Wise Report.
+                    </p>
+                </div>
+                <div class="panel-body" data-scrollbar="true">
+                    <div class="row justify-content-center">
+                        <form role="form" href="@Url.Action("Reports_Asset_EmployeeWiseReport", "Reports_Asset_EmployeeWiseReport", new { area = "Reports" })" id="formAssetWiseReport" ,Method="Post">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-4">
+                                            Company
+                                        </label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.CmpId, new SelectList(ViewBag.CompanyName, "Id", "Name"), "Select", new { @class = "form-select", name = "CmpId", id = "ddlCmpId" })
+
+                                            <span id="ErrorddlCmpId" class="Error"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-4">
+                                            Business Unit
+                                        </label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.BranchId, new SelectList(ViewBag.BranchName, "Id", "Name"), "All", new { @class = "form-select", type = "text", name = "BranchId", id = "ddlBranchId" })
+
+                                            <span id="ErrorddlBranchId" class="Error"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-4">
+                                            Employee Name
+                                        </label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.EmployeeId, new SelectList(ViewBag.EmployeeName, "Id", "Name"), "All", new { @class = "form-select", name = "EmployeeId", id = "ddlEmployeeId" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="LastShortLeaveBx">
+                                    <div class="row">
+                                        <div class="col-md-10">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <div class="BtnBx">
+                                                <div>
+                                                    <button type="button" class="btn btn-success" id="btlExportToExcel" onclick="downloadExcelFile()">
+                                                        <i class="fa-regular fa-file-excel fa-xl"></i> Export To Excel
+                                                    </button>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    $(document).ready(function () {
+   debugger
+        $('title').html("Employee Wise Report");
+        $("#ddlBranchId").select2();
+        $("#ddlCmpId").select2();
+        $("#ddlEmployeeId").select2();
+        //var today = new Date();
+        //var yyyy = today.getFullYear();
+        //var mm = String(today.getMonth() + 1).padStart(2, '0');
+        //var defaultMonth = yyyy + '-' + mm;
+        //var CheckEmptyDate = document.getElementById('GetMonth').value;
+        //if (CheckEmptyDate == "") {
+        //    document.getElementById('GetMonth').value = defaultMonth;
+        //}
+        var Title = @Html.Raw(Json.Encode(TempData["Title"]));
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            Swal.fire({
+                icon: Icon,
+                text: Message,
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup()
+                    popup.classList.remove('swal2-show')
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                    })
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                    }, 500)
+                    return false
+                }
+            });
+        }
+
+        $("#ddlCmpId").on("change", function () {
+            debugger
+            $("#ddlBranchId").empty();
+            $("#ddlEmployeeId").empty();
+
+            var CmpId = $("#ddlCmpId").val();
+
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("GetBusinessUnit", "Reports_Asset_EmployeeWiseReport")',
+                data: { CmpId: CmpId },
+                success: function (data) {
+
+                    if (data && data.Branch) {
+                        $("#ddlBranchId").append("<option value=''>All</option>");
+                        $.each(data.Branch, function (i, p) {
+                            $("#ddlBranchId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+
+                    if (data && data.EmployeeName) {
+                        $("#ddlEmployeeId").append("<option value=''>All</option>");
+                        $.each(data.EmployeeName, function (i, p) {
+                            $("#ddlEmployeeId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                }
+            });
+        });
+
+
+
+        $("#ddlBranchId").on("change", function () {
+            debugger;
+            $("#ddlEmployeeId").find("option").remove();
+            var BranchId = $("#ddlBranchId").val()||null;
+            var CmpId = $("#ddlCmpId").val();
+            // var GetYear = $("#txtFromDate").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetEmployeeName", "Reports_Asset_EmployeeWiseReport")',
+                data: { CmpId: CmpId, BranchId: BranchId },
+                success: function (data) {
+                    if (data != null) {
+                        $("#ddlEmployeeId").append("<option value=''>All</option>");
+                        $.each(data, function (i, p) {
+                            $("#ddlEmployeeId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        });
+
+
+
+    });
+
+</script>
+
+
+<script>
+    function downloadExcelFile() {
+        debugger
+    $(".Userloaderbg").css("display", "flex");
+    const CmpId = encodeURIComponent($("#ddlCmpId").val());
+    const branchId = encodeURIComponent($("#ddlBranchId").val());
+    const EmployeeId = encodeURIComponent($("#ddlEmployeeId").val());
+    const url = `@Url.Action("DownloadExcelFile", "Reports_Asset_EmployeeWiseReport")?CmpId=${CmpId}&BranchId=${branchId}&EmployeeId=${EmployeeId}`;
+
+    $.ajax({
+        url,
+        method: 'GET',
+        xhrFields: { responseType: 'blob' },
+        success(data) {
+            $(".Userloaderbg").css("display", "none");
+            if (data.size === 0) {
+                Swal.fire({
+                    icon: 'error',
+                    text: 'Record Not Found',
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup();
+                        popup.classList.remove('swal2-show');
+                        setTimeout(() => popup.classList.add('animate__animated', 'animate__headShake'));
+                        setTimeout(() => popup.classList.remove('animate__animated', 'animate__headShake'), 500);
+                        return false;
+                    }
+                });
+                return;
+            }
+            const blob = new Blob([data], {
+                type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            });
+            const anchor = document.createElement('a');
+            anchor.href = window.URL.createObjectURL(blob);
+            anchor.download = 'EmployeeWiseRecord.xlsx';
+            anchor.click();
+            window.URL.revokeObjectURL(anchor.href);
+        },
+        error(xhr, status, error) {
+            console.error('Error downloading file:', error);
+        }
+    });
+}
+</script>
+
+
+
+
+

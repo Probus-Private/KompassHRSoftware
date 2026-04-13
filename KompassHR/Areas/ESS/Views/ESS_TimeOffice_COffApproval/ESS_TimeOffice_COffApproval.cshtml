@@ -1,0 +1,823 @@
+﻿@model KompassHR.Areas.Reports.Models.DailyAttendanceReportFilter
+@{
+    ViewBag.Title = "ESS_TimeOffice_COffApproval";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+
+<style>
+    .dataTables_scrollBody::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+        margin-top: 0px;
+    }
+
+    .dataTables_scrollBody::-webkit-scrollbar:vertical {
+        width: 10px !important;
+    }
+
+    .dataTables_scrollBody::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .dataTables_scrollBody::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+        height: 10px;
+    }
+
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    label.error, .Error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    .div1 th:nth-child(1) {
+        position: sticky !important;
+        left: 0;
+    }
+
+    .div1 th:nth-child(2) {
+        position: sticky !important;
+        left: 80px !important;
+    }
+
+    .fixed-side0 {
+        position: sticky !important;
+        left: 0;
+        z-index: 1;
+    }
+
+    .fixed-side1 {
+        position: sticky !important;
+        left: 80px !important;
+        z-index: 1;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        /*background-color: rgba(233, 236, 239, 1) !important;*/
+        background-color: rgba(233, 236, 239, 0.7) !important;
+    }
+
+    /*th:nth-child(1), td:nth-child(1) {
+        width: 100px; /* Set the width for the first column *
+    }*/
+
+    #tblOTApprovalList td:nth-child(2) {
+        display: none;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                COFF Approval List 
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_Leave_Menu", "ESS_Leave_Menu", new {id = 4, ScreenId=145, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="panel panel-inverse" data-sortable-id="index-1">
+                    <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                        <h4 class="panel-title">COff Approval List</h4>
+                        <div class="panel-heading-btn">
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                        </div>
+                    </div>
+                    <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                        <p class="pb-0">
+                            @*Plant HR either approves or rejects the OT request. If approved, the employee is notified, and the overtime hours are logged for payroll processing. If rejected, the employee receives an explanation for the decision.*@
+                        </p>
+                    </div>
+                    <div class="panel-body" style="max-height: fit-content;">
+                        <div class="row justify-content-center">
+
+                            <div class="row justify-content-center">
+                                <form role="form" action='@Url.Action("ESS_TimeOffice_COffApproval", "ESS_TimeOffice_COffApproval", new { area = "ESS" })' id="SaveCOffApproval" method="post">
+                                    @*<div class="row">
+                                            <div class="col-md-6">
+                                                <div class="row mb-15px">
+                                                    <label class="form-label col-form-label col-md-4">
+                                                        Company
+                                                    </label>
+                                                    <div class="col-md-8">
+                                                        @Html.DropDownListFor(model => model.CmpId, new SelectList(ViewBag.CompanyName, "Id", "Name"), new { @class = "form-select", name = "CompanyName", id = "ddlCmpId" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row mb-15px">
+                                                    <label class="form-label col-form-label col-md-4">
+                                                        Business Unit
+                                                    </label>
+                                                    <div class="col-md-8">
+                                                        @Html.DropDownListFor(model => model.BranchId, new SelectList(ViewBag.BranchName, "Id", "Name"), new { @class = "form-select", type = "text", name = "BranchId", id = "ddlBranchId" })
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="row mb-15px">
+                                                    <label class="form-label col-form-label col-md-4">
+                                                        Department
+                                                    </label>
+                                                    <div class="col-md-8">
+                                                        @Html.DropDownListFor(model => model.DepartmentId, new SelectList(ViewBag.DepartmentName, "Id", "Name"), "All", new { @class = "form-select", name = "DepartmentId", id = "ddlDepartmentId" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row mb-15px">
+                                                    <label class="form-label col-form-label col-md-4">
+                                                        Sub Department
+                                                    </label>
+                                                    <div class="col-md-8">
+                                                        @Html.DropDownListFor(model => model.SubDepartmentId, new SelectList(ViewBag.SubDepartmentName, "Id", "Name"), "All", new { @class = "form-select", type = "text", name = "SubDepartmentId", id = "ddlSubDepartmentId" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="row mb-15px">
+                                                    <label class="form-label col-form-label col-md-4">
+                                                        Designation
+                                                    </label>
+                                                    <div class="col-md-8">
+                                                        @Html.DropDownListFor(model => model.DesignationId, new SelectList(ViewBag.DesignationName, "Id", "Name"), "All", new { @class = "form-select", name = "DesignationId", id = "ddlDesignationId" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row mb-15px">
+                                                    <label class="form-label col-form-label col-md-4">
+                                                        Grade
+                                                    </label>
+                                                    <div class="col-md-8">
+                                                        @Html.DropDownListFor(model => model.GradeId, new SelectList(ViewBag.GradeName, "Id", "Name"), "All", new { @class = "form-select", type = "text", name = "GradeId", id = "ddlGradeId" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="row mb-15px">
+                                                    <label class="form-label col-form-label col-md-4">
+                                                        Line Master
+                                                    </label>
+                                                    <div class="col-md-8">
+                                                        @Html.DropDownListFor(model => model.LineId, new SelectList(ViewBag.LineName, "Id", "Name"), "All", new { @class = "form-select", name = "LineId", id = "ddlLineId" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row mb-15px">
+                                                    <label class="form-label col-form-label col-md-4">
+                                                        Contractor
+                                                    </label>
+                                                    <div class="col-md-8">
+                                                        @Html.DropDownListFor(model => model.ContractorId, new SelectList(ViewBag.GetContractorName, "Id", "Name"), "All", new { @class = "form-select", name = "EmployeeID", id = "ddlContractorId" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>*@
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-2">
+                                                    From Date
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.FromDate, new { @class = "form-control", name = "FromDate", type = "date", id = "FromDate" })
+                                                    <span id="ErrorFromDate" class="Error"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-2">
+                                                    To Date
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.ToDate, new { @class = "form-control", name = "ToDate", type = "date", id = "ToDate" })
+                                                    <span id="ErrorToDate" class="Error"></span>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <button name="Show" type="button" onclick="COffApproval()" class="btn btn-sm btn-success">Show</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <hr class="mt-15px">
+                        <div class="row">
+                            <div class="table-scroll div1">
+                                <div class="table-wrap">
+                                    <table class="table table-bordered table" id="tblOTApprovalList" style="width: 100%;">
+                                        <thead class="table-active horizontal-scroll" style="background-color: rgba(233, 236, 239, 1) !important;">
+                                            <tr class="trheading">
+                                                <th class="fixed-side0" style="border-color:black !important;background-color:#eee; z-index:3">
+                                                    ALL <input type="checkbox" class="form-check-input" data-checked="all-checkbox" id="SelectAll" onchange="checkAll(this)" />
+                                                </th>
+                                                <th class="fixed-sideHidden" hidden style="border-color:black !important;z-index:3">EmployeeId</th>
+                                                <th class="fixed-side1" style="border-color:black !important;z-index:3">Employee Name</th>
+                                                <th class="text-nowrap" style="border-color:black !important;">Contractor Name</th>
+                                                <th class="text-nowrap" style="border-color:black !important;">Business Unit</th>
+                                                <th class="text-nowrap" style="border-color:black !important;">Grade Name</th>
+                                                <th class="text-nowrap" style="border-color:black !important;">Line Name</th>
+
+                                                <th class="text-nowrap" style="border-color:black !important;">Attendance Date</th>
+                                                <th class="text-nowrap" style="border-color:black !important;">In Time </th>
+                                                <th class="text-nowrap" style="border-color:black !important;">Out Time </th>
+                                                <th class="text-nowrap" style="border-color:black !important;">Duration </th>
+                                                <th class="text-nowrap" style="border-color:black !important;">Status</th>
+                                                <th class="text-nowrap" style="border-color:black !important;">Generated Coff</th>
+                                                <th class="text-nowrap" style="border-color:black !important;">Approval Coff</th>
+                                                <th class="text-nowrap" style="border-color:black !important;">Remark</th>
+                                                <th class="fixed-sideHidden" hidden>InOutID</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tblCOffApprovalBody">
+                                            @if (ViewBag.COffApprovalList != null)
+                                            {
+                                                foreach (var d in ViewBag.COffApprovalList)
+                                                {
+                                                <tr>
+                                                    <td class="fixed-side0 text-center" style="background-color:white !important;background-color:#eee !important; border-color:black !important;">
+                                                        <input type="checkbox" id="txtDesignationId" class="chk chkDesignation" />
+                                                    </td>
+                                                    <td class="fixed-sideHidden" style="background-color:white !important; border-color:black !important; min-width:270px;" hidden>@d.EmployeeId</td>
+                                                    <td class="fixed-side1" style="background-color:white !important; border-color:black !important; min-width:270px;">@d.EmployeeName</td>
+                                                    <td class="text-nowrap text-center" style="background-color:white !important; border-color:black !important;">@d.ContractorName</td>
+                                                    <td class="text-nowrap text-center" style="background-color:white !important; border-color:black !important;">@d.BranchName</td>
+                                                    <td class="text-nowrap text-center" style="background-color:white !important; border-color:black !important;">@d.GradeName</td>
+                                                    <td class="text-nowrap text-center" style="background-color:white !important; border-color:black !important;">@d.LineName</td>
+                                                    <td class="text-nowrap text-center" style="background-color:white !important; border-color:black !important;">@d.AttendanceDate</td>
+                                                    <td class="text-nowrap text-center" style="background-color:white !important; border-color:black !important;">@d.Intime</td>
+                                                    <td class="text-nowrap text-center" style="background-color:white !important; border-color:black !important;">@d.OutTime</td>
+                                                    <td class="text-nowrap" style="background-color:white !important; border-color:black !important;">@d.Duration</td>
+                                                    <td class="text-nowrap text-center" style="background-color:white !important; border-color:black !important;">@d.Status</td>
+                                                    <td class="text-nowrap" style="background-color:white !important; border-color:black !important;">@d.NoOfCoffDays</td>
+                                                    <td class="text-nowrap" id="tdCOff">
+                                                        <input type="text" class="form-control" id="txtCOff" name="Remark" value="@d.NoOfCoffDays" style="width:100px; height:23px; background-color:white !important; border-color:black !important;" maxlength="1" pattern="\d*" title="Please enter a number" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 3); if (this.value > 3) this.value = 3;" />
+                                                        <span class="Error" id="hdnspnCOff" style="display:none" data-noofcoffdays="@d.NoOfCoffDays"></span> <span class="Error" id="ErrortxtCOff" style="display:none"></span>
+                                                    </td>
+                                                    <td class="text-nowrap">
+                                                        <input type="text" class="form-control" id="txtRemark" name="Remark" value="@d.Remark" style="width:100px; height:23px; background-color:white !important; border-color:black !important;" maxlength="100" autocomplete="off">
+                                                    </td>
+                                                    <td class="fixed-sideHidden" style="background-color:white !important; border-color:black !important; min-width:270px;" hidden>@d.InOutID</td>
+                                                </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                    <br />
+                                    <span id="tblRowCount"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-20px">
+                            <div class="LastShortLeaveBx">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="BtnBx">
+                                            <div>
+                                                <button type="button" class="btn btn-primary" id="btnAllApprove" onclick="AllApproveReject()">
+                                                    <i class="fa-solid fa-floppy-disk"></i> Approve
+                                                </button>
+                                                <a href="@Url.Action("COffApproved_List", "ESS_TimeOffice_COffApproval", new { area = "ESS" })">
+                                                    <button type="button" class="btn btn-success btn-sm">
+                                                        <i class="fa-solid fa-share-from-square"></i> Approved List
+                                                    </button>
+                                                </a>
+                                                @*<div class="col-md-4">*@
+                                                <button type="button" class="btn btn-sm btn-danger" onclick="window.location.href='@Url.Action("Pending_COffList", "ESS_TimeOffice_COffApproval")'">
+                                                    <i class="fa-solid fa-share-from-square"></i> Pending List
+                                                </button>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        var hasError = true;
+        $(document).on('change', '#txtCOff', function() {
+            debugger;
+            var currentRow=$(this).closest("tr");
+            var ChangeCOff = currentRow.find('#txtCOff').val();
+            var OldCoff = $('#hdnspnCOff').data('noofcoffdays');
+            if(ChangeCOff > OldCoff)
+            {
+                currentRow.find('#txtCOff').css('color', 'red');
+                currentRow.find('#ErrortxtCOff').css('display', 'flex');
+                currentRow.find('#ErrortxtCOff').html("Invalid Coff");
+                hasError = false;
+            }
+            else {
+                currentRow.find('#txtCOff').css('color', 'black');
+                currentRow.find('#ErrortxtCOff').css('display', 'none');
+                currentRow.find('#ErrortxtCOff').html("");
+            }
+        });
+
+        $("#ddlBranchId").select2();
+        $("#ddlCmpId").select2();
+        $("#ddlDepartmentId").select2();
+        $("#ddlSubDepartmentId").select2();
+        $("#ddlDesignationId").select2();
+        $("#ddlLineId").select2();
+        $("#ddlGradeId").select2();
+        $("#ddlContractorId").select2();
+        $("#ddlSubUnitId").select2();
+
+        var CheckEmptyDate = document.getElementById('FromDate').value;
+        if(CheckEmptyDate =="")
+        {
+            document.getElementById('ToDate').value = SetTodaysDate;
+        }
+        var today = new Date();
+        today.setDate(today.getDate() - 30);
+        var formattedDate = today.toISOString().split('T')[0];
+        document.getElementById('FromDate').value = formattedDate;
+        //COffApproval();
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                });
+            }
+        }
+        var GetPendingDate = @Html.Raw(Json.Encode(TempData["GetDate"]));
+        if(GetPendingDate==null || GetPendingDate=="")
+        {
+
+        }
+        else
+        {
+            var GetPendingDate1 =  convertDate(GetPendingDate);
+            $("#FromDate").val(GetPendingDate1);
+            $("#ToDate").val(GetPendingDate1);
+        }
+
+        $("#ddlCmpId").on("change", function () {
+            debugger;
+            $("#ddlBranchId").find("option").remove();
+            var CmpId = $("#ddlCmpId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetBusinessUnit", "ESS_TimeOffice_OTApproval")',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    debugger;
+                    if (data != null) {
+                        $.each(data, function (i, p) {
+                            $("#ddlBranchId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                }
+            })
+        });
+
+
+        $("#ddlBranchId").on("change", function () {
+            debugger;
+            $("#ddlLineId").find("option").remove();
+            $("#ddlEmployeeID").find("option").remove();
+            var CmpId = $("#ddlCmpId").val();
+            var UnitBranchId = $("#ddlBranchId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetUnit", "ESS_TimeOffice_OTApproval")',
+                data: { CmpId: CmpId, UnitBranchId: UnitBranchId },
+                success: function (data) {
+                    debugger;
+                    if (data == false) {
+                        $("#ddlLineId").find("option").remove();
+
+                        $("#ddlLineId").append("<option value=''>All </option>");
+                        $("#ddlSubUnitId").find("option").remove();
+                        $("#ddlSubUnitId").append("<option value=''>All </option>");
+                    }
+                    else {
+
+                        var LineMaster = data.List_LineMaster;
+                        var GetUnitName = data.GetUnitName;
+
+                        debugger;
+                        if (LineMaster != null) {
+                            $("#ddlLineId").append("<option value=''>All </option>");
+                            $.each(LineMaster, function (i, p) {
+                                $("#ddlLineId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+                        }
+                        if (GetUnitName != null) {
+                            // $("#ddlSubUnitId").append("<option value=''>All </option>");
+                            $.each(GetUnitName, function (i, p) {
+                                $("#ddlSubUnitId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+                        }
+                    }
+                }
+            })
+        });
+
+        $("#ddlDepartmentId").on("change", function () {
+            debugger;
+            $("#ddlSubDepartmentId").find("option").remove();
+            var DepartmentId = $("#ddlDepartmentId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetSubDepartment", "ESS_TimeOffice_COffApproval")',
+                data: { DepartmentId: DepartmentId },
+                success: function (data) {
+                    debugger;
+                    if (data == false) {
+                        $("#ddlSubDepartmentId").find("option").remove();
+                        $("#ddlSubDepartmentId").append("<option value=''>All </option>");
+                    }
+                    else {
+                        if (data != null) {
+                            $("#ddlSubDepartmentId").append("<option value=''>All </option>");
+                            $.each(data, function (i, p) {
+                                $("#ddlSubDepartmentId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+                        }
+                    }
+                }
+            })
+        });
+
+
+
+        $('#tblOTApprovalList').DataTable({
+            //dom: 'Bfrtip',
+            scrollY: 300,
+            scrollCollapse: true,
+            paging: false,
+            scrollX: true,
+            searching: true, // Enable searching
+            //select:true,
+
+        });
+    });
+
+</script>
+
+<script>
+    //use for add regex function
+    jQuery.validator.addMethod(
+    "regex",
+     function (value, element, regexp) {
+         if (regexp.constructor != RegExp)
+             regexp = new RegExp(regexp);
+         else if (regexp.global)
+             regexp.lastIndex = 0;
+         return this.optional(element) || regexp.test(value);
+     }, "erreur expression reguliere"
+  );
+
+    $('#SaveCOffApproval').validate({
+        rules: {
+            CmpId: {
+                required: true,
+            },
+            BranchId: {
+                required: true,
+            },
+            //FromDate: {
+            //    required: true,
+            //},
+
+        },
+        messages: {
+            CmpId: {
+                required: "Company name is required",
+            },
+            BranchId: {
+                required: "Business unit is required",
+            },
+            //FromDate: {
+            //    required: "Date is required",
+            //},
+        },
+    });
+
+    var form = $("#SaveCOffApproval");
+    form.validate();
+    function COffApproval() {
+        debugger;
+        form.valid();
+        if (form.valid() == false) {
+
+            return false;
+        }
+
+        $(".Userloaderbg").css("display", "flex");
+        $("#SaveCOffApproval").submit();
+    }
+
+    //Select All Checkboxes
+    function checkAll(ele) {
+        var checkboxes = document.getElementsByTagName('input');
+        if (ele.checked) {
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].type == 'checkbox') {
+                    checkboxes[i].checked = true;
+                }
+            }
+        } else {
+            for (var i = 0; i < checkboxes.length; i++) {
+                console.log(i)
+                if (checkboxes[i].type == 'checkbox') {
+                    checkboxes[i].checked = false;
+                }
+            }
+        }
+    }
+
+    function AllApproveReject() {
+        debugger;
+
+
+        var hasError =true;
+        var RecordList = new Array();
+        $("#tblCOffApprovalBody").find(':checkbox:checked').each(function (i) {
+            var data = {};
+            debugger;
+            var currentRow = $(this).closest("tr");
+            data.EmployeeID = currentRow.find("td:eq(1)").html();
+            data.InOutID = currentRow.find("td:eq(15)").html();
+            data.ApprovedCoffDays = Number(currentRow.find('#txtCOff').val());
+            currentRow.find('#ErrortxtCOff').css('display', 'flex');
+            var CheckError = currentRow.find("#ErrortxtCOff").html();
+            if(CheckError!="")
+            {
+                currentRow.find('#txtCOff').css('color', 'red').focus();
+                hasError = false;
+                return false;
+            }
+            else
+            {
+                currentRow.find('#txtCOff').css('color', ''); // Reset color
+            }
+
+            data.Remark = currentRow.find('#txtRemark').val();
+            RecordList.push(data);
+        });
+
+        if(hasError==false)
+        {
+            return false;
+        }
+        if (RecordList.length == 0) {
+            debugger;
+            Swal.fire({
+                icon: "error",
+                text: "Select at least one record",
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup()
+                    popup.classList.remove('swal2-show')
+                    return false;
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                    })
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                    }, 500)
+                    window.location.reload();
+                    return false
+                }
+            });
+            return false;
+        }
+        
+        $(".Userloaderbg").css("display", "flex");
+        var GetDate=$("#FromDate").val();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("MultipleApproveRejectRequest", "ESS_TimeOffice_COffApproval")',
+            //url: "MultipleApproveRejectRequest",
+            data: JSON.stringify({ RecordList: RecordList,GetDate:GetDate }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            success: function (data) {
+                debugger;
+                var datas = JSON.parse(data);
+                if (datas != null) {
+                    //$('#tblInbox').load();
+                    Swal.fire({
+                        icon: datas.Icon,
+                        text: datas.Message,
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup()
+                            popup.classList.remove('swal2-show')
+                            return false;
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake')
+                            })
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake')
+                            }, 500)
+                            //window.location.reload();
+                            return false
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = '@Url.Action("ESS_TimeOffice_COffApproval", "ESS_TimeOffice_COffApproval")';
+
+                        }
+                    })
+                    @*.then(function () {
+                        window.location.reload();
+                        var url = '@Url.Action("ESS_TimeOffice_OTApproval", "ESS_TimeOffice_OTApproval")';
+                        window.location.href = url;
+                    });*@
+                }
+            }
+        });
+    }
+</script>
+
+<script>
+    function millisecTodate(milliDate) {
+        var date = new Date(milliDate);
+        var mnth = ("0" + (date.getMonth() + 1)).slice(-2);
+        var day = ("0" + date.getDate()).slice(-2);
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        hours = hours < 10 ? '0'+hours : hours;
+        minutes = minutes < 10 ? '0'+minutes : minutes;
+        var ddmmyyyy = [date.getFullYear(), mnth,day].join("-");
+        return ddmmyyyy;
+    }
+
+    function convertDate(data) {
+        var getdate = parseInt(data.replace("/Date(", "").replace(")/", ""));
+        var date = millisecTodate(getdate);
+        return date;
+    }
+</script>

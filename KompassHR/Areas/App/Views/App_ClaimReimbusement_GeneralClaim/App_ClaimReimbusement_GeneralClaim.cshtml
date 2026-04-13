@@ -1,0 +1,677 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_ClaimReimbusement.Claim_GeneralClaim
+@{
+    ViewBag.Title = "App_ClaimReimbusement_GeneralClaim";
+    Layout = "~/Views/Shared/_MobileLayout.cshtml";
+}
+
+
+<link href="~/assets/MyCSS/Tailwindcss.css" rel="stylesheet" />
+
+<style>
+    .app-header-fixed {
+        padding-top: 0px;
+        padding-bottom: 0px;
+    }
+
+    .app-content {
+        padding: 0px 0px;
+    }
+
+    .panel .panel-body {
+        padding: 8px;
+    }
+
+    label.error, .Error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+
+    @@media (max-width: 767px) {
+        .form-label {
+            margin-bottom: 0.25rem;
+            display: inline-block;
+        }
+    }
+
+    #btnSubmit {
+        transition: background-color 0.3s ease;
+    }
+
+    #btnGetList {
+        transition: background-color 0.3s ease;
+    }
+</style>
+
+<style>
+    /*.form-label-container {
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: flex-end;
+                                    }*/
+
+    .form-label-text {
+        display: inline-flex;
+        align-items: center;
+        min-width: 120px; /* Adjust this value to fit your longest label */
+    }
+
+        .form-label-text i {
+            margin-right: 0.5rem; /* Space between icon and label text */
+        }
+</style>
+
+<style>
+    @@media (max-width: 767px) {
+        .row.mb-3.align-items-center {
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: center;
+        }
+
+            .row.mb-3.align-items-center .col-md-4,
+            .row.mb-3.align-items-center .col-md-8 {
+                flex: 1;
+                max-width: none;
+                padding-right: 10px;
+                padding-left: 10px;
+            }
+
+            .row.mb-3.align-items-center .col-md-4 {
+                flex: 0 0 auto;
+                width: 40%;
+            }
+
+            .row.mb-3.align-items-center .col-md-8 {
+                flex: 1;
+                width: 60%;
+            }
+
+        .form-label {
+            margin-bottom: 0;
+            white-space: nowrap;
+        }
+
+        .form-control,
+        .form-select {
+            width: 100%;
+        }
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="panel panel-inverse" data-sortable-id="index-1">
+        <div class="panel-body" data-scrollbar="false">
+
+            <br />
+
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-inverse" data-sortable-id="index-1">
+                        <div class="panel-body">
+                            <form role="form" action="@Url.Action("SaveUpdate", "App_ClaimReimbusement_GeneralClaim", new { area = "App" })" id="saveGeneralClaims" method="post" enctype="multipart/form-data">
+                                @Html.HiddenFor(model => Model.GeneralClaimId_Encrypted)
+                                <div class="row mb-3 align-items-center">
+                                    <div class="col-md-4">
+                                        <div class="form-label-container">
+                                            <label class="form-label">
+                                                <span class="form-label-text">
+                                                    <i class="fa-solid fa-hashtag text-purple-600"></i> Doc No.<span class="important">*</span>
+                                                </span>:
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(model => Model.DocNo, new { @class = "form-control mb-5px", id = "VoucherNo", name = "VoucherNo", @readonly = "readonly", Value = @ViewBag.VoucherNo.VoucherNo, @style = "backgroundcolor:#eee" })
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3 align-items-center">
+                                    <div class="col-md-4">
+                                        <div class="form-label-container">
+                                            <label class="form-label">
+                                                <span class="form-label-text">
+                                                    <i class="fa-solid fa-calendar-days text-purple-600"></i>   Doc Date<span class="important">*</span>
+                                                </span>:
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(model => model.DocDate, new{name = "VoucherDate",@class = "form-control",id = "VoucherDate", @*onkeydown = "return false;",*@ type = "date"})                                    </div>
+                                </div>
+
+                                <div class="row mb-3 align-items-center">
+                                    <div class="col-md-4">
+                                        <div class="form-label-container">
+                                            <label class="form-label">
+                                                <span class="form-label-text">
+                                                    <i class="fas fa-money-bill text-purple-600"></i>  From Date
+                                                    <span class="important">*</span>
+                                                </span>:
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(model => model.FromDate, new { @class = "form-control", @id = "FromDate", @type = "date" })
+                                        <span class="Error" id="ErrorFromDate"></span>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3 align-items-center">
+                                    <div class="col-md-4">
+                                        <div class="form-label-container">
+                                            <label class="form-label">
+                                                <span class="form-label-text">
+                                                    <i class="fas fa-money-bill text-purple-600"></i>  To Date
+                                                    <span class="important">*</span>
+                                                </span>:
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(model => model.ToDate, new { @class = "form-control", @id = "ToDate", @type = "date" })
+                                        <span class="Error" id="ErrorToDate"></span>
+                                    </div>
+                                </div>
+
+
+                                <div class="row mb-3 align-items-center">
+                                    <div class="col-md-4">
+                                        <div class="form-label-container">
+                                            <label class="form-label">
+                                                <span class="form-label-text">
+                                                    <i class="fas fa-money-bill text-purple-600"></i>  Expense Category
+                                                    <span class="important">*</span>
+                                                </span>:
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.GeneralClaimExpenseCategoryID, new SelectList(ViewBag.GetExpenceCategory, "Id", "Name"), "--Select--", new { id = "ExpenceCategoryId", name = "GeneralClaimExpenseCategoryID", @class = "form-select", autocomplete = "off" })
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3 align-items-center">
+                                    <div class="col-md-4 form-label-container">
+                                        <label class="form-label">
+                                            <span class="form-label-text">
+                                                <i class="fas fa-dollar-sign text-purple-600"></i>Amount <span class="important">*</span>
+                                            </span>:
+                                        </label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(model => Model.GeneralClaimAmount, new { @class = "form-control mb-5px", id = "ExpenceAmount", name = "GeneralClaimAmount", type = "number", onkeypress = "return isNumberKey(event,this)", @style = "text-align:right" })
+
+
+                                    </div>
+                                </div>
+
+
+
+                                <div class="row mb-3 align-items-center">
+                                    <div class="col-md-4 form-label-container">
+                                        <label class="form-label">
+                                            <span class="form-label-text">
+                                                <i class="fas fa-file-alt text-purple-600"></i>    Description <span class="important">*</span>
+                                            </span>:
+                                        </label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.TextAreaFor(model => model.GeneralClaimDescription, new { @class = "form-control", id = "ExpenceDescription", name = "ExpenceDescription" })
+                                    </div>
+                                </div>
+
+
+
+                                <div class="row mb-3 align-items-center">
+                                    <div class="col-md-4 form-label-container">
+                                        <label class="form-label">
+                                            <span class="form-label-text">
+                                                <i class="fa-solid fa-paperclip text-pink-600"></i> Attachment <span class="important">*</span>
+                                            </span>:
+                                        </label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(model => Model.AttachmentPath, new { @type = "file", name = "AttachmentPath", @class = "form-control", id = "AttachmentPath", @onchange = "ResetFile()" })
+
+                                        @if (Model.AttachmentPath != null)
+                                        {
+                                            if (Model.AttachmentPath != "No")
+                                            {
+                                                <p>
+                                                    Existing File:
+                                                    <a href="@Url.Action("DownloadFile", "App_ClaimReimbusement_GeneralClaim", new { GeneralClaimId_Encrypted = Model.GeneralClaimId_Encrypted })">Download Existing File</a>
+                                                </p>
+                                            }
+                                        }
+                                    </div>
+                                </div>
+
+
+
+                                <div class="col-md-12 LastShortLeaveBx">
+                                    <div class="BtnBx">
+                                        <div>
+                                            <button type="button" id="btnSubmit" class="btn btn-primary btn-sm">
+                                                <i class="fa-solid fa-floppy-disk"></i> Submit
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-sm" id="btnGetList" onclick="btnGetLists();">
+                                                <i class="fa-solid fa-share-from-square"></i> List
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<script>
+    debugger;
+    function millisecTodate(milliDate) {
+        var date = new Date(milliDate);
+        var mnth = ("0" + (date.getMonth() + 1)).slice(-2);
+        var day = ("0" + date.getDate()).slice(-2);
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        hours = hours < 10 ? '0'+hours : hours;
+        minutes = minutes < 10 ? '0'+minutes : minutes;
+        var ddmmyyyy = [date.getFullYear(), mnth,day].join("-");
+        return ddmmyyyy;
+    }
+
+
+
+    function convertDate(data) {
+        var getdate = parseInt(data.replace("/Date(", "").replace(")/", ""));
+        var date = millisecTodate(getdate);
+        return date;
+    }
+
+
+
+
+    @*function DownloadAttachment(GeneralClaimId_Encrypted,GeneralClaimId ) {
+        alert('hi')
+        var url = '@Url.Action("DownloadAttachment", "App_ClaimReimbusement_GeneralClaim")?GeneralClaimId_Encrypted=' + GeneralClaimId_Encrypted "&GeneralClaimId=" +GeneralClaimId;
+        window.location.href = url;
+    }*@
+
+
+    var date = new Date();
+    var dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000 )).toISOString().split("T")[0];
+    $("#VoucherDate").val(dateString);
+
+</script>
+<script>
+
+
+
+    function btnGetLists()
+    {
+        var url = '@Url.Action("App_GetList", "App_ClaimReimbusement_GeneralClaim",new { area="App"})';
+        window.location.href = url;
+    }
+    $(document).ready(function () {
+        debugger;
+        var dt = @Html.Raw(Json.Encode(TempData["VoucherDate"]));
+
+        $("#ExpenceCategoryId").select2();
+
+        if(dt != null )
+        {
+            var VoucherDatedt =  convertDate(dt);
+            $("#VoucherDate").val(VoucherDatedt);
+
+        }
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+
+                        return false
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+
+        $("#btnGeneralClaimGetList").click(function () {
+            window.location.href= '@Url.Action("GetList", "App_ClaimReimbusement_GeneralClaim")';
+        });
+
+        $("#formReset").click(function () {
+            $("#saveGeneralClaims")[0].reset()
+        });
+    });//Ready Funcation
+
+
+    function ResetFile()
+    {
+        debugger;
+        let allowedExtension = ['image/jpeg', 'image/jpg', 'image/png','application/pdf'];
+        let type = document.getElementById('AttachmentPath').files[0].type;
+
+        if(allowedExtension.indexOf(type)>-1)
+        {
+        }
+        else
+        {
+            Swal.fire({
+                icon: "error",
+                text: "File type should be jpeg/jpg/png/pdf",
+            })
+            //alert('File type should be jpeg/jpg/png/pdf/docx/doc')
+            document.getElementById("AttachmentPath").value = null;
+        }
+        $("#lblFileName").text('');
+    }
+
+
+    function NotificationFunction(GeneralClaimId_Encrypted) {
+        debugger;
+        $.ajax({
+            type: "Get",
+            url: "GetContactDetails",
+            data: { GeneralClaimId_Encrypted: GeneralClaimId_Encrypted},
+            dataType: "text",
+            success: function (data) {
+                debugger;
+                var datas = JSON.parse(data);
+                if (datas.data.length != 0)
+                {
+                    var Getdata = datas.data[0];
+                    $('#lblManager1Name').html(Getdata[0].Value);
+                    $('#lblManager1EmailId').html(Getdata[1].Value);
+                    $('#lblManager1Mobile').html(Getdata[2].Value);
+
+                    $('#lblManager2Name').html(Getdata[3].Value);
+                    $('#lblManager2EmailId').html(Getdata[4].Value);
+                    $('#lblManager2Mobile').html(Getdata[5].Value);
+
+                    $('#lblHRName').html(Getdata[6].Value);
+                    $('#lblHREmailId').html(Getdata[7].Value);
+                    $('#lblHRMobile').html(Getdata[8].Value);
+
+                    if (Getdata[9] == undefined)
+                    {
+                        $('#DivAccount').hide();
+                    }
+                    else
+                    {
+                        $('#DivAccount').show();
+                        $('#lblAcName').html(Getdata[9].Value);
+                        $('#lblAcEmailId').html(Getdata[10].Value);
+                        $('#lblAcMobile').html(Getdata[11].Value);
+                    }
+
+                    $('#NotificationModalPopUp').modal('show');
+                }
+            }
+        });
+    }
+
+
+    function isNumberKey(evt, element) {
+        var charCode = (evt.which) ? evt.which : event.keyCode
+        if (charCode > 31 && (charCode < 48 || charCode > 57) && !(charCode == 46 || charCode == 8))
+            return false;
+        else {
+            var len = $(element).val().length;
+            var index = $(element).val().indexOf('.');
+            if (index > 0 && charCode == 46) {
+                return false;
+            }
+            if (index > 0) {
+                var CharAfterdot = (len + 1) - index;
+                if (CharAfterdot > 3) {
+                    return false;
+                }
+            }
+
+        }
+        return true;
+    }
+</script>
+
+
+<script>
+    //use for add regex function
+    jQuery.validator.addMethod(
+  "regex",
+   function(value, element, regexp) {
+       debugger;
+       if (regexp.constructor != RegExp)
+           regexp = new RegExp(regexp);
+       else if (regexp.global)
+           regexp.lastIndex = 0;
+       return this.optional(element) || regexp.test(value);
+   },"erreur expression reguliere"
+);
+
+    $("#saveGeneralClaims").validate({
+
+        rules: {
+            DocDate:{
+                required:true,
+            },
+            GeneralClaimEmployeeId: {
+                required: true,
+
+            },
+            GeneralClaimExpenseCategoryID: {
+                required:true,
+            },
+            GeneralClaimAmount:{
+                required:true,
+            },
+            GeneralClaimDescription:{
+                required:true,
+            },
+            AttachmentPath:{
+                required:true,
+            }
+
+        },
+        messages: {
+            DocDate: {
+                required: "DocDate is required",
+            },
+            GeneralClaimEmployeeId: {
+                required: "Employee Name is required",
+
+            },
+            GeneralClaimExpenseCategoryID: {
+                required: "Expense Category is required",
+            },
+
+            GeneralClaimAmount:{
+                required: "Amount is required",
+            },
+            GeneralClaimDescription:{
+                required: "Description is required",
+            },
+            AttachmentPath:{
+                required:"Attachment is required"
+            }
+        }
+    });
+
+    //<-----------------------------Alreay exist---------------------------------->
+    var form=$("#saveGeneralClaims");
+    form.validate();
+    var IsValid = @Html.Raw(Json.Encode(TempData["IsValid"]));
+    $("#btnSubmit").click(function () {
+        debugger;
+        if(IsValid=="0")
+        {
+            Swal.fire({
+                //title: 'Saved',
+                icon: 'error',
+                text: 'You cannot apply claim for that day',
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup()
+                    popup.classList.remove('swal2-show')
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                    })
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                    }, 500)
+                    return false
+                }
+            });
+            return false;
+        }
+        form.valid();
+        if(form.valid()==false)
+        {
+            $("#VoucherDate").removeClass('error');
+            //$('#txtCorporationDate').removeClass('error');
+            return false;
+        }
+        debugger;
+        var VoucherDate=$("#VoucherDate").val();
+        var GeneralClaimId_Encrypted=$("#GeneralClaimId_Encrypted").val();
+        var ExpenceCategoryId=$("#ExpenceCategoryId").val();
+        var ExpenceAmount=$("#ExpenceAmount").val();
+        var ExpenceDescription=$("#ExpenceDescription").val();
+
+        var AttachmentPath=$("#AttachmentPath").val();
+        if(AttachmentPath!=null && AttachmentPath!="")
+        {
+            var fileUpload = $("#AttachmentPath").get(0);
+            var files = fileUpload.files;
+            var fileData = new FormData();
+            fileData.append(files[0].name, files[0]);
+
+        }
+        $(".Userloaderbg").css("display", "flex");
+        $.ajax({
+            async: true,
+            type: 'GET',
+            dataType: 'JSON',
+            contentType: 'application/json; charset=utf-8',
+            url:"IsGeneralClaimsExists",
+            //method:"get",
+            data:{VoucherDate:VoucherDate,
+                GeneralClaimId_Encrypted:GeneralClaimId_Encrypted,
+                ExpenceCategoryId:ExpenceCategoryId,
+                ExpenceAmount:ExpenceAmount,
+                ExpenceDescription:ExpenceDescription,
+                AttachmentPath:AttachmentPath
+                //,fileData:fileData
+            },
+            success:function(response){
+                $(".Userloaderbg").css("display", "none");
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon=="error") {
+                    debugger;
+                    if (Message1 != null) {
+                        Swal.fire({
+                            icon: Icon1,
+                            text: Message1,
+                            allowOutsideClick: () => {
+                                const popup = Swal.getPopup()
+                                popup.classList.remove('swal2-show')
+                                setTimeout(() => {
+                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                })
+                                setTimeout(() => {
+                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                }, 500)
+                                return false
+                            }
+                        });
+                    }
+                }
+                else{
+                    //End BtnSubmit
+                    $(".Userloaderbg").css("display", "flex");
+                    $("#saveGeneralClaims").submit();
+                }
+            }
+        });
+    });
+
+
+    function DeleteGeneralClaims(GeneralClaimId_Encrypted) {
+        const DeleteButtons = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        DeleteButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+            allowOutsideClick: () => {
+                const popup = Swal.getPopup()
+                popup.classList.remove('swal2-show')
+                setTimeout(() => {
+                    popup.classList.add('animate__animated', 'animate__headShake')
+                })
+                setTimeout(() => {
+                    popup.classList.remove('animate__animated', 'animate__headShake')
+                }, 500)
+                return false
+            }
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '@Url.Action("Delete", "App_ClaimReimbusement_GeneralClaim")?GeneralClaimId_Encrypted=' + GeneralClaimId_Encrypted;
+
+            } else if (
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+
+            }
+        })
+    }
+</script>

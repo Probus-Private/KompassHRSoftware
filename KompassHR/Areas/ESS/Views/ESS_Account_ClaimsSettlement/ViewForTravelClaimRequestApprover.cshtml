@@ -1,0 +1,715 @@
+﻿
+
+@{
+    ViewBag.Title = "ViewForTravelClaimRequestApprover";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var Item = ViewBag.TravelClaimApprovalList;
+}
+
+<style>
+    .note-toolbar {
+        display: none;
+    }
+
+    .note-editable {
+        height: 100% !important;
+        [contenteditable="false"];
+    }
+
+    .table, tr, td, th, .invoice, .smallFrom {
+        border: none;
+        font-size: 13px;
+        font-family: Arial;
+    }
+
+    .Error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+</style>
+
+<style>
+    @@media (max-width: 768px) {
+        .app-content, .invoice {
+            padding: 10px;
+        }
+
+        .breadcrumb {
+            flex-wrap: wrap;
+            font-size: 14px;
+        }
+
+        .invoice-company, .invoice-from, .invoice-to {
+            font-size: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+            .invoice-from address, .invoice-to address {
+                word-break: break-word;
+            }
+
+        .table {
+            width: 100%;
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+            .table th, .table td {
+                font-size: 14px;
+                padding: 8px;
+            }
+
+        .float-end {
+            float: none !important;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+            .float-end .btn {
+                width: 100%;
+                font-size: 14px;
+            }
+
+        .fa-solid, .fa-regular, address {
+            font-size: 14px;
+        }
+
+        .hidden-print {
+            display: block;
+        }
+
+        @@media print {
+            .hidden-print {
+                display: none !important;
+            }
+        }
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Approval Request
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_Account_ClaimsSettlement", "ESS_Account_ClaimsSettlement", new {id = 33, ScreenId=652, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+    @*<h1 class="page-header hidden-print">Approval Request <small></small></h1>*@
+    <div class="invoice">
+        <div class="invoice-company d-flex justify-content-between align-items-center">
+            <span class="d-flex align-items-center gap-2">
+                <i class="fa-solid fa-road fa-lg"></i> Travel Claim Request For
+            </span>
+            <input type="hidden" id="hdnEncryptedId" value="@(Item.TravelClaimId_Encrypted ?? string.Empty)" />
+            <input type="hidden" id="hdnClaimId" value="@(Item.TravelClaimId ?? string.Empty)" />
+            <input type="hidden" id="hdnClaimType" value="@(Item.Type ?? string.Empty)" />
+            @if (Item.IsClaimDisbursment != true)
+            {
+                <span class="hidden-print d-flex gap-2">
+                    <button type="button" class="btn btn-primary" onclick="printDiv();" id="search">
+                        <i class="ace-icon fa fa-print align-top bigger-125"></i> Print
+                    </button>
+                    <a href="#modal-dialogForApproval1" onclick="Disbursement('Approved')" class="btn btn-success" id="btnmodal-dialog">
+                        <i class="fa-solid fa-check-double"></i> Disbursement
+                    </a>
+                </span>
+            }
+           
+        </div>
+
+        
+        <form class="form">
+            <div class="card">
+                <div id="card">
+                    <div class="invoice-header" style="margin:0px;">
+                        <div class="invoice-from">
+                            @*<b><small class="smallFrom">From,</small></b>*@
+                            <address class="mt-5px mb-5px">
+                                <i class="fa-solid fa-user"> </i>&nbsp;&nbsp;   <strong class="text-dark"><b>@Item.employeename</b></strong><br />
+                                <i class="fa-solid fa-building"> </i>&nbsp;&nbsp;&nbsp;&nbsp;<b>Department&nbsp;:</b> &nbsp;@Item.DepartmentName<br />
+                                <i class="fa-regular fa-handshake"> </i>&nbsp;&nbsp;<b>Designation&nbsp;:</b> &nbsp;  @Item.DesignationName <b></b><br />
+                                <i class="fa-solid fa-phone-volume"> </i>&nbsp;&nbsp; <b>Phone&nbsp;:</b>  &nbsp;  @Item.CompanyMobileNo <b></b><br />
+                                <i class="fa-solid fa-envelope"> </i>&nbsp;&nbsp; <b>Email &nbsp;:</b> &nbsp;  <b>@Item.CompanyMailID</b>
+                            </address>
+                        </div>
+                        <div class="invoice-to">
+                            @*<b><small class="smallFrom">For,</small></b>*@
+                            <address class="mt-5px mb-5px">
+                                <i class="fa-solid fa-building"> </i>&nbsp;&nbsp;  <b> Travel Purpose</b> &nbsp;:&nbsp;@Item.TravelPurpose <br />
+                                <i class="fa-solid fa-desktop"> </i>&nbsp; <b>Description</b> &nbsp;:&nbsp; @Item.Description <br />
+                            </address>
+                        </div>
+                    </div>
+
+                    <div class="invoice-content">
+                        <div class="table-responsive row">
+                            <div class="col-md-12">
+                                <table class="table">
+                                    @*<thead>
+                                            <tr>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>*@
+                                    <tbody>
+                                        <tr>
+                                            <th><span class="text-dark">Employee Name</span><br /></th>
+                                            <td>@Item.employeename</td>
+
+                                            <th><span class="text-dark">Traval Type</span><br /></th>
+                                            <td>@Item.VehicleType</td>
+                                        </tr>
+                                        <tr>
+                                            <th><span class="text-dark">From Location</span><br /></th>
+                                            <td>@Item.FromLocation</td>
+
+                                            <th><span class="text-dark">To Location</span><br /></th>
+                                            <td>@Item.ToLocation</td>
+                                        </tr>
+                                        <tr>
+                                            <th><span class="text-dark">Form Date</span><br /></th>
+                                            <td>@Item.FromDate</td>
+
+                                            <th><span class="text-dark">To Date</span><br /></th>
+                                            <td>@Item.ToDate</td>
+                                        </tr>
+                                        <tr>
+                                            <th><span class="text-dark">Total KM</span><br /></th>
+                                            <td>@Item.TotalKM</td>
+
+                                            <th><span class="text-dark">Per KM Rate</span><br /></th>
+                                            <td>@Item.PerKMRate</td>
+
+                                            @*<th><span class="text-dark">Per KM Amount</span><br /></th>
+                                                <td>@Item.TotalKMAmount</td>*@
+                                        </tr>
+
+                                        <tr>
+                                            <th><span class="text-dark">Total Amount</span><br /></th>
+                                            <td id="txtTotalAmount">  @Item.TotalAmount</td>
+
+                                            <th><span class="text-dark">Approve Claim Amount</span><br /></th>
+                                            <td>@Item.ApprovedAmount</td>
+
+                                        </tr>
+                                        <tr style="background-color:#eee">
+                                            <th colspan="4">Uploaded Files</th>
+                                        </tr>
+                                        <tr>
+                                            <th><span class="text-dark">Total KM Path</span><br /></th>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(Item.TotalKMPath))
+                                                {
+                                                    <a href="javascript:void(0);">                                                       
+                                                        <i class="fa fa-download fa-xl" onclick="DownloadFile('@Item.TotalKMPath.Replace("\\", "/")')"></i>
+                                                    </a>
+                                                    <a href="javascript:void(0);" onclick="ViewFile('@Item.TotalKMPath.Replace("\\", "/")')" class="text-primary  mx-2" data-bs-toggle="tooltip" title="View">
+                                                        <i class="fas fa-eye fa-lg"></i>
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    <i class="fa-solid fa-xmark fa-xl" style="color: red;"></i>
+                                                }
+                                            </td>
+
+                                            <th><span class="text-dark">Transport File</span><br /></th>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(Item.TransportPath))
+                                                {
+                                                    <a href="javascript:void(0);">
+                                                        <i class="fa fa-download fa-xl" onclick="DownloadFile('@Item.TransportPath.Replace("\\", "/")')"></i>
+                                                    </a>
+                                                    <a href="javascript:void(0);" onclick="ViewFile('@Item.TransportPath.Replace("\\", "/")')" class="text-primary  mx-2" data-bs-toggle="tooltip" title="View">
+                                                        <i class="fas fa-eye fa-lg"></i>
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    <i class="fa-solid fa-xmark fa-xl" style="color: red;"></i>
+                                                }
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th><span class="text-dark">Food File</span><br /></th>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(Item.FoodPath))
+                                                {
+                                                    <a href="javascript:void(0);">
+                                                        <i class="fa fa-download fa-xl" onclick="DownloadFile('@Item.FoodPath.Replace("\\", "/")')"></i>
+                                                    </a>
+                                                    <a href="javascript:void(0);" onclick="ViewFile('@Item.FoodPath.Replace("\\", "/")')" class="text-primary  mx-2" data-bs-toggle="tooltip" title="View">
+                                                        <i class="fas fa-eye fa-lg"></i>
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    <i class="fa-solid fa-xmark fa-xl" style="color: red;"></i>
+                                                }
+                                            </td>
+
+                                            <th><span class="text-dark">Hotel File</span><br /></th>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(Item.HotelPath))
+                                                {
+                                                    <a href="javascript:void(0);">
+                                                        <i class="fa fa-download fa-xl" onclick="DownloadFile('@Item.HotelPath.Replace("\\", "/")')"></i>
+                                                    </a>
+                                                    <a href="javascript:void(0);" onclick="ViewFile('@Item.HotelPath.Replace("\\", "/")')" class="text-primary  mx-2" data-bs-toggle="tooltip" title="View">
+                                                        <i class="fas fa-eye fa-lg"></i>
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    <i class="fa-solid fa-xmark fa-xl" style="color: red;"></i>
+                                                }
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th><span class="text-dark">Conveyance File</span><br /></th>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(Item.ConveyancePath))
+                                                {
+                                                    <a href="javascript:void(0);">
+                                                        <i class="fa fa-download fa-xl" onclick="DownloadFile('@Item.ConveyancePath.Replace("\\", "/")')"></i>
+                                                    </a>
+                                                    <a href="javascript:void(0);" onclick="ViewFile('@Item.ConveyancePath.Replace("\\", "/")')" class="text-primary  mx-2" data-bs-toggle="tooltip" title="View">
+                                                        <i class="fas fa-eye fa-lg"></i>
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    <i class="fa-solid fa-xmark fa-xl" style="color: red;"></i>
+                                                }
+                                            </td>
+
+                                            <th><span class="text-dark">Other A File</span><br /></th>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(Item.OtherAPath))
+                                                {
+                                                    <a href="javascript:void(0);">
+                                                        <i class="fa fa-download fa-xl" onclick="DownloadFile('@Item.OtherAPath.Replace("\\", "/")')"></i>
+                                                    </a>
+                                                    <a href="javascript:void(0);" onclick="ViewFile('@Item.OtherAPath.Replace("\\", "/")')" class="text-primary  mx-2" data-bs-toggle="tooltip" title="View">
+                                                        <i class="fas fa-eye fa-lg"></i>
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    <i class="fa-solid fa-xmark fa-xl" style="color: red;"></i>
+                                                }
+                                            </td>
+                                        </tr>
+                                        <tr>
+
+                                            <th><span class="text-dark">Other B File</span><br /></th>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(Item.OtherBPath))
+                                                {
+                                                    <a href="javascript:void(0);">
+                                                        <i class="fa fa-download fa-xl" onclick="DownloadFile('@Item.OtherBPath.Replace("\\", "/")')"></i>
+                                                    </a>
+                                                    <a href="javascript:void(0);" onclick="ViewFile('@Item.OtherBPath.Replace("\\", "/")')" class="text-primary  mx-2" data-bs-toggle="tooltip" title="View">
+                                                        <i class="fas fa-eye fa-lg"></i>
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    <i class="fa-solid fa-xmark fa-xl" style="color: red;"></i>
+                                                }
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <hr />
+                    </div>
+                    <!-- END invoice-content -->
+                </div>
+            </div>
+        </form>
+
+        <div class="card" style="padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.05); border-radius: 10px;">
+            <div class="d-flex align-items-center mb-3">
+                <i class="fa fa-history text-primary me-2"></i>
+                <h4 class="m-0">Approval History</h4>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="bg-light">
+                        <tr>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Name of Approver</th>
+                            <th>Role</th>
+                            <th>Comment</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in ViewBag.ApprovalHistory)
+                        {
+                            <tr>
+
+                                <td>@item.ApprovedDate</td>
+                                <td>@item.Time</td>
+                                <td>@item.EmployeeName</td>
+                                <td>@item.Role</td>
+                                <td>@item.Remark</td>
+                                <td>@item.ApprovedAmount</td>
+                                <td class="text-success">@item.Status</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- File Viewer Modal -->
+<div class="modal fade" id="fileViewerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <!-- Header -->
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="modalFileTitle">
+                    <i class="fas fa-file-alt me-2"></i> Viewing File
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body bg-light p-0">
+                <!-- Image Container -->
+                <div id="imageContainer" class="d-none d-flex align-items-center justify-content-center bg-white" style="min-height: 70vh;">
+                    <img id="modalImage"
+                         src=""
+                         alt="Attachment"
+                         class="img-fluid rounded shadow-sm"
+                         style="max-width: 95%; max-height: 80vh; object-fit: contain;" />
+                </div>
+
+                <!-- PDF Container -->
+                <div id="pdfContainer" class="d-none bg-white">
+                    <iframe id="modalIframe"
+                            frameborder="0"
+                            style="width: 100%; height: 80vh;"></iframe>
+                </div>
+
+                <!-- Fallback: Preview Not Available -->
+                <div id="modalOther" class="d-none d-flex flex-column align-items-center justify-content-center p-5 text-center bg-white" style="min-height: 70vh;">
+                    <i class="fas fa-file fa-5x text-secondary mb-4"></i>
+                    <h5 class="text-muted">Preview not available</h5>
+                    <p class="text-muted mb-4">This file type cannot be previewed in the browser.</p>
+                    <a id="modalOpenLink" href="#" target="_blank" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-external-link-alt me-2"></i> Open in New Tab
+                    </a>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        debugger
+        window.ViewFile = function (filePath) {
+            debugger
+            if (!filePath || filePath.trim() === "") return;
+
+            // === CLEAN FILE NAME EXTRACTION (Robust) ===
+            let fullPath = filePath.trim();
+
+            // Get everything after the last \ or /
+            let fileNameWithExt = fullPath.split("\\").pop().split("/").pop();
+
+            // Remove any query parameters if accidentally included (e.g., from bad URL)
+            fileNameWithExt = fileNameWithExt.split("?")[0];
+
+            // Final clean filename (e.g., "receipt.jpg")
+            let fileName = fileNameWithExt.trim();
+
+            // Get extension safely (lowercase)
+            let ext = "";
+            if (fileName.includes(".")) {
+                ext = fileName.split(".").pop().toLowerCase();
+            }
+
+            // Build the correct URL for viewing
+            const fileUrl = "/ESS_ClaimReimbusement_ExpenseApproval/OpenAttachment?filePath=" + encodeURIComponent(fullPath);
+
+            // Update modal title — now shows ONLY the clean file name
+            document.getElementById("modalFileTitle").innerHTML = `<i class="fas fa-file-alt me-2"></i> ${fileName}`;
+
+            // Hide all sections
+            document.getElementById("imageContainer").classList.add("d-none");
+            document.getElementById("pdfContainer").classList.add("d-none");
+            document.getElementById("modalOther").classList.add("d-none");
+
+            // Clear old content
+            document.getElementById("modalImage").src = "";
+            document.getElementById("modalIframe").src = "";
+
+            // Show correct viewer based on extension
+            if (["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"].includes(ext)) {
+                document.getElementById("modalImage").src = fileUrl;
+                document.getElementById("imageContainer").classList.remove("d-none");
+            }
+            else if (ext === "pdf") {
+                document.getElementById("modalIframe").src = fileUrl;
+                document.getElementById("pdfContainer").classList.remove("d-none");
+            }
+            else {
+                document.getElementById("modalOpenLink").href = fileUrl;
+                document.getElementById("modalOther").classList.remove("d-none");
+            }
+
+            // Show modal
+            const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById('fileViewerModal'));
+            modal.show();
+        };
+    });
+</script>
+
+<script>
+
+    function printDiv() {
+
+        //Get the HTML of div
+        var divElements = document.getElementById('card').innerHTML;
+        //Get the HTML of whole page
+        var oldPage = document.body.innerHTML;
+        //Reset the page's HTML with div's HTML only
+        document.body.innerHTML =
+          "<html><head></head><body>    " +
+        divElements + "    </body>";
+        //Print Page
+        window.print();
+        //Restore orignal HTML
+        document.body.innerHTML = oldPage;
+    }
+    function DownloadFile(attachmentPath) {
+        var correctedPath = attachmentPath.replace(/\//g, '\\');
+        var url = '@Url.Action("DownloadAttachment", "ESS_Account_ClaimsSettlement")';
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: { DownloadAttachment: correctedPath },
+            success: function (response) {
+                debugger;
+                if (response.Success) {
+                    var fileName = response.FileName;
+                    var fileData = atob(response.FileData);  // Decode the base64 string
+                    var byteArray = new Uint8Array(fileData.length);
+                    for (var i = 0; i < fileData.length; i++) {
+                        byteArray[i] = fileData.charCodeAt(i);
+                    }
+
+                    var blob = new Blob([byteArray], { type: response.ContentType });
+                    var downloadUrl = window.URL.createObjectURL(blob);
+                    var a = document.createElement('a');
+                    a.href = downloadUrl;
+                    a.download = fileName;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(downloadUrl);
+                }
+                else {
+                    Swal.fire({
+                        icon: response.Icon || 'error',
+                        text: response.Message || 'An error occurred.',
+                        allowOutsideClick: false
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                Swal.fire({
+                    icon: 'error',
+                    text: 'An unexpected error occurred.',
+                    allowOutsideClick: false
+                });
+            }
+        });
+    }
+
+
+    function Disbursement(Approver)
+    {
+        debugger
+        const DeleteButtons = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        DeleteButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes,submit!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+            allowOutsideClick: () => {
+                const popup = Swal.getPopup()
+                popup.classList.remove('swal2-show')
+                setTimeout(() => {
+                    popup.classList.add('animate__animated', 'animate__headShake')
+                })
+                setTimeout(() => {
+                    popup.classList.remove('animate__animated', 'animate__headShake')
+                }, 500)
+                return false
+            }
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                debugger;
+               
+
+                var DocId=$("#hdnClaimId").val();
+                var Encrypted=$("#hdnEncryptedId").val();
+                var Origin=$("#hdnClaimType").val();
+
+                var Status="";
+                var Remark="";
+                if(Approver=="Rejected")
+                {
+                    Remark = $("#txtApproveRejectRemark").val();
+                    Status="Rejected";
+                }
+                else{
+                    Status="Approved";
+                }
+                $(".Userloaderbg").css("display", "flex");
+                $.ajax({
+                    url: "@Url.Action("Disbursement", "ESS_Account_ClaimsSettlement")",
+                    method:"get",
+                data:{DocId:DocId,Encrypted:Encrypted,Status:Status,Remark:Remark,Origin:Origin},
+                success:function(response){
+                    debugger;
+                    $(".Userloaderbg").css("display", "none");
+                    var Message1 = response.Message;
+                    var Icon1 = response.Icon;
+                    if (response.Icon=="error") {
+                        if (Message1 != null) {
+                            if (Message1 != null) {
+                                Swal.fire({
+                                    icon: Icon1,
+                                    text: Message1,
+                                    allowOutsideClick: () => {
+                                        const popup = Swal.getPopup()
+                                        popup.classList.remove('swal2-show')
+                                        setTimeout(() => {
+                                            popup.classList.add('animate__animated', 'animate__headShake')
+                                        })
+                                        setTimeout(() => {
+                                            popup.classList.remove('animate__animated', 'animate__headShake')
+                                        }, 500)
+                                        return false
+                                    }
+                                });
+
+                                $("#myModalFinal").modal('hide');
+                                $("#txtApproveRejectRemark").val("")
+                                .then((result) => {
+                                    if (result.isConfirmed) {
+                                        window.location.href = '@Url.Action("ESS_Account_ClaimsSettlement", "ESS_Account_ClaimsSettlement")';
+                                    } else if (
+                                        /* Read more about handling dismissals below */
+                                        result.dismiss === Swal.DismissReason.cancel
+                                    ) {
+
+                                    }
+                                })
+                            }
+                        }
+                    }
+                    else{
+                        var Message1 = response.Message;
+                        var Icon1 = response.Icon;
+                        if (response.Icon=="success") {
+                            if (Message1 != null) {
+                                if (Message1 != null) {
+                                    Swal.fire({
+                                        icon: Icon1,
+                                        text: Message1,
+                                        allowOutsideClick: () => {
+                                            const popup = Swal.getPopup()
+                                            popup.classList.remove('swal2-show')
+                                            setTimeout(() => {
+                                                popup.classList.add('animate__animated', 'animate__headShake')
+                                            })
+                                            setTimeout(() => {
+                                                popup.classList.remove('animate__animated', 'animate__headShake')
+                                            }, 500)
+                                            return false
+                                        }
+                                    })
+                                    .then((result) => {
+                                        if (result.isConfirmed) {
+                                            window.location.href = '@Url.Action("ESS_Account_ClaimsSettlement", "ESS_Account_ClaimsSettlement")';
+                                        } else if (
+                                            /* Read more about handling dismissals below */
+                                            result.dismiss === Swal.DismissReason.cancel
+                                        ) {
+
+                                        }
+                                    })
+
+                                    
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        } else if (
+        /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+          ) {
+
+            }
+    })
+    }
+</script>

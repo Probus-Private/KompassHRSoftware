@@ -1,0 +1,1096 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_TimeOffice.AttenRoster
+
+@{
+    ViewBag.Title = "ESS_TimeOffice_AttendanceRoster";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+
+
+<style>
+    .fa-share-from-square {
+        transform: rotate(180deg);
+    }
+
+    .select2.select2-container {
+        width: 100% !important;
+    }
+    /*select Row CSS Start*/
+    body table.dataTable tbody tr.selected td {
+        background: #fff7cc !important;
+        color: black !important;
+        font-weight: 600;
+    }
+
+    table.dataTable.table-hover > tbody > tr.selected:hover > * {
+        box-shadow: inset 0 0 0 9999px #D0D3D4 !important;
+    }
+
+    /*Table Row Hover   rgba(0, 0, 0, 0.075);*/
+    table.dataTable.table-hover > tbody > tr:hover > * {
+        box-shadow: inset 0 0 0 9999px #D0D3D4 !important;
+    }
+    /*Table select Row BackGround Color */
+    table.dataTable > tbody > tr.selected > * {
+        box-shadow: inset 0 0 0 9999px #D0D3D4 !important;
+        color: white;
+    }
+
+
+    /*.table{
+           --bs-table-active-bg: #9bc2ce !important;
+       }*/
+    /*tr:nth-child(even) {
+             --bs-table-accent-bg: #D0D3D4   !important;
+             }*/
+    /*select Row CSS End*/
+    .dataTables_scrollBody::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+        margin-top: 0px;
+    }
+
+    .dataTables_scrollBody::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .dataTables_scrollBody::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+        height: 10px;
+    }
+
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    label.error, .Error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    .div1 td:nth-child(1) {
+        position: sticky;
+        left: 0;
+        border-collapse: collapse;
+        background-color: #eee;
+    }
+
+    .fixed-side {
+        position: sticky;
+        left: 0;
+        background-color: #eee;
+        border-collapse: collapse;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    .fa-share-from-square {
+        transform: rotate(180deg);
+    }
+
+    #tblEmployeeWise input[type="text"] {
+        height: 25px; /* Adjust the height as needed */
+    }
+
+    #tblEmployeeWise input[type="datetime-local"] {
+        height: 25px; /* Adjust the height as needed */
+    }
+
+    #tblEmployeeWise input[type="date"] {
+        height: 25px; /* Adjust the height as needed */
+    }
+
+
+    #tblEmployeeLog td:nth-child(3) {
+        display: none;
+    }
+
+
+    /*.divEmployeeLog {
+        height: 250px; /* Adjust height as needed *
+        overflow-y: auto;
+    }*/
+
+    /*.tblheadEmployeeLog {
+        position: sticky;
+        top: 0;
+        border-color: black;
+    }*/
+
+    .dataTables_wrapper .dataTables_scroll table.dataTable th, .dataTables_wrapper .dataTables_scroll tr.even td,
+    .dataTables_wrapper .dataTables_scroll table.dataTable th, .dataTables_wrapper .dataTables_scroll tr.odd td {
+        border-color: black !important;
+        background-color: white !important;
+    }
+
+    .dataTables_wrapper .dataTables_scroll .dataTables_scrollFootInner table.table-bordered tr th:first-child, .dataTables_wrapper .dataTables_scroll .dataTables_scrollHeadInner table.table-bordered tr th:first-child {
+        border-color: black !important;
+    }
+
+    #ShiftIconColor {
+        color: #f39c12;
+    }
+
+    .table-responsive {
+        height: 120px;
+    }
+
+    .hidden-cell {
+        display: none;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Attedance Roster
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_TimeOffice_Menu", "ESS_TimeOffice_Menu", new {id = 5, ScreenId=150, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Attedance Roster-Add </h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        "Employee Wise Attendance roster" refers to the process of systematically managing and correcting attendance records for each individual employee.
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("ESS_TimeOffice_AttendanceRoster", "ESS_TimeOffice_AttendanceRoster", new { area = "ESS" })' id="SaveAttendanceRoster">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="col-md-12">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Company Name<span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.RosterCmpID, new SelectList(ViewBag.CompanyName, "Id", "Name"), "--Select--", new { @class = "form-select", name = "CompanyName", id = "ddlCompanyName" })
+                                                    @Html.ValidationMessage("RosterCmpID", "", new { @class = "help-block", id = "ErrorRosterCmpID", @style = "color:red" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Business Unit<span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.RosterBranchID, new SelectList(ViewBag.GetBusinessUnit, "Id", "Name"), "--Select--", new { @class = "form-select", name = "BusinessUnit", id = "ddlRosterBranchID" })
+                                                    @Html.ValidationMessage("RosterBranchID", "", new { @class = "help-block", id = "ErrorRosterBranchID", @style = "color:red" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Manager Name
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.RosterManagerID, new SelectList(ViewBag.GetManagerName, "Id", "Name"), "--Select-- ", new { @class = "form-select", name = "ManagerName", id = "ddlManagerName", onchange = "Validate(['RosterManagerID'])" })
+                                                    @Html.ValidationMessage("RosterManagerID", "", new { @class = "help-block", id = "ErrorRosterManagerID", @style = "color:red" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="LastShortLeaveBx">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="BtnBx">
+                                                            <div class="col-md-4">
+                                                                <button type="button" id="btnload" class="btn btn-primary btn-sm" onclick="ShowEmployee()">
+                                                                    <i class="fa-solid fa-floppy-disk"></i> Show
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8" style="max-height: 200px; overflow-y: auto;">
+
+                                        <div class="col-lg-12">
+                                            <table class="table table-bordered table-hover mb-0 text-dark align-middle" id="tblEmployees" style="width:100%;">
+                                                <thead style="background-color: rgba(233, 236, 239, 1) !important;">
+                                                    <tr class="text-center">
+                                                        <th class="text-center">
+                                                            <label>
+                                                                <input type="checkbox" id="AllCheckBox" class="allChecked"> <b>All</b>
+                                                            </label>
+                                                        </th>
+                                                        <th class="text-nowrap" hidden>EmployeeId</th>
+                                                        <th class="text-nowrap">Company Name</th>
+                                                        <th class="text-nowrap">Business Unit</th>
+                                                        <th class="text-nowrap">Employee Name</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tblBodyEmployees"></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="col-md-12">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Month/Year <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.RosterMonthYear, new { @class = "form-control", type = "Month", name = "RosterMonth", id = "txtRosterMonth", required = "required" })
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    From Date<span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.FromDate, new { @class = "form-control", type = "date", name = "FromDate", id = "txtFromDate", onkeydown = "return false;" })
+                                                    @*@Html.ValidationMessage("FromDate", "", new { @class = "help-block", id = "ErrortxtFromDate", @style = "color:red" })*@
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    To Date<span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.ToDate, new { @class = "form-control", type = "date", name = "ToDate", id = "txtToDate", onkeydown = "return false;" })
+                                                    @*@Html.ValidationMessage("ToDate", "", new { @class = "help-block", id = "ErrortxtToDate", @style = "color:red" })*@
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Shift<span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.ShiftId, new SelectList(ViewBag.GetShiftList, "Id", "Name"), "--Select--", new { @class = "form-select", name = "ShiftId", id = "ddlShiftId" })
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-12">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Is WeekOff
+                                                </label>
+                                                <div class="col-md-8">
+                                                    <label class="form-label col-form-label col-md-8">
+                                                        @Html.CheckBoxFor(model => model.Is_WO, new { id = "chkIs_WO", name = "Is_WO", @checked = "checked" })
+                                                        &nbsp;
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="LastShortLeaveBx">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="BtnBx">
+                                                            <div class="col-md-4">
+                                                                <button type="button" id="btnAdd" class="btn btn-primary btn-sm">
+                                                                    <i class="fa-solid fa-plus"></i> Add
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="row">
+                                            <div class="col-lg-12 overflow-auto">
+                                                <table class="table table-bordered table-hover mb-0 text-dark align-middle" id="tblAttendance" style="width:100%;">
+                                                    <thead style="background-color: rgba(233, 236, 239, 1) !important;">
+                                                        <tr class="text-center">
+                                                            <th class="text-nowrap text-center"> Delete</th>
+                                                            <th class="text-nowrap text-center" hidden> ShiftId</th>
+                                                            <th class="text-nowrap text-center"> From Date</th>
+                                                            <th class="text-nowrap text-center"> To Date</th>
+                                                            <th class="text-nowrap text-center"> Shift</th>
+                                                            <th class="text-nowrap text-center"> Is WeekOfF</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="tblAttendanceRoster"></tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div class="col-md-2">
+                                                        <button type="button" id="btnSubmit" class="btn btn-primary btn-sm">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+
+                                                        <a href="@Url.Action("GetList", "ESS_TimeOffice_AttendanceRoster", new { area = "ESS" })">
+                                                            <button type="button" id="btnGetList"
+                                                                    class="btn btn-danger btn-sm">
+                                                                <i class="fa-solid fa-share-from-square"></i>
+                                                                List
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // Initialize select2 for dropdowns
+        $("#ddlCompanyName").select2();
+        $("#ddlRosterBranchID").select2();
+        $("#ddlManagerName").select2();
+        $("#ddlShiftId").select2();
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        if (Message != null && Icon != null) {
+            Swal.fire({
+                icon: Icon,
+                text: Message,
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup();
+                    popup.classList.remove('swal2-show');
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake');
+                    });
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake');
+                    }, 500);
+                }
+            }).then(function () {
+                window.location.reload();
+            });
+        }
+
+        // Company Name change event
+        $("#ddlCompanyName").on("change", function () {
+            Validate(['RosterCmpID']);
+            var RosterCmpID = $(this).val();
+            $("#ddlRosterBranchID").find("option").remove();
+            $("#ddlManagerName").find("option").remove();
+
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetBusinessUnit", "ESS_TimeOffice_AttendanceRoster", new { area = "ESS" })',
+                data: { RosterCmpID: RosterCmpID },
+                success: function (data) {
+                    // Populate Business Unit dropdown
+                    var Branch = data.Branch || [];
+                    if (Branch.length > 0) {
+                        $("#ddlRosterBranchID").append("<option value=''>--Select--</option>");
+                        $.each(Branch, function (i, p) {
+                            $("#ddlRosterBranchID").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                    // Populate Manager Name dropdown
+                    var ManagerName = data.ManagerName || [];
+                    if (ManagerName.length > 0) {
+                        $("#ddlManagerName").append("<option value='0'>--Select--</option>");
+                        $.each(ManagerName, function (i, p) {
+                            $("#ddlManagerName").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                },
+                error: function () {
+                    alert("Error loading business units or managers.");
+                }
+            });
+        });
+
+        // Business Unit change event
+        $("#ddlRosterBranchID").on("change", function () {debugger
+            Validate(['RosterBranchID']);
+            var RosterCmpID = $("#ddlCompanyName").val();
+            var RosterBranchID = $(this).val();
+            OnBranchChange(RosterCmpID, RosterBranchID, '');
+        });
+    });
+
+    // Handle month change to set initial dates
+    document.addEventListener("DOMContentLoaded", function () {
+        const monthInput = document.getElementById("txtRosterMonth");
+        const fromDateInput = document.getElementById("txtFromDate");
+        const toDateInput = document.getElementById("txtToDate");
+
+        monthInput.addEventListener("change", function () {
+            const selectedMonth = this.value; // Format: yyyy-mm
+            console.log("Month changed to:", selectedMonth);
+
+            if (selectedMonth) {
+                const parts = selectedMonth.split("-");
+                const year = parseInt(parts[0]);
+                const month = parseInt(parts[1]);
+                const firstDay = new Date(year, month - 1, 1);
+                const lastDay = new Date(year, month, 0);
+
+                const formatDate = (date) => {
+                    const yyyy = date.getFullYear();
+                    const mm = ("0" + (date.getMonth() + 1)).slice(-2);
+                    const dd = ("0" + date.getDate()).slice(-2);
+                    return `${yyyy}-${mm}-${dd}`;
+                };
+
+                // Set min/max for date inputs
+                const minDate = formatDate(firstDay);
+                const maxDate = formatDate(lastDay);
+                [fromDateInput, toDateInput].forEach(input => {
+                    if (input) {
+                        input.setAttribute("min", minDate);
+                        input.setAttribute("max", maxDate);
+                        input.value = "";
+                    }
+                });
+
+                // Set FromDate to 1st of month
+                fromDateInput.value = minDate;
+
+                // Set ToDate to first Saturday
+                let firstSaturday = new Date(firstDay);
+                while (firstSaturday.getDay() !== 6) { // 6 is Saturday
+                    firstSaturday.setDate(firstSaturday.getDate() + 1);
+                }
+                toDateInput.value = formatDate(firstSaturday);
+            }
+        });
+    });
+
+    // Form validation
+    jQuery.validator.addMethod(
+    "regex",
+    function (value, element, regexp) {
+        if (regexp.constructor != RegExp)
+            regexp = new RegExp(regexp);
+        else if (regexp.global)
+            regexp.lastIndex = 0;
+        return this.optional(element) || regexp.test(value);
+    }, "erreur expression reguliere"
+    );
+
+    $('#SaveAttendanceRoster').validate({
+        rules: {
+            FromDate: { required: true },
+            ToDate: { required: true },
+            ShiftId: { required: true },
+            RosterMonth: { required: true }
+        },
+        messages: {
+            FromDate: { required: "From Date is Required" },
+            ToDate: { required: "To Date is Required" },
+            ShiftId: { required: "Shift is Required" },
+            RosterMonth: { required: "Month/Year is Required" }
+        }
+    });
+
+    var form = $("#SaveAttendanceRoster");
+    form.validate();
+
+    function  OnBranchChange(RosterCmpID,RosterBranchID,Task) {debugger
+        if(Task == 'ShiftDropdownOnly')
+        {
+            //   $("#ddlShiftId").empty().append("<option value=''>--Select--</option>");
+            $.ajax({
+                type: 'GET',
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetEmployee", "ESS_TimeOffice_AttendanceRoster", new { area = "ESS" })',
+                data: { RosterBranchID: RosterBranchID, RosterCmpID: RosterCmpID },
+                success: function (response) {
+                    debugger;
+                    // Populate Shift dropdown
+                    var shiftData = response.Shift || [];
+                    console.log("Shift Data:", shiftData);
+                    if (shiftData.length > 0) {
+                        $.each(shiftData, function (i, p) {
+                            $("#ddlShiftId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    debugger;
+                    console.error("AJAX Error:", status, error, xhr.responseText);
+                    alert("Error loading managers and shifts: " + error);
+                }
+            });
+        }
+        else{
+            debugger
+            $("#ddlManagerName").empty().append("<option value='0'>--Select--</option>");
+            $("#ddlShiftId").empty().append("<option value=''>--Select--</option>");
+
+            $.ajax({
+                type: 'GET',
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetEmployee", "ESS_TimeOffice_AttendanceRoster", new { area = "ESS" })',
+                data: { RosterBranchID: RosterBranchID, RosterCmpID: RosterCmpID },
+                success: function (response) {
+                    debugger;
+                    console.log("AJAX Response:", response);
+
+                    // Populate Manager Name dropdown
+                    var managerData = response.data || [];
+                    if (managerData.length > 0) {
+                        $.each(managerData, function (i, p) {
+                            $("#ddlManagerName").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+
+                    // Populate Shift dropdown
+                    var shiftData = response.Shift || [];
+                    console.log("Shift Data:", shiftData);
+                    if (shiftData.length > 0) {
+                        $.each(shiftData, function (i, p) {
+                            $("#ddlShiftId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    debugger;
+                    console.error("AJAX Error:", status, error, xhr.responseText);
+                    alert("Error loading managers and shifts: " + error);
+                }
+            });
+        }
+    }
+
+    function ShowEmployee() {
+        var RosterCmpID = $("#ddlCompanyName").val();
+        var RosterBranchID = $("#ddlRosterBranchID").val();
+        var RosterManagerID = $("#ddlManagerName").val();
+
+        var controlFields = ['RosterCmpID', 'RosterBranchID'];
+        var isFormValid = Validate(controlFields);
+
+        if (isFormValid) {
+            $(".Userloaderbg").css("display", "flex");
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetEmployeeList", "ESS_TimeOffice_AttendanceRoster", new { area = "ESS" })',
+                data: {
+                    RosterCmpID: RosterCmpID,
+                    RosterBranchID: RosterBranchID,
+                    RosterManagerID: RosterManagerID
+                },
+                success: function (data) {
+                    if ($.fn.DataTable.isDataTable('#tblEmployees')) {
+                        $('#tblEmployees').DataTable().destroy();
+                    }
+                    $(".Userloaderbg").css("display", "none");
+                    debugger
+                    var tbody = $('#tblBodyEmployees');
+                    tbody.empty();
+                    if (data && data.length > 0) {
+                        $.each(data, function (i, d) {
+                            var row = `<tr>
+                        <td class="text-nowrap text-center"><input type="checkbox" class="rowCheckbox" /></td>
+                                    <td hidden>${d.EmployeeId}</td>
+                                    <td>${d.CompanyName}</td>
+                                    <td>${d.BranchName}</td>
+                                    <td>${d.EmployeeName}</td>
+                        </tr>`;
+                            tbody.append(row);
+                        });
+                    }
+                    $('#tblEmployees').DataTable({
+                        paging: true
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error loading employees:", error);
+                }
+            });
+        }
+    }
+
+    function Validate(Control) {
+        let Isvalid = true;
+        for (let i = 0; i < Control.length; i++) {
+            if (Control[i] == 'RosterCmpID') {
+                if ($("#ddlCompanyName").val() == 0 || $("#ddlCompanyName").val() == '') {
+                    $("#ErrorRosterCmpID").html("Company is required");
+                    Isvalid = false;
+                } else {
+                    $("#ErrorRosterCmpID").html("");
+                }
+            }
+            if (Control[i] == 'RosterBranchID') {
+                if ($("#ddlRosterBranchID").val() == 0 || $("#ddlRosterBranchID").val() == '') {
+                    $("#ErrorRosterBranchID").html("Branch is required");
+                    Isvalid = false;
+                } else {
+                    $("#ErrorRosterBranchID").html("");
+                }
+            }
+            if (Control[i] == 'RosterEmployeeID') {
+                if ($("#ddlManagerName").val() == 0 || $("#ddlManagerName").val() == '') {
+                    $("#ErrorRosterManagerID").html("Employee is required");
+                    Isvalid = false;
+                } else {
+                    $("#ErrorRosterManagerID").html("");
+                }
+            }
+        }
+        return Isvalid;
+    }
+
+    // Add button click handler
+    $("#btnAdd").click(function (e) {debugger
+        e.preventDefault(); // Prevent default form behavior
+
+        // Validate form
+        if (!form.valid()) {
+            console.log("Form validation failed");
+            return false;
+        }
+        debugger
+        // Get form input values
+        var FromDate = document.getElementById("txtFromDate").value;
+        var ToDate = document.getElementById("txtToDate").value;
+        var WeekOff = document.getElementById("chkIs_WO").checked ? 1 : 0;
+        var ShiftId = document.getElementById("ddlShiftId").value;
+        var ShiftName = $("#ddlShiftId option:selected").text().trim();
+
+        console.log("Input values:", { FromDate, ToDate, WeekOff, ShiftId, ShiftName });
+
+        // Validate inputs manually
+        var error = document.getElementById("lblerror") || document.createElement("span");
+        error.id = "lblerror";
+        error.style.color = "red";
+        error.style.display = "none";
+        if (!FromDate || !ToDate || !ShiftId || ShiftName === "--Select--") {
+            error.innerHTML = "Please fill all required fields (From Date, To Date, Shift).";
+            error.style.display = "block";
+            if (!document.getElementById("lblerror")) {
+                $("#btnAdd").after(error);
+            }
+            console.log("Manual validation failed: Missing required fields");
+            return;
+        } else {
+            error.style.display = "none";
+        }
+        debugger
+        // Week-off validation: max 2 days difference when Is_WO is checked
+        if (WeekOff) {
+            var fromDateObj = new Date(FromDate);
+            var toDateObj = new Date(ToDate);
+            var dayDiff = (toDateObj - fromDateObj) / (1000 * 60 * 60 * 24); // Difference in days
+            if (dayDiff > 1) { // Allow 0 (same day) or 1 (e.g., Sat-Sun)
+                error.innerHTML = "Week-off duration cannot exceed 2 days.";
+                error.style.display = "block";
+                if (!document.getElementById("lblerror")) {
+                    $("#tblAttendance").after(error);
+                }
+                return;
+            }
+        }
+
+        // Format dates to dd/MMM/yyyy for display
+        var formattedFromDate = FromDate ? new Date(FromDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).replace(/ /g, '-') : '';
+        var formattedToDate = ToDate ? new Date(ToDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).replace(/ /g, '-') : '';
+        var formattedWeekOff = WeekOff ? "Yes" : "No";
+
+        debugger
+        // Check for duplicates
+        var tableBody = document.getElementById("tblAttendanceRoster");
+        var rows = tableBody.getElementsByTagName("tr");
+        var isDuplicate = false;
+        for (var i = 0; i < rows.length; i++) {
+            var rowFromDate = rows[i].cells[2].textContent.trim();
+            var rowToDate = rows[i].cells[3].textContent.trim();
+            //var rowShiftName = rows[i].cells[4].textContent.trim();
+            if (rowFromDate === formattedFromDate && rowToDate === formattedToDate) {
+                isDuplicate = true;
+                break;
+            }
+        }
+
+        var duplicateError = document.getElementById("lblErrorDuplicate") || document.createElement("span");
+        duplicateError.id = "lblErrorDuplicate";
+        duplicateError.style.color = "red";
+        duplicateError.style.display = "none";
+        if (isDuplicate) {
+            duplicateError.innerHTML = "Attendance already exit for this Date and Shift. ";
+            duplicateError.style.display = "block";
+            if (!document.getElementById("lblErrorDuplicate")) {
+                $("#tblAttendance").after(duplicateError);
+            }
+            return;
+        } else {
+            duplicateError.style.display = "none";
+        }
+        debugger
+        // Add new row
+        try {
+            var newRow = tableBody.insertRow();
+            newRow.insertCell(0).innerHTML = '<center><a href="javascript:void(0);" type="button" onclick="deleteRow(this)" style="cursor:pointer;"><i class="fa-solid fa-trash-alt text-danger fa-lg"></i></a></center>';
+            let shiftCell = newRow.insertCell(1);
+            shiftCell.textContent = ShiftId;
+            shiftCell.classList.add("hidden-cell");
+            newRow.insertCell(2).textContent = formattedFromDate;
+            newRow.insertCell(3).textContent = formattedToDate;
+            newRow.insertCell(4).textContent = ShiftName;
+            newRow.insertCell(5).textContent = formattedWeekOff;
+        } catch (err) {
+            return;
+        }
+        debugger
+        // Set next FromDate and ToDate
+        var rosterMonth = document.getElementById("txtRosterMonth").value;
+        if (rosterMonth) {
+            var parts = rosterMonth.split("-");
+            var year = parseInt(parts[0]);
+            var month = parseInt(parts[1]);
+            var lastDay = new Date(year, month, 0); // Last day of month
+            var maxDate = lastDay.toISOString().split('T')[0]; // YYYY-MM-DD
+
+            const formatDate = (date) => {
+                const yyyy = date.getFullYear();
+                const mm = ("0" + (date.getMonth() + 1)).slice(-2);
+                const dd = ("0" + date.getDate()).slice(-2);
+                return `${yyyy}-${mm}-${dd}`;
+            };
+
+            // Get updated rows after adding the new row
+            var updatedRows = tableBody.getElementsByTagName("tr");
+            if (updatedRows.length > 0) {
+                // Get last row's ToDate
+                var lastRowToDate = updatedRows[updatedRows.length - 1].cells[3].textContent.trim();
+                var toDateObj = new Date(lastRowToDate.split('-').reverse().join('-')); // Parse dd-MMM-yyyy
+                if (!isNaN(toDateObj)) {
+                    // Next FromDate: day after last ToDate
+                    var nextFromDate = new Date(toDateObj);
+                    nextFromDate.setDate(toDateObj.getDate() + 1);
+
+                    // Next ToDate: next Saturday
+                    var nextToDate = new Date(nextFromDate);
+                    while (nextToDate.getDay() !== 6 && nextToDate <= lastDay) { // 6 is Saturday
+                        nextToDate.setDate(nextToDate.getDate() + 1);
+                    }
+
+                    // Ensure dates are within the month
+                    if (nextFromDate.getMonth() + 1 === month && nextToDate.getMonth() + 1 === month && nextToDate <= lastDay) {
+                        document.getElementById("txtFromDate").value = formatDate(nextFromDate);
+                        document.getElementById("txtToDate").value = formatDate(nextToDate);
+                    } else {
+                        document.getElementById("txtFromDate").value = "";
+                        document.getElementById("txtToDate").value = "";
+                    }
+                } else {
+                }
+            } else {
+                // First row: set defaults
+                var firstDay = new Date(year, month - 1, 1);
+                var firstSaturday = new Date(firstDay);
+                while (firstSaturday.getDay() !== 6) {
+                    firstSaturday.setDate(firstSaturday.getDate() + 1);
+                }
+                document.getElementById("txtFromDate").value = formatDate(firstDay);
+                document.getElementById("txtToDate").value = formatDate(firstSaturday);
+            }
+        } else {
+            document.getElementById("txtFromDate").value = "";
+            document.getElementById("txtToDate").value = "";
+        }
+        debugger
+        document.getElementById("chkIs_WO").checked = false;
+        var RosterCmpID = $("#ddlCompanyName").val();
+        var RosterBranchID = $("#ddlRosterBranchID").val();
+        var Task="ShiftDropdownOnly";
+        OnBranchChange(RosterCmpID,RosterBranchID,Task);
+    });
+
+    // Delete row function
+    function deleteRow(element) {
+        var row = element.closest("tr");
+        row.remove();
+        // Reinitialize DataTable after deletion
+        if ($.fn.DataTable && $.fn.DataTable.isDataTable("#tblAttendance")) {
+            $("#tblAttendance").DataTable().destroy();
+        }
+        $("#tblAttendance").DataTable({
+            destroy: true,
+            drawCallback: function () {
+                console.log("DataTable redrawn");
+            }
+        });
+    }
+
+    // Submit button handler
+    $("#btnSubmit").click(function () {
+        debugger;
+        var table1 = $('#tblEmployees').DataTable();
+        var EmployeeList = [];
+
+        table1.rows().every(function () {
+            var row = this.node();
+            var checkbox = $(row).find('.rowCheckbox');
+            if (checkbox.prop('checked')) {
+                var data = {};
+                data.EmployeeId = $(row).find('td').eq(1).text().trim();
+                EmployeeList.push(data);
+            }
+        });
+
+        var table2 = document.getElementById("tblAttendanceRoster");
+        var rowCount = table2.rows.length;
+        var AttedanceRosterList = [];
+        debugger
+        //for (var i = 0; i < rowCount; i++) {
+        //    var data = {};
+        //    data.ShiftId = table2.rows[i].cells[1].textContent.trim();
+        //    data.FromDate = table2.rows[i].cells[2].textContent.trim();
+        //    data.ToDate = table2.rows[i].cells[3].textContent.trim();
+        //    data.Is_WO = table2.rows[i].cells[5].textContent.trim().toLowerCase() === "Yes" ? 1 : 0;
+        //    AttedanceRosterList.push(data);
+        //}
+
+        for (var i = 0; i < rowCount; i++) {
+            var data = {};
+            data.ShiftId = table2.rows[i].cells[1].textContent.trim();
+            data.FromDate = table2.rows[i].cells[2].textContent.trim();
+            data.ToDate = table2.rows[i].cells[3].textContent.trim();
+            var isWoValue = table2.rows[i].cells[5].textContent.trim().toLowerCase();
+            console.log("Is_WO value:", isWoValue); // Debug
+            data.Is_WO = isWoValue === "yes" ? true : false;
+            AttedanceRosterList.push(data);
+        }
+        if (EmployeeList.length === 0) {
+            Swal.fire({
+                text: 'Please select at least one employee.',
+                icon: 'info',
+                allowOutsideClick: false
+            });
+            return false;
+        }
+
+        if (AttedanceRosterList.length === 0) {
+            Swal.fire({
+                text: 'No Record Found in Attendance Roster.',
+                icon: 'info',
+                allowOutsideClick: false
+            });
+            return false;
+        }
+
+        var RosterCmpID = $("#ddlCompanyName").val();
+        var RosterBranchID = $("#ddlRosterBranchID").val();
+        var RosterMonth = $("#txtRosterMonth").val();
+
+        $.ajax({
+            url: '@Url.Action("SaveUpdate", "ESS_TimeOffice_AttendanceRoster")',
+            method: "POST",
+            data: {
+                RosterCmpID: RosterCmpID,
+                RosterBranchID: RosterBranchID,
+                RosterMonth: RosterMonth,
+                EmployeeList: EmployeeList,
+                AttedanceRosterList: AttedanceRosterList
+            },
+            success: function (response) {
+                debugger;
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (Message1 != null && Icon1 != null) {
+                    Swal.fire({
+                        icon: Icon1,
+                        text: Message1,
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup();
+                            popup.classList.remove('swal2-show');
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake');
+                            });
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake');
+                            }, 500);
+                        }
+                    }).then(function () {
+                        window.location.href = '@Url.Action("ESS_TimeOffice_AttendanceRoster", "ESS_TimeOffice_AttendanceRoster")';
+                    });
+                }
+            }
+        });
+    });
+
+    // Select/Deselect all checkboxes
+    $(document).on('change', '#AllCheckBox', function () {
+        var table = $('#tblEmployees').DataTable();
+        var isChecked = $(this).is(':checked');
+        table.rows({ search: 'applied' }).nodes().each(function (row) {
+            $(row).find('.rowCheckbox').prop('checked', isChecked);
+        });
+    });
+
+    $(document).on('change', '.rowCheckbox', function () {
+        const all = $('.rowCheckbox').length;
+        const checked = $('.rowCheckbox:checked').length;
+        $('#AllCheckBox').prop('checked', all === checked);
+    });
+
+</script>

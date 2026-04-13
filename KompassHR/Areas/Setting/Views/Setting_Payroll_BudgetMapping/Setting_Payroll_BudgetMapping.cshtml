@@ -1,0 +1,457 @@
+﻿
+@model KompassHR.Areas.Setting.Models.Setting_Payroll.Payroll_BudgetMapping
+
+@{
+    ViewBag.Title = "Setting_Payroll_BudgetMapping";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+
+<style>
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    label.error, .Error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+</style>
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Budget Mapping
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("ESS_AdminDashboard_Dashboard", "ESS_AdminDashboard_Dashboard", new { id = 32, ScreenId = 121, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Setting_Payroll_Menu", "Setting_Payroll_Menu", new { id = 6, ScreenId = 287, area = "Setting" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Settings">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                 <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">Budget Mapping</h4>
+                 
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Budget Mapping
+                    </p>
+                </div>
+                <div class="panel-body" data-scrollbar="false">
+                    <div class="row justify-content-center">
+                        <form role="form" action='@Url.Action("SaveUpdate", "Setting_Payroll_BudgetMapping", new { area = "Setting" })' id="formDuesMapping" method="post" enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-4">
+                                            Company Name
+                                            <span class="important">*</span>
+                                        </label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.BudgetMappingCmpId, new SelectList(ViewBag.CompanyName, "Id", "Name"), "--Select--", new { @class = "form-select", name = "CompanyName", id = "ddlBudgetMappingCmpId" })
+                                            @Html.HiddenFor(model => model.BudgetMappingId_Encrypted, new { id = "BudgetMappingId_Encrypted" })
+                                            <span id="ErrorddlCmpId" class="Error"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-4">
+                                            Business Unit
+                                            <span class="important">*</span>
+                                        </label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.BudgetMappingBuId, new SelectList(ViewBag.BranchName, "Id", "Name"), "--Select--", new { @class = "form-select", type = "text", name = "BudgetMappingBuId", id = "ddlBudgetMappingBuId" })
+                                            <span id="ErrorddlBranchId" class="Error"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-4">
+                                            Budget Name
+                                            <span class="important">*</span>
+                                        </label>
+                                        <div class="col-md-8">
+                                            @Html.DropDownListFor(model => model.BudgetMappingBudgetId, new SelectList(ViewBag.BudgetName, "Id", "Name"), "--Select--", new { @class = "form-select", type = "text", name = "BudgetMappingBudgetId", id = "BudgetMappingBudgetId" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-4">
+                                            Amount
+                                            <span class="important">*</span>
+                                        </label>
+                                        <div class="col-md-8">
+                                            @Html.TextBoxFor(model => model.Amount, new { @class = "form-control", type = "text", name = "Amount", id = "Amount", pattern = @"[0-9]{10}", autocomplete="Off", oninput = "this.value = this.value.replace(/[^0-9]/g, '')" })
+                                            <label class="form-label col-form-label col-md-6" id="lblClearanceError" style="display: none; color: red;">Amount Should Be Greater </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="LastShortLeaveBx">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="BtnBx">
+                                                <div>
+                                                    <button type="button" id="btnSubmit"
+                                                            class="btn btn-primary btn-sm">
+                                                        <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                    </button>
+                                                    <a href="@Url.Action("GetList", "Setting_Payroll_BudgetMapping", new { area = "Setting" })">
+                                                        <button type="button" class="btn btn-danger btn-sm" id="btnGetNoticePeriodList">
+                                                            <i class="fa-solid fa-share-from-square"></i> List
+                                                        </button>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        debugger;
+        $("#ddlBudgetMappingBuId").select2();
+        $("#ddlBudgetMappingCmpId").select2();
+        $("#BudgetMappingBudgetId").select2();
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        // return false
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+
+        $("#ddlBudgetMappingCmpId").on("change", function () {
+            debugger;
+            $("#ddlBudgetMappingBuId").find("option").remove();
+            var CmpId = $("#ddlBudgetMappingCmpId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetBusinessUnit", "Setting_Payroll_BudgetMapping")',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    debugger;
+                    if (data.Branch != null) {
+                        $("#ddlBudgetMappingBuId").append("<option value=''>--Select--</option>");
+                        $.each(data.Branch, function (i, p) {
+                            $("#ddlBudgetMappingBuId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        });
+
+        @*$("#ddlBudgetMappingBuId").on("change", function () {
+            debugger;
+            $("#ddlEmployeeId").find("option").remove();
+            var BranchId = $("#ddlBudgetMappingBuId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetEmployeeName", "Setting_Payroll_BudgetMapping")',
+                data: { BranchId: BranchId },
+                success: function (data) {
+                    debugger;
+                    if (data.BudgetName != null) {
+                        $("#ddlBudgetMappingBudgetId").append("<option value=''>--Select--</option>");
+                        $.each(data.BudgetName, function (i, p) {
+                            $("#BudgetMappingBudgetId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        });*@
+    });
+</script>
+<script>
+
+    $("#formDuesMapping").validate({
+        rules: {
+            BudgetMappingCmpId: {
+                required: true,
+            },
+            BudgetMappingBuId: {
+                required: true,
+            },
+            BudgetMappingBudgetId: {
+                required: true,
+            },
+            Amount:
+                {
+                    required: true,
+                },
+        },
+        messages: {
+
+            BudgetMappingCmpId: {
+                required: "Select the Company Name",
+            },
+            BudgetMappingBuId: {
+                required: "Select the Branch Name",
+            },
+            BudgetMappingBudgetId: {
+                required: "Select the Budget Name",
+            },
+            Amount: {
+                required: "Select the Amount",
+            }
+
+        },
+
+    });
+
+
+    var form = $("#formDuesMapping");
+    form.validate();
+    $("#btnSubmit").click(function () {
+        debugger;
+
+        form.valid();
+        if (form.valid() == false) {
+            return false;
+        }
+        var BudgetMappingId_Encrypted = $("#BudgetMappingId_Encrypted").val();
+        //var FNFNoDuesId = $("#ddlNoDuesNameId").val();
+        var BudgetMappingBuId = Number($("#ddlBudgetMappingBuId").val());
+        var BudgetMappingCmpId = Number($("#ddlBudgetMappingCmpId").val());
+        var BudgetMappingBudgetId = Number($("#BudgetMappingBudgetId").val());
+        var Amount = Number($("#Amount").val());
+        var DuplicateError = $("#lblClearanceError")[0];
+        if (Amount == 0) {
+            DuplicateError.style.display = "block";
+            return;
+        }
+        else{
+            DuplicateError.style.display = "none";
+
+        }
+
+        $.ajax({
+            url: '@Url.Action("IsNoDuesCheckListExists", "Setting_Payroll_BudgetMapping")',
+            method: "get",
+            data: { BudgetMappingId_Encrypted: BudgetMappingId_Encrypted, BudgetMappingBuId: BudgetMappingBuId, BudgetMappingCmpId: BudgetMappingCmpId,Amount: Amount, BudgetMappingBudgetId:BudgetMappingBudgetId },
+            success: function (response) {
+                debugger;
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon == "error") {
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                        }
+                    }
+                }
+                else {
+                    debugger;
+
+                    $("#formDuesMapping").submit();
+                }
+
+            }
+        });
+    });
+</script>
+<script>
+    document.getElementById("Amount").addEventListener("input", function(event) {
+        var value = event.target.value;
+        if (!/^\d*\.?\d*$/.test(value)) {  // Check if the input is a valid number
+            event.target.setCustomValidity("Please enter a valid number.");
+        } else {
+            event.target.setCustomValidity("");  // Clear validation message
+        }
+    });
+</script>
+
+
+
+

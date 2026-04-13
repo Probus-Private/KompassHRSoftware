@@ -1,0 +1,620 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_Vendor.Mas_Vendor_CapacityDomain
+@{
+    ViewBag.Title = "ESS_Vendor_CapacityDomain";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+
+<style>
+    .table {
+        --bs-table-striped-bg: rgba(0, 0, 255, 0.02);
+    }
+
+    .text-nowrap {
+        font-size: 12px;
+    }
+
+    tbody tr td {
+        font-size: 12px;
+        padding: 4px !important;
+    }
+
+    .ListBtn {
+        background-color: transparent;
+        color: #000;
+        font-size: 15px !important;
+        padding: 5px 8px !important;
+        border: none;
+    }
+
+        .ListBtn:hover {
+            background-color: transparent;
+            color: #000;
+        }
+
+            .ListBtn:hover i {
+                transition: all 0.5s;
+                transform: scale(1.5);
+            }
+
+
+
+    .box2 {
+        width: 100px;
+        height: 100px;
+        padding: 15px 0px;
+        font-family: 'Montserrat', sans-serif;
+        position: relative;
+        z-index: 0;
+        margin-bottom: 10px;
+    }
+
+        .box2:hover {
+            border: 2px solid #ff9c19;
+            border-radius: 10px;
+            cursor: pointer;
+            transform: translateY(-10px);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.03), 0px -15px 25px rgba(0, 0, 0, 0.03), 0 15px 25px rgba(0, 0, 0, 0.05);
+        }
+
+            .box2:hover .info i {
+                color: #ff9c19;
+            }
+
+
+        .box2 .info i {
+            font-size: 20px;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 5px;
+            color: #007bff;
+        }
+
+        .box2 .info h7 {
+            position: relative;
+            font-size: 12px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            font-weight: 900 !important;
+            text-transform: capitalize;
+            margin-bottom: 2px;
+            padding: 0 10px;
+            color: #444;
+        }
+
+    .FS-12PX {
+        font-size: 12px !important;
+    }
+
+    .div1 td:nth-child(1) {
+        position: sticky;
+        left: 0;
+    }
+
+    /*.div1 td:nth-child(2) {
+        position: sticky;
+        left: 62px;
+    }*/
+
+    .fixed-side {
+        position: sticky;
+        left: 0px;
+    }
+
+    /*.fixed-side1 {
+        position: sticky;
+        left: 62px;
+    }*/
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .empbx h4 {
+        margin-bottom: 5px;
+    }
+
+    .empbx h6 i {
+        font-size: 1rem;
+        margin-right: 5px;
+    }
+
+    .empbx {
+        margin-bottom: 20px;
+    }
+
+    .card-row-title {
+        color: #e63c3c;
+        font-size: 18px;
+        font-weight: 600;
+        text-transform: capitalize;
+        border-bottom: #009ce7 1px solid;
+    }
+</style>
+
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Vendor-Capacity and Domain
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("GetList", "ESS_Vendor", new {id = 41, ScreenId=693, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">@*@i.SET_MODULES.FormName*@ Capacity and Domain - @ViewBag.AddUpdateTitle</h4>
+                   
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Add vendor capacity and domain details here..
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "ESS_Vendor_CapacityDomain", new { area = "ESS" })' id="SaveVendorCapacity" method="post">
+                               
+                                <div class="row mb-15px">
+                                    <div class="col-md-12">
+                                        <div class="card-row-title">
+                                            Vendor Capacity Details
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                   
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Industries Served
+                                            </label>
+                                            <div class="col-md-12">
+                                              
+                                            @Html.DropDownListFor(model => model.IndustriesServed, new List<SelectListItem>{
+                                               new SelectListItem {Text ="Healthcare", Value="Healthcare"},
+                                               new SelectListItem {Text ="Manufacturing", Value="Manufacturing"},
+                                               new SelectListItem {Text ="Finance", Value="Finance"},
+                                               new SelectListItem {Text ="Education", Value="Education"}
+                                                                      }, "--Select--",
+                                               new { @class = "form-control", id = "txtIndustriesServed", name = "IndustriesServed", autocomplete = "Off" })
+
+
+                                                @Html.HiddenFor(model => model.VendorId, new { id = "txtVendorId", Value = Session["VendorId"] })
+                                                @Html.HiddenFor(model => model.VendorCapacityId_Encrypted, new { id = "txtVendorCapacityId_Encrypted" })
+
+
+
+
+
+
+
+                                        
+                                           </div>
+                                    </div>
+                                </div>
+                                    </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Skill Set Available
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.SkillSetAvailable, new { @class = "form-control", id = "txtSkillSetAvailable", autocomplete = "Off", Maxlength = 50 })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Number of Employees Supplied
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.NoOfEmployeeSupplied, new { @class = "form-control", id = "txtNoOfEmployeeSupplied", autocomplete = "Off", Maxlength = 50 })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Locations Covered
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.LocationCovered, new { @class = "form-control", id = "txtLocationCovered", autocomplete = "Off", Maxlength = 50 })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Background Verification
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.BackgroundVerification, new { @class = "form-control", id = "txtBackgroundVerification", autocomplete = "Off", Maxlength = 50 })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Police Verification
+                                            </label>
+                                            <div class="col-md-12">
+                                                <div class="form-check form-switch">
+                                                    @Html.CheckBoxFor(model => model.PoliceVerification, new { @class = "form-check-input", id = "chkPoliceVerification" })
+                                                    <label class="form-check-label" for="chkPoliceVerification">Verified</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Onboarding Support
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.OnBoardingSupport, new { @class = "form-control", id = "txtOnBoardingSupport", autocomplete = "Off", Maxlength = 100 })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-20px">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="button" data-bs-toggle="offcanvas"
+                                                                href="#offcanvasExample" id="btnActionList" onclick="VendorDetails(this)" class="btn  btnpress ListBtn">
+                                                            <i class="fa-solid fa-list"></i>
+                                                        </button>
+                                                        <button class="btn btn-primary btn-sm" type="button" id="btnSubmit">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                        <a href="@Url.Action("GetList", "ESS_Vendor", new { area = "ESS" })">
+                                                            <button type="button"
+                                                                    class="btn btn-danger btn-sm" id="btnBack">
+                                                                <i class="fa-solid fa-share-from-square"></i>
+                                                                List
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-striped align-middle TablePagee"
+                                                   id="fixed-header" style="width:100%;">
+                                                <thead class="table-light">
+                                                    <tr class="text-center">
+                                                        <th class="text-nowrap">Action</th>
+                                                        <th class="text-nowrap">Vendor</th>
+                                                        <th class="text-nowrap">Industries Served</th>
+                                                        <th class="text-nowrap">Skill Set</th>
+                                                        <th class="text-nowrap">Employees Supplied</th>
+                                                        <th class="text-nowrap">Locations Covered</th>
+                                                        <th class="text-nowrap">Background Verification</th>
+                                                        <th class="text-nowrap">Police Verified</th>
+                                                        <th class="text-nowrap">Onboarding Support</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @if (ViewBag.GetCapacityDetails != null)
+                                                    {
+                                                        foreach (var d in ViewBag.GetCapacityDetails)
+                                                        {
+                                                            <tr>
+                                                                <td class="text-center">
+                                                                    <button type="button" onclick="EditCapacityDomain('@d.VendorCapacityId_Encrypted')" id="btnDelete"
+                                                                            class="btn btn-success btn-sm btnpress">
+                                                                        <i class="fa-solid fa-pencil"></i>
+                                                                    </button>
+                                                                </td>
+                                                                <td>@d.CompanyName</td>
+                                                                <td>@d.IndustriesServed</td>
+                                                                <td>@d.SkillSetAvailable</td>
+                                                                <td>@d.NoOfEmployeeSupplied</td>
+                                                                <td>@d.LocationCovered</td>
+                                                                <td>@d.BackgroundVerification</td>
+                                                                <td class="text-center">
+                                                                    @if (d.PoliceVerification)
+                                                                    {
+                                                                        <i class="fa-solid fa-check text-success"></i>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <i class="fa-solid fa-xmark text-danger"></i>
+                                                                    }
+                                                                </td>
+                                                                <td>@d.OnBoardingSupport</td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    @Html.Action("Vendor_SidebarMenu", "ESS_Vendor_ContactDetails")
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        debugger
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                });
+
+        }
+    });
+
+
+    $("#SaveVendorCapacity").validate({
+        rules: {
+            IndustriesServed: {
+                required: true
+            },
+            SkillSetAvailable: {
+                required: true
+            },
+            NoOfEmployeeSupplied: {
+                required: true
+            },
+            LocationCovered: {
+                required: true
+            },
+            BackgroundVerification: {
+                required: true
+            },
+            PoliceVerification: {
+                required: true
+            },
+        },
+        messages: {
+            IndustriesServed: {
+                required: "Industries Served is required"
+            },
+            SkillSetAvailable: {
+                required: "Skill Set Available Served is required"
+            },
+            NoOfEmployeeSupplied: {
+                required: "No Of Employee Supplied Served is required"
+            },
+            LocationCovered: {
+                required: "Location Covered is required"
+            },
+            BackgroundVerification: {
+                required: "Background Verification is required"
+            },
+            PoliceVerification: {
+                required: "Police Verification is required"
+            },
+        }
+    });
+
+    var form1 = $("#SaveVendorCapacity");
+    form1.validate();
+    $('#btnSubmit').click(function () {
+        debugger
+        if (form1.valid() == false) {
+            return false;
+        }
+        var VendorId = $("#txtVendorId").val();
+        var VendorCapacityId_Encrypted = $("#txtVendorCapacityId_Encrypted").val();
+        $.ajax({
+            url: "@Url.Action("IsVendorCapacityExist", "ESS_Vendor_CapacityDomain")",
+            method: "get",
+            data: { VendorId: VendorId,VendorCapacityId_Encrypted:VendorCapacityId_Encrypted},
+            success: function (response) {
+                debugger
+                if (response.Icon=="error") {
+                    debugger;
+                    if (response.Message != null) {
+                        Swal.fire({
+                            icon: response.Icon,
+                            text: response.Message,
+                            allowOutsideClick: () => {
+                                const popup = Swal.getPopup()
+                                popup.classList.remove('swal2-show')
+                                setTimeout(() => {
+                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                })
+                                setTimeout(() => {
+                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                }, 500)
+                                return false
+                            }
+                        });
+                    }
+                }
+                else{
+                    $("#SaveVendorCapacity").submit();
+                }
+
+            }
+        });
+    });
+    function EditCapacityDomain(id) {
+        debugger
+    $.ajax({
+        url: '@Url.Action("GetCapacityById", "ESS_Vendor_CapacityDomain")',
+        type: 'GET',
+        data: { id: id },
+        success: function (res) {
+            debugger
+            if (!res) {
+                Swal.fire("Error", "Unable to fetch capacity details", "error");
+                return;
+            }
+
+            var data = convertKeyValueArray(res);
+
+            // ✅ Hidden ID
+            $("#txtVendorCapacityId_Encrypted").val(data.VendorCapacityId_Encrypted);
+
+            // ✅ Dropdown
+            $("#txtIndustriesServed").val(data.IndustriesServed);
+
+            // ✅ Textboxes
+            $("#txtSkillSetAvailable").val(data.SkillSetAvailable);
+            $("#txtNoOfEmployeeSupplied").val(data.NoOfEmployeeSupplied);
+            $("#txtLocationCovered").val(data.LocationCovered);
+            $("#txtBackgroundVerification").val(data.BackgroundVerification);
+            $("#txtOnBoardingSupport").val(data.OnBoardingSupport);
+
+            // ✅ Checkbox
+            $("#chkPoliceVerification").prop("checked", data.PoliceVerification == true);
+
+            // ✅ Button text
+            $("#btnSubmit").html('<i class="fa-solid fa-pen"></i> Update');
+        }
+    });
+}
+
+
+    function convertKeyValueArray(arr) {
+        var obj = {};
+        $.each(arr, function (i, item) {
+            obj[item.Key] = item.Value;
+        });
+        return obj;
+    }
+
+
+
+</script>

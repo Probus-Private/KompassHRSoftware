@@ -1,0 +1,613 @@
+﻿@model KompassHR.Areas.Setting.Models.Setting_TimeOffice.Atten_ShiftRule
+@{
+    ViewBag.Title = "Setting_TimeOffice_ShiftRule";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+
+<style>
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 13px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    .Error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 13px;
+    }
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    .col-md-2_5{
+        width:21%;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Shift Rule
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("ESS_AdminDashboard_Dashboard", "ESS_AdminDashboard_Dashboard", new { id = 32, ScreenId = 121, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Setting_TimeOffice_Menu", "Setting_TimeOffice_Menu", new { id = 5, ScreenId =51, area = "Setting" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Settings">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                 <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Shift Rule - <Span>@ViewBag.AddUpdateTitle</Span></h4>
+                
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Define shift rule manual here!
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "Setting_TimeOffice_ShiftRule", new { area = "Setting" })' id="TimeOffice_ShiftRule" method="post" data-parsley-validate="true">
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-5">
+                                                Company Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-7">
+                                                @Html.DropDownListFor(model => model.CmpId, new SelectList(ViewBag.CompanyName, "Id", "Name"), "--Select--", new { name = "CmpId", id = "ddlCompanyName", @class = "form-select", autocomplete = "off" })
+                                                @Html.HiddenFor(model => model.ShiftRuleId_Encrypted, new { id = "ShiftRuleId_Encrypted" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Business Unit
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.ShiftRuleBranchId, new SelectList(ViewBag.Location, "Id", "Name"), "--Select--", new { name = "ShiftBranchId", id = "ddlBusinessUnit", @class = "form-select", autocomplete = "off" })
+                                                @Html.ValidationMessageFor(model => model.ShiftRuleBranchId, "", new { @class = "help-block", id = "ErrorShiftRuleBranchId", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-5">
+                                                Rule Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-7">
+                                                @Html.TextBoxFor(model => model.ShiftRuleName, new { @class = "form-control", type = "text", id = "txtShiftRuleName", autocomplete = "Off", name = "ShiftRuleName" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Rule Short Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.ShiftRuleSName, new { @class = "form-control", type = "text", id = "txtShiftRuleSName", autocomplete = "Off", name = "ShiftRuleSName" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-5">
+                                              OT Calculations
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-7">
+                                      @Html.DropDownListFor(model => model.OTCalculation,new List<SelectListItem>
+                                      {
+                                     new SelectListItem { Text = "--Select--", Value = "" },
+                                      new SelectListItem { Text = "Shift Duration", Value = "ShiftDuration" },
+                                       new SelectListItem { Text = "After Out Punch", Value = "AfterOutPunch" },
+                                      new SelectListItem { Text = "Shift Start + Shift End", Value = "ShiftStartEnd" }
+                                     },
+                                        new { @class = "form-select", id = "ddlOTCalculation" })
+                                                
+                                                
+                                                                                                @*<select id="ddlOTCalculation" class="form-select" name="OTCalculation">
+                                                    <option value="">--Select--</option>
+                                                    <option value="ShiftDuration">Shift Duration</option>
+                                                    <option value="AfterOutPunch">After Out Punch</option>
+                                                    <option value="ShiftStartEnd">Shift Start + Shift End</option>
+                                                </select>*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                 </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-5">
+                                                    Min OT
+
+                                                </label>
+                                                <div class="col-md-7">
+                                                    @Html.TextBoxFor(model => model.MinOT, new { @class = "form-control", type = "number", id = "txtMinOT", autocomplete = "Off", name = "MinOT" })
+                                                    @Html.ValidationMessageFor(model => model.MinOT, "", new { @class = "help-block", id = "ErrorMinOT", @style = "color:red" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px align-items-center">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    @Html.CheckBoxFor(model => model.IsMaxOT, new { id = "ChkIsMaxOT", name = "IsMaxOT" })
+                                                    Max OT
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-6">
+                                                    @Html.TextBoxFor(model => model.MaxOT, new { @class = "form-control", type = "number", id = "txtMaxOT", autocomplete = "Off", name = "EndTime", @readonly = true, Style = "background:#F5F5F5;" })
+                                                    <span id="ErrortxtMaxOT" class="Error"></span>
+                                                </div>
+                                                Minutes
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @*<div class="row">
+                <div class="col-md-12">
+                    <div class="row mb-15px align-items-center">
+                        <label class="form-label col-form-label col-md-2_5">
+                            @Html.CheckBoxFor(model => model.IsMaxOT, new { id = "ChkIsMaxOT", name = "IsMaxOT" })
+                            Max OT
+                            <span class="important">*</span>
+                        </label>
+                        <div class="col-md-3">
+                            @Html.TextBoxFor(model => model.MaxOT, new { @class = "form-control", type = "number", id = "txtMaxOT", autocomplete = "Off", name = "EndTime", @readonly = true, Style = "background:#F5F5F5;" })
+                            <span id="ErrortxtMaxOT" class="Error"></span>
+                        </div>
+                        Minutes
+                    </div>
+                </div>
+            </div>*@
+
+                                    @*<div class="row">
+                <div class="col-md-6">
+                    <div class="row mb-15px">
+                        <div class="col-md-1">
+                            @Html.CheckBoxFor(model => model.IsMaxOT, new { id = "ChkIsMaxOT", name = "IsMaxOT" })
+                        </div>
+                        <label class="form-label col-form-label col-md-4">
+                            Max OT
+                            <span class="important">*</span>
+                        </label>
+                        <div class="col-md-7">
+                            @Html.TextBoxFor(model => model.MaxOT, new { @class = "form-control", type = "number", id = "txtMaxOT", autocomplete = "Off", name = "EndTime", @readonly = true, Style = "background:#F5F5F5;" })
+                            <span id="ErrortxtMaxOT" class="Error"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>*@
+
+
+
+
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row mb-15px align-items-center">
+                                                <label class="form-label col-form-label col-md-2_5">
+                                                    @Html.CheckBoxFor(model => model.IsMarkHalfDayForLate, new { id = "ChkIsMarkHalfDayForLate", name = "IsMarkHalfDayForLate" })
+                                                    Mark Half Day If Late By
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-3">
+                                                    @Html.TextBoxFor(model => model.HalfDayLateByMins, new { @class = "form-control", type = "number", id = "txtHalfDayLateByMins", autocomplete = "Off", name = "HalfDayLateByMins", @readonly = true, Style = "background:#F5F5F5;", onkeypress = "return event.charCode >=48" })
+                                                </div>
+                                                Minutes
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row mb-15px align-items-center">
+                                                <label class="form-label col-form-label col-md-2_5">
+                                                    @Html.CheckBoxFor(model => model.IsMarkHalfdayForEarlyGoing, new { id = "ChkIsMarkHalfdayForEarlyGoing", name = "IsMarkHalfdayForEarlyGoing" })
+                                                    Mark Half Day If Early Going
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-3">
+                                                    @Html.TextBoxFor(model => model.HalfDayEarlyGoingMins, new { @class = "form-control", type = "number", id = "txtHalfDayEarlyGoingMins", autocomplete = "Off", name = "HalfDayEarlyGoingMins", @readonly = true, Style = "background:#F5F5F5;", onkeypress = "return event.charCode >=48" })
+                                                </div>
+                                                Minutes
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2_5">
+                                            </label>
+                                            <label class="form-label col-form-label col-md-8">
+                                                @Html.CheckBoxFor(model => model.IsDefault, new { id = "chkIsDefault", @class = "chkIsDefault" })
+                                                &nbsp;   This Setting Is Applied By Default For Contractor Employees.
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="LastShortLeaveBx">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="BtnBx">
+                                                        <div>
+                                                            <button type="button" id="btnSubmit"
+                                                                    class="btn btn-primary btn-sm">
+                                                                <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                            </button>
+                                                            <a href="@Url.Action("GetList", "Setting_TimeOffice_ShiftRule", new { area = "Setting" })">
+                                                                <button type="button" class="btn btn-danger btn-sm" id="btnShiftRuleList">
+                                                                    <i class="fa-solid fa-share-from-square"></i> List
+                                                                </button>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+</form>
+                        </div>
+                    </div>
+                </div>
+                <!-- END panel -->
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#ddlCompanyName").select2();
+        $("#ddlBusinessUnit").select2();
+        $("#ddlOTCalculation").select2();
+
+        if ($('input[name="IsMaxOT"]').is(':checked')) {
+            $('#txtMaxOT').attr('readonly', false);
+            var inputVal = document.getElementById("txtMaxOT");
+            inputVal.style.background = "#ffffff";
+        }
+        if ($('input[name="IsMarkHalfDayForLate"]').is(':checked')) {
+            $('#txtHalfDayLateByMins').attr('readonly', false);
+            var inputVal = document.getElementById("txtHalfDayLateByMins");
+            inputVal.style.background = "#ffffff";
+        }
+        if ($('input[name="IsMarkHalfdayForEarlyGoing"]').is(':checked')) {
+            $('#txtHalfDayEarlyGoingMins').attr('readonly', false);
+            var inputVal = document.getElementById("txtHalfDayEarlyGoingMins");
+            inputVal.style.background = "#ffffff";
+        }
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        // return false
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+
+
+        $("#ddlCompanyName").on("change", function () {
+            $("#ddlBusinessUnit").find("option").remove();
+            var CmpId = $("#ddlCompanyName").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetBusinessUnit", "Setting_TimeOffice_ShiftRule")',
+                //url: 'GetBusinessUnit',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    debugger;
+                    if (data !=null) {
+                        $("#ddlBusinessUnit").append("<option value=0> --Select-- </option>");
+                        $.each(data, function(i, p) {
+                            $("#ddlBusinessUnit").append();
+                            $("#ddlBusinessUnit").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                        });
+                    }
+                }
+            })
+        });
+
+
+    });//ready function
+
+
+
+    $('#txtMaxOT').keyup(function()  {
+        debugger;
+        var MinOT = Number($('#txtMinOT').val());
+        var MaxOT = Number($('#txtMaxOT').val());
+        if(MinOT > MaxOT)
+        {
+            $('#ErrortxtMaxOT').html("Max OT should be less than Min OT");
+            return false;
+        }
+        else{
+            $('#ErrortxtMaxOT').html("");
+        }
+    });
+</script>
+
+<script>
+
+
+
+
+
+    $("#ChkIsMaxOT").change(function () {
+        debugger;
+        var inputVal = document.getElementById("txtMaxOT");
+        if ($('#ChkIsMaxOT').is(":checked")) {
+            $('#txtMaxOT').attr('readonly', false);
+            inputVal.style.backgroundColor = "";
+        }
+        else
+        {
+            $('#txtMaxOT').attr('readonly', true);
+            inputVal.style.backgroundColor = "#F5F5F5";
+        }
+    });
+
+
+
+
+    $("#ChkIsMarkHalfDayForLate").change(function () {
+        debugger;
+        var inputVal = document.getElementById("txtHalfDayLateByMins");
+        if ($('#ChkIsMarkHalfDayForLate').is(":checked")) {
+            $('#txtHalfDayLateByMins').attr('readonly', false);
+            inputVal.style.backgroundColor = "";
+        }
+        else
+        {
+            $('#txtHalfDayLateByMins').attr('readonly', true);
+            inputVal.style.backgroundColor = "#F5F5F5";
+        }
+    });
+
+    $("#ChkIsMarkHalfdayForEarlyGoing").change(function () {
+        debugger;
+        var inputVal = document.getElementById("txtHalfDayEarlyGoingMins");
+        if ($('#ChkIsMarkHalfdayForEarlyGoing').is(":checked")) {
+            $('#txtHalfDayEarlyGoingMins').attr('readonly', false);
+            inputVal.style.backgroundColor = "";
+        }
+        else
+        {
+            $('#txtHalfDayEarlyGoingMins').attr('readonly', true);
+            inputVal.style.backgroundColor = "#F5F5F5";
+        }
+    });
+</script>
+
+
+<script>
+    //use for add regex function
+    jQuery.validator.addMethod(
+        "regex",
+         function(value, element, regexp) {
+             if (regexp.constructor != RegExp)
+                 regexp = new RegExp(regexp);
+             else if (regexp.global)
+                 regexp.lastIndex = 0;
+             return this.optional(element) || regexp.test(value);
+         },"erreur expression reguliere"
+      );
+    $("#TimeOffice_ShiftRule").validate({
+        rules: {
+            CmpId:{
+                required: true,
+            },
+            ShiftRuleBranchId:{
+                required: true,
+            },
+            ShiftRuleName: {
+                required: true,
+            },
+            ShiftRuleSName: {
+                required: true,
+            },
+            OTFormula: {
+                required: true,
+            },
+          
+            //MinOT: {
+            //    required: true,
+
+            //},
+            MaxOT: {
+                required: true,
+            },
+            FullDayDuration: {
+                required: true,
+            },
+            HalfDayDuration: {
+                required: true,
+            },
+            HalfDayEarlyGoingMins: {
+                required: true,
+            },
+            OTCalculation:{
+                required: true,
+            },
+        },
+        messages: {
+            CmpId:{
+                required: "Company name is required",
+            },
+            ShiftRuleBranchId:{
+                required: "Business unit is required",
+            },
+            ShiftRuleName: {
+                required: "Shift rule name is required",
+            },
+            ShiftRuleSName: {
+                required: "Shift rule short name  is required",
+            },
+            OTFormula: {
+                required: "OT formula is required",
+            },
+            //MinOT: {
+            //    required: "Min OT is required",
+            //},
+            MaxOT: {
+                required: "Max OT is required",
+            },
+            FullDayDuration: {
+                required: "Full day duration is required",
+            },
+            HalfDayDuration: {
+                required: "Half day duration is required",
+            },
+            HalfDayEarlyGoingMins: {
+                required: "Half day erly going min is required",
+            },
+            OTCalculation:{
+                required: "OT calculation is required",
+            },
+        }
+
+    });
+
+    var form = $("#TimeOffice_ShiftRule");
+    form.validate();
+    $("#btnSubmit").click(function () {
+        debugger;
+        form.valid();
+        if(form.valid()==false)
+        {
+            return false;
+        }
+        var ShiftRuleSName=$("#txtShiftRuleSName").val();
+        var CmpId=$("#ddlCompanyName").val();
+        var ShiftRuleBranchId=$("#ddlBusinessUnit").val();
+        var ShiftRuleName=$("#txtShiftRuleName").val();
+        var ShiftRuleId_Encrypted=$("#ShiftRuleId_Encrypted").val();
+        var OTFormula=$("#ddlOTFormula").val();
+        var MinOT=$("#txtMinOT").val();
+        if(ShiftRuleBranchId==0)
+        {
+            $("#ErrorShiftRuleBranchId").html("Business unit is required"); return false;
+        }
+        else
+        {
+            $("#ErrorShiftRuleBranchId").html("");
+        }
+        if(OTFormula=="OT Not Applicable")
+        {
+            $("#ErrorMinOT").html("");
+
+        }
+        else
+        {
+            if(MinOT=="")
+            {
+                $("#ErrorMinOT").html("Min OT is required"); return false;
+            }
+            else{
+                $("#ErrorMinOT").html("");
+            }
+        }
+
+        $.ajax({
+            url: '@Url.Action("IsShiftRuleExists", "Setting_TimeOffice_ShiftRule")',
+            //url: "IsShiftRuleExists",
+            method:"get",
+            data :{ShiftRuleName:ShiftRuleName,ShiftRuleId_Encrypted:ShiftRuleId_Encrypted,ShiftRuleSName:ShiftRuleSName,ShiftRuleBranchId:ShiftRuleBranchId,CmpId:CmpId},
+            success:function(response){
+                debugger;
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon=="error") {
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                        }
+                    }
+                }
+                else{
+                    $("#TimeOffice_ShiftRule").submit();
+                }
+            }
+        });
+
+    });
+</script>

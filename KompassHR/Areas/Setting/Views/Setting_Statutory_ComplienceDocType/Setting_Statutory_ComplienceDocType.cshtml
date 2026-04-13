@@ -1,0 +1,422 @@
+﻿@model KompassHR.Areas.Setting.Models.Setting_Statutory.Payroll_DocType
+@{
+    ViewBag.Title = "Setting_Statutory_ComplienceDocType";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+<style>
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Document-Type Setting
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("ESS_AdminDashboard_Dashboard", "ESS_AdminDashboard_Dashboard", new { id = 32, ScreenId = 121, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Setting_Statutory_Menu", "Setting_Statutory_Menu", new { id =15 ,ScreenId =93, area = "Setting" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Settings">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                 <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Doc-Type Setting - <b>@ViewBag.AddUpdateTitle</b></h4>
+                  
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Define Doc-Type-list here!
+                    </p>
+                </div>
+                <div class="panel-body" data-scrollbar="false">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "Setting_Statutory_ComplienceDocType", new { area = "Setting" })' id="SaveNoDuesChecklist" method="post" data-parsley-validate="">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Complience Type
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-10">
+                                                @Html.TextBoxFor(model => model.ComplienceDocTypeName, new { @class = "form-control", name = "ComplienceDocTypeName", type = "text", id = "txtComplienceDocTypeName", autocomplete = "Off" })
+                                                <label class="form-label col-form-label col-md-4" id="lblClearanceError" style="display: none; color: red;">Enter Complience Name Title</label>
+                                                @Html.HiddenFor(model => model.ComplienceDocTypeId_Encrypted, new { id = "ComplienceDocTypeId_Encrypted" })
+                                                @Html.HiddenFor(model => model.ComplienceDocTypeId, new { id = "ComplienceDocTypeId" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Document Sub Type
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-10">
+                                                @Html.TextBoxFor(model => model.SubTypeName, new { @class = "form-control", name = "SubTypeName", type = "text", id = "txtSubTypeName", autocomplete = "Off" })
+                                                <label class="form-label col-form-label col-md-2" id="lblErrorC" style="display: none; color: red;">Enter Sub Document Name</label>
+                                                <label class="form-label col-form-label col-md-8" id="lblErrorDuplicate" style="display: none; color: red;">Sub Document Name Exists In Table</label>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="BtnBx">
+                                        <div>
+                                            <button type="button" id="btnAdd" onclick="btnABC('A')"
+                                                    class="btn btn-primary btn-sm">
+                                                <i class="fa-solid fa-plus"></i> Add
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <div class="table-scroll div1">
+                                <div class="table-wrap">
+                                    <table class="table table-bordered align-middle " id="data-table-combine"
+                                           style="width: 100%;">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-nowrap" style="width: 80px;">Delete</th>
+                                                <th class="text-nowrap" style="width: 80px;">Sr. No</th>
+                                                <th class="text-nowrap">Document Sub Type</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tblBodySubTypeName"></tbody>
+                                    </table>
+                                    <label class="form-label col-form-label col-md-2" id="lbltblerror" style="display: none; color: red;">Enter Required Clearance </label>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="LastShortLeaveBx">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="BtnBx">
+                                                <div>
+                                                    <button type="button" id="btnSubmit" onclick="btnSubmit('A')"
+                                                            class="btn btn-primary btn-sm">
+                                                        <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                    </button>
+                                                    <a href="@Url.Action("GetList", "Setting_Statutory_ComplienceDocType", new { area = "Setting" })">
+                                                        <button type="button" class="btn btn-danger btn-sm" id="btnGetNoDuesCheckList">
+                                                            <i class="fa-solid fa-share-from-square"></i> List
+                                                        </button>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- END panel -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        var SubTypeName =@Html.Raw(Json.Encode(ViewBag.GetSubTypeName));
+        debugger;
+        if (SubTypeName != null) {
+            var table = document.getElementById("tblBodySubTypeName");
+            var count= SubTypeName.length;
+
+            var ComplienceDocTypeName=$('#txtComplienceDocTypeName').val();
+            // Loop through the SubTypeName array
+            for (var i = 0; i < SubTypeName.length; i++) { // Use '<' instead of '<=' to avoid accessing undefined element
+
+                // Insert a new row at the end of the table body
+                var row = table.insertRow(table.rows.length);
+
+                // Insert delete button cell
+                var deleteButtonCell = row.insertCell(0);
+                deleteButtonCell.innerHTML = '<center><a href="javascript:void(0);" type="button" onclick="deleteRow(this)" id="btnDelete" style="cursor:pointer;">' +
+                    '<i class="fa-solid fa-trash-alt text-danger fa-lg"></i></a></center>';
+
+                // Insert the option value cells
+                row.insertCell(1).innerHTML = SubTypeName[i][0].Value; // Value from first column of SubTypeName array
+                row.insertCell(2).innerHTML = SubTypeName[i][1].Value; // Value from second column of SubTypeName array
+            }
+        }
+    })
+
+    var srno = 1;
+    var count=0;
+    var SubTypeName =@Html.Raw(Json.Encode(ViewBag.GetSubTypeName));
+    if(SubTypeName.length>0){
+        count= SubTypeName.length;
+
+    }
+    else{
+        count=0;
+    }
+    function btnABC(a) {
+        debugger;
+
+        var optioSubTypeNamen = document.getElementById("txtSubTypeName").value;
+        var error = document.getElementById("lblErrorC");lblErrorDuplicate
+        if (SubTypeName === "") {
+            error.style.display = "block";
+        } else {
+            error.style.display = "none";
+        }
+
+        var inputData = document.getElementById("txtSubTypeName").value.trim();
+
+        // If the input box is not empty
+        if (inputData !== "") {
+            // Get the table body
+            var tableBody = document.getElementById("tblBodySubTypeName");
+            var rows = tableBody.getElementsByTagName("tr");
+            var isDuplicate = false;
+
+            // Check for duplicates
+            for (var i = 0; i < rows.length; i++) {
+
+                var cellValue = rows[i].cells[2].textContent.trim(); // Assuming the data is in the third column (index 2)
+                if (cellValue === inputData) {
+                    isDuplicate = true;
+                    break;
+                }
+            }
+            var DuplicateError = document.getElementById("lblErrorDuplicate");
+            if (isDuplicate) {
+                DuplicateError.style.display = "block";
+                return;
+            }
+            else{
+                DuplicateError.style.display = "none";
+
+            }
+
+            var ComplienceDocTypeName = $('#txtComplienceDocTypeName').val();
+
+            // Create a new row
+            var newRow = tableBody.insertRow();
+
+            // Insert delete button cell
+            var deleteButtonCell = newRow.insertCell(0);
+            deleteButtonCell.innerHTML = '<center><a href="javascript:void(0);" type="button" onclick="deleteRow(this)" id="btnDelete" style="cursor:pointer;">' +
+                '<i class="fa-solid fa-trash-alt text-danger fa-lg"></i></a></center>';
+
+            // Create cells for other columns
+            var cell1 = newRow.insertCell(1);
+            var cell2 = newRow.insertCell(2);
+
+            // Add the input values to their respective columns
+            count++;
+            cell1.textContent = count;
+            cell2.textContent = inputData;
+
+            srno++;
+            document.getElementById("txtSubTypeName").value = "";
+            adjustSerialNumbers();
+            //if (srno > 1) {
+            //    document.getElementById("txtComplienceDocTypeName").readOnly = true;
+            //}
+        }
+    }
+    function deleteRow(button) {
+        debugger;
+        var row = button.closest("tr"); // Find the row closest to the clicked button
+        row.remove();  // Remove the row when the button is clicked
+        adjustSerialNumbers();
+
+    }
+    function adjustSerialNumbers() {
+        debugger;
+        var rows = document.getElementById("tblBodySubTypeName").rows;  // Get all rows in the table
+
+        // Loop through the rows and update serial numbers
+        for (var i = 0; i <= rows.length; i++) {
+            rows[i].cells[1].textContent = i + 1;
+            if(rows.length>0){
+                count = i + 1;// Set new SRNO based on the index
+            }
+            else{
+                count=1;
+            }
+        }
+    }
+
+    var form = $("#SaveUpdate");
+    form.validate();
+    function btnSubmit(a)  {
+        debugger;
+
+        var ComplienceDocTypeId_Encrypted=$("#ComplienceDocTypeId_Encrypted").val();
+        var ComplienceDocTypeName=$('#txtComplienceDocTypeName').val();
+        var ComplienceDocTypeId=Number($("#ComplienceDocTypeId").val());
+        var SubTypeName = document.getElementById("txtSubTypeName").value;
+        var error = document.getElementById("lblClearanceError");
+        if(ComplienceDocTypeName==""){
+            error.style.display = "block";
+            return false;
+        }
+        else{
+            error.style.display = "none";
+        }
+
+        $.ajax({
+
+            url: '@Url.Action("IsDocumentExists", "Setting_Statutory_ComplienceDocType")',
+            method:"get",
+            data:{ComplienceDocTypeName:ComplienceDocTypeName,ComplienceDocTypeId_Encrypted:ComplienceDocTypeId_Encrypted},
+            success:function(response){
+                debugger;
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon=="error") {
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                        }
+                    }
+                }
+
+                else{
+                    var ComplienceDocTypeId_Encrypted= $("#ComplienceDocTypeId_Encrypted").val();
+
+                    var table = document.getElementById("tblBodySubTypeName");
+                    var rowCount = table.rows.length;
+                    var Task = new Array();
+
+                    for (i = 0; i <= rowCount-1; i++) {
+                        var data = {};
+                        data.SubTypeName = table.rows[i].cells[2].innerHTML;
+                        Task.push(data);
+                    }
+                    debugger;
+                    var error = document.getElementById("lbltblerror");
+                    if(rowCount<=0){
+                        error.style.display="block";
+                    }
+                    else{
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("SaveUpdate", "Setting_Statutory_ComplienceDocType")',
+                            data: JSON.stringify({Task: Task,ComplienceDocTypeName:ComplienceDocTypeName,ComplienceDocTypeId_Encrypted:ComplienceDocTypeId_Encrypted,ComplienceDocTypeId:ComplienceDocTypeId}),
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "json",
+                            success: function (response)
+                            {
+                                debugger;
+                                var Message1 = response.Message;
+                                var Icon1 = response.Icon;
+                                if (response !=null) {
+                                    if (Message1 != null) {
+                                        Swal.fire({
+                                            icon: Icon1,
+                                            text: Message1,
+                                            allowOutsideClick: () => {
+                                                const popup = Swal.getPopup()
+                                                popup.classList.remove('swal2-show')
+                                                setTimeout(() => {
+                                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                                })
+                                                setTimeout(() => {
+                                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                                }, 500)
+                                                return false
+                                            }
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                window.location.href = '@Url.Action("Setting_Statutory_ComplienceDocType", "Setting_Statutory_ComplienceDocType")';
+                                            } else if (
+                                                /* Read more about handling dismissals below */
+                                                result.dismiss === Swal.DismissReason.cancel
+                                            ) {
+
+                                            }
+                                        })
+                                    }
+                                    // location.reload();
+                                }
+                            }
+                        });
+                    }
+                    var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+                    var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+                    debugger;
+                    if (Message != null) {
+                        if (Message != null) {
+                            Swal.fire({
+                                icon: Icon,
+                                text: Message,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+        })
+    }
+
+</script>

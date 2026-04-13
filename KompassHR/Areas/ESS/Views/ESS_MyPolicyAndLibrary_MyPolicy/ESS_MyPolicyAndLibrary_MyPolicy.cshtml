@@ -1,0 +1,462 @@
+﻿
+@{
+    ViewBag.Title = "ESS_MyPolicyAndLibrary_MyPolicy";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+
+<html>
+<head>
+    <style>
+        .box {
+            width: 100px;
+            height: 100px;
+            backdrop-filter: blur(25px) saturate(00%);
+            background-color: rgba(255, 255, 255, 1);
+            border-radius: 12px;
+            border: 3px solid rgba(255, 255, 255, 1);
+            margin: 5px;
+            box-shadow: inset 0 15px 25px rgba(0, 0, 0, 0.03), inset 0px -15px 25px rgba(0, 0, 0, 0.03), 0 15px 25px rgba(0, 0, 0, 0.05);
+            padding: 15px 0px;
+            font-family: 'Montserrat', sans-serif;
+            position: relative;
+            z-index: 0;
+        }
+
+            .box:hover {
+                /* BORDER:2PX SOLID #666; */
+                border: 2px solid #007bff;
+                cursor: pointer;
+                transform: translateY(-4px);
+            }
+
+
+            .box .info i {
+                font-size: 18px;
+                width: 100%;
+                text-align: center;
+                margin-bottom: 15px;
+                color: #007bff;
+            }
+
+            .box :hover.INFO i,
+            .box:hover .info h7 {
+                COLOR: #000;
+            }
+
+            .box .info h7 {
+                font-size: 11px;
+                text-align: center;
+                display: flex;
+                justify-content: center;
+                font-weight: 900 !important;
+                text-transform: capitalize;
+                margin-bottom: 2px;
+                padding: 0 10px;
+                color: #444;
+            }
+
+        .Col-md-2 {
+            margin: 10px 0;
+        }
+
+        a .icon2 {
+            text-align: center;
+            width: 100%;
+        }
+
+            a .icon2 i {
+                font-size: 40px;
+                color: #007bff;
+            }
+
+        .icon2 h7 {
+            font-weight: 600;
+        }
+        .callout {
+            /*position: fixed;*/
+            bottom: 35px;
+            right: 20px;
+            margin-left: 20px;
+            max-width: 300px;
+
+        }
+
+        .callout-header {
+            padding: 25px 15px;
+            background: #FFFACD ;
+            font-size: 20px;
+            color: black;
+            border:solid;
+        }
+
+        .callout-container {
+            padding: 15px;
+            background-color: #ccc;
+            color: black;
+            border:solid;
+        }
+
+        .closebtn {
+            position: absolute;
+            top: 5px;
+            right: 15px;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+        }
+
+            .closebtn:hover {
+                color: lightgrey;
+            }
+    </style>
+</head>
+
+<body>
+
+    <div id="content" class="app-content">
+        <div class="row" style="margin-bottom: 10px;">
+            <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+                <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                    My Policy
+                </h1>
+                <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                    <li style="margin-right: 10px;">
+                        <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                            <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("ESS_MyPolicyAndLibrary_Menu", "ESS_MyPolicyAndLibrary_Menu",  new { id = 17,ScreenId=205, area = "ESS" })">
+                            <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                        </a>
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <!-- BEGIN panel -->
+                <div class="panel panel-inverse" data-sortable-id="index-1">
+                    <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                        <h4 class="panel-title">Menu</h4>
+                        <div class="panel-heading-btn">
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        </div>
+                    </div>
+                    <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                        <p class="pb-0">
+                            This is the list of policies applicable to you.
+                        </p>
+                    </div>
+                    @*<div class="panel-body" style="max-height: max-content; background: #f5f8ff;" id="PolicyLibrary">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        @foreach (var d in ViewBag.GetEmployeeNamePolicy)
+                                            {
+                                                <div class="col-md-3 col-6 d-flex justify-content-center">
+                                                    <a style="text-decoration: none; color: #000;">
+                                                        <div class="icon2" onclick="PolicyName('@d.PolicyLibraryPolicyId','@d.FileType')">
+                                                            <i class="fa-regular fa-folder-open"></i>
+                                                            <br>
+                                                            <h1 hidden>@d.PolicyLibraryId</h1>
+                                                            <h1 hidden>@d.PolicyLibraryPolicyId</h1>
+                                                            <h7>@d.PolicyName</h7>
+                                                        </div>
+                                                    </a>
+                                                </div>
+                                            }
+                                        @foreach (var d in ViewBag.GetEmployeeNamePolicy)
+                                        {
+
+                                            <div class="callout">
+                                                <br />
+
+                                                <div class="callout-header"><i class="fa-solid fa-file-lines"></i> @d.PolicyName</div>
+                                                <div class="callout-container">
+                                                    <p> @d.Remark</p>
+                                                    <a href="#" onclick="PolicyName('@d.DocumentPath.Replace("\\", "/")', '@d.PolicyLibraryPolicyId')">View Policy</a>
+                                                    <a href="#" onclick="PolicyName('@d.DocumentPath.Replace("\\", "/")', '@d.PolicyLibraryId')" id="ViewPDF" embed src="">View Policy</a>
+                                                   <embed src="" id="ViewPDF" />
+                                                </div>
+                                            </div>
+
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>*@
+
+              @{
+                  var groupedPolicies = ((IEnumerable<dynamic>)ViewBag.GetEmployeeNamePolicy)
+                                        .GroupBy(x => x.GroupName);
+            }
+
+            <div class="panel-body py-4" style="background: #f5f8ff;" id="PolicyLibrary">
+                @foreach (var group in groupedPolicies)
+                {
+                    var firstPolicy = group.FirstOrDefault(); // take first policy for header concat
+
+                    <div class="mb-4">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle policy-table">
+                                <thead>
+                                    <tr class="group-header">
+                                        <th colspan="3">
+                                            <i class="fa-solid fa-layer-group"></i>
+                                            @group.Key - @firstPolicy.PolicyName
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var d in group)
+                                    {
+                                        <tr>
+                                            <td class="text-center action-col">
+                                                @{
+                                                    string filePath = d.DocumentPath?.ToLower() ?? "";
+
+                                                    bool isPdf = filePath.StartsWith("data:application/pdf") || filePath.EndsWith(".pdf");
+                                                    bool isExcel = filePath.EndsWith(".xls") || filePath.EndsWith(".xlsx") || filePath.EndsWith(".csv");
+                                                    bool isImage = filePath.EndsWith(".jpg") || filePath.EndsWith(".jpeg") ||
+                                                                   filePath.EndsWith(".png") || filePath.EndsWith(".gif") ||
+                                                                   filePath.EndsWith(".bmp") || filePath.StartsWith("data:image/");
+
+                                                    bool isWord = filePath.EndsWith(".doc") || filePath.EndsWith(".docx") ||
+                                                                  filePath.StartsWith("data:application/msword") ||
+                                                                  filePath.StartsWith("data:application/vnd.openxmlformats-officedocument.wordprocessingml.document");
+                                                }
+
+                                                @if (isPdf)
+                                                {
+                                                    <a href="javascript:void(0);" onclick="showPDF('@d.DocumentPreview')" class="w-sm-200px">
+                                                        <i class="fa fa-file-pdf text-danger fa-2x"></i>
+                                                    </a>
+
+                                                }
+                                                else if (isWord)
+                                                {
+                                                    <a href="javascript:void(0);" onclick="showWord('@d.DocumentPreview')" class="w-sm-200px">
+                                                        <i class="fa fa-file-word text-primary fa-2x"></i>
+                                                    </a>
+                                                }
+                                                else if (isImage)
+                                                {
+                                                    <a href="javascript:void(0);" onclick="showImage('@d.DocumentPreview')" class="w-sm-200px">
+                                                        <img class="mw-100 rounded" src="@d.DocumentPreview" alt="@d.DocumentPreview" />
+                                                    </a>
+                                                }
+                                                else if (isImage)
+                                                {
+                                                    <a href="javascript:void(0);" onclick="showImage('@d.DocumentPreview')" class="w-sm-200px">
+                                                        <img class="mw-100 rounded" src="@d.DocumentPreview" alt="@d.DocumentPreview" />
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    <a href="@d.FilePath" target="_blank" class="w-sm-200px d-block text-center border rounded p-3 bg-light">
+                                                        <i class="fa fa-file text-secondary fa-2x"></i>
+                                                        <div class="small text-muted mt-1">Other File</div>
+                                                    </a>
+                                                }
+
+                                                @*<a href="#" onclick="PolicyName('@d.DocumentPath.Replace("\\", "/")', '@d.PolicyLibraryId')" class="btn btn-sm btn-outline-primary">
+                                                    <i class="fa-solid fa-eye"></i>
+                                                </a>*@
+                                            </td>
+                                            <td class="text">@d.Remark</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <style>
+                .policy-table {
+                    background: #fff;
+                    border-radius: 10px;
+                    overflow: hidden;
+                    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+                }
+
+                    .policy-table .group-header th {
+                        background: #e9f2ff;
+                        color: #0d6efd;
+                        font-weight: 600;
+                        font-size: 16px;
+                        border-bottom: 2px solid #cfe2ff;
+                        padding: 10px 12px;
+                    }
+
+                    .policy-table tr:hover {
+                        background: #f8fbff;
+                        transition: background 0.2s ease;
+                    }
+
+                    .policy-table td {
+                        vertical-align: middle;
+                        padding: 10px 12px;
+                    }
+
+                    .policy-table .action-col {
+                        width: 50px;
+                    }
+            </style>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<div class="modal fade" id="mediaModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <!-- Modal Header with Close Button -->
+            <div class="modal-header">
+                <h5 class="modal-title">Media Viewer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <!-- Modal Body -->
+            <div class="modal-body" id="modalContent1">
+                <!-- Content dynamically injected -->
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    @*function PolicyName(DocumentPath, PolicyLibraryId) {
+        debugger;
+        var PolicyLibraryIdNo = Number(PolicyLibraryId);
+        var encodedPath = encodeURIComponent(DocumentPath);
+
+        // Build the PDF preview URL
+        // Build the URL like Html.ActionLink
+        var pdfUrl = '@Url.Action("PDFPreview", "ESS_MyPolicyAndLibrary_MyPolicy")' + '?filename=' + encodedPath + '&policyLibraryId=' + PolicyLibraryIdNo;
+        document.getElementById("ViewPDF").src = pdfUrl + "#toolbar=0&navpanes=0&scrollbar=0";
+
+        // Redirect or open in a new tab
+        window.location.href = pdfUrl;
+        // Open the PDF in a new tab (optional)
+
+        @*var GetPDFSrc = @(Html.Raw(Json.Encode(TempData["GetFileName"])));
+        if(GetPDFSrc!="")
+        {
+            document.getElementById("ViewPDF").src =GetPDFSrc+"#toolbar=0&navpanes=0&scrollbar=0";
+        }*
+
+        @*var correctedPath = DocumentPath.replace(/\//g, '\\');
+        var url = '@Url.Action("PDFPreview", "ESS_MyPolicyAndLibrary_MyPolicy")?filename=' + encodeURIComponent(correctedPath);*
+
+        @*var correctedPath = DocumentPath.replace(/\//g, '\\');
+
+        var url = '@Url.Action("Download", "ESS_MyPolicyAndLibrary_MyPolicy")?DocumentPath=' + encodeURIComponent(correctedPath) + '&PolicyLibraryPolicyId=' + PolicyLibraryPolicyId;*
+
+        //window.location.href = url;
+    }*@
+
+</script>
+
+
+
+<script>
+    function showPDF(base64Data) {
+        if (!base64Data) {
+            Swal.fire({
+                text: 'file not found!.',
+                icon: 'info',
+                allowOutsideClick: false
+            });
+            return false;
+        }
+        // Directly use base64 string
+        const iframe = `<iframe src="${base64Data}#toolbar=0&navpanes=0&scrollbar=0"
+                             width="100%" height="600px" style="border:none;"></iframe>`;
+
+        $('#modalContent1').html(iframe);
+        new bootstrap.Modal(document.getElementById('mediaModal')).show();
+    }
+
+    // It is not possible to preview this file, so it will be downloaded directly.
+    function showWord(base64Data) {
+        if (!base64Data) {
+            Swal.fire({
+                text: 'file not found!.',
+                icon: 'info',
+                allowOutsideClick: false
+            });
+            return false;
+        }
+        // Directly use base64 string
+        const iframe = `<iframe src="${base64Data}#toolbar=0&navpanes=0&scrollbar=0"
+                             width="100%" height="600px" style="border:none;"></iframe>`;
+
+        $('#modalContent1').html(iframe);
+        //new bootstrap.Modal(document.getElementById('mediaModal')).show();
+    }
+
+    function showImage(base64Data) {
+        if (!base64Data) {
+            Swal.fire({
+                text: 'Image not found!.',
+                icon: 'info',
+                allowOutsideClick: false
+            });
+            return false;
+        }
+        const img = `<img src="${base64Data}" class="img-fluid rounded" />`;
+        $('#modalContent1').html(img);
+        new bootstrap.Modal(document.getElementById('mediaModal')).show();
+    }
+
+
+    function showExcel(base64Data) {
+        if (!base64Data) {
+            Swal.fire({
+                text: 'Excel file not found!.',
+                icon: 'info',
+                allowOutsideClick: false
+            });
+            return false;
+        }
+
+        $.ajax({
+            url: '@Url.Action("PreviewExcel", "ESS_MyPolicyAndLibrary_MyPolicy", new { area = "ESS" })',
+            type: 'POST',
+            data: { base64File: base64Data },
+            success: function (res) {
+                if (res.success) {
+                    const iframe = `<iframe src="https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(res.url)}"
+                                         width="100%" height="600px" style="border:none;"></iframe>`;
+                    $('#modalContent1').html(iframe);
+                    new bootstrap.Modal(document.getElementById('mediaModal')).show();
+                } else {
+                    Swal.fire({ icon: "error", text: res.message });
+                }
+            },
+            error: function () {
+                Swal.fire({ icon: "error", text: "Error while previewing file." });
+            }
+        });
+    }
+
+
+
+</script>

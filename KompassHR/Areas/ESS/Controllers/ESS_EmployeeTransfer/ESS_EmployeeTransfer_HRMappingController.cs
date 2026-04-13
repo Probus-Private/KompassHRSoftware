@@ -1,0 +1,245 @@
+﻿using Dapper;
+using System;
+using System.Collections.Generic;
+
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using KompassHR.Models;
+using System.Net;
+using System.Data;
+using System.Data.SqlClient;
+using System.Text;
+using KompassHR.Areas.ESS.Models.ESS_EmployeeTransfer;
+
+namespace KompassHR.Areas.ESS.Controllers.ESS_EmployeeTransfer
+{
+    public class ESS_EmployeeTransfer_HRMappingController : Controller
+    {
+        DynamicParameters param = new DynamicParameters();
+        SqlConnection sqlcon = new SqlConnection(DapperORM.connectionString);
+        clsCommonFunction objcon = new clsCommonFunction();
+        StringBuilder strBuilder = new StringBuilder();
+
+        // GET: ESS/ESS_EmployeeTransfer_HRMapping
+        public ActionResult ESS_EmployeeTransfer_HRMapping(string FNFHRMappingID_Encrypted)
+        {
+            try
+            {
+                if (Session["EmployeeId"] == null)
+                {
+                    return RedirectToAction("Login", "Login", new { Area = "" });
+                }
+                // CHECK IF USER HAS ACCESS OR NOT
+                int screenId = Request.QueryString["ScreenId"] != null ? Convert.ToInt32(Request.QueryString["ScreenId"]) : 486;
+                bool CheckAccess = new BulkAccessClass().CheckAccess(screenId, Convert.ToInt32(Session["UserAccessPolicyId"]));
+                if (!CheckAccess)
+                {
+                    Session["AccessCheck"] = "False";
+                    return RedirectToAction("Dashboard", "Dashboard", new { area = "" });
+                }
+                //GET COMPANY NAME
+                var GetComapnyName = new BulkAccessClass().GetCompanyName();
+                ViewBag.CompanyName = GetComapnyName;
+                ViewBag.BranchName = "";
+                ViewBag.EmployeeName = "";
+
+
+                param.Add("@query", "select FNFNoDuesId as Id, NoDuesAndClearenceTitle as [Name] from FNF_DuesAndClearence_Master where Deactivate=0");
+                var list_NoDuesName = DapperORM.ReturnList<AllDropDownBind>("sp_QueryExcution", param).ToList();
+                ViewBag.NoDuesName = list_NoDuesName;
+
+                Trans_HRMapping OBJTrans_HRMapping = new Trans_HRMapping();
+
+                if (FNFHRMappingID_Encrypted != null)
+                {
+                    ViewBag.AddUpdateTitle = "Update";
+
+                    param = new DynamicParameters();
+                    param.Add("@p_FNFHRMappingID_Encrypted", FNFHRMappingID_Encrypted);
+                    OBJTrans_HRMapping = DapperORM.ReturnList<Trans_HRMapping>("sp_List_Trans_HRMapping", param).FirstOrDefault();
+
+                    var Branch = new BulkAccessClass().GetBusinessUnit(Convert.ToInt32(OBJTrans_HRMapping.CompanyID), Convert.ToInt32(Session["EmployeeId"]));
+                    ViewBag.BranchName = Branch;
+
+                    var EmployeeName = new BulkAccessClass().GetEmployeeName(Convert.ToInt32(OBJTrans_HRMapping.BusinessUnitID));
+                    ViewBag.EmployeeName = EmployeeName;
+                }
+                return View(OBJTrans_HRMapping);
+            }
+            catch (Exception ex)
+            {
+                Session["GetErrorMessage"] = ex.Message;
+                return RedirectToAction("ErrorPage", "Login");
+            }
+        }
+
+        #region GetList Main View
+        [HttpGet]
+        public ActionResult GetList()
+        {
+            try
+            {
+                if (Session["EmployeeId"] == null)
+                {
+                    return RedirectToAction("Login", "Login", new { Area = "" });
+                }
+                // CHECK IF USER HAS ACCESS OR NOT
+                int screenId = Request.QueryString["ScreenId"] != null ? Convert.ToInt32(Request.QueryString["ScreenId"]) : 486;
+                bool CheckAccess = new BulkAccessClass().CheckAccess(screenId, Convert.ToInt32(Session["UserAccessPolicyId"]));
+                if (!CheckAccess)
+                {
+                    Session["AccessCheck"] = "False";
+                    return RedirectToAction("Dashboard", "Dashboard", new { area = "" });
+                }
+
+                param.Add("@P_FNFHRMappingID_Encrypted", "List");
+                var data = DapperORM.ExecuteSP<dynamic>("sp_List_Trans_HRMapping", param).ToList();
+                ViewBag.GetNoDuesCheckListList = data;
+                return View();
+            }
+            catch (Exception ex)
+            {
+                Session["GetErrorMessage"] = ex.Message;
+                return RedirectToAction("ErrorPage", "Login");
+            }
+        }
+        #endregion
+
+        #region IsValidaton
+        [HttpGet]
+        public ActionResult IsNoDuesCheckListExists(int CompanyID, int BusinessUnitID, int EmployeeId, string FNFHRMappingID_Encrypted)
+        {
+            try
+            {
+                param.Add("@p_process", "IsValidation");
+                param.Add("@p_FNFHRMappingID_Encrypted", FNFHRMappingID_Encrypted);
+                param.Add("@P_CompanyID", CompanyID);
+                param.Add("@P_BusinessUnitID", BusinessUnitID);
+                param.Add("@P_EmployeeID", EmployeeId);
+                param.Add("@p_MachineName", Dns.GetHostName().ToString());
+                param.Add("@p_CreatedUpdateBy", Session["EmployeeName"]);
+                param.Add("@p_msg", dbType: DbType.String, direction: ParameterDirection.Output, size: 500);
+                param.Add("@p_Icon", dbType: DbType.String, direction: ParameterDirection.Output, size: 500);
+                var Result = DapperORM.ExecuteReturn("sp_SUD_Trans_HRMapping", param);
+                var Message = param.Get<string>("@p_msg");
+                var Icon = param.Get<string>("@p_Icon");
+                if (Message != "")
+                {
+                    return Json(new { Message, Icon }, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json(true, JsonRequestBehavior.AllowGet);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Session["GetErrorMessage"] = ex.Message;
+                return RedirectToAction("ErrorPage", "Login");
+            }
+        }
+        #endregion
+
+        #region SaveUpdate
+        [HttpPost]
+        public ActionResult SaveUpdate(Trans_HRMapping HRMapping)
+        {
+            try
+            {
+                param.Add("@p_process", string.IsNullOrEmpty(HRMapping.FNFHRMappingID_Encrypted) ? "Save" : "Update");
+                param.Add("@P_FNFHRMappingID", HRMapping.FNFHRMappingID);
+                param.Add("@P_FNFHRMappingID_Encrypted", HRMapping.FNFHRMappingID_Encrypted);
+                param.Add("@p_MachineName", Dns.GetHostName().ToString());
+                param.Add("@p_CreatedUpdateBy", Session["EmployeeName"]);
+                param.Add("@P_CompanyID", HRMapping.CompanyID);
+                param.Add("@P_BusinessUnitID", HRMapping.BusinessUnitID);
+                param.Add("@P_EmployeeID", HRMapping.EmployeeID);
+                param.Add("@p_msg", dbType: DbType.String, direction: ParameterDirection.Output, size: 500);//OutPut Parameter
+                param.Add("@p_Icon", dbType: DbType.String, direction: ParameterDirection.Output, size: 500);//OutPut Parameter
+                var data = DapperORM.ExecuteReturn("sp_SUD_Trans_HRMapping", param);
+                TempData["Message"] = param.Get<string>("@p_msg");
+                TempData["Icon"] = param.Get<string>("@p_Icon");
+                return RedirectToAction("ESS_EmployeeTransfer_HRMapping", "ESS_EmployeeTransfer_HRMapping");
+            }
+            catch (Exception ex)
+            {
+                Session["GetErrorMessage"] = ex.Message;
+                return RedirectToAction("ErrorPage", "Login");
+            }
+
+        }
+        #endregion
+
+        #region GetBusinessUnit
+        [HttpGet]
+        public ActionResult GetBusinessUnit(int CmpId)
+        {
+            try
+            {
+                if (Session["EmployeeId"] == null)
+                {
+                    return RedirectToAction("Login", "Login", new { area = "" });
+                }
+                var Branch = new BulkAccessClass().GetBusinessUnit(Convert.ToInt32(CmpId), Convert.ToInt32(Session["EmployeeId"]));
+                return Json(new { Branch = Branch }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                Session["GetErrorMessage"] = ex.Message;
+                return RedirectToAction("ErrorPage", "Login");
+            }
+
+        }
+        #endregion
+
+        #region GetEmployeeName
+        [HttpGet]
+        public ActionResult GetEmployeeName(int BranchId)
+        {
+            try
+            {
+                if (Session["EmployeeId"] == null)
+                {
+                    return RedirectToAction("Login", "Login", new { area = "" });
+                }
+                var EmployeeName = new BulkAccessClass().GetEmployeeName(Convert.ToInt32(BranchId));
+                return Json(new { EmployeeName = EmployeeName }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                Session["GetErrorMessage"] = ex.Message;
+                return RedirectToAction("ErrorPage", "Login");
+            }
+
+        }
+        #endregion
+
+        #region Delete
+        [HttpGet]
+        public ActionResult Delete(string FNFHRMappingID_Encrypted)
+        {
+            try
+            {
+                param.Add("@p_process", "Delete");
+                param.Add("@P_FNFHRMappingID_Encrypted", FNFHRMappingID_Encrypted);
+                param.Add("@p_MachineName", Dns.GetHostName().ToString());
+                param.Add("@p_msg", dbType: DbType.String, direction: ParameterDirection.Output, size: 500);
+                param.Add("@p_Icon", dbType: DbType.String, direction: ParameterDirection.Output, size: 500);
+                var Result = DapperORM.ExecuteReturn("sp_SUD_Trans_HRMapping", param);
+                TempData["Message"] = param.Get<string>("@p_msg");
+                TempData["Icon"] = param.Get<string>("@p_Icon");
+                return RedirectToAction("GetList", "ESS_EmployeeTransfer_HRMapping");
+            }
+            catch (Exception ex)
+            {
+                Session["GetErrorMessage"] = ex.Message;
+                return RedirectToAction("ErrorPage", "Login");
+            }
+        }
+        #endregion
+
+
+    }
+}

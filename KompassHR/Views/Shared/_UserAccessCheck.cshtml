@@ -1,0 +1,42 @@
+﻿
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+
+<div>
+   
+</div>
+
+<script>
+    $(document).ready(function() {
+        debugger;
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        if (Message != null) {
+            Swal.fire({
+                icon: Icon,
+                text: Message,
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup()
+                    popup.classList.remove('swal2-show')
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                    })
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                    }, 500)
+                    return false
+                }
+            }).then(function() {
+                window.location.href = '@Url.Action("Login", "Login", new { Area = "" })';
+            });
+        }
+    });
+</script>
+

@@ -1,0 +1,942 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_FNF.FNF_EmployeeResignation
+
+@{
+    ViewBag.Title = "ESS_FNF_EmployeeResignation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Required library for validation -->
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+<script src="~/assets/js/CaptchaVerification.js"></script>
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+<style>
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+        /*color: red;*/
+    }
+
+    .tblAddData td:nth-child(1) {
+        text-align: center;
+    }
+
+    .tblAddData td:nth-child(6) {
+        display: none;
+    }
+
+    .tblAddData td:nth-child(7) {
+        display: none;
+    }
+
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        /*overflow: auto;*/
+    }
+
+    .dataTables_scrollBody::-webkit-scrollbar {
+        width: 10px !important;
+        background-color: #F5F5F5;
+    }
+    /* Horizontal scrollbar */
+    .dataTables_scrollBody::-webkit-scrollbar {
+        height: 10px;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Employee Resignation By HR
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_FNF_Menu", "ESS_FNF_Menu",  new { id = 7,ScreenId=168, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Employee Resignation By HR -@ViewBag.AddUpdateTitle</h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Add employee resignation through HR when employee exit!
+                    </p>
+                </div>
+
+                <div class="panel-body" data-scrollbar="true">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "ESS_FNF_EmployeeResignation", new { area = "ESS" })' id="SaveEmployeeResignation" method="post">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Company Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.CmpId, new SelectList(ViewBag.GetCompanyName, "Id", "Name"), "--Select--", new { id = "ddlCmpID", @class = "form-select", name = "VariableDeductionCmpId" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Business Unit
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.FnfBranchID, new SelectList(ViewBag.GetBranchName, "Id", "Name"), "--Select---", new { id = "ddlFNFBranchID", @class = "form-select", name = "VariableDeductionBranchId" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Employee Name <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.FnfEmployeeId, new SelectList(ViewBag.AllEmployeeName, "Id", "Name"), "--Select--", new { id = "ddlFnfEmployee", @class = "form-select", autocomplete = "off", name = "Employee" })
+                                                @Html.HiddenFor(model => model.FnfId_Encrypted, new { @class = "form-control", id = "FnfId_Encrypted" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Resignation Reason <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.FnfReasonId, new SelectList(ViewBag.GetReasonName, "ReasonId", "ReasonName"), "--Select--", new { id = "ddlFnfReason", @class = "form-select", autocomplete = "off", name = "Reason" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @*<div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                              Resignation Type
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.ResignationType, new List<SelectListItem>{
+                                                new SelectListItem { Text = "Termination", Value = "Termination"},
+                                                    new SelectListItem { Text = "Abscond", Value = "Abscond"},
+                                                    new SelectListItem { Text = "Retirement", Value = "Retirement"},
+                                                },"--Select--", new { id = "ddlResignationType", @class = "form-select", autocomplete = "off", name = "ResignationType" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>*@
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Resignation Type
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @*@Html.DropDownListFor(model => model.ResignationType, new List<SelectListItem>{
+                                                new SelectListItem { Text = "Termination", Value = "Termination"},
+                                                    new SelectListItem { Text = "Abscond", Value = "Abscond"},
+                                                    new SelectListItem { Text = "Retirement", Value = "Retirement"},
+                                                }, "--Select--", new { id = "ddlResignationType", @class = "form-select", autocomplete = "off", name = "ResignationType" })*@
+                                                @Html.DropDownListFor(model => model.ResignationTypeId, new SelectList(ViewBag.GetResignationType, "Id", "Name"), "--Select--", new { id = "ddlResignationTypeId", @class = "form-select", autocomplete = "off", name = "ResignationTypeId" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-2">
+                                                    Remark
+                                                </label>
+                                                <div class="col-md-10">
+                                                    @Html.TextAreaFor(model => model.Remark, new { @class = "form-control", id = "Remark", autocomplete = "Off" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Notice Period Type
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.NoticePeriodType, new List<SelectListItem>{
+                                                new SelectListItem { Text = "ByPolicy", Value = "ByPolicy"},
+                                                    new SelectListItem { Text = "Month", Value = "Month"},
+                                                    new SelectListItem { Text = "Days", Value = "Days"},
+                                                }, new { id = "ddlNoticePeriodType", @class = "form-select", autocomplete = "off", name = "NoticePeriodType" })
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6" id="divNoticePeriodValue" style="display:none;">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Notice Period Value
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.NoticePeriodMonthDays, new SelectList(ViewBag.NoticePeriodMonthDays ?? new List<SelectListItem>(),
+                                                "Name", "Name"), new { id = "ddlNoticePeriodValue", @class = "form-select", name = "NoticePeriodMonthDays", autocomplete = "off" })
+                                                    <span id="ErrorddlNoticePeriodValue" class="Error" style="color:red"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Joining Date
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.DOJ, new { @class = "form-control", name = "DOJ", type = "date", id = "txtDOJ", autocomplete = "Off", @readonly = "readonly" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Confimation Date
+                                                </label>
+                                                <div class="col-md-3">
+                                                    @Html.TextBoxFor(model => model.ConfirmationDate, new { @class = "form-control", name = "DOJ", type = "date", id = "txtConfirmationDate", autocomplete = "Off", @readonly = "readonly" })
+                                                </div>
+                                                <label class="form-label col-form-label col-md-3">
+                                                    Is Confirmation
+                                                </label>
+                                                <div class="col-md-2">
+                                                    @Html.TextBoxFor(model => model.IsConfirmation, new { @class = "form-control", name = "IsConfirmation", type = "text", id = "txtIsConfirmation", autocomplete = "Off", @readonly = "readonly" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Resignation Date
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.ResignationDate, new { @class = "form-control", name = "ResignationDate", type = "date", id = "ResignationDate", autocomplete = "Off", @value = DateTime.Now.ToShortDateString() })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Relieving Date
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.RelievingDate, new { @class = "form-control", name = "RelievingDate", type = "date", id = "RelievingDate", autocomplete = "Off" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Last Working Date
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.LastWorkingDate, new { @class = "form-control", name = "LastWorkingDate", type = "date", id = "LastWorkingDate", autocomplete = "Off" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Notice Period End Date
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.NoticePeriodEndDate, new { @class = "form-control", name = "NoticePeriodEndDate", type = "date", id = "txtNoticePeriodEndDate", autocomplete = "Off", @readonly = "readonly" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" hidden>
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Is Manually
+                                            </label>
+                                            <label class="form-label col-form-label col-md-2">
+                                                @Html.CheckBoxFor(model => model.IsManually, new { id = "chkIsManually", @class = "chkIsManually" })
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="LastShortLeaveBx">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="BtnBx">
+                                                        <div>
+                                                            <button type="button" id="btnSubmit" class="btn btn-primary btn-sm">
+                                                                <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                            </button>
+
+                                                            <a href="@Url.Action("GetList", "ESS_FNF_EmployeeResignation", new { area = "ESS" })">
+                                                                <button type="button" class="btn btn-danger btn-sm" id="btnEmployeeResignation">
+                                                                    <i class="fa-solid fa-share-from-square"></i> List
+                                                                </button>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+</form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+
+</div>
+<script>
+    $(document).ready(function () {
+        debugger;
+        $("#ddlFnfEmployee").select2();
+        $("#ddlFnfReason").select2();
+        $("#ddlFNFBranchID").select2();
+        $("#ddlCmpID").select2();
+
+        @*var GetVal = @Html.Raw(Json.Encode(TempData["NoticePeriodMonthDays"]));
+        debugger
+        $("#ddlNoticePeriodValue").val(GetVal);*@
+        var getddlPType = $("#ddlNoticePeriodType").val();
+        if (getddlPType === "ByPolicy")
+        {
+            $("#divNoticePeriodValue").hide();
+        }
+        if (getddlPType === "Month" || getddlPType === "Days")
+        {
+            $("#divNoticePeriodValue").show();
+        }
+        else
+        {
+            $("#divNoticePeriodValue").hide();
+        }
+
+        $("#ddlNoticePeriodType").on("change", function (e, selectedValue) {
+
+            var val = $(this).val();
+
+            $("#ddlNoticePeriodValue").empty();
+
+            if (val === "ByPolicy") {
+                $("#divNoticePeriodValue").hide();
+                return;
+            }
+
+            $("#divNoticePeriodValue").show();
+
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                url: '@Url.Action("GetNoticePeriodMonthDays", "ESS_FNF_EmployeeResignation")',
+                data: { NoticePeriodType: val },
+                success: function (data) {
+
+                    $("#ddlNoticePeriodValue").append("<option value=''>--Select--</option>");
+
+                    $.each(data.NoticePeriodMonthDays, function (i, p) {
+                        $("#ddlNoticePeriodValue").append("<option value='" + p.Name + "'>" + p.Name + "</option>");
+                    });
+
+                    // 🔥 Only run if employee-change triggered this
+                    if (selectedValue) {
+
+                        selectedValue = $.trim(selectedValue.toString());
+
+                        // Try selecting by value
+                        $("#ddlNoticePeriodValue").val(selectedValue);
+
+                        // If not selected, try matching by text
+                        if ($("#ddlNoticePeriodValue").val() !== selectedValue) {
+                            $("#ddlNoticePeriodValue option").filter(function () {
+                                return $.trim($(this).text()) === selectedValue;
+                            }).prop("selected", true);
+                        }
+
+                        // Select2 refresh if used
+                        $("#ddlNoticePeriodValue").trigger("change");
+                    }
+                }
+            });
+        });
+
+        @*$("#ddlNoticePeriodType").on("change", function (e, selectedValue) {
+            var val = $(this).val();
+            if (val === "ByPolicy")
+            {
+                $("#divNoticePeriodValue").hide();
+                $("#ddlNoticePeriodValue").find("option").remove();
+                return false;
+            }
+            if (val === "Month" || val === "Days")
+            {
+                $("#divNoticePeriodValue").show();
+            }
+            else
+            {
+                $("#divNoticePeriodValue").hide();
+                $("#txtNoticePeriodValue").val("");
+            }
+
+
+            $("#ddlNoticePeriodValue").find("option").remove();
+            var NoticePeriodType = $("#ddlNoticePeriodType").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetNoticePeriodMonthDays", "ESS_FNF_EmployeeResignation")',
+                data: { NoticePeriodType: NoticePeriodType },
+                success: function (data) {
+                    if (data !=null) {
+                        $("#ddlNoticePeriodValue").append("<option value=0>--Select-- </option>");
+                        $.each(data.NoticePeriodMonthDays, function(i, p) {
+                            $("#ddlNoticePeriodValue").append("<option value='" + p.Name +"'>" + p.Name +"</option>");
+                        });
+                    }
+                    else {
+                        //$('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        });*@
+        var ResignationDate = @Html.Raw(Json.Encode(TempData["ResignationDate"]));
+        $("#ResignationDate").val(ResignationDate);
+
+        var RelievingDate = @Html.Raw(Json.Encode(TempData["RelievingDate"]));
+        $("#RelievingDate").val(RelievingDate);
+
+        var LastWorkingDate = @Html.Raw(Json.Encode(TempData["LastWorkingDate"]));
+        $("#LastWorkingDate").val(LastWorkingDate);
+
+        var NoticePeriodEndDate = @Html.Raw(Json.Encode(TempData["NoticePeriodEndDate"]));
+        $("#txtNoticePeriodEndDate").val(NoticePeriodEndDate);
+
+        var DOJ = @Html.Raw(Json.Encode(TempData["DOJ"]));
+        $("#txtDOJ").val(DOJ);
+
+        $("#ddlCmpID").on("change", function () {
+            $("#ddlFNFBranchID").find("option").remove();
+            var CmpId = $("#ddlCmpID").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetBusinessUnit", "ESS_FNF_EmployeeResignation")',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    if (data.BranchName !=null) {
+                        $("#ddlFNFBranchID").append("<option value=''>--Select---</option>");
+                        $.each(data.BranchName, function(i, p) {
+                            $("#ddlFNFBranchID").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                        });
+                    }
+                }
+            })
+        })
+
+        $("#ddlFNFBranchID").on("change", function () {
+            debugger
+            $("#ddlFnfEmployee").find("option").remove();
+            var BranchId = $("#ddlFNFBranchID").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetEmployeeName", "ESS_FNF_EmployeeResignation")',
+                data: { BranchId: BranchId },
+                success: function (data) {
+                    if (data !=null) {
+                        $("#ddlFnfEmployee").append("<option value=''>--Select---</option>");
+                        $.each(data, function(i, p) {
+                            $("#ddlFnfEmployee").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        });
+
+$("#ddlFnfEmployee").on("change", function () {
+    var EmployeeId = $("#ddlFnfEmployee").val();
+
+    $.ajax({
+        type: 'GET',
+        dataType: 'JSON',
+        url: '@Url.Action("GetNoticePeriodDays", "ESS_FNF_EmployeeResignation")',
+        data: { EmployeeId: EmployeeId },
+        success: function (data) {debugger
+
+            if (data && data.info && data.info.length > 0) {
+
+                var arr = data.info;
+                var obj = {};
+
+                // convert key/value list → object
+                arr.forEach(function (item) {
+                    obj[item.Key] = item.Value;
+                });
+
+                // bind Notice Period Type
+                $("#ddlNoticePeriodType").val(obj.NoticePeriodType);
+                $("#ddlNoticePeriodType").trigger("change", [obj.DayMonth]);
+                debugger
+               
+                // Joining Date formatting
+                if (obj.JoiningDate) {
+                    var dateObj = new Date(obj.JoiningDate);
+                    var yyyy = dateObj.getFullYear();
+                    var MM = ("0" + (dateObj.getMonth() + 1)).slice(-2);
+                    var dd = ("0" + dateObj.getDate()).slice(-2);
+
+                    $("#txtDOJ").val(yyyy + "-" + MM + "-" + dd);
+                }
+                if (obj.ConfirmationDate) {
+                    var dateObj = new Date(obj.ConfirmationDate);
+                    var yyyy = dateObj.getFullYear();
+                    var MM = ("0" + (dateObj.getMonth() + 1)).slice(-2);
+                    var dd = ("0" + dateObj.getDate()).slice(-2);
+
+                    $("#txtConfirmationDate").val(yyyy + "-" + MM + "-" + dd);
+                }
+                $("#txtIsConfirmation").val(obj.IsConfirmation);
+                
+            }
+            else {
+                $("#txtNoticePeriodDays").val("");
+                $("#ddlNoticePeriodValue").val("");
+                $("#ddlNoticePeriodType").val("");
+                $("#divNoticePeriodValue").hide();
+            }
+        }
+    });
+});
+
+    });
+
+</script>
+<script>
+    $(document).ready(function () {
+        $("#formReset").click(function () {
+            $("#SaveEmployeeResignation")[0].reset();
+        });
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        // return false
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+
+
+    });// Ready end
+
+    $("#btnEmployeeResignation").click(function () {
+        debugger;
+        var url = '@Url.Action("GetList", "ESS_FNF_EmployeeResignation")';
+        window.location.href = url;
+    });
+
+
+
+    $("#ResignationDate, #ddlNoticePeriodType, #ddlNoticePeriodValue").on("change", function () {debugger
+
+        var resignationDate = $("#ResignationDate").val();
+        var noticeType = $("#ddlNoticePeriodType").val();
+        var noticeValue = parseInt($("#ddlNoticePeriodValue").val());
+
+        if (!resignationDate || isNaN(noticeValue)) return;
+
+        var relDate = new Date(resignationDate);
+
+        // --- MONTH TYPE ---
+        if (noticeType === "Month") {
+
+            let year = relDate.getFullYear();
+            let month = relDate.getMonth() + noticeValue; // Add months
+            let day = relDate.getDate();
+
+            // Create target month date
+            let temp = new Date(year, month, day);
+
+            // If month overflowed (day does not exist)
+            if (temp.getMonth() !== (month % 12)) {
+                // Last day of previous month
+                temp = new Date(year, month + 1, 0);
+            }
+
+            // Subtract 1 day
+            temp.setDate(temp.getDate() - 1);
+
+            relDate = temp;
+        }
+
+        // --- DAYS TYPE ---
+        if (noticeType === "Days") {
+            relDate.setDate(relDate.getDate() + noticeValue);
+        }
+
+        // Format date: yyyy-MM-dd
+        var yyyy = relDate.getFullYear();
+        var MM = ("0" + (relDate.getMonth() + 1)).slice(-2);
+        var dd = ("0" + relDate.getDate()).slice(-2);
+
+        var finalDate = `${yyyy}-${MM}-${dd}`;
+
+        $("#RelievingDate").val(finalDate);
+        $("#LastWorkingDate").val(finalDate);
+        $("#txtNoticePeriodEndDate").val(finalDate);
+    });
+
+
+    function validateDates() {debugger
+        var resignationDate = new Date($("#ResignationDate").val());
+        var noticeEndDate = new Date($("#txtNoticePeriodEndDate").val());
+        var relievingDate = new Date($("#RelievingDate").val());
+        var lastWorkingDate = new Date($("#LastWorkingDate").val());
+
+        // Clear previous errors
+        $(".date-error").remove();
+
+        let isValid = true;
+
+        // Validate Relieving Date
+        if (relievingDate < resignationDate) {debugger
+            $("#RelievingDate").after("<span class='date-error text-danger'>Relieving Date cannot be earlier than Resignation Date.</span>");
+            isValid = false;
+        }
+        if (relievingDate > noticeEndDate) {
+            $("#RelievingDate").after("<span class='date-error text-danger'>Relieving Date cannot be after Notice Period End Date.</span>");
+            isValid = false;
+        }
+
+        // Validate Last Working Date
+        if (lastWorkingDate < resignationDate) { debugger
+            $("#LastWorkingDate").after("<span class='date-error text-danger'>Last Working Date cannot be earlier than Resignation Date.</span>");
+            isValid = false;
+        }
+        if (lastWorkingDate > noticeEndDate) { debugger
+            $("#LastWorkingDate").after("<span class='date-error text-danger'>Last Working Date cannot be after Notice Period End Date.</span>");
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+    // Trigger validation when user selects dates
+    $("#RelievingDate, #LastWorkingDate, #ResignationDate, #txtNoticePeriodEndDate").on("change", function () {
+        validateDates();
+    });
+</script>
+
+
+<script>
+    $("#SaveEmployeeResignation").validate({
+        rules: {
+            FnfEmployeeId: {
+                required: true,
+            },
+            FnfReasonId :
+              {
+                  required:true,
+              },
+            ResignationDate: {
+                required: true,
+            },
+            RelievingDate: {
+                required: true,
+            },
+            CmpId: {
+                required: true,
+            },
+            FNFBranchId: {
+                required: true,
+            },
+            LastWorkingDate: {
+                required: true,
+            },
+            NoticePeriodDays: {
+                required: true,
+            },
+            NoticePeriodType: {
+                required: true,
+            },
+            ResignationTypeId: {
+                required: true,
+            },
+        },
+        messages: {
+            FnfEmployeeId: {
+                required: "Employee Name is required",
+            },
+            FnfReasonId: {
+                required: "Resignation reason is required",
+            },
+            ResignationDate: {
+                required: "Resignation date is required",
+            },
+            RelievingDate:{
+                required:"Relieving Date is required",
+            },
+            CmpId: {
+                required:"Company is required",
+            },
+            FNFBranchId: {
+                required:"Branch is required",
+            },
+            LastWorkingDate: {
+                required:"Last Working Date is required",
+            },
+            NoticePeriodDays: {
+                required:"Notice Period Days is required",
+            },
+            NoticePeriodType: {
+                required:"Notice Period Type is required",
+            },
+            ResignationTypeId: {
+                required:"Resignation Type is required",
+            },
+        },
+    });
+
+
+    var form = $("#SaveEmployeeResignation");
+    form.validate();
+
+    $("#btnSubmit").click(function () {
+        debugger;
+        form.valid();
+        if (!validateDates()) {
+            return false;  
+        }
+        if(form.valid()==false)
+        {
+            return false;
+        }
+        var FnfID_Encrypted=$("#FnfID_Encrypted").val();
+        var FnfEmployeeId= $("#ddlFnfEmployee").val();
+        var CmpId = $("#ddlCmpID").val();
+        var BranchId= $("#ddlFNFBranchID").val();
+
+        $.ajax({
+            url: '@Url.Action("IsFnfResignationExists", "ESS_FNF_EmployeeResignation")',
+            method:"get",
+            data:{FnfID_Encrypted:FnfID_Encrypted,
+                FnfEmployeeId:FnfEmployeeId,
+                CmpId:CmpId,
+                BranchId:BranchId
+            },
+            success:function(response){
+                debugger;
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon=="error") {
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                        }
+                    }
+                }
+                else{
+                    $("#SaveEmployeeResignation").submit();
+
+                }
+            }
+        });
+    });
+</script>

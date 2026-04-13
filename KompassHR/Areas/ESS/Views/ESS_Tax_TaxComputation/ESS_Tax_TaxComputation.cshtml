@@ -1,0 +1,1014 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_Tax.IncomeTax_Fyear
+
+@{
+    ViewBag.Title = "ESS_Tax_TaxComputation";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+
+<link href="~/assets/plugins/summernote/dist/summernote-lite.css" rel="stylesheet" />
+<script src="~/assets/plugins/summernote/dist/summernote-lite.min.js"></script>
+
+<style>
+    .select2.select2-container {
+        width: 100% !important;
+    }
+
+    .amt {
+        text-align: right;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Tax Computation
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_Tax_ITDeclarationMenu", "ESS_Tax_ITDeclarationMenu", new {id = 9, ScreenId=526, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">Tax Computation</h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-12 d-flex">
+                                <div class="col-md-6">
+                                    <div>
+                                        <span>
+                                            <h4> <i class="fa-solid fa-user"></i> @ViewBag.TaxComputation.tbl_EmployeeName - @ViewBag.TaxComputation.tbl_EmployeeNo</h4>
+                                        </span>
+                                        <span>
+                                            <h6> <i class="fa-solid fa-briefcase"></i>  @ViewBag.TaxComputation.tbl_Department / @ViewBag.TaxComputation.tbl_Designation</h6>
+                                        </span>
+                                        <span>
+                                            <h6> <i class="fa-solid fa-calendar"></i> @Convert.ToDateTime(ViewBag.TaxComputation.tbl_JoiningDate).ToString("dd/MMM/yyyy") </h6>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div>
+                                        <span>
+                                            <h6><b>Aadhar Number</b> :  @ViewBag.TaxComputation.tbl_AadhaarNo </h6>
+                                        </span>
+                                        <span>
+                                            <h6><b>PAN Number </b> :  @ViewBag.TaxComputation.tbl_PAN </h6>
+                                        </span>
+                                        <span>
+                                            <h6><b>Is PAN-Aadhar Card Link </b>: @ViewBag.TaxComputation.tbl_IsAadhaarNoMobileNoLink </h6>
+                                        </span>
+                                        <span>
+                                            <h6><b>Age </b>:  @ViewBag.TaxComputation.tbl_Age </h6>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <br />
+                            <hr />
+
+                            <form role="form" action='@Url.Action("ESS_Tax_TaxComputation", "ESS_Tax_TaxComputation", new { area = "ESS" })' id="SaveTaxComputation" method="post" data-parsley-validate="">
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">
+                                                Financial Year<span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-6">
+                                                @Html.DropDownListFor(model => model.TaxFyearId, new SelectList(ViewBag.GetTaxFyear, "Id", "Name"), "--Select--", new { id = "ddlTaxFyearId", @class = "form-select", autocomplete = "off", name = "TaxFyearId" })
+                                                @Html.ValidationMessageFor(model => model.TaxFyearId, "", new { @class = "help-block", id = "ErrorTaxFyearId", style = "color:red" })
+                                            </div>
+                                            <div class="col-md-3">
+                                                <button type="submit" class="btn btn-primary btn-sm IncomeTax" id="btnSubmit">
+                                                    Show  <i class="fa-solid fa-arrow-right-long"></i>
+                                                </button>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            <br />
+
+                            <table class="table table-bordered align-middle" style="border:solid black">
+                                <thead>
+                                    <tr>
+                                        <th>Particulars</th>
+                                        <th><center>Old Regime</center></th>
+                                        <th><center>New Regime</center></th>
+                                        @*<th>Remarks</th>*@
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="border:none" class="text-start bg-blue text-white p-2 mb-0"><strong>A. Gross Income from Salaries and Allowances</strong></td>
+                                        <td style="border:none" class="text-start bg-blue text-white p-2 mb-0"></td>
+                                        <td style="border:none" class="text-start bg-blue text-white p-2 mb-0"></td>
+                                        @*<td style="border:none" class="text-start bg-blue text-white p-2 mb-0"></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td>(1) Current Employer(Company)</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_CurrentEmployer_Gross_Total</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_CurrentEmployer_Gross_Total</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+                                    <tr>
+
+                                        <td>(2) Previous Employer(Company)</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Previous_Er_GrossSalary</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Previous_Er_GrossSalary</td>
+
+
+                                        @*<td>
+                                                <center>
+                                                    <a data-bs-toggle="offcanvas" id="btnActionList" href="#offcanvasExample" onclick="HelpDetails('2')">
+                                                        <i class="fa fa-eye"></i>
+                                                    </a>
+                                                </center>
+                                            </td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td><strong>Total Gross Income from Salaries and Allowances</strong></td>
+                                        <td class="amt"><strong>@ViewBag.TaxComputation.tbl_Previous_Current_Gross_Total</strong></td>
+                                        <td class="amt"><strong>@ViewBag.TaxComputation.tbl_Previous_Current_Gross_Total</strong></td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td style="border:none" class="text-start bg-blue text-white p-2 mb-0"><strong>B.Deduction under section 16</strong></td>
+                                        <td style="border:none" class="text-start bg-blue text-white p-2 mb-0"></td>
+                                        <td style="border:none" class="text-start bg-blue text-white p-2 mb-0"></td>
+                                        @*<td style="border:none" class="text-start bg-blue text-white p-2 mb-0"></td>*@
+                                    </tr>
+                                    <tr>
+                                        <td>Standard Deduction for Salaried</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_StandardDeduction</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_NewRegime_StandardDeduction</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+                                    <tr>
+                                        <td>Professional Tax</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_ProfessionTax_Total</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Total Deduction under section 16</strong></td>
+                                        <td class="amt"><strong>@ViewBag.TaxComputation.tbl_OldRegime_TotalDeductionUS16</strong></td>
+                                        <td class="amt"><strong>@ViewBag.TaxComputation.tbl_NewRegime_TotalDeductionUS16</strong></td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+
+                                    <tr>
+                                        <td style="border:none" class="text-start bg-blue text-white p-2 mb-0"><strong>C.Exemptions under section 10 & 17</strong></td>
+                                        <td style="border:none" class="text-start bg-blue text-white p-2 mb-0"></td>
+                                        <td style="border:none" class="text-start bg-blue text-white p-2 mb-0"></td>
+                                        @*<td style="border:none" class="text-start bg-blue text-white p-2 mb-0"></td>*@
+                                    </tr>
+                                    <tr>
+                                        <td>(1) HRA Exemption     (Least of the following three)10(13A)</td>
+                                        <td class="amt"></td>
+                                        <td class="amt"></td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td>Resident of Non-Metro</td>
+                                        <td class="amt"></td>
+                                        <td class="amt" style="background-color:lightgray;">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td style="padding-left: 20px; display: flex; justify-content: space-between;">
+                                            <span>a. Basic Salary (Basic+DA)</span>
+                                            <span>@ViewBag.TaxComputation.tbl_HRA_Aa</span>
+                                        </td>
+
+                                        <td style="border-bottom:solid white;"></td>
+                                        <td class="amt" style="background-color: lightgray;border-bottom:solid lightgray;"></td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td style="padding-left: 20px; display: flex; justify-content: space-between;">
+                                            <span>b. Rent Paid</span>
+                                            <span>@ViewBag.TaxComputation.tbl_HRA_Bb</span>
+                                        </td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_HRA_Exemption</td>
+                                        <td class="amt" style="background-color: lightgray;border:none;">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td style="padding-left: 20px; display: flex; justify-content: space-between;">
+                                            <span>c. HRA received</span>
+                                            <span>@ViewBag.TaxComputation.tbl_HRA_Cc</span>
+                                        </td>
+                                        <td style="border-top:solid white;"></td>
+                                        <td class="amt" style="background-color: lightgray;border-top:solid lightgray;"></td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+
+
+                                    <tr>
+                                        <td>(2) Retirement Leave Encashment U/S 10(10AA)</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_RetirementLeaveEncashment</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_RetirementLeaveEncashment</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td>(3) Sodexo Meal Coupon</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_SodexoMealCoupon</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td>(4) Children Education Allowance (Rs. 100 pm per child {Max 2})</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Tax_ChildrenEducationAllowanceExemption</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td>(5) ChildrenHostel(Rs. 100 pm per child {Max 2})</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Tax_ChildrenEducationHostel</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td>(6) Leave Travel Allowance-to the extent allowed10(5)</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Tax_LTAExemption</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td>(7) Gratuity Payment 10(10)-to the extent allowed</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_GratuityPayment</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_GratuityPayment</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td>(8) Uniform Allowance</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Tax_UniformExpenses</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td>(9) Other Tax free Allowances and reimbursements</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Tax_OtherexEmption</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td>(10) Transport Allowance-to the extent allowed10(5)</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_TaxTransportExemption</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td> <strong>Total Exemptions under section 10 & 17</strong></td>
+                                        <td class="amt"><strong>@ViewBag.TaxComputation.tbl_Tax_OldRegime_Total_ExemptionsUnderSection</strong></td>
+                                        <td class="amt"><strong>@ViewBag.TaxComputation.tbl_Tax_NewRegime_Total_ExemptionsUnderSection</strong></td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td style="border:none" class="text-start bg-blue text-white p-2 mb-0"> <strong>D. Gross Salary after Section 10 & 17 exemptions</strong></td>
+                                        <td style="border:none" class="text-start bg-blue text-white p-2 mb-0"></td>
+                                        <td style="border:none" class="text-start bg-blue text-white p-2 mb-0"></td>
+                                        @*<td style="border:none" class="text-start bg-blue text-white p-2 mb-0"></td>*@
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Gross Salary after Section 10 & 17 exemptions(D=A-B-C)</strong></td>
+                                        <td class="amt"><strong>@ViewBag.TaxComputation.tbl_OldRegime_TaxGrossSalaryAfterSection10and17Exemptions</strong></td>
+                                        <td class="amt"><strong>@ViewBag.TaxComputation.tbl_NewRegime_TaxGrossSalaryAfterSection10and17Exemptions</strong></td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+                                    <tr>
+                                        <td style="border:none" class="text-start bg-blue text-white p-2 mb-0"> <strong>E. Perquisites</strong></td>
+                                        <td style="border:none" class="text-start bg-blue text-white p-2 mb-0"></td>
+                                        <td style="border:none" class="text-start bg-blue text-white p-2 mb-0"></td>
+                                        @*<td style="border:none" class="text-start bg-blue text-white p-2 mb-0"></td>*@
+                                    </tr>
+
+
+                                    <tr>
+                                        <td>Cars/Other automotive</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Perquisite1</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Perquisite1</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td>Sweeper, gardener, watchman or personal attendant</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Perquisite2</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Perquisite2</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td>Gas, electricity, water</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Perquisite3</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Perquisite3</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td>Interest free or concessional loans</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Perquisite4</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Perquisite4</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td>Holiday expenses</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Perquisite5</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Perquisite5</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td>Free or concessional travel</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Perquisite6</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Perquisite6</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td>Free meals</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Perquisite7</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Perquisite7</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td>Free education</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Perquisite8</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Perquisite8</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td>Gifts, vouchers, etc.</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Perquisite9</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Perquisite9</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td>Credit card expenses</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Perquisite10</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Perquisite10</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td>Club expenses</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Perquisite11</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Perquisite11</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td>Use of movable assets by employees</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Perquisite12</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Perquisite12</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td>Transfer of assets to employees</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Perquisite13</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Perquisite13</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td>Value of any other benefit / amenity / service / privilege</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Perquisite14</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Perquisite14</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td>Stock options ( non-qualified options)</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Perquisite15</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Perquisite15</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td>Other benefits or amenities</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Perquisite16</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Perquisite16</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+
+
+                                    <tr>
+                                        <td><strong>Total Perquisites</strong></td>
+                                        <td class="amt"><strong>@ViewBag.TaxComputation.tbl_Tax_Total_Perquisites</strong></td>
+                                        <td class="amt"><strong>@ViewBag.TaxComputation.tbl_Tax_Total_Perquisites</strong></td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td style="border:none" class="text-start bg-blue text-white p-2 mb-0"><strong>F. Income chargeable under head 'Salaries'</strong></td>
+                                        <td style="border:none" class="text-start bg-blue text-white p-2 mb-0"></td>
+                                        <td style="border:none" class="text-start bg-blue text-white p-2 mb-0"></td>
+                                        @*<td style="border:none" class="text-start bg-blue text-white p-2 mb-0"></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td><strong>Income chargeable under head 'Salaries'(F= D + E)</strong></td>
+                                        <td class="amt"><strong>@ViewBag.TaxComputation.tbl_OldRegimeTax_Total_IncomeChargeableUnderHeadSalaries</strong></td>
+                                        <td class="amt"><strong>@ViewBag.TaxComputation.tbl_NewRegimeTax_Total_IncomeChargeableUnderHeadSalaries</strong></td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td style="border:none" class="text-start bg-blue text-white p-2 mb-0"><strong>G. Income from Other Sources</strong></td>
+                                        <td style="border:none" class="text-start bg-blue text-white p-2 mb-0"></td>
+                                        <td style="border:none" class="text-start bg-blue text-white p-2 mb-0"></td>
+                                        @*<td style="border:none" class="text-start bg-blue text-white p-2 mb-0"></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td><strong>1. Interest income from the following sources:</strong></td>
+                                        <td class="amt"></td>
+                                        <td class="amt"></td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td style="padding-left: 20px;">a. Bank (Savings A/C)</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Tax_OtherIncome1</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Tax_OtherIncome1</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td style="padding-left: 20px;">b. Bank (F.D/ Recurring)</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Tax_OtherIncome2</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Tax_OtherIncome2</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td style="padding-left: 20px;">c. N.S.C( Accrued/Received)</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Tax_OtherIncome3</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_Tax_OtherIncome3</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    @*<tr>
+                                            <td style="padding-left: 20px;">d. Family Pension</td>
+                                            <td class="amt">0</td>
+                                            <td class="amt">0</td>
+                                            <td><center><i class="fa fa-eye"></i></center></td>
+                                        </tr>*@
+
+                                    @*<tr>
+                                            <td>Less: 1/3 or 15000</td>
+                                            <td class="amt">0</td>
+                                            <td class="amt">0</td>
+                                            <td><center><i class="fa fa-eye"></i></center></td>
+                                        </tr>*@
+
+                                    <tr>
+                                        <td><strong>2. Income from House Properties [Let out/Self occupied) (</strong></td>
+                                        <td class="amt"></td>
+                                        <td class="amt"></td>
+                                        @*<td></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td style="padding-left: 20px;">Income from Let Out House Property</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_IncomeFromLetOutHouseProperty</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_IncomeFromLetOutHouseProperty</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td style="padding-left: 20px;">Interest On Self Occupied Housing Loan</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_SelfOccupied_EligibleDeductionAmt</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+
+
+                                    <tr>
+                                        <td style="border:none" class="text-start bg-blue text-white p-2 mb-0"><strong>H. Gross Total Income</strong></td>
+                                        <td style="border:none" class="text-start bg-blue text-white p-2 mb-0"></td>
+                                        <td style="border:none" class="text-start bg-blue text-white p-2 mb-0"></td>
+                                        @*<td style="border:none" class="text-start bg-blue text-white p-2 mb-0"></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td><strong>Gross Total Income(H=F + G)</strong></td>
+                                        <td class="amt"><strong>@ViewBag.TaxComputation.tbl_OldRegime_Gross_Total_Income</strong></td>
+                                        <td class="amt"><strong>@ViewBag.TaxComputation.tbl_NewRegime_Gross_Total_Income</strong></td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td style="border:none" class="text-start bg-blue text-white p-2 mb-0"><strong>I. Less: Deduction</strong></td>
+                                        <td style="border:none" class="text-start bg-blue text-white p-2 mb-0"></td>
+                                        <td style="border:none" class="text-start bg-blue text-white p-2 mb-0"></td>
+                                        @*<td style="border:none" class="text-start bg-blue text-white p-2 mb-0"></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td><strong>Less: Deduction U/S 80C @*(Max eligible amount Rs.1,50,000/-)*@</strong></td>
+                                        <td class="amt"></td>
+                                        <td class="amt"></td>
+                                        @*<td></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td>1. EPF & GPF Contribution</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_US80_ProvidentFund_CurrentAmt</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td>2. Employee's National Pension Scheme 80CCD(1)</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_US80_EmployeesNationalPensionScheme80CCD1_CurrentAmt</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+                                    <tr>
+                                        <td>3. Pension Plan from Insurance Companies/Mutual Funds</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_US80_PensionPlanfromInsuranceCompaniesMutualFunds_CurrentAmt</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+                                    <tr>
+                                        <td>4. Housing Loan-Principal Repayment</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_US80_HousingLoanPrincipalRepayment_CurrentAmt</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+                                    <tr>
+                                        <td>5. Life Insurance Premium</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_US80_LifeInsurancePremium_CurrentAmt</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td>6. National Saving Certificate</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_US80_NationalSavingCertificate_CurrentAmt</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+                                    <tr>
+                                        <td>7. National Saving Certificate Accrued Interest</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_US80_NationalSavingCertificateAccruedInterest_CurrentAmt</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+                                    <tr>
+                                        <td>8. Public Provident Fund</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_US80_PublicProvidentFund_CurrentAmt</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+                                    <tr>
+                                        <td>9. Unit Linked Insurance Plan</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_US80_UnitLinkedInsurancePlan_CurrentAmt</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+                                    <tr>
+                                        <td>10. E.L.S.S (Tax Saving Mutual Fund)</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_US80_ELSSTaxSavingMutualFund_CurrentAmt</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td>11. Tuition fees </td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_US80_Tuitionfeesfor2children_CurrentAmt</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+                                    <tr>
+                                        <td>12. Tax Saving Shares / NABARD and Other Bonds</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_US80_TaxSavingSharesNABARDandOtherBonds_CurrentAmt</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+                                    <tr>
+                                        <td>13. Tax saving Fix Deposits (Tenure - 5 years or more)</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_US80_TaxsavingFixDepositsTenure5yearsormore_CurrentAmt</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+
+
+                                    <tr>
+                                        <td>14. Housing - Stamp Duty & Registration</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_US80_HousingStampDutyRegistration_CurrentAmt</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+                                    <tr>
+                                        <td>15. Post Office Time Deposit Scheme</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_US80_PostOfficeTimeDepositScheme_CurrentAmt</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+                                    <tr>
+                                        <td>16. Senior Citizen Saving Scheme</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_US80_SeniorCitizenSavingScheme_CurrentAmt</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+                                    <tr>
+                                        <td>17. Sukanya Samriddhi Scheme</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_US80_SukanyaSamriddhiScheme_CurrentAmt</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+                                    <tr>
+                                        <td>18. Annuity plan of LIC or other insurer towards Pension Scheme - 80CCC</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_US80_AnnuityplanofLICorotherinsurertowardsPensionScheme_80CCC_CurrentAmt</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td class="amt"><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+                                    <tr>
+                                        <td>19. Superannuation Fund Contribution</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_US80_SuperannuationFundContribution_CurrentAmt</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td><strong>Max eligible amount U/S 80C</strong></td>
+                                        <td class="amt"><strong>@ViewBag.TaxComputation.tbl_OldRegime_US80C_Total_EligibleDeduction </strong></td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+
+                                    @*<tr>
+                                            <td><strong>Less: Additional deduction for NPS U/S 80CCD(1B)-Max Rs.50,000)</strong></td>
+                                            <td class="amt">0</td>
+                                            <td class="amt">0</td>
+                                            <td></td>
+                                        </tr>*@
+                                    <tr>
+                                        <td><strong>Less: Deduction under chapter VI</strong></td>
+                                        <td class="amt"></td>
+                                        <td class="amt"></td>
+                                        @*<td></td>*@
+                                    </tr>
+
+
+                                    <tr>
+                                        <td>1. Mediclaim (80-D)</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_Mediclaim_80D</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td>2. Handicapped Dependent (80-DD)</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_HandicappedDependent_80DD</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+                                    <tr>
+                                        <td>3.Treatement of Specified Diseases (80-DDB)</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_TreatementofSpecifiedDiseases_80DDB</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+                                    <tr>
+                                        <td>4.Interest On Higher Education Loan (80-E)</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_interestOnHigherEducation_Loan_80E</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+                                    <tr>
+                                        <td>5. Self-Disability (80-U)</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_SelfDisability_80U</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+                                    <tr>
+                                        <td>6. Additional Contribution to NPS 80CCD (1B)</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_AdditionalContributiontoNPS_80CCD_1B</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+                                    <tr>
+                                        <td>7. Interest on Saving Bank Account (80TTA)</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_interest_on_SavingBankAccount_80TTA</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td>8. Interest on Saving Bank Account (80TTB-Senior Citizen)</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_interest_on_SavingBankAccount_80TTB_Senior_Citizen</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+                                    <tr>
+                                        <td>9. Interest on Loan For Purchase of Electric Vehicle(80EEB)</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_interest_on_LoanForPurchase_of_Electric_Vehicle_80EEB</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+                                    <tr>
+                                        <td>10. 80G  Funds eligible for 100% deduction without limit (80G)</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_Funds_eligible_for_100_Per_deduction_without_limit_80G</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td>11. 80G Funds eligible for 50% deduction without limit (80G)  </td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_Funds_eligible_for_50_Per_deduction_without_limit_80G</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td>12. 80G Funds eligible for 50% deduction subject to the maximum limit </td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_Funds_eligible_for_50_Per_deduction_subject_to_the_maximum_limit</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+                                    <tr>
+                                        <td>13. 80GGA Donations for scientific research or rural development </td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_Donations_80GGA_for_scientific_research_or_rural_development</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+                                    <tr>
+                                        <td>14. 80GGC Donations for political party  </td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_Donations_80GGC_for_political_party</td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td><strong>Max Deduction under chapter VI</strong>  </td>
+                                        <td class="amt"><strong>@ViewBag.TaxComputation.tbl_OldRegime_ChapterVIA_TotalAmount</strong></td>
+                                        <td class="amt" style="background-color:lightgray">-</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+
+
+                                    <tr>
+                                        <td style="border:none" class="text-start bg-blue text-white p-2 mb-0"><strong>J. Net Taxable Income after all deductions</strong></td>
+                                        <td style="border:none" class="text-start bg-blue text-white p-2 mb-0"></td>
+                                        <td style="border:none" class="text-start bg-blue text-white p-2 mb-0"></td>
+                                        @*<td style="border:none" class="text-start bg-blue text-white p-2 mb-0"></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td><strong>Net Taxable Income after all deductions(J=H - I)</strong></td>
+                                        <td class="amt"><strong>@ViewBag.TaxComputation.tbl_OldRegime_Net_TaxableIncome_After_All_Deductions</strong></td>
+                                        <td class="amt"><strong>@ViewBag.TaxComputation.tbl_NewRegime_Net_TaxableIncome_After_All_Deductions</strong></td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td>Total tax liability</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_NormalTax_On_TotalIncome</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_NewRegime_NormalTax_On_TotalIncome</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+                                    <tr>
+                                        <td>Less: Rebate Under Section 87A(a)</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_Less_Rebateus87A</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_NewRegime_Less_Rebateus87A</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+
+                                    <tr>
+                                        <td>Less: Relief Under Section 87A(b)</td>
+                                        <td class="amt">0</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_NewRegime_Less_Rebateus87B</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td>Net Tax</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_NetTax_On_TotalIncome</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_NewRegime_NetTax_On_TotalIncome</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+                                    <tr>
+                                        <td>Surcharge</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_Surcharge</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_NewRegime_Surcharge</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+
+                                    <tr>
+                                        <td>Marginal Relief</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_Surcharge_Marginalrelief</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_NewRegime_Surcharge_Marginalrelief</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+                                    <tr>
+                                        <td>Add: Cess @@ 4%</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_OldRegime_HeathandEducationcess</td>
+                                        <td class="amt">@ViewBag.TaxComputation.tbl_NewRegime_HeathandEducationcess</td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Net Tax Payable</strong></td>
+                                        <td class="amt"><strong>@ViewBag.TaxComputation.tbl_OldRegime_FianlTaxPayable</strong></td>
+                                        <td class="amt"><strong>@ViewBag.TaxComputation.tbl_NewRegime_FianlTaxPayable</strong></td>
+                                        @*<td><center><i class="fa fa-eye"></i></center></td>*@
+                                    </tr>
+                                    @*<tr>
+                                            <td>Advance Tax Paid / TDS reflected under 26AS</td>
+                                            <td class="amt">0</td>
+                                            <td class="amt">0</td>
+                                            <td><center><i class="fa fa-eye"></i></center></td>
+                                        </tr>*@
+
+                                    @*<tr>
+                                            <td>Balance Tax to be Paid</td>
+                                            <td class="amt">0</td>
+                                            <td class="amt">0</td>
+                                            <td><center><i class="fa fa-eye"></i></center></td>
+                                        </tr>*@
+                                    @*<tr>
+                                            <td>Tax to Gross Income Ratio</td>
+                                            <td class="amt">0</td>
+                                            <td class="amt">0</td>
+                                            <td><center><i class="fa fa-eye"></i></center></td>
+                                        </tr>*@
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!-- Start panel -->
+<div class="row">
+    <div class="offcanvas offcanvas-end" id="offcanvasExample" data-bs-backdrop="false"
+         data-bs-scroll=true>
+        <div class="offcanvas-header" style="border-bottom: 1px solid #d3d3d38a;">
+            <h6 class="offcanvas-title text-center" id="EmpName1"
+                style="width: 100%;">
+                <span>Tax Help</span>
+            </h6>
+            <button type="button" class="btn-close text-reset"
+                    data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="row">
+                <div>
+                    @*<textarea autocomplete="Off" class="form-control" cols="20" height="auto" id="help" name="HelpDescription" style="font-size:16px" Value=""></textarea>*@
+                    <textarea autocomplete="Off" class="form-control summernote" cols="20" height="auto" id="summernote" name="HelpDescription" style="font-size:16px" Value=""></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END panel -->
+
+
+
+
+<script>
+    $(".summernote").summernote({
+        placeholder: '',
+        contenteditable: false,
+        focus: true,
+        toolbar: false,
+        disable: true,
+        height: "300"
+    });
+    $('#summernote').summernote('disable');
+</script>
+
+<script>
+
+    function HelpDetails(tblRow) {
+        debugger;
+        var TypeId = tblRow;
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetHelp", "ESS_Tax_TaxComputation")',
+            data: { TypeId: TypeId },
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            success: function (response) {
+                debugger;
+                //var data = JSON.parse(response.Value);
+                if (response) {
+                    $('#summernote').summernote('code', response);
+                }
+            }
+        });
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        $(document).ready(function () {
+            $('#btnSubmit').on('click', function (event) {
+                debugger
+                var TaxFyearId = $("#ddlTaxFyearId").val();
+                if (TaxFyearId == null || TaxFyearId == "") {
+                    $("#ErrorTaxFyearId").html("Please select financial year");
+                    return false;
+                }
+                else {
+                    $("#ErrorTaxFyearId").html("");
+                    return true;
+                }
+                $("#SaveTaxComputation").submit();
+            });
+        });
+    });
+</script>

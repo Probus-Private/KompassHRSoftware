@@ -1,0 +1,832 @@
+﻿
+@{
+    ViewBag.Title = "AllAllowedandDepositeItem";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+
+
+<style>
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    .nav.nav-tabs.nav-tabs-inverse .nav-item .nav-link.active {
+    background-color: #eeeeee;
+}
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .tblAddDatas td:nth-child(4) {
+        display: none;
+    }
+
+    .tblAddDatas td:nth-child(5) {
+        display: none;
+    }
+
+    .tblAddDatas td:nth-child(6) {
+        display: none;
+    }
+
+
+    .tblAddData td:nth-child(5) {
+        display: none;
+    }
+
+
+    .tblAddData td:nth-child(6) {
+        display: none;
+    }
+
+    .tblAddData td:nth-child(7) {
+        display: none;
+    }
+
+    .tblAddData td:nth-child(8) {
+        display: none;
+    }
+
+    .text-left {
+        text-align: left;
+    }
+</style>
+
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Visitor Allow and Deposit Item
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_VMS_VisitorEntry", "ESS_VMS_VisitorEntry",  new { id = 10,ScreenId=188, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row" align="center">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-body" data-scrollbar="true">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <!-- BEGIN tabs -->
+                            <ul class="nav nav-tabs nav-tabs-inverse nav-justified" data-sortable-id="index-2">
+                                <li class="nav-item">
+                                    <a href="#AllowItem" data-bs-toggle="tab" class="nav-link active">
+                                        <i class="fa fa-scroll fa-lg me-5px"></i> <span class="d-none d-md-inline">
+                                            Allow Item
+                                        </span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#DepositeItem" data-bs-toggle="tab" class="nav-link">
+                                        <i class="fa fa-newspaper fa-lg me-5px"></i> <span class="d-none d-md-inline">Deposit Item</span>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="#ReturnableItem" data-bs-toggle="tab" class="nav-link">
+                                        <i class="fa fa-elevator fa-lg me-5px"></i> <span class="d-none d-md-inline">Returnable Item</span>
+                                    </a>
+                                </li>
+                            </ul>
+                            <br />
+                            <br />
+                            <div class="tab-content panel rounded-0 rounded-bottom mb-3px" data-sortable-id="index-3">
+                                <div class="tab-pane fade active show" id="AllowItem">
+                                    <div>
+                                        <div class="row ">
+                                            <div class="col-md-2">
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="row mb-15px">
+                                                    <label class="col-md-2 text-left">
+                                                        <b>Allow Item</b>
+                                                    </label>
+                                                    <div class="col-md-8">
+                                                        @Html.DropDownList("AllowItem", new SelectList(ViewBag.GetAllowVisitorItem, "Id", "Name"), "--Select--", new { @class = "form-control", name = "AllowItem", id = "txtAllowItem", autocomplete = "Off" })
+                                                        @Html.ValidationMessage("AllowItem", "", new { id = "ErrorAllowItem", @style = "color:red", @class = "help-block" })
+                                                        @Html.Hidden("VisitorId", new { id = "VisitorId" })
+                                                        @Html.Hidden("VisitorName", new { id = "VisitorName" })
+                                                        @Html.Hidden("ItemID", new { id = "ItemID" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row ">
+                                            <div class="col-md-2">
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="row mb-15px">
+                                                    <label class="col-md-2 text-left">
+                                                        <b>Remark</b>
+                                                    </label>
+                                                    <div class="col-md-8">
+                                                        @Html.TextArea("Remark", "", new { @class = "form-control", name = "Remark", id = "txtAllowRemark", autocomplete = "Off" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row" align="right">
+                                            <div class="col-md-2">
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="row mb-15px">
+                                                    <div class="col-md-2"></div>
+                                                    <div class="col-md-8">
+                                                        <button type="submit" class="btn btn-primary" id="btnAddAllowtem" style="margin-right:10px">Submit</button>
+                                                        <a href="/ESS/ESS_VMS_VisitorEntry/ESS_VMS_VisitorEntry">
+                                                            <button type="button" class="btn btn-danger" id="btnAddAllowtem">Back</button>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-7 offset-md-2">
+                                                <div class="panel panel-inverse" data-sortable-id="index-1">
+                                                    <div class="panel-body">
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                <!-- BEGIN table-responsive -->
+                                                                <div>
+                                                                    <div class="table-wrap">
+                                                                        <table class="table table-bordered table-hover mb-0 text-dark align-middle tblAddDatas" id="tblAllowItem1" style="width: 100%; max-width: 600px; margin: 0 auto;">
+                                                                            <thead>
+                                                                                <tr class="trheading" style="background-color:#f5f5f5;">
+                                                                                    <th class="text-nowrap text-center">Remove</th>
+                                                                                    <th class="text-nowrap text-center">Allow Item</th>
+                                                                                    <th class="text-nowrap text-center">Remark</th>
+                                                                                    <th class="text-nowrap text-center" hidden>ItemId</th>
+                                                                                    <th class="text-nowrap text-center" hidden>VisitorId</th>
+                                                                                    <th class="text-nowrap text-center" hidden>VisitorName</th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody id="tblAllowItem"></tbody>
+                                                                            <!-- Add your table body here -->
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- END table-responsive -->
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- END tabs -->
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="tab-content panel rounded-0 rounded-bottom mb-3px" data-sortable-id="index-3">
+                                <div class="tab-pane fade" id="DepositeItem">
+                                    <div>
+                                        <div class="row ">
+                                            <div class="col-md-2">
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="row mb-15px">
+                                                    <label class="col-md-2 text-left">
+                                                        <b>  Deposit Item</b>
+                                                    </label>
+                                                    <div class="col-md-8">
+                                                        @Html.DropDownList("DepositeItem", new SelectList(ViewBag.GetDepositeVisitorItem, "Id", "Name"), "--Select--", new { @class = "form-control", name = "DepositeItem", id = "txtDepositeItem", autocomplete = "Off" })
+                                                        @Html.ValidationMessage("DepositeItem", "", new { id = "ErrorDepositeItem", @style = "color:red", @class = "help-block" })
+                                                        @Html.Hidden("VisitorId", new { id = "VisitorId" })
+                                                        @Html.Hidden("VisitorName", new { id = "VisitorName" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row ">
+                                            <div class="col-md-2">
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="row mb-15px">
+                                                    <label class="col-md-2 text-left">
+                                                        <b>Locker No</b>
+                                                    </label>
+                                                    <div class="col-md-8">
+                                                        @Html.DropDownList("LockerNo", new SelectList(ViewBag.GetVisitorLocker, "Id", "Name"), "--Select--", new { @class = "form-control", name = "DepositeLockerNo", id = "txtDepositeLockerNo", autocomplete = "Off" })
+                                                        @Html.ValidationMessage("LockerNo", "", new { id = "ErrorLockerNo", @style = "color:red", @class = "help-block" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row ">
+                                            <div class="col-md-2">
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="row mb-15px">
+                                                    <label class="col-md-2 text-left">
+                                                        <b>Remark</b>
+                                                    </label>
+                                                    <div class="col-md-8">
+                                                        @Html.TextArea("Remark", "", new { @class = "form-control", name = "Remark", id = "txtDepositeRemark", autocomplete = "Off" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row" align="right">
+                                            <div class="col-md-2">
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="row mb-15px">
+                                                    <div class="col-md-2"></div>
+                                                    <div class="col-md-8">
+                                                        <button type="submit" class="btn btn-primary" id="btnAddDepositeItem" style="margin-right:10px">Submit</button>
+                                                        <a href="/ESS/ESS_VMS_VisitorEntry/ESS_VMS_VisitorEntry">
+                                                            <button type="button" class="btn btn-danger" id="btnAddAllowtem">Back</button>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-7 offset-md-2">
+                                                <div class="panel panel-inverse" data-sortable-id="index-1">
+                                                    <div class="panel-body">
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                <!-- BEGIN table-responsive -->
+                                                                <div>
+                                                                    <div class="table-wrap">
+                                                                        <table class="table table-bordered table-hover mb-0 text-dark align-middle tblAddData" id="data-table-combine" style="width: 100%; max-width: 600px; margin: 0 auto;">
+                                                                            <thead>
+                                                                                <tr class="trheading" style="background-color:#f5f5f5;">
+                                                                                    <th class="text-nowrap text-center">Remove</th>
+                                                                                    <th class="text-nowrap text-center">Deposit Item</th>
+                                                                                    <th class="text-nowrap text-center">Locker No</th>
+                                                                                    <th class="text-nowrap text-center">Remark</th>
+                                                                                    <th class="text-nowrap text-center" hidden> ItemId</th>
+                                                                                    <th class="text-nowrap text-center" hidden>LockerId</th>
+                                                                                    <th class="text-nowrap text-center" hidden>VisitorId</th>
+                                                                                    <th class="text-nowrap text-center" hidden>VisitorName</th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody id="tblDepositeItem"></tbody>
+                                                                            <!-- Add your table body here -->
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- END table-responsive -->
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>                                      
+                                        <!-- END tabs -->
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="tab-content panel rounded-0 rounded-bottom mb-3px" data-sortable-id="index-3">
+                                <div class="tab-pane fade" id="ReturnableItem">
+                                    <div>
+                                        <div class="row ">
+                                            <div class="col-md-2">
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="row mb-15px">
+                                                    <label class="col-md-2 text-left">
+                                                        <b>Return Item</b>
+                                                    </label>
+                                                    <div class="col-md-8">
+                                                        @Html.DropDownList("Returnable", new SelectList(ViewBag.GetReturnVisitorItem, "Id", "Name"), "--Select--", new { @class = "form-control", name = "ReturnItem", id = "txtReturnItem", autocomplete = "Off" })
+                                                        @Html.ValidationMessage("Returnable", "", new { id = "ErrorDepositeItem", @style = "color:red", @class = "help-block" })
+                                                        @Html.Hidden("VisitorId", new { id= "VisitorId" })
+                                                        @Html.Hidden("VisitorName", new { id = "VisitorName" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row ">
+                                            <div class="col-md-2">
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="row mb-15px">
+                                                    <label class="col-md-2 text-left">
+                                                        <b>Remark</b>
+                                                    </label>
+                                                    <div class="col-md-8">
+                                                        @Html.TextArea("Remark", "", new { @class = "form-control", name = "Remark", id = "txtReturnRemark", autocomplete = "Off" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                       
+                                        <div class="row" align="right" >  
+                                            <div class="col-md-2">
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="row mb-15px">
+                                                    <div class="col-md-2"></div>
+                                                    <div class="col-md-8">
+                                                        <button type="submit" class="btn btn-primary" id="btnRetunItem" style="margin-right:10px">Submit</button>
+                                                        <a href="/ESS/ESS_VMS_VisitorEntry/ESS_VMS_VisitorEntry">
+                                                            <button type="button" class="btn btn-danger" id="btnAddAllowtem">Back</button>
+                                                        </a>
+                                                    </div>                                                  
+                                                    </div>
+                                            </div>
+                                           
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-7 offset-md-2">
+                                                <div class="panel panel-inverse" data-sortable-id="index-1">
+                                                    <div class="panel-body">
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                <!-- BEGIN table-responsive -->
+                                                                <div>
+                                                                    <div class="table-wrap">
+                                                                        <table class="table table-bordered table-hover mb-0 text-dark align-middle tblAddDatas" id="data-table-combine" style="width: 100%; max-width: 600px; margin: 0 auto;">
+                                                                            <thead>
+                                                                                <tr class="trheading" style="background-color:#f5f5f5;">
+                                                                                    <th class="text-nowrap text-center">Remove</th>
+                                                                                    <th class="text-nowrap text-center">Return Item</th>
+                                                                                    <th class="text-nowrap text-center">Remark</th>
+                                                                                    <th class="text-nowrap text-center" hidden>ItemId</th>
+                                                                                    <th class="text-nowrap text-center" hidden>LockerId</th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <tbody id="tblReturnItem"></tbody>
+                                                                            <!-- Add your table body here -->
+                                                                        </table>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- END table-responsive -->
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>   
+                                        <!-- END tabs -->
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!-- END tabs -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END panel -->
+</div>
+
+<script>
+    //==================start ready funcation =================================
+
+    $(document).ready(function () {
+        debugger;
+        $("#txtAllowItem").select2();
+        $("#txtAllowLockerNo").select2();
+        $("#txtDepositeItem").select2();
+        $("#txtDepositeLockerNo").select2();
+        $("#txtReturnItem").select2();
+        $("#txtRetuenLockerNo").select2();
+
+        $("#txtAllowItem").change(function () {
+            $("#ErrorAllowItem").html("");
+        });
+
+        $("#txtDepositeItem").change(function () {
+            $("#ErrorDepositeItem").html("");
+        });
+
+        $("#txtDepositeLockerNo").change(function () {
+            $("#ErrorLockerNo").html("");
+        });
+
+
+        $("#txtDepositeItem").change(function () {
+            $("#ErrorDepositeItem").html("");
+        });
+
+        debugger;
+        var GetAllowDeposite = @Html.Raw(Json.Encode(ViewBag.Getallowanddeposite));
+        if (GetAllowDeposite.length !== 0) {
+            for (var i = 0; i < GetAllowDeposite.length; i++) {
+                var table = document.getElementById("tblAllowItem");
+                var rowCount = table.rows.length;
+                var row = table.insertRow(rowCount);
+
+                var count = $('#tblAllowItem tr').length;
+                if (GetAllowDeposite[i]) {
+                    row.insertCell(0).innerHTML = '<center><a type="button" id="btnAllowDelete" class="btn btn-danger ListBtn btnpress"><i class="fa-solid fa-trash-alt"></i></a></center>';
+                    row.insertCell(1).innerHTML = "" + GetAllowDeposite[i][0].Value + "";
+                    row.insertCell(2).innerHTML = "" + GetAllowDeposite[i][1].Value + "";
+                    row.insertCell(3).innerHTML = "" + GetAllowDeposite[i][2].Value + "";
+                    row.insertCell(4).innerHTML = "" + GetAllowDeposite[i][3].Value + "";
+                    row.insertCell(5).innerHTML = "" + GetAllowDeposite[i][4].Value + "";
+                } else {
+                    console.error("Data at index " + i + " is undefined.");
+                }
+            }
+        }
+
+
+        var GetwDeposite = @Html.Raw(Json.Encode(ViewBag.GetallDepositedata));
+        if(GetwDeposite != 0)
+        {
+            for (var i = 0; i < GetwDeposite.length; i++) {
+                var table = document.getElementById("tblDepositeItem");
+                var rowCount = table.rows.length;
+                var row = table.insertRow(rowCount);
+
+                var count = $('#tblDepositeItem tr').length;
+                if (GetwDeposite[i]) {
+                    row.insertCell(0).innerHTML = '<center><a type="button" id="btnDepositeDelete" class="btn btn-danger ListBtn btnpress" ><i class="fa-solid fa-trash-alt"></i></a></center>';
+                    row.insertCell(1).innerHTML = "" + GetwDeposite[i][0].Value + "";
+                    row.insertCell(2).innerHTML = "" + GetwDeposite[i][1].Value + "";
+                    row.insertCell(3).innerHTML = "" + GetwDeposite[i][2].Value + "";
+                    row.insertCell(4).innerHTML = "" + GetwDeposite[i][3].Value + "";
+                    row.insertCell(5).innerHTML = "" + GetwDeposite[i][4].Value + "";
+                    row.insertCell(6).innerHTML = "" + GetwDeposite[i][5].Value + "";
+                    row.insertCell(7).innerHTML = "" + GetwDeposite[i][6].Value + "";
+
+                } else {
+                    console.error("Data at index " + i + " is undefined.");
+                }
+            }
+        }
+
+        var GetReturn = @Html.Raw(Json.Encode(ViewBag.GetallReturndata));
+        if(GetReturn != null)
+        {
+            for (var i = 0; i < GetReturn.length; i++) {
+                var table = document.getElementById("tblReturnItem");
+                var rowCount = table.rows.length;
+                var row = table.insertRow(rowCount);
+
+                var count = $('#tblReturnItem tr').length;
+                if (GetReturn[i]) {
+                    row.insertCell(0).innerHTML = '<center><a type="button" id="btnReturnDelete" class="btn btn-danger ListBtn btnpress" ><i class="fa-solid fa-trash-alt"></i></a></center>';
+                    row.insertCell(1).innerHTML = "" + GetReturn[i][0].Value + "";
+                    row.insertCell(2).innerHTML = "" + GetReturn[i][1].Value + "";
+                    row.insertCell(3).innerHTML = "" + GetReturn[i][2].Value + "";
+                    row.insertCell(4).innerHTML = "" + GetReturn[i][3].Value + "";
+                    row.insertCell(5).innerHTML = "" + GetReturn[i][4].Value + "";
+                } else {
+                    console.error("Data at index " + i + " is undefined.");
+                }
+            }
+        }
+
+    });//ready funcation
+
+
+    //==================end ready funcation =================================   
+
+   
+
+    //==============SaveCode====================
+
+
+    $("#btnAddAllowtem").click(function () {
+        debugger;
+        var AllowItemID = $("#txtAllowItem").val();
+        var AllowItemName =    $('#txtAllowItem option:selected').text();
+        var AllowRemark = $("#txtAllowRemark").val();
+        var VisitorId = $("#VisitorId").val();
+        var VisitorName = $("#VisitorName").val();
+
+        $.ajax({
+            type: "POST",
+            url: "AllowItemSaveUpdate",
+            data: {AllowItemID:AllowItemID,AllowItemName:AllowItemName,AllowRemark:AllowRemark,VisitorId:VisitorId,VisitorName:VisitorName},
+            success: function (response) {
+                debugger;               
+                if(response.Message != null && response.Icon != null)
+                {
+                    Swal.fire({
+                        icon:response.Icon,
+                        text: response.Message,
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup()
+                            popup.classList.remove('swal2-show')
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake')
+                            })
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake')
+                            }, 500)
+                            return false
+                        }
+                    });
+
+                }
+                if (response == 1) {
+                    var table = document.getElementById("tblAllowItem");
+                    var rowCount = table.rows.length;
+                    var row = table.insertRow(rowCount);
+                    var count = $('#tblAllowItem tr').length;
+                    var AllowItemName = $('#txtAllowItem option:selected').text();
+                    var AllowRemark = $("#txtAllowRemark").val();                  
+                    row.insertCell(0).innerHTML = '<center><a type="button" id="btnReturnDelete" class="btn btn-danger ListBtn btnpress" ><i class="fa-solid fa-trash-alt"></i></a></center>';                
+                    row.insertCell(1).innerHTML = AllowItemName;
+                    row.insertCell(2).innerHTML = AllowRemark;                 
+                    $("#txtAllowItem").val('').select2();
+                    $("#txtAllowRemark").val('');
+                }
+              
+            }
+        });       
+
+    });
+
+
+    $("#btnAddDepositeItem").click(function () {  
+        debugger;
+        var DepositItem =$('#txtDepositeItem option:selected').text();
+        var LockerNo = $('#txtDepositeLockerNo option:selected').text();
+        var DepositeRemark = $("#txtDepositeRemark").val();
+        var DepositItemID =$('#txtDepositeItem option:selected').val();
+        var LockerNoID = $('#txtDepositeLockerNo option:selected').val();
+        var VisitorId = $("#VisitorId").val();
+        var VisitorName = $("#VisitorName").val();
+        $.ajax({
+            type: "POST",
+            url: "DepositeSaveUpdate",
+            data: {DepositItem:DepositItem,LockerNo:LockerNo,DepositeRemark:DepositeRemark,DepositItemID:DepositItemID,LockerNoID:LockerNoID,VisitorId:VisitorId ,VisitorName:VisitorName},
+            success: function (response) {
+                debugger;
+                if(response.Message != null && response.Icon != null){
+                    Swal.fire({
+                        icon:response.Icon,
+                        text: response.Message,
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup()
+                            popup.classList.remove('swal2-show')
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake')
+                            })
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake')
+                            }, 500)
+                            return false
+                        }
+                    });
+                }
+                if (response == 1) {
+                    debugger;
+                    var table = document.getElementById("tblDepositeItem");
+                    var rowCount = table.rows.length;
+                    var row = table.insertRow(rowCount);
+                    var count = $('#tblDepositeItem tr').length;  
+                    var DepositeItemName = $('#txtDepositeItem option:selected').text();
+                    var LokerNo = $('#txtDepositeLockerNo option:selected').text();
+                    var Remark = $("#txtDepositeRemark").val();                  
+                    row.insertCell(0).innerHTML = '<center><a type="button" id="btnReturnDelete" class="btn btn-danger ListBtn btnpress" ><i class="fa-solid fa-trash-alt"></i></a></center>';                
+                    row.insertCell(1).innerHTML = DepositeItemName;
+                    row.insertCell(2).innerHTML = LokerNo;
+                    row.insertCell(3).innerHTML = Remark;
+
+                    $("#txtDepositeItem").val('').select2();
+                    $("#txtDepositeLockerNo").val('').select2();
+                    $("#txtDepositeRemark").val('');
+                }
+            }
+        });
+    });
+
+
+    $("#btnRetunItem").click(function () {
+        debugger;
+        var ReturnItem = $("#txtReturnItem option:selected").text();   
+        var Remark = $("#txtReturnRemark").val(); 
+        var ReturnItemID = $("#txtReturnItem option:selected").val();   
+        var VisitorId = $("#VisitorId").val();
+        var VisitorName = $("#VisitorName").val();
+        $.ajax({
+            type: "POST",
+            url: "RetunItemSaveUpdate",
+            data: {ReturnItem:ReturnItem ,Remark:Remark,ReturnItemID:ReturnItemID,VisitorId:VisitorId,VisitorName:VisitorName},          
+            success: function (response) {
+                debugger;               
+                if(response.Message != null && response.Icon != null)
+                {
+                    Swal.fire({
+                        icon:response.Icon,
+                        text: response.Message,
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup()
+                            popup.classList.remove('swal2-show')
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake')
+                            })
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake')
+                            }, 500)
+                            return false
+                        }
+                    });
+
+                }  
+                if (response == 1) {
+                    var table = document.getElementById("tblReturnItem");
+                    var rowCount = table.rows.length;
+                    var row = table.insertRow(rowCount);
+                    var count = $('#tblReturnItem tr').length;
+                    var ReturnItem = $("#txtReturnItem option:selected").text();   
+                    var Remark = $("#txtReturnRemark").val();                  
+                    row.insertCell(0).innerHTML = '<center><a type="button" id="btnReturnDelete" class="btn btn-danger ListBtn btnpress" ><i class="fa-solid fa-trash-alt"></i></a></center>';                
+                    row.insertCell(1).innerHTML = ReturnItem;
+                    row.insertCell(2).innerHTML = Remark;
+
+                    $("#txtReturnItem").val('').select2();
+                    $("#txtReturnRemark").val('');
+                }
+
+            }
+        })
+        return false;
+    });
+
+    //==============END SaveCode====================
+
+    //=====================start Delete code allowreturn=====================
+
+
+
+    $(document).on('click', '#btnAllowDelete', function() {
+        debugger;
+        var currentRow=$(this).closest("tr");
+        var ItemID=currentRow.find("td:eq(3)").html();
+        var VisitorId=currentRow.find("td:eq(4)").html();
+        $.ajax({
+            type: "get",
+            url: "DeleteAllowItem",
+            data: {ItemID:ItemID ,VisitorId:VisitorId},
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            success: function (response) {
+                debugger;
+                window.location.reload();
+
+            }
+        });
+
+    });
+
+
+    $(document).on('click', '#btnDepositeDelete', function() {
+        debugger;
+        var currentRow=$(this).closest("tr");
+        var ItemID=currentRow.find("td:eq(4)").html();
+        var VisitorId=currentRow.find("td:eq(6)").html();
+        $.ajax({
+            type: "get",
+            url: "DeleteDepositeItem",
+            data: {ItemID:ItemID ,VisitorId:VisitorId},
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            success: function (response) {
+                debugger;
+                window.location.reload();
+
+            }
+        });
+
+    });
+
+
+    $(document).on('click', '#btnReturnDelete', function() {
+        debugger;
+        var currentRow=$(this).closest("tr");
+        var ItemID=currentRow.find("td:eq(3)").html();
+        var VisitorId=currentRow.find("td:eq(4)").html();
+        $.ajax({
+            type: "get",
+            url: "DeleteReturnItem",
+            data: {ItemID:ItemID ,VisitorId:VisitorId},
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            success: function (response) {
+                debugger;
+                window.location.reload();
+
+            }
+        });
+
+    });
+
+
+    //=====================End Delete code allowreturn=====================
+
+</script>

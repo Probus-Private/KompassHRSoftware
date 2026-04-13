@@ -1,0 +1,310 @@
+﻿
+@{
+    ViewBag.Title = "ESS_VMS_VisitorInReport";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Required library for validation -->
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<style>
+    label.error, .Error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Visitor In Report
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_VMS_Reports", "ESS_VMS_Reports",  new { id = 10,ScreenId=189, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">Visitor In Report<b></b> </h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        This section provides detailed reports categorized by business unit, offering insights into visitor activities that are only tracked for those entering the premises but not for those leaving.
+                    </p>
+                </div>
+
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action="/ESS/ESS_VMS_VisitorInReport/ESS_VMS_VisitorInReport" id="SaveVisitorInReport" method="post">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Company Name
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownList("CompanyName", new SelectList(ViewBag.CompanyName, "Id", "Name"), new { @class = "form-select", name = "CompanyName", id = "ddlCompanyName" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Business Unit
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownList("BusinessUnit", new SelectList(ViewBag.GetBusinessUnit, "Id", "Name"), "All", new { @class = "form-select", type = "text", name = "BusinessUnit", id = "txtBusinessUnit" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                From Date
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBox("FromDate", "", new { @class = "form-control", type = "date", name = "FromDate", id = "txtFromDate" })
+                                                @Html.ValidationMessage("FromDate", "", new { @class = "help-block", id = "ErrortxtFromDate", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                To Date
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBox("ToDate", "", new { @class = "form-control", type = "date", name = "ToDate", id = "txtToDate" })
+                                                @Html.ValidationMessage("ToDate", "", new { @class = "help-block", id = "ErrortxtToDate", @style = "color:red" })
+                                                <span id="ErrortxtGetUserPolicyName" class="Error"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-10">
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="button" class="btn btn-success" id="btlExportToExcel" onclick="downloadExcelFile()">
+                                                            <i class="fa-regular fa-file-excel fa-xl"></i> Export To Excel
+                                                        </button>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                          
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#ddlCompanyName").select2();
+        $("#txtBusinessUnit").select2();
+        $('title').html("Visitor In Report");
+        var CheckEmptyToDate = document.getElementById('txtToDate').value;
+        if (CheckEmptyToDate == "") {
+            document.getElementById('txtFromDate').value = SetTodaysDate;
+            document.getElementById('txtToDate').value = SetTodaysDate;
+        }
+        $("#ddlCompanyName").on("change", function () {
+            debugger;
+            $("#txtBusinessUnit").find("option").remove();
+            var CmpId = $("#ddlCompanyName").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetBusinessUnit", "ESS_VMS_VisitorInReport")',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    if (data != null) {
+                        $("#txtBusinessUnit").append("<option value=''>All-</option>");
+                        $.each(data, function (i, p) {
+                            $("#txtBusinessUnit").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        });
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        // return false
+                    }
+
+                });
+            }
+        }
+
+
+    });//ready function
+
+    function downloadExcelFile() {
+        debugger;
+        //$(".Userloaderbg").css("display", "flex");
+        //var CmpId = $("#ddlCompanyName").val();
+        //var BranchId = $("#txtBusinessUnit").val();
+        //var FromDate = $("#txtFromDate").val();
+        //var ToDate=$("#txtToDate").val();
+        //var url = '/ESS_VMS_VisitorInReport/DownloadExcelFile?BranchId=' + encodeURIComponent(BranchId) + '&FromDate=' + encodeURIComponent(FromDate) +'&CmpId='+ encodeURIComponent(CmpId)+'&ToDate='+encodeURIComponent(ToDate);
+
+        $(".Userloaderbg").css("display", "flex");
+        var CmpId = encodeURIComponent($("#ddlCompanyName").val());
+        var BranchId = encodeURIComponent($("#txtBusinessUnit").val());
+        var FromDate = encodeURIComponent($("#txtFromDate").val());
+        var ToDate = encodeURIComponent($("#txtToDate").val());
+        var url = `@Url.Action("DownloadExcelFile", "ESS_VMS_VisitorInReport")?BranchId=${BranchId}&CmpId=${CmpId}&FromDate=${FromDate}&ToDate=${ToDate}`;
+
+        $.ajax({
+            url: url,
+            method: 'GET',
+            xhrFields: {
+                responseType: 'blob' // Set the response type to blob
+            },
+            success: function(data) {
+                debugger;
+                if(data.size==0)
+                {
+                    Swal.fire({
+                        icon: 'error',
+                        text: 'Record Not Found',
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup()
+                            popup.classList.remove('swal2-show')
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake')
+                            })
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake')
+                            }, 500)
+                            return false
+                        }
+                    });
+                    $(".Userloaderbg").css("display", "none");
+                    return false;
+                }
+                var formattedDate = convertDateFormat(FromDate);
+                var ToformattedDate = convertDateFormat(ToDate);
+                // Create a Blob from the response data
+                var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                // Create a temporary anchor element to initiate the download
+                var anchorElement = document.createElement('a');
+                var url = window.URL.createObjectURL(blob);
+                anchorElement.href = url;
+                anchorElement.download = 'VisitorInReport('+formattedDate +' - '+ ToformattedDate+').xlsx';
+                anchorElement.click();
+                // Clean up
+                window.URL.revokeObjectURL(url);
+                $(".Userloaderbg").css("display", "none");
+            },
+            error: function(xhr, status, error) {
+                console.error('Error downloading file:', error);
+                // Handle error scenarios here
+            }
+        });
+    }
+
+    $("#txtFromDate").change(function () {
+        debugger;
+        $("#ErrortxtFromDate").html("");
+        var StartDate = document.getElementById('txtFromDate').value;
+        var EndDate = document.getElementById('txtToDate').value;
+        var eDate = new Date(EndDate);
+        var sDate = new Date(StartDate);
+        if (StartDate != '' && EndDate != '' && sDate > eDate) {
+            $("#ErrortxtFromDate").html("From date should not be greater than To date.");
+        }
+        else {
+            $("#ErrortxtFromDate").html("");
+            $("#ErrortxtToDate").html("");
+        }
+    });
+
+    $("#txtToDate").change(function () {
+        debugger;
+        var StartDate = document.getElementById('txtFromDate').value;
+        var EndDate = document.getElementById('txtToDate').value;
+        var eDate = new Date(EndDate);
+        var sDate = new Date(StartDate);
+        if (StartDate != '' && EndDate != '' && sDate > eDate) {
+            $("#ErrortxtToDate").html("To date should not be less than from date.");
+        }
+        else {
+            $("#ErrortxtFromDate").html("");
+            $("#ErrortxtToDate").html("");
+        }
+    });
+
+
+
+</script>

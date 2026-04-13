@@ -1,0 +1,984 @@
+﻿@model KompassHR.Areas.Module.Models.Module_Employee.Contractor_Invoice
+
+@{
+    ViewBag.Title = "Module_Employee_ContractorInvoice";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    /*select Row CSS Start*/
+    body table.dataTable tbody tr.selected td {
+        background: #fff7cc !important;
+        color: black !important;
+        font-weight: 600;
+    }
+
+    table.dataTable.table-hover > tbody > tr.selected:hover > * {
+        box-shadow: inset 0 0 0 9999px #D0D3D4 !important;
+    }
+
+    /*Table Row Hover   rgba(0, 0, 0, 0.075);*/
+    table.dataTable.table-hover > tbody > tr:hover > * {
+        box-shadow: inset 0 0 0 9999px #D0D3D4 !important;
+    }
+    /*Table select Row BackGround Color */
+    table.dataTable > tbody > tr.selected > * {
+        box-shadow: inset 0 0 0 9999px #D0D3D4 !important;
+        color: white;
+    }
+
+    /*.table{
+           --bs-table-active-bg: #9bc2ce !important;
+       }*/
+    /*tr:nth-child(even) {
+             --bs-table-accent-bg: #D0D3D4   !important;
+             }*/
+
+    /*select Row CSS End*/
+
+
+    .dataTables_scrollBody::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+        margin-top: 0px;
+    }
+
+    .dataTables_scrollBody::-webkit-scrollbar:vertical {
+        width: 12px !important;
+        height: 20px !important;
+    }
+
+    .dataTables_scrollBody::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .dataTables_scrollBody::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+        height: 10px;
+    }
+
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    label.error, .Error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    .div1 td:nth-child(2) {
+        position: sticky !important;
+        left: 270px !important;
+    }
+
+    .fixed-side1 {
+        position: sticky !important;
+        left: 270px !important;
+        z-index: 1;
+    }
+
+    .div1 td:nth-child(1) {
+        position: sticky !important;
+        left: 0px !important;
+    }
+
+    .fixed-side {
+        position: sticky !important;
+        left: 0px !important;
+        z-index: 1;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+        /*background-color: rgba(233, 236, 239, 0.7) !important;
+    }
+
+
+    th:nth-child(1), td:nth-child(1) {
+        width: 100px; /* Set the width for the first column */
+    }
+
+    #tblTableBulkCTCInsert th:nth-child(1),
+#tblTableBulkCTCInsert td:nth-child(1),
+#tblTableBulkCTCInsert th:nth-child(2),
+#tblTableBulkCTCInsert td:nth-child(2) 
+{
+    display: none;
+}
+
+    #tblTableBulkCTCInsert th:nth-child(3),
+    #tblTableBulkCTCInsert td:nth-child(3) {
+        width: 200px !important;
+        min-width: 200px !important;
+        max-width: 200px !important;
+        white-space: normal;
+    }
+
+    /* Left-click highlight */
+#tblTableBulkCTCInsert tbody tr.selected td {
+    background: #fff7cc !important;
+    color: black !important;
+    font-weight: 600;
+}
+
+
+
+/* Sticky First Visible Column — Keep Header Color */
+#tblTableBulkCTCInsert th:nth-child(3) {
+    position: sticky;
+    left: 0;
+    z-index: 10; /* keep header on top */
+    background: rgba(233, 236, 239, 1) !important; /* SAME AS OTHER HEADERS */
+}
+
+/* Only TD gets white background */
+#tblTableBulkCTCInsert td:nth-child(3) {
+    position: sticky;
+    left: 0;
+    z-index: 5;
+    background: white !important;
+}
+
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Contractor Invoice
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Module_Employee_AttenInvoiceMenu", "Module_Employee_AttenInvoiceMenu", new {id =27, ScreenId=925, area = "Module" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="panel panel-inverse" data-sortable-id="index-1">
+                    <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                        <h4 class="panel-title">Contractor Invoice</h4>
+                        <div class="panel-heading-btn">
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                        </div>
+                    </div>
+                    <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                        <p class="pb-0">
+                        </p>
+                    </div>
+                    <div class="panel-body" style="max-height: fit-content;">
+                        <div class="row justify-content-center">
+                            <div class="row justify-content-center">
+                                <form role="form" action="/Module/Module_Employee_ContractorInvoice/Module_Employee_ContractorInvoice" id="SaveContractorInvoice" method="post">
+                                    @Html.HiddenFor(model => model.ContractorInvoiceId_Encrypted, new { id = "txtContractorInvoiceId_Encrypted" })
+                                    @Html.HiddenFor(model => model.ContractorInvoiceId, new { id = "txtContractorInvoiceId" })
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Company
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.CmpId, new SelectList(ViewBag.CompanyName, "Id", "Name"), "--Select--", new { @class = "form-select", name = "CompanyName", id = "ddlCmpId" })
+                                                    <span id="errCmpId" class="text-danger"></span>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Business Unit
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.BranchId, new SelectList(ViewBag.BranchName, "Id", "Name"), "--Select--", new { @class = "form-select", type = "text", name = "BranchId", id = "ddlBranchId" })
+                                                    <span id="errBranchId" class="text-danger"></span>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Contractor
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.ContractorId, new SelectList(ViewBag.ContractorName, "Id", "Name"), "All", new { @class = "form-select", type = "text", name = "ContractorId", id = "ddlContractorId" })
+                                                    <span id="errContractorId" class="text-danger"></span>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        @*<div class="col-md-6">*@
+                                            <div class="col-md-6">
+                                                <div class="row mb-15px">
+                                                    <label class="form-label col-form-label col-md-4">
+                                                        Invoice Month
+                                                        <span class="important">*</span>
+                                                    </label>
+                                                    <div class="col-md-8">
+                                                        @Html.TextBoxFor(model => model.InvoiceMonth, new { @class = "form-select", type = "Month", name = "InvoiceMonth", id = "txtInvoiceMonth" })
+                                                        <span id="errInvoiceMonth" class="text-danger"></span>
+
+                                                     </div>
+                                                    @*<div class="col-md-2">
+                                                        <div class="BtnBx">
+                                                            <div class="mb-4">
+                                                                <button type="button" id="btnshow" onclick="ShowInvoice()" class="btn btn-primary btn-sm">
+                                                                    Show
+                                                                </button>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>*@
+                                                </div>
+                                            </div>
+                                        </div>
+                       
+
+                                    <div class="row">
+                                        @*<div class="LastShortLeaveBx">*@
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="BtnBx">
+                                                        <div>
+                                                        
+                                                                <button type="button" id="btnshow" onclick="ShowInvoice()" class="btn btn-success btn-sm">
+                                                                    Show
+                                                                </button>
+
+                                                           
+
+                                                            <button type="button" class="btn btn-success" id="btlExportToExcel" onclick="downloadExcelFile()">
+                                                                <i class="fa-regular fa-file-excel fa-xl"></i> Export To Excel
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @*</div>*@
+                                    </div>
+
+
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="panel panel-inverse" data-sortable-id="index-1">
+                                                    @*<div class="table-responsive">*@
+                                                        <div class="table-scroll-x" style="overflow-x:auto; width:100%;">
+
+                                                                <table class="table table-bordered table-hover mb-0 text-dark align-middle tblAddData TablePage TablePageAccess" id="tblTableBulkCTCInsert">
+                                                                    <thead>
+                                                                        <tr>
+
+                                                                            @if (ViewBag.InvoiceData != null && ViewBag.InvoiceData.Count > 0)
+                                                                            {
+                                                                                var firstRow = ViewBag.InvoiceData[0];
+                                                                                var keys = ((IDictionary<string, object>)firstRow).Keys.ToList();
+                                                                                int hideCount = ViewBag.HideCount;
+
+                                                                                for (int i = 0; i < keys.Count; i++)
+                                                                                {
+                                                                                    if (i >= hideCount && keys[i] != "Hide")
+                                                                                    {
+
+                                                                                        <th>@keys[i]</th>
+
+
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        </tr>
+                                                                    </thead>
+
+                                                                    <tbody id="tblEmployee" style="max-height: 250px; overflow-y: auto;">
+
+                                                                        @foreach (var row in ViewBag.InvoiceData)
+                                                                        {
+                                                                            var rowDict = (IDictionary<string, object>)row;
+                                                                            var keys = rowDict.Keys.ToList();
+                                                                            int hideCount = ViewBag.HideCount;
+
+                                                                            <tr>
+                                                                                @for (int i = 0; i < keys.Count; i++)
+                                                                                {
+                                                                                    if (i >= hideCount && keys[i] != "Hide")
+                                                                                    {
+
+                                                                                        <td>@rowDict[keys[i]]</td>
+
+                                                                                    }
+                                                                                }
+
+                                                                            </tr>
+                                                                        }
+                                                                    </tbody>
+                                                                </table>
+</div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                        
+                                        <div class="row">
+                                            <div class="LastShortLeaveBx">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="BtnBx">
+                                                            <div>
+                                                                <button type="submit" id="btnSubmit"
+                                                                        class="btn btn-primary btn-sm">
+                                                                    <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                                </button>
+
+
+                                                                <a href="@Url.Action("GetList", "Module_Employee_ContractorInvoice", new { area = "Module" })">
+                                                                    <button type="button" class="btn btn-danger btn-sm" id="btnDesignationGetList">
+                                                                        <i class="fa-solid fa-share-from-square"></i> List
+                                                                    </button>
+                                                                </a>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    $(document).ready(function () {
+        debugger
+        $("#btnshow").click(function () {
+            var CmpId = $("#ddlCmpId").val();
+            var BranchId = $("#ddlBranchId").val();
+            var ContractorId = $("#ddlContractorId").val();
+            var InvoiceMonth = $("#txtInvoiceMonth").val();
+
+
+          let isError = false;
+
+          if (!CmpId) {
+              $("#errCmpId").text("Please select Company");
+              isError = true;
+          }
+
+          if (!BranchId) {
+              $("#errBranchId").text("Please select Branch");
+              isError = true;
+          }
+
+          //if (!ContractorId) {
+          //    $("#errContractorId").text("Please select Contractor Name");
+          //    isError = true;
+          //}
+
+          if (!InvoiceMonth) {
+              $("#errInvoiceMonth").text("Please select Month");
+              isError = true;
+          }
+
+          if (isError) {
+              return false;
+          }
+
+
+            window.location.href = '@Url.Action("Module_Employee_ContractorInvoice", "Module_Employee_ContractorInvoice")'
+                + '?CmpId=' + encodeURIComponent(CmpId)
+                + '&BranchId=' + encodeURIComponent(BranchId)
+               + '&ContractorId=' + encodeURIComponent(ContractorId)
+              + '&InvoiceMonth=' + encodeURIComponent(InvoiceMonth);
+        });
+    });
+</script>
+
+
+<script>
+    $(document).ready(function () {
+
+        $("#ddlBranchId").select2();
+        $("#ddlCmpId").select2();
+        $("#ddlContractorId").select2();
+
+
+
+        var today = new Date();
+        var yyyy = today.getFullYear();
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); 
+
+        var defaultMonthYear = yyyy + '-' + mm;
+
+        if (!$('#txtInvoiceMonth').val()) {
+            $('#txtInvoiceMonth').val(defaultMonthYear);
+        }
+
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                });
+            }
+        }
+
+        $("#ddlCmpId").on("change", function () {
+            debugger;
+            $("#ddlBranchId").find("option").remove();
+
+            var CmpId = $("#ddlCmpId").val();
+
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetBusinessUnit", "Module_Employee_ContractorInvoice")',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    debugger;
+                    if (data != null) {
+                        $("#ddlBranchId").append("<option value='0'>--Select-- </option>");
+                        $.each(data, function (i, p) {
+                            $("#ddlBranchId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                }
+            })
+        });
+
+
+
+        @*$("#ddlBranchId").on("change", function () {
+            debugger;
+            $("#ddlContractorId").find("option").remove();
+
+            var BranchId = $("#ddlBranchId").val();
+
+            var CmpId = $("#ddlCmpId").val();
+
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetContractorName", "Module_Employee_ContractorInvoice")',
+                data: { CmpId: CmpId,BranchId:BranchId },
+                success: function (data) {
+                    debugger;
+                    if (data != null) {
+                        $("#ddlContractorId").append("<option value='0'>All </option>");
+                        $.each(data, function (i, p) {
+                            $("#ddlContractorId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                }
+            })
+        });*@
+
+
+        $("#ddlBranchId").on("change", function () {
+            debugger;
+            $("#ddlContractorId").find("option").remove();
+            var BranchId = $("#ddlBranchId").val();
+            var CmpId = $("#ddlCmpId").val();
+
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("GetContractorName", "Module_Employee_ContractorInvoice")',
+                data: { BranchId: BranchId,CmpId:CmpId},
+                success: function (data) {
+                    var $ContractorDropdown = $("#ddlContractorId");
+                    $ContractorDropdown.empty();
+
+                    if (data && data.length > 0) {
+                        $ContractorDropdown.append("<option value=''>All</option>");
+                        $.each(data, function (i, module) {
+                            $ContractorDropdown.append(
+                                $("<option>").val(module.Id).text(module.Name)
+                            );
+                        });
+                    } else {
+                        $ContractorDropdown.append("<option>--All--</option>");
+                    }
+                },
+                error: function () {
+                    console.error("Failed to fetch modules.");
+                    $("#ddlContractorId").empty().append("<option>Error loading modules</option>");
+                }
+            });
+        });
+
+
+    });
+
+</script>
+
+
+<script>
+    function downloadExcelFile() {
+        debugger
+        $("#errCmpId, #errBranchId, #errInvoiceMonth").text("");
+
+        var isValid = true;
+
+        // Get Values
+        var CmpId = $("#ddlCmpId").val();
+        var BranchId = $("#ddlBranchId").val();
+        var ContractorId = $("#ddlContractorId").val();
+        var InvoiceMonth = $("#txtInvoiceMonth").val();
+
+        // Validations
+        if (CmpId === "" || CmpId === null) {
+            $("#errCmpId").text("Please select company");
+            isValid = false;
+        }
+
+        if (BranchId === "" || BranchId === null || BranchId === "0") {
+            $("#errBranchId").text("Please select business unit");
+            isValid = false;
+        }
+
+
+        if (InvoiceMonth === "" || InvoiceMonth === null) {
+            $("#errInvoiceMonth").text("Please select  month Year");
+            isValid = false;
+        }
+
+
+
+    $(".Userloaderbg").css("display", "flex");
+
+    var url = `@Url.Action("DownloadExcelFile", "Module_Employee_ContractorInvoice")?BranchId=${BranchId}&ContractorId=${ContractorId}&CmpId=${CmpId}&InvoiceMonth=${InvoiceMonth}`;
+
+    $.ajax({
+        url: url,
+        method: 'GET',
+        xhrFields: { responseType: 'blob' },
+        success: function (data, status, xhr) {
+
+            $(".Userloaderbg").css("display", "none");
+
+            // Check file name
+            var disposition = xhr.getResponseHeader("Content-Disposition");
+            if (disposition && disposition.indexOf("FileNotFound.txt") !== -1) {
+                Swal.fire({ icon: 'error', text: 'Record Not Found' });
+                return;
+            }
+
+            // Download normally
+            var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            var downloadUrl = URL.createObjectURL(blob);
+
+            var a = document.createElement('a');
+            a.href = downloadUrl;
+            a.download = 'ContractorInvoice.xlsx';
+            a.click();
+
+            URL.revokeObjectURL(downloadUrl);
+        },
+        error: function (xhr, status, error) {
+            console.error('Error downloading file:', error);
+            $(".Userloaderbg").css("display", "none");
+        }
+    });
+}
+</script>
+
+
+
+<script>
+
+$("#SaveContractorInvoice").validate({
+    rules: {
+        CmpId: { required: true }
+    },
+    messages: {
+        CmpId: { required: "Select the Company Name" }
+    },
+    errorPlacement: function (error, element) {
+        if (element.hasClass("select2-hidden-accessible")) {
+            error.insertAfter(element.next('.select2'));
+        } else {
+            error.insertAfter(element);
+        }
+    }
+});
+
+var form = $("#SaveContractorInvoice");
+form.validate();
+
+$("#btnSubmit").click(function (e) {
+    e.preventDefault();
+    debugger;
+
+    if (!form.valid()) return false;
+
+    var employeeData = [];
+
+    // LOOP ROWS
+    $('#tblEmployee tr').each(function () {
+
+        var tds = $(this).find("td");
+        if (tds.length === 0) return;  // skip empty rows
+
+        employeeData.push({
+
+            ContractorMonthlyContractorId: tds.eq(0).text().trim(),
+            ContractorMonthlyMonthYear: tds.eq(1).text().trim(),
+            Contractor: tds.eq(2).text().trim(),
+
+            NoOfEmployee: parseFloat(tds.eq(3).text()) || 0,
+            NoOfDays: parseFloat(tds.eq(4).text()) || 0,
+
+            Total_PerDayAmount: parseFloat(tds.eq(5).text()) || 0,
+            Total_CanteenAmount: parseFloat(tds.eq(6).text()) || 0,
+            Total_AttendanceBonusAmount: parseFloat(tds.eq(7).text()) || 0,
+            Total_TransportAllowAmount: parseFloat(tds.eq(8).text()) || 0,
+            Total_OtherRate1Amount: parseFloat(tds.eq(9).text()) || 0,
+            Total_OtherRate2Amount: parseFloat(tds.eq(10).text()) || 0,
+
+            TotalAmount: parseFloat(tds.eq(11).text()) || 0,
+            //ServiceCharges: parseFloat(tds.eq(12).text()) || 0,
+            ServiceCharges: tds.eq(12).text().trim(),
+            Rate: parseFloat(tds.eq(13).text()) || 0,
+            Percentage: parseFloat(tds.eq(14).text()) || 0,
+
+            IsGross: (tds.eq(15).text().trim() === "Yes"),
+            IsOT: (tds.eq(16).text().trim() === "Yes"),
+
+            SupervisorCharges: parseFloat(tds.eq(17).text()) || 0,
+            Total_ServiceCharges: parseFloat(tds.eq(18).text()) || 0,
+            Total_SupervisorCharges: parseFloat(tds.eq(19).text()) || 0,
+            Total_InvoiceAmout: parseFloat(tds.eq(20).text()) || 0
+        });
+    });
+
+    console.log("Employee Data:", employeeData);
+
+    var payload = {
+        CmpId: $("#ddlCmpId").val(),
+        BranchId: $("#ddlBranchId").val(),
+        ContractorId: $("#ddlContractorId").val(),
+        InvoiceMonth: $("#txtInvoiceMonth").val(),
+        ContractorInvoice: employeeData
+    };
+
+    console.log("Payload:", payload);
+
+    $.ajax({
+        url: '@Url.Action("SaveUpdate", "Module_Employee_ContractorInvoice", new { area = "Module" })',
+        type: "POST",
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(payload),
+
+        success: function (response) {
+            Swal.fire({
+                icon: response.icon,
+                text: response.message
+            }).then(() => {
+                window.location.href = '@Url.Action("Module_Employee_ContractorInvoice", "Module_Employee_ContractorInvoice", new { area = "Module" })';
+            });
+        },
+
+        error: function (xhr) {
+            console.log(xhr.responseText);
+            Swal.fire({
+                icon: 'error',
+                text: 'Error while saving data.'
+            });
+        }
+    });
+
+});
+
+</script>
+
+<script>
+    // Allow highlight only on LEFT CLICK
+    $('#tblTableBulkCTCInsert tbody').on('click', 'tr', function (e) {
+        debugger
+        if (e.which === 1) { // Left click
+            $('#tblTableBulkCTCInsert tbody tr').removeClass('selected');
+            $(this).addClass('selected');
+        }
+    });
+
+    // Stop RIGHT CLICK from selecting row
+    $('#tblTableBulkCTCInsert tbody').on('mousedown', 'tr', function (e) {
+        if (e.which === 2 || e.which === 3) { // Middle or Right click
+            e.stopImmediatePropagation();
+            e.preventDefault();
+            return false;
+        }
+    });
+</script>
+
+
+
+@*<script>
+
+$("#SaveContractorInvoice").validate({
+    rules: {
+        CmpId: { required: true }
+    },
+    messages: {
+        CmpId: { required: "Select the Company Name" }
+    },
+    errorPlacement: function (error, element) {
+        if (element.hasClass("select2-hidden-accessible")) {
+            error.insertAfter(element.next('.select2'));
+        } else {
+            error.insertAfter(element);
+        }
+    }
+});
+
+var form = $("#SaveContractorInvoice");
+form.validate();
+
+$("#btnSubmit").click(function (e) {
+    e.preventDefault();
+    debugger;
+
+    if (!form.valid()) {
+        return false;
+    }
+
+    var employeeData = [];
+
+    // -----------------------------
+    // COLLECT TABLE ROW DATA
+    // -----------------------------
+
+
+    $('#tblEmployee tr').each(function () {
+        debugger
+        var $row = $(this);
+
+        employeeData.push({
+
+            ContractorMonthlyContractorId: $row.find('td:eq(0)').text().trim(),
+           // ContractorMonthlyMonthYear: new Date($row.find('td:eq(1)').text().trim()),
+            ContractorMonthlyMonthYear: $row.find('td:eq(1)').text().trim(),
+            Contractor: $row.find('td:eq(2)').text().trim(),
+            NoOfEmployee: parseFloat($row.find('td:eq(3)').text()),  
+            NoOfDays: parseFloat($row.find('td:eq(4)').text()),
+
+            Total_PerDayAmount: parseFloat($row.find('td:eq(5)').text()),
+            Total_CanteenAmount: parseFloat($row.find('td:eq(6)').text()),
+
+            Total_AttendanceBonusAmount: parseFloat($row.find('td:eq(7)').text()),
+            Total_TransportAllowAmount: parseFloat($row.find('td:eq(8)').text()),
+            Total_OtherRate1Amount: parseFloat($row.find('td:eq(9)').text()),
+            Total_OtherRate2Amount: parseFloat($row.find('td:eq(10)').text()),
+
+            TotalAmount: parseFloat($row.find('td:eq(11)').text()),
+            ServiceCharges: parseFloat($row.find('td:eq(12)').text()),
+            Rate: parseFloat($row.find('td:eq(13)').text()),
+            Percentage: parseFloat($row.find('td:eq(14)').text()),
+
+            IsGross: $row.find('td:eq(15)').text().trim() === "Yes",
+            IsOT: $row.find('td:eq(16)').text().trim() === "Yes",
+
+            SupervisorCharges: parseFloat($row.find('td:eq(17)').text()),
+            Total_ServiceCharges: parseFloat($row.find('td:eq(18)').text()),
+            Total_SupervisorCharges: parseFloat($row.find('td:eq(19)').text()),
+            Total_InvoiceAmout: parseFloat($row.find('td:eq(20)').text())
+        });
+    });
+
+
+    console.log("Employee Data:", employeeData);
+
+    // -----------------------------
+    // FINAL JSON PAYLOAD
+    // -----------------------------
+    var payload = {
+        CmpId: $("#ddlCmpId").val(),
+        BranchId: $("#ddlBranchId").val(),
+        ContractorId: $("#ddlContractorId").val(),
+        InvoiceMonth: $("#txtInvoiceMonth").val(),
+
+        ContractorInvoice: employeeData
+    };
+
+    console.log("Payload:", payload);
+
+    // -----------------------------
+    // AJAX CALL
+    // -----------------------------
+    $.ajax({
+        url: '@Url.Action("SaveUpdate", "Module_Employee_ContractorInvoice", new { area = "Module" })',
+        method: "POST",
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(payload),
+
+        success: function (response) {
+            Swal.fire({
+                icon: response.icon,
+                text: response.message
+            }).then(() => {
+                window.location.href = '@Url.Action("GetList", "Module_Employee_ContractorInvoice", new { area = "Module" })';
+            });
+           // }).then(() => location.reload());
+        },
+
+        error: function (xhr) {
+            console.log(xhr.responseText);
+            Swal.fire({
+                icon: 'error',
+                text: 'Error while saving data.'
+            });
+        }
+    });
+
+});
+
+</script>*@
+
+

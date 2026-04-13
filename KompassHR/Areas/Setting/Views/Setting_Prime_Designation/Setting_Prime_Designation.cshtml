@@ -1,0 +1,435 @@
+﻿@model KompassHR.Areas.Setting.Models.Setting_Prime.Mas_Designation
+
+@{
+    ViewBag.Title = "Setting_Prime_Designation";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+  <!-- Required library for validation -->
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+
+<style>
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+    .card-row-title {
+        color: #e63c3c;
+        font-size: 18px;
+        font-weight: 600;
+        text-transform: capitalize;
+        border-bottom: #009ce7 1px solid;
+    }
+    
+</style>
+
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Designation
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("ESS_AdminDashboard_Dashboard", "ESS_AdminDashboard_Dashboard", new { id = 32, ScreenId = 121, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Setting_Prime_Menu", "Setting_Prime_Menu", new { id = 31, ScreenId = 1, area = "Setting" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Settings">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                 <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">Designation - @ViewBag.AddUpdateTitle</h4>   
+                                
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Add designation here!
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "Setting_Prime_Designation", new { area = "Setting" })'  id="SaveDesignation" method="post">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Designation Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-10">
+                                                @Html.TextBoxFor(model => model.DesignationName, new { @class = "form-control", type = "text", name = "DesignationName", id = "txtDesignationName", autocomplete = "Off" })
+                                                @Html.HiddenFor(model => model.DesignationId_Encrypted)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-2">
+                                        </label>
+                                        <label class="form-label col-form-label col-md-2">
+                                            @Html.CheckBoxFor(model => model.ApplicableForWorker, new { id = "chkIsDefault", @class = "chkIsDefault" })
+                                            &nbsp;   Applicable For Worker
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="row mb-10px">
+                                    <div class="col-md-12">
+                                        <div class="card-row-title">
+                                            For recruitment
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-2">
+                                        </label>
+                                        <label class="form-label col-form-label col-md-2">
+                                            @Html.CheckBoxFor(model => model.RecruitmentApplicable,new { id = "checkbox", type= "checkbox" })
+                                            &nbsp;   Recruitment Applicable
+                                        </label>
+                                    </div>                                                                     
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Minimum Age                                               
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.MinimumAge, new { name = "MinimumAge", @class = "form-control", id = "txtMinimumAge", Type = "text", autocomplete = "Off", Maxlength = 2, onkeypress = " return numbervalidate(event)" })
+                                                @Html.ValidationMessageFor(model => model.MinimumAge, "", new { @class = "help-block", id = "ErrorMinimumAge", @style = "color:red" })
+                                             </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Maximum Age                                               
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.MaximumAge, new { name = "MinimumAge", @class = "form-control", id = "txtMaximumAge", Type = "text", autocomplete = "Off", Maxlength = 2, onkeypress = " return numbervalidate(event)" })
+                                                @Html.ValidationMessageFor(model => model.MaximumAge, "", new { @class = "help-block", id = "ErrorMaximumAge", @style = "color:red" })
+                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Minimum Experience
+                                               
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.MinimumExperience, new { name = "MinimumExperience", @class = "form-control", id = "txtMinimumExperience", Type = "text", autocomplete = "Off", Maxlength = 2, onkeypress = " return numbervalidate(event)" })
+                                                @Html.ValidationMessageFor(model => model.MinimumExperience, "", new { @class = "help-block", id = "ErrorMinimumExperience", @style = "color:red" })
+                                              </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Maximum Experience                                             
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.MaximumExperience, new { name = "MaximumExperience", @class = "form-control", id = "txtMaximumExperience", Type = "text", autocomplete = "Off", Maxlength = 2, onkeypress = " return numbervalidate(event)" })
+                                                @Html.ValidationMessageFor(model => model.MaximumExperience, "", new { @class = "help-block", id = "ErrorMaximumExperience", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Minimum Budget
+                                                
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.MinimumBudget, new { name = "MinimumBudget", @class = "form-control", id = "txtMinimumBudget", Type = "text", autocomplete = "Off", Maxlength = 8, onkeypress = " return numbervalidate(event)" })
+                                                @Html.ValidationMessageFor(model => model.MinimumBudget, "", new { @class = "help-block", id = "ErrorMinimumBudget", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Maximum Budget                                                
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.MaximumBudget, new { name = "MaximumBudget", @class = "form-control", id = "txtMaximumBudget", Type = "text", autocomplete = "Off", Maxlength = 8, onkeypress = " return numbervalidate(event)" })
+                                                @Html.ValidationMessageFor(model => model.MaximumBudget, "", new { @class = "help-block", id = "ErrorMaximumBudget", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="button" id="btnSubmit"
+                                                                class="btn btn-primary btn-sm">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                        <a href="@Url.Action("GetList", "Setting_Prime_Designation", new { area = "Setting" })">
+                                                            <button type="button" class="btn btn-danger btn-sm" id="btnDesignationGetList">
+                                                                <i class="fa-solid fa-share-from-square"></i> List
+                                                            </button>
+                                                        </a>                                                      
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        // return false
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+    $("#formReset").click(function () {
+            $("#SaveDesignation")[0].reset();
+        });
+
+    });//Ready Funcation
+</script>
+
+<script>
+    //use for add regex function
+      jQuery.validator.addMethod(
+      "regex",
+       function(value, element, regexp) {
+           if (regexp.constructor != RegExp)
+               regexp = new RegExp(regexp);
+           else if (regexp.global)
+               regexp.lastIndex = 0;
+           return this.optional(element) || regexp.test(value);
+       },"erreur expression reguliere"
+    );
+
+      $('#SaveDesignation').validate({
+        rules: {
+            DesignationName: {
+                required: true,
+            },
+        },
+        messages: {
+            DesignationName: {
+                required: "Designation name is required",
+            }
+        },
+      });
+
+      var form = $("#SaveDesignation");
+      form.validate();
+      $("#btnSubmit").click(function () {
+          debugger;
+          form.valid();
+          if(form.valid()==false)
+          {
+              return false;
+          }
+          var CheckedValue=$("#checkbox").is(":checked");
+          if(CheckedValue==true)
+          {
+            
+              var minAge=$("#txtMinimumAge").val();
+              var maxAge= $("#txtMaximumAge").val();
+              var minExperience=$("#txtMinimumExperience").val();
+              var maxExperience= $("#txtMaximumExperience").val();
+              var minbudget=$("#txtMinimumBudget").val();
+              var maxbuget=  $("#txtMaximumBudget").val();
+              if(minAge!="")
+              { $("#ErrorMinimumAge").html("");
+              }else{$("#ErrorMinimumAge").html("Minimum age is required");return false;}
+
+              if(maxAge!="")
+              {$("#ErrorMaximumAge").html("");}
+              else{$("#ErrorMaximumAge").html("Maximum age is required");return false;}
+
+              if(minExperience!="")
+              {$("#ErrorMinimumExperience").html("");}
+              else{$("#ErrorMinimumExperience").html("Minimum experience is required");return false;}
+
+              if(maxExperience!="")
+              {$("#ErrorMaximumExperience").html("");}
+              else{$("#ErrorMaximumExperience").html("Maximum experience is required");return false;}
+
+              if(minbudget!="")
+              {$("#ErrorMinimumBudget").html("");}
+              else{$("#ErrorMinimumBudget").html("Minimum budget is required");return false;}
+
+              if(maxbuget!="")
+              {$("#ErrorMaximumExperience").html("");}
+              else{$("#ErrorMaximumBudget").html("Maximum budget is required");return false;}
+          }
+          else{
+              $("#ErrorMinimumAge").html("");
+              $("#ErrorMaximumAge").html("");
+              $("#ErrorMinimumExperience").html("");
+              $("#ErrorMaximumExperience").html("");
+              $("#ErrorMinimumBudget").html("");
+              $("#ErrorMaximumExperience").html("");
+          }
+          
+                var Designation=$("#txtDesignationName").val();
+              var DesignationIdEncrypted=$("#DesignationId_Encrypted").val();
+              $.ajax({
+                  url:"IsDesignationExists",
+                  method:"get",
+                  data:{Designation:Designation,DesignationIdEncrypted:DesignationIdEncrypted},
+                  success:function(response){
+                      debugger;
+                      var Message1 = response.Message;
+                      var Icon1 = response.Icon;
+                      if (response.Icon=="error") {
+                          if (Message1 != null) {
+                              if (Message1 != null) {
+                                  Swal.fire({
+                                      icon: Icon1,
+                                      text: Message1,
+                                      allowOutsideClick: () => {
+                                          const popup = Swal.getPopup()
+                                          popup.classList.remove('swal2-show')
+                                          setTimeout(() => {
+                                              popup.classList.add('animate__animated', 'animate__headShake')
+                                          })
+                                          setTimeout(() => {
+                                              popup.classList.remove('animate__animated', 'animate__headShake')
+                                          }, 500)
+                                          return false
+                                      }
+                                  });
+                              }
+                          }
+                      }
+                      else{
+                          $("#SaveDesignation").submit();
+
+                      }
+                  }
+              });
+
+      });
+
+
+      function numbervalidate(key) {
+          var presskeys = (key.which) ? key.which : key.presskeys;
+          if (!(presskeys == 8 || presskeys == 46) && (presskeys < 48 || presskeys > 57)) {
+              return false;
+          }
+      }
+
+      $("#txtMinimumBudget ,#txtMaximumBudget").change(function(){
+          debugger;
+          var minbudget= Number(document.getElementById('txtMinimumBudget').value);
+          var maxbuget=Number(document.getElementById('txtMaximumBudget').value);
+          if(minbudget>maxbuget)
+          {
+              $("#ErrorMaximumBudget").html("Min budget should not greater than max budget");return false;
+          }
+          else
+          {
+              $("#ErrorMaximumBudget").html("");
+          }
+      });
+
+      $("#txtMaximumExperience ,#txtMinimumExperience").change(function(){
+          debugger;
+          var minExperience= Number(document.getElementById('txtMinimumExperience').value);
+          var maxExperience=Number(document.getElementById('txtMaximumExperience').value);
+          if(minExperience>maxExperience)
+          {
+              $("#ErrorMaximumExperience").html("Minimum experience should not greater than maximum experience"); return false;
+          }
+          else
+          {
+              $("#ErrorMaximumExperience").html("");
+          }
+      });
+
+
+      $("#txtMaximumAge,#txtMinimumAge").change(function(){
+          debugger;
+          var minAge= parseInt(document.getElementById('txtMinimumAge').value);
+          var maxAge=parseInt(document.getElementById('txtMaximumAge').value);
+          if(minAge>maxAge)
+          {
+              $("#ErrorMaximumAge").html("Maximum age should be greater than minimum age");return false;
+          }
+          else
+          {
+              $("#ErrorMaximumAge").html("");
+          }
+          if(minAge<18)
+          {
+              $("#ErrorMinimumAge").html("Minimum age should not less than 18");
+          }
+          else
+          {
+              $("#ErrorMinimumAge").html("");
+          }
+      });
+
+</script>
+

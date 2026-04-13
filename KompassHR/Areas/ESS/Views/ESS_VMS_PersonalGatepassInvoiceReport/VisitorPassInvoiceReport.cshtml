@@ -1,0 +1,475 @@
+﻿
+@{
+    ViewBag.Title = "VisitorPassInvoiceReport";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var Item = ViewBag.InvoiceVisitor;
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<style>
+    .invoice-company {
+        font-size: 15px !important;
+    }
+
+    .invoice-Numbers {
+        border-top: 1px solid lightgray;
+        border-bottom: 1px solid lightgray;
+        padding: 10px 0;
+        margin-bottom: 10px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .invoice-content .invoice-details .heading {
+        font-weight: 800;
+    }
+
+    .invoice-content .invoice-details .value {
+        font-weight: 800;
+    }
+
+
+    .ImgBox {
+        margin-top: 5px;
+        width: 100px;
+    }
+
+        .ImgBox img {
+            width: 100%;
+            /*border-radius:25%;*/
+        }
+
+    .invoice-sign {
+        margin-top: 10px;
+        font-weight: 800;
+        text-align: center;
+        color: #000;
+    }
+
+    .invoice .invoice-footer {
+        padding-top: 0;
+        border-top: 1px solid black;
+    }
+
+    .invoiceMargin {
+        padding-bottom: 10px !important;
+        margin-bottom: 10px !important;
+        border-bottom: 1px solid #666;
+    }
+
+    .Instrunction {
+        font-size: 12px;
+    }
+</style>
+
+<style type="text/css">
+    @@media print {
+
+        @@page {
+            margin-top: -40px;
+            margin-right: 0px;
+            margin-left: 0px;
+        }
+
+        body {
+            visibility: hidden;
+        }
+
+        .hidden-print {
+            display: none;
+        }
+
+        .invoice {
+            width: 100%;
+            visibility: visible;
+            position: absolute;
+            top: 0px;
+            left: 0;
+            padding: 0px !important;
+        }
+
+        .invoice-company {
+            font-size: 12px !important;
+        }
+
+        .invoice-content .invoice-details .heading {
+            font-weight: 800;
+            font-size: 10px !important;
+        }
+
+        .invoice-content .invoice-details .value {
+            font-size: 10px !important;
+        }
+
+        .col-33 {
+            width: 25%;
+        }
+
+        .col-40 {
+            width: 35% !important;
+        }
+
+        .col-66 {
+            width: 50%;
+        }
+
+        .col-44 {
+            width: 20%;
+        }
+
+        .col-99 {
+            width: 50%;
+        }
+
+        .col-55, .col-77 {
+            width: 50%;
+        }
+
+
+        .invoice .invoice-footer {
+            padding-top: 0;
+            border-top: 1px solid black;
+        }
+
+        .invoice-Numbers {
+            padding: 5px 0;
+            margin-bottom: 0;
+        }
+
+        .ImgBox {
+            margin-top: 5px;
+            width: 60px;
+        }
+
+        .invoiceMargin {
+            padding-bottom: 10px !important;
+            margin-bottom: 10px !important;
+            border-bottom: 1px solid #000000;
+        }
+
+        .invoice-Numbers {
+            border-top: 1px solid black;
+            border-bottom: 1px solid black;
+        }
+
+        .hidden-print {
+            padding: 0px !important;
+            margin: 0px !important;
+        }
+
+        .Instrunction {
+            font-size: 10px;
+        }
+    }
+</style>
+
+<div id="content" class="app-content">
+    <!-- BEGIN breadcrumb -->
+    <ol class="breadcrumb float-xl-end">
+        <li class="breadcrumb-item"><a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">Dashboard</a></li>
+        <li class="breadcrumb-item active"><a href="@Url.Action("ESS_VMS_Reports", "ESS_VMS_Reports", new { id = 10,ScreenId=189, area = "ESS" })">VMS Report</a></li>
+    </ol>
+    <!-- END breadcrumb -->
+    <!-- BEGIN page-header -->
+    <h1 class="page-header hidden-print">Visitor Gate Pass Report</h1>
+    <!-- END page-header -->
+    <!-- BEGIN invoice -->
+
+    <div class="card">
+        <div id="card">
+            <div class="invoice">
+                <div class="invoiceMargin">
+                    <!-- BEGIN invoice-company -->
+                    <div class="row hidden-print">
+                        <div class="col-12  hidden-print">
+                            <div class="invoice-company  hidden-print">
+                                <span class="float-end hidden-print">
+                                    @*<a href="javascript:;" class="btn btn-sm btn-white mb-10px">
+                                            <i class="fa fa-file-pdf t-plus-1 text-danger fa-fw fa-lg"></i> Export as
+                                            PDF
+                                        </a>*@
+                                    @*<button type="button" class="btn btn-sm btn-white mb-10px" onclick="printDiv();" id="search"><i class="ace-icon fa fa-print align-top bigger-125"></i>&nbsp; Print</button>*@
+                                    <a href="javascript:;" type="button" id="printBtn" class="btn btn-sm btn-white mb-10px" onclick="printDiv();">
+                                        <i class="fa fa-print t-plus-1 fa-fw fa-lg"></i> Print
+                                    </a>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="invoice-company">
+                        <div class="row">
+                            <div class="col-4">
+                                <span class="CompanyName" style="font-weight: 800;">
+                                    @Item.CompanyName
+                                </span>
+                            </div>
+                            <div class="col-4" style="font-weight: 800;">
+                                <span class="Type d-flex justify-content-center">@Item.BranchName</span>
+                            </div>
+                            <div class="col-4">
+                                <span class="DocType d-flex justify-content-end" style="font-weight: 800;"> Visitor Gate Pass </span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END invoice-company -->
+                    <!-- BEGIN invoice-header -->
+                    <div class="invoice-Numbers">
+                        <div class="row">
+                            <div class="col-3 col-33">
+                                <div class="invoice-number-details">
+                                    <div class="row">
+                                        <div class="col-5 col-55">
+                                            Visitor No
+                                        </div>
+                                        <div class="col-1">
+                                            :
+                                        </div>
+                                        <div class="col-6 col-44">
+                                            <span class="GatepassNumber">
+                                                @Item.VisitorId
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-5 col-55">
+                                <div class="invoice-TimeZone">
+                                    <div class="row">
+                                        <div class="col-12 text-center">
+                                            <span> Date : @Item.InVisitorDateTime &nbsp;&nbsp;</span>
+                                            <span> In Time : @Item.InDateTime&nbsp;&nbsp; </span>
+                                            <span> Out Time : @Item.GateOutTime</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4 col-33">
+                                <div class="invoice-number-details">
+                                    <div class="row" style="display: flex; align-items: center;">
+                                        <div class="col-5 col-40" style="flex: 1;">
+                                            <span class="float-end">
+                                                Badge No
+                                            </span>
+                                        </div>
+                                        <div class="col-1" style="flex: 0;">:</div>
+                                        <div class="col-6 col-44" style="flex: 1;">
+                                            <span class="GatepassNumber">
+                                                @Item.Batchno
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- BEGIN invoice-content -->
+                    <div class="invoice-content">
+                        <div class="row">
+                            <div class="col-5 col-55">
+                                <div class="invoice-details">
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <span class="heading">
+                                                Visitor
+                                            </span>
+                                        </div>
+                                        <div class="col-1">
+                                            :
+                                        </div>
+                                        <div class="col-8">
+                                            <span class="value">
+                                                @Item.VisitorName
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <span class="heading">
+                                                Mobile No
+                                            </span>
+                                        </div>
+                                        <div class="col-1">
+                                            :
+                                        </div>
+                                        <div class="col-8">
+                                            <span class="value">
+                                                @Item.MobileNo
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <span class="heading">
+                                                Vechile No.
+                                            </span>
+                                        </div>
+                                        <div class="col-1">
+                                            :
+                                        </div>
+                                        <div class="col-8">
+                                            <span class="value">
+                                                @Item.VechileNo
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <span class="heading">
+                                                Purpose
+                                            </span>
+                                        </div>
+                                        <div class="col-1">
+                                            :
+                                        </div>
+                                        <div class="col-8">
+                                            <span class="value">
+                                                @Item.PurposeName
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <span class="heading">
+                                                Company
+                                            </span>
+                                        </div>
+                                        <div class="col-1">
+                                            :
+                                        </div>
+                                        <div class="col-8">
+                                            <span class="value">
+                                                @Item.Company
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-3">
+
+                                            <div class="ImgBox">
+                                                @if (ViewBag.UploadPhoto == "File Not Found")
+                                                {
+                                                    <img src="~/assets/img/user/Male.png" />
+                                                }
+                                                else
+                                                {
+                                                    <img src="@ViewBag.UploadPhoto" />
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-7 col-77">
+                                <div class="invoice-details">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <span class="heading" style="font-weight: 800;">
+                                                Host
+                                            </span>
+                                        </div>
+                                        <div class="col-1">
+                                            :
+                                        </div>
+                                        <div class="col-7">
+                                            <span class="value" style="font-weight: 800;">
+
+                                                @Item.HostName
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <span class="heading" style="font-weight: 800;">
+                                                Department
+                                            </span>
+                                        </div>
+                                        <div class="col-1">
+                                            :
+                                        </div>
+                                        <div class="col-7">
+                                            <span class="value" style="font-weight: 800;">
+                                                @Item.DepartmentName
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <span class="heading" style="font-weight: 800;">
+                                                Instructions
+                                            </span>
+                                            <ol>
+                                                @foreach (var item in ViewBag.GetInstruction)
+                                                {
+                                                    <li class="Instrunction">@item</li>
+                                                }
+                                            </ol>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END invoice-content -->
+                    <!-- BEGIN invoice-footer -->
+                    <div class="invoice-footer">
+                        <div class="invoice-sign">
+                            <div class="row">
+                                <div class="col-4"> Visitor Sign.</div>
+                                <div class="col-4"> Security Sign. </div>
+                                <div class="col-4"> Host Sign.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END invoice-footer -->
+
+                </div>
+
+
+
+            </div>
+            <!-- END invoice -->
+        </div>
+    </div>
+</div>
+
+<!-- END #content -->
+@*<script>
+        function printDiv() {
+
+            //Get the HTML of div
+            var divElements = document.getElementById('card').innerHTML;
+            //Get the HTML of whole page
+            var oldPage = document.body.innerHTML;
+
+            //Reset the page's HTML with div's HTML only
+            document.body.innerHTML =
+              "<html><head></head><body>    " +
+            divElements + "    </body>";
+
+            //Print Page
+            window.print();
+
+            //Restore orignal HTML
+            document.body.innerHTML = oldPage;
+        }
+    </script>*@
+<script type="text/javascript">
+
+    document.getElementById('printBtn').addEventListener('click', () => {
+        window.print();
+    });
+    // Prints area to which class was assigned only
+
+</script>

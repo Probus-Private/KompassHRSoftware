@@ -1,0 +1,825 @@
+﻿
+@{
+    ViewBag.Title = "GetList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+   
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+
+<script src="~/assets/js/CaptchaVerification.js"></script>
+<style>
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    /*.div1 td:nth-child(1) {
+        position: sticky;
+        left: 0;
+    }
+
+    .div1 td:nth-child(2) {
+        position: sticky;
+        left: 62px;
+    }
+
+    .fixed-side {
+        position: sticky;
+        left: 0;
+    }
+
+    .fixed-side1 {
+        position: sticky;
+        left: 62px;
+    }*/
+</style>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Expense Claim List</title>
+</head>
+<body>
+    <div id="content" class="app-content">
+        <div class="row" style="margin-bottom: 10px;">
+            <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+                <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                    Expense Claim
+                </h1>
+                <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                    <li style="margin-right: 10px;">
+                        <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                            <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                        </a>
+                    </li>
+                    <li>
+                        <a href="@Url.Action("ESS_ClaimReimbusement_Menu", "ESS_ClaimReimbusement_Menu", new {id = 8, ScreenId=172, area = "ESS" })">
+                            <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                        </a>
+                    </li>
+                </ol>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <!-- BEGIN panel -->
+                <div class="panel panel-inverse" data-sortable-id="index-1">
+
+                    <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                        <h4 class="panel-title">@*@i.SET_MODULES.FormName*@Expense Claim - Approved List</h4>
+                        <div class="panel-heading-btn">
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                        </div>
+                    </div>
+                    <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                        <p class="pb-0">
+                            This is the approved list of general claim.
+                        </p>
+                    </div>
+                    <div class="panel-body" data-scrollbar="false">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <a href="@Url.Action("ESS_ClaimReimbusement_GeneralClaim", "ESS_ClaimReimbusement_GeneralClaim", new { area = "ESS" })">
+                                    <button type="button" class="btn btn-primary btn-sm  mb-10px">
+                                        <i class="fa-solid fa-plus"></i> &nbsp; Add
+                                    </button>
+                                </a>
+                                <!-- BEGIN table-responsive -->
+                                <div class="table-scroll div1">
+                                    <div class="table-wrap">
+                                        <table class="table table-bordered align-middle TablePage" id="data-table-combine"
+                                               style="width: 100%;">
+                                            <thead class="trheading">
+                                                <tr>                                                
+                                                    @*<th class="fixed-side1">View</th>*@
+                                                    <th class="fixed-side1">Delete</th>
+                                                    <th class="fixed-side1">Status</th>                                                    
+                                                    <th class="text-nowrap">Doc No</th>
+                                                    <th class="text-nowrap">Doc Date </th>
+                                                    <th class="text-nowrap">Expence Category</th>
+                                                    <th class="text-nowrap">Expense Amount</th>
+                                                    <th class="text-nowrap">Expense Description</th>
+                                                    <th class="text-nowrap">Attachment</th>
+                                                    <th class="text-nowrap">Approved Amount</th>
+                                                    <th class="text-nowrap">ApproveRejectBy</th>
+                                                    <th class="text-nowrap">ApproveRejectDate</th>
+                                                    <th class="text-nowrap">ApproveRejectRemark</th>
+                                                    <th class="text-nowrap">CreatedBy </th>
+                                                    <th class="text-nowrap">Created Date</th>
+                                                    <th class="text-nowrap">ModifiedBy</th>
+                                                    <th class="text-nowrap">Modified Date </th>
+                                                    <th class="text-nowrap">Machine Name</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var d in ViewBag.GetGeneralClaimList)
+                                                {
+                                                    <tr>                                                        
+                                                        @*<td class="text-center">
+                                                            <a id="btnUpdate" onclick="ViewForApprover('@d.GeneralClaimId_Encrypted','@d.Type')">
+                                                                <i class="fa-solid fa-eye fa-lg" style="cursor: pointer; color:orange;"></i>
+                                                            </a>
+                                                        </td>*@
+                                                        <td class="text-center">
+                                                            <a onclick="Delete('@d.GeneralClaimId_Encrypted','@d.Status')" id="btnDelete" style="cursor:pointer">
+                                                                <i class="fa-solid fa-trash-alt text-danger fa-lg"></i>
+                                                            </a>
+                                                        </td>
+                                                        <td class="text-nowrap">
+                                                            <i class="fa-solid fa-circle-info text-success fa-lg" style="cursor: pointer;" onclick="ApproveStatus(@d.GeneralClaimId)"></i> &nbsp;
+                                                            @d.ApprovedDay
+                                                        </td>                                          
+                                                        <td class="text-nowrap">@d.DocNo</td>
+                                                        <td class="text-nowrap">@d.DocDate</td>
+                                                        <td class="text-nowrap">@d.ExpenseCategoryName</td>
+                                                        <td class="text-nowrap">@d.GeneralClaimAmount</td>
+                                                        <td class="text-nowrap">@d.GeneralClaimDescription</td>
+                                                        @if (d.AttachmentPath != "No" && d.AttachmentPath != "System.Web.HttpPostedFileWrapper")
+                                                        {
+                                                            <td class="text-center">                                                                                                                              
+                                                                <a href="#">
+                                                                    <i class="fa fa-download fa-xl" onclick="DownloadFile('@d.AttachmentPath.Replace("\\", "/")')"></i>
+                                                                </a>
+                                                            </td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td>
+                                                                File Not Found
+                                                            </td>
+                                                        }
+                                                        <td class="text-nowrap">@d.ApprovedAmount</td>
+                                                        <td class="text-nowrap">@d.ApprovedByName</td>
+                                                        <td class="text-nowrap">@d.ApproveRejectDate</td>
+                                                        <td class="text-nowrap">@d.ApproveRejectRemark</td>
+                                                        <td class="text-nowrap">@d.CreatedBy</td>
+                                                        <td class="text-nowrap">@d.CreatedDate</td>
+                                                        <td class="text-nowrap">@d.ModifiedBy</td>
+                                                        <td class="text-nowrap">@d.ModifiedDate</td>
+                                                        <td class="text-nowrap">@d.MachineName</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- END panel -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @*<div class="modal fade" id="myModalFinal" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header bg-black text-white">
+                    <h4 class="modal-title">Cancel Remark </h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-icon btn-danger btnClear" data-bs-dismiss="modal"
+                           aria-hidden="true">
+                            <i class="fa fa-xmark"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <!-- BEGIN panel -->
+                    <div class="modal-body-content">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <form>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row mb-15px">
+                                                <textarea id="txtApproveRejectRemark" class="form-control" rows="4"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END panel -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="Approved()" id="btnReject" class="btn btn-primary btn-sm">
+                        <i class="fa-solid fa-floppy-disk"> </i> Submit
+                    </button>
+                    <button type="button" id="btnCancel" class="btn btn-danger btnpress btnClear" data-bs-dismiss="modal">
+                        <i class="fa-solid fa-share-from-square"></i> Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>*@
+    <!-- #Start Cancel Request dialog -->
+    <div class="modal fade" id="CancelModal" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header bg-black text-white">
+                    <h4 class="modal-title"> Remark For Cancel</h4>
+
+                </div>
+                <div class="modal-body">
+                    <div class="modal-body-content">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <form>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row mb-15px">
+                                                @* @Html.DropDownListFor(model => model.PunchMissingEmployeeID, new SelectList(ViewBag.GetAdditionalList, "Id", "Name"), new { id = "LeaveMasterLeaveYearId", name = "LeaveMasterLeaveYearId", @class = "form-select", autocomplete = "off" })*@
+                                                <h6> Select Approver Name</h6>
+
+                                                @Html.DropDownList("Id", new SelectList(ViewBag.GetManagerEmployee, "Id", "Name"), "--Select--", new { @class = "form-control", Id = "ddlManagerName" })
+                                                <h1></h1>
+                                                <span id="ErrorMessage" class="Error" style="color:red"></span>
+                                                <h6> Enter Remark </h6>
+                                                <textarea id="txtApproveRejectRemark" class="form-control" rows="4"></textarea>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" onclick="SendCancelRequest()" id="btnReject" class="btn btn-primary btn-sm">
+                        <i class="fa-solid fa-floppy-disk"> </i> Submit
+                    </button>
+                    <button type="button" id="btnCancel" class="btn btn-danger btnpress btn-sm CloseModel" data-bs-dismiss="modal">
+                        <i class="fa-solid fa-share-from-square"></i> Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- #End Cancel Request dialog -->
+    @*<div class="modal" id="modal_basic2" tabindex="-1" role="dialog" aria-labelledby="defModalHead" aria-hidden="true" style="display: none ;margin-top:50px">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Cancel</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-hidden="true"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group row mb-3">
+                        <label class="col-lg-4 col-form-label form-label" for="Remark">Remark:</label>
+                        <div class="col-lg-8">
+                            @Html.TextArea("Remark", new { @class = "input-sm form-control", id = "txtRejectRemark", placeholder = "Enter Remark" })
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input type="submit" class="Ok btn btn-success" data-dismiss="modal" id="btnReject" value="Cancel" />
+                </div>
+            </div>
+        </div>
+    </div>*@
+</body>
+</html>
+
+
+
+<style>
+    .timeline {
+        max-width: 400px;
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+        .timeline:before {
+            left: 32px;
+        }
+
+    .timeline-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+
+    .iconGreen {
+        width: 24px;
+        height: 24px;
+        background-color: green;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        margin-right: 15px;
+    }
+
+    .iconRed {
+        width: 24px;
+        height: 24px;
+        background-color: #ff5b57;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        margin-right: 15px;
+    }
+
+    .text {
+        flex-grow: 1;
+    }
+
+        .text p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .text small {
+            color: gray;
+            font-size: 12px;
+        }
+
+    .button {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+        .button button {
+            background-color: #a8d935;
+            border: none;
+            padding: 10px 20px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+            .button button:hover {
+                background-color: #8cc62f;
+            }
+</style>
+
+<div class="modal fade" id="RequestInfoModal" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-body-content" style="position: relative;">
+                <div class="timeline">
+                    <div class="panel-heading-btn" style="margin-top: -13px; position: absolute; right: 8px;" data-bs-dismiss="modal">
+                        <a href="javascript:;" class="btn btn-icon btn-danger btnClear"
+                           aria-hidden="true" id="CloseModel">
+                            <i class="fa fa-xmark"></i>
+                        </a>
+
+                    </div>
+                    <div id="timelineMainDiv">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                });
+            }
+        }
+    });
+</script>
+
+<script>
+
+    function UpdateGeneralClaims(GeneralClaimId_Encrypted) {
+        var url = '@Url.Action("ESS_ClaimReimbusement_GeneralClaim", "ESS_ClaimReimbusement_GeneralClaim")?GeneralClaimId_Encrypted=' + GeneralClaimId_Encrypted;
+        window.location.href = url;
+    }
+
+    function DownloadAttachment(GeneralClaimId_Encrypted) {
+        var url = '@Url.Action("DownloadAttachment", "ESS_ClaimReimbusement_GeneralClaim")?GeneralClaimId_Encrypted=' + GeneralClaimId_Encrypted;
+        window.location.href = url;
+    }
+
+</script>
+
+
+<script>
+    function ViewForApprover(GeneralClaimId_Encrypted, Type) {
+        debugger
+        Type="GeneralClaim";
+        if (Type == 'GeneralClaim')
+        {
+            var url = '@Url.Action("ViewForGeneralClaim", "ESS_ClaimReimbusement_GeneralClaim")?GeneralClaimId_Encrypted=' + GeneralClaimId_Encrypted + '&Type=' + Type;
+            window.location.href = url;
+        }
+        if (Type == 'TravelClaim')
+        {
+            var url = '@Url.Action("ViewForTravelClaimRequestApprover", "ESS_ClaimReimbusement_Approval")?DocId_Encrypted=' + DocId_Encrypted + '&Type=' + Type;
+            window.location.href = url;
+        }
+    }
+
+    function CancelRequestFun(GeneralClaimId,Status) {
+        debugger;
+        if(Status=="Pending" || Status=="Cancel")
+        {
+            if(Status=="Pending")
+            {
+                var Message="Pending request can't cancel";
+                var Icon="error";
+            }
+            else{
+                var Message="Request already cancel";
+                var Icon="error";
+            }
+
+            Swal.fire({
+                icon: Icon,
+                text: Message,
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup()
+                    popup.classList.remove('swal2-show')
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                    })
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                    }, 500)
+                    return false
+                }
+            });
+            return false;
+        }
+        localStorage.setItem('GeneralClaimId', GeneralClaimId);
+        $("#CancelModal").modal('show');
+    }
+    //function CancelFuncation(TravelClaimId_Encrypted) {
+    //    $('#myModalFinal').modal('show');
+    //}
+</script>
+@*<script>
+        function CancelFuncation(GeneralClaimId_Encrypted) {
+            $('#myModalFinal').modal('show');
+        }
+    </script>*@
+
+<script>
+    function Delete(GeneralClaimId_Encrypted,Status) {
+
+        if(Status!="Pending")
+        {
+            Swal.fire({
+                icon: "error",
+                text: "Approved/Rejected request can't delete",
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup()
+                    popup.classList.remove('swal2-show')
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                    })
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                    }, 500)
+                    return false
+                }
+            });
+            return false;
+        }
+        const DeleteButtons = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        DeleteButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+
+            allowOutsideClick: () => {
+                const popup = Swal.getPopup()
+                popup.classList.remove('swal2-show')
+                setTimeout(() => {
+                    popup.classList.add('animate__animated', 'animate__headShake')
+                })
+                setTimeout(() => {
+                    popup.classList.remove('animate__animated', 'animate__headShake')
+                }, 500)
+                return false
+            }
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $(".Userloaderbg").css("display", "flex");
+                window.location.href = '@Url.Action("Delete", "ESS_ClaimReimbusement_GeneralClaim")?GeneralClaimId_Encrypted=' + GeneralClaimId_Encrypted;
+                //window.location.href = url;
+            } else if (
+                /* Read more about handling dismissals below */
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+
+            }
+
+        })
+    }
+</script>
+
+<script>
+    function SendCancelRequest() {
+        var ddlManagerName = $('select#ddlManagerName option:selected').val();
+        if (!ddlManagerName) {
+            $("#ErrorMessage").html("Please select approver name");
+            $("#ddlManagerName").focus();
+            return false;
+        }
+        $("#ErrorMessage").html("");
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes Submit!',
+            cancelButtonText: 'No, cancel!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                debugger;
+                var ClaimId = localStorage.getItem('GeneralClaimId');
+                var managerId = $("#ddlManagerName").val();
+                var remark = $("#txtApproveRejectRemark").val();
+                var origin = "GeneralClaim";
+                $("#CancelModal").modal('hide');
+                $(".Userloaderbg").css("display", "flex");
+                
+                $.ajax({
+                    url: '@Url.Action("CancelRequest", "ESS_ClaimReimbusement_GeneralClaim")',
+                    method: "GET",
+                    data: { GeneralClaimId: ClaimId, ddlManagerId: managerId, Remark: remark, Origin: origin },
+                    success: function (response) {
+                        Swal.fire({
+                            icon: response.Icon,
+                            text: response.Message
+                        }).then(() => {
+                            if (response.Icon === "success") 
+                            {
+                                window.location.href = '@Url.Action("GetList", "ESS_ClaimReimbusement_GeneralClaim")';
+                            }
+                            $(".Userloaderbg").css("display","none");
+                            $("#CancelModal").modal('hide');
+                            $("#txtApproveRejectRemark").val("");
+                        });
+                    }
+                });
+            } else {
+                $("#CancelModal").modal('hide');
+                $("#ddlManagerName").val(null);
+                $("#txtApproveRejectRemark").val("");
+            }
+        });
+    }
+
+
+    function DownloadFile(attachmentPath) {
+        var correctedPath = attachmentPath.replace(/\//g, '\\');
+        var url = '@Url.Action("DownloadAttachment", "ESS_ClaimReimbusement_GeneralClaim")';
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: { DownloadAttachment: correctedPath },
+            success: function (response) {
+                debugger;
+                if (response.Success) {
+                    var fileName = response.FileName;
+                    var fileData = atob(response.FileData);  // Decode the base64 string
+                    var byteArray = new Uint8Array(fileData.length);
+                    for (var i = 0; i < fileData.length; i++) {
+                        byteArray[i] = fileData.charCodeAt(i);
+                    }
+
+                    var blob = new Blob([byteArray], { type: response.ContentType });
+                    var downloadUrl = window.URL.createObjectURL(blob);
+                    var a = document.createElement('a');
+                    a.href = downloadUrl;
+                    a.download = fileName;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(downloadUrl);
+                }
+                else {
+                    Swal.fire({
+                        icon: response.Icon || 'error',
+                        text: response.Message || 'An error occurred.',
+                        allowOutsideClick: false
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                Swal.fire({
+                    icon: 'error',
+                    text: 'An unexpected error occurred.',
+                    allowOutsideClick: false
+                });
+            }
+        });
+    }
+</script>
+
+
+<script>
+    function ApproveStatus(DocId) {
+        debugger
+        $.ajax({
+            url: '@Url.Action("RequestStatus", "ESS_ClaimReimbusement_GeneralClaim")',
+            method: "GET",
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            data: { DocId: DocId },
+            success: function (response) {
+                debugger
+                $('#RequestInfoModal').modal('show');
+                var data = JSON.parse(response);
+                var timelineHtml = '';
+                for (var i = 0; i < data.length; i++) {
+                    var icon = '';
+                    var iconColor='';
+                    var textColor = '';
+                    if (data[i][5].Value === 'success') {
+                        icon = '✔';
+                        iconColor ="iconGreen";
+                        textColor = 'Green';
+                    } else if (data[i][5].Value === 'error') {
+                        icon = '✘';
+                        iconColor ="iconRed";
+                        textColor = 'Red';
+                    } else {
+                        icon = '⏳';
+                        iconColor ="iconRed";
+                        textColor = 'Black';
+                    }
+
+                    timelineHtml += '<div class="timeline-item">' +
+                                '<div class="' + iconColor + '"><span class="timelineIcon">' + icon + '</span></div>' +
+                                '<div class="text">' +
+                                '<b><p class="timelineRemark" style="color:' + textColor + ';">' + data[i][2].Value + '</p></b>' +
+                                '<small class="timelineEmployeeName" style="color:Black;">' + data[i][3].Value + '</small><br />' +
+                                 '<small class="timelineDate" style="color:Black;">' + data[i][1].Value + '</small>' +
+                                '</div>' +
+                                '</div>';
+                }
+                $('#timelineMainDiv').html(timelineHtml);
+            }
+        });
+    }
+
+</script>

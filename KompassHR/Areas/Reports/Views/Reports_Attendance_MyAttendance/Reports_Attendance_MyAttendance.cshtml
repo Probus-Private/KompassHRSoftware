@@ -1,0 +1,512 @@
+﻿@model KompassHR.Areas.Reports.Models.MonthWiseFilter
+@{
+    ViewBag.Title = "Reports_Attendance_MyAttendance";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var Item = ViewBag.GetEmployeeDetails;
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+
+<style>
+    .table-bordered, .table-bordered th, .table-bordered td {
+        border: 1px solid black;
+        border-collapse: collapse;
+        padding: 8px; /* Added padding */
+    }
+
+    .table, .table th, .table td {
+        border: 1px solid black;
+    }
+
+    .table {
+        border-collapse: collapse;
+    }
+
+
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+</style>
+
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                My Attendance
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                @*<li>
+                    <a href="@Url.Action("ESS_Reports_AllReport_Menu", "ESS_Reports_AllReport_Menu", new {id = 23, ScreenId=590, area = "Reports" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>*@
+                <li>
+                    <a href="@Url.Action("Report_MyAtttendance_RptMenu", "Report_MyAtttendance_RptMenu", new {id = 23, ScreenId= 376, area = "Reports" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12">
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> My Attendance </h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row justify-content-center">
+                        <form role="form" action='@Url.Action("Reports_Attendance_MyAttendance", "Reports_Attendance_MyAttendance", new { area = "Reports" })' id="formMyAttendance" method="post">
+
+
+                            <div class="row mb-15px">
+                                <label class="form-label col-md-2 col-form-label">Month/Year</label>
+                                <div class="col-md-4">
+                                    @Html.TextBoxFor(model => model.Month, new { @class = "form-control", name = "Month", type = "month", id = "GetMonth" })
+                                </div>
+                                <div class="col-md-6 text-md-right">
+                                    <button type="button" onclick="funEmployeeWiseReport()" class="btn btn-sm btn-success">Show</button>
+                                    <button type="button" class="btn btn-sm btn-primary" onclick="printDiv();" id="search">
+                                        <i class="ace-icon fa fa-print align-top bigger-100"></i>&nbsp;Print
+                                    </button>
+                                </div>
+                            </div>
+
+                        </form>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="col-12">
+                            @*<span class="float-end hidden-print">
+                                    <button type="button" class="btn  btn-primary" onclick="printDiv();" id="search"><i class="ace-icon fa fa-print align-top bigger-100"></i>&nbsp; Print</button>
+                                </span><br />*@
+                            <div class="invoice">
+                                <div class="invoice-company mb-3">
+                                </div>
+                                <form class="form">
+                                    <div class="invoice-content" id="divPrint">
+                                        <div class="row">
+                                            @*<div class="table-responsive row">*@
+                                            <div class="col-md-12">
+                                                <table class="table table-bordered table-hover mb-0 text-dark align-middle" id="tbl">
+                                                    <thead>
+                                                        @if (ViewBag.GetEmployeeDetails.ToString() != "")
+                                                        {
+
+                                                            <tr class="trheading">
+                                                                <th class="text-nowrap text-left" colspan="7">Employee Name : @ViewBag.GetEmployeeDetails[0].EmployeeName</th>
+                                                                <th class="text-nowrap text-left" colspan="8">Employee No : @ViewBag.GetEmployeeDetails[0].EmployeeNo</th>
+                                                            </tr>
+                                                            <tr class="trheading">
+                                                                <th class="text-nowrap text-left" colspan="7">Department : @ViewBag.GetEmployeeDetails[0].DepartmentName</th>
+                                                                <th class="text-nowrap text-left" colspan="8">Designation : @ViewBag.GetEmployeeDetails[0].DesignationName</th>
+                                                            </tr>
+                                                        }
+                                                        <tr class="trheading">
+                                                            <th class="text-nowrap text-center" style="width:75px;">Date</th>
+                                                            <th class="text-nowrap text-center" style="width:128px;">Day </th>
+                                                            <th class="text-nowrap text-center" style="width:128px;">Shift </th>
+                                                            <th class="text-nowrap text-center" style="width:111px;">In </th>
+                                                            <th class="text-nowrap text-center" style="width:128px;">Out </th>
+                                                            <th class="text-nowrap text-center" style="width:128px;">Duration</th>
+                                                            <th class="text-nowrap text-center" style="width:128px;">LateBy</th>
+                                                            <th class="text-nowrap text-center" style="width:128px;">EarlyBy</th>
+                                                            <th class="text-nowrap text-center" style="width:128px;">GatePass</th>
+                                                            <th class="text-nowrap text-center" style="width:128px;">Net Hrs.</th>
+                                                            <th class="text-nowrap text-center" style="width:128px;">Short Hrs.</th>
+                                                            <th class="text-nowrap text-center" style="width:128px;">OT</th>
+                                                            <th class="text-nowrap text-center" style="width:50px;">CO</th>
+                                                            <th class="text-nowrap text-center" style="width:50px;">Status</th>
+                                                            <th class="text-nowrap text-center" style="width:50px;">Remark</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var d in ViewBag.EmployeeWiseReport)
+                                                        {
+                                                            <tr>
+                                                                <td class="text-nowrap text-center">@d.Date</td>
+                                                                <td class="text-nowrap text-center">@d.Day</td>
+                                                                <td class="text-nowrap text-center">@d.Shift</td>
+                                                                <td class="text-nowrap text-center">@d.Intime</td>
+                                                                <td class="text-nowrap text-center">@d.OutTime</td>
+                                                                <td class="text-nowrap text-center">@d.Duration</td>
+                                                                <td class="text-nowrap text-center">@d.LateBy</td>
+                                                                <td class="text-nowrap text-center">@d.EarlyBy</td>
+                                                                <td class="text-nowrap text-center">@d.PersonalGatePass</td>
+                                                                <td class="text-nowrap text-center">@d.NetHrs</td>
+                                                                <td class="text-nowrap text-center">@d.ShortHrs</td>
+                                                                <td class="text-nowrap text-center">@d.ApprovedOT</td>
+                                                                <td class="text-nowrap text-center">@d.CO</td>
+                                                                <td class="text-nowrap text-center">@d.InOutStatus</td>
+                                                                <td class="text-nowrap text-center">@d.Remark</td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                        <br />
+                                        <div class="row">
+                                            @*<div class="table-responsive row">*@
+                                            <div class="col-md-12">
+                                                <table class="table table-hover mb-0 text-dark align-middle" id="tbl" style="width: 100%;">
+                                                    <thead>
+                                                    </thead>
+                                                    <tbody>
+                                                        @if (ViewBag.EmployeeWiseSummeryReport.ToString() != "")
+                                                        {
+                                                            <tr>
+                                                                <td class="text-nowrap">@ViewBag.EmployeeWiseSummeryReport[0].datavalue</td>
+                                                                <td class="text-nowrap">@ViewBag.EmployeeWiseSummeryReport[1].datavalue</td>
+                                                                <td class="text-nowrap">@ViewBag.EmployeeWiseSummeryReport[2].datavalue</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="text-nowrap">@ViewBag.EmployeeWiseSummeryReport[3].datavalue</td>
+                                                                <td class="text-nowrap">@ViewBag.EmployeeWiseSummeryReport[4].datavalue</td>
+                                                                <td class="text-nowrap">@ViewBag.EmployeeWiseSummeryReport[5].datavalue</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="text-nowrap">@ViewBag.EmployeeWiseSummeryReport[6].datavalue</td>
+                                                                <td class="text-nowrap">@ViewBag.EmployeeWiseSummeryReport[7].datavalue</td>
+                                                                <td class="text-nowrap">@ViewBag.EmployeeWiseSummeryReport[8].datavalue</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="text-nowrap">@ViewBag.EmployeeWiseSummeryReport[9].datavalue</td>
+                                                                <td class="text-nowrap">@ViewBag.EmployeeWiseSummeryReport[10].datavalue</td>
+                                                                <td class="text-nowrap">@ViewBag.EmployeeWiseSummeryReport[11].datavalue</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="text-nowrap">@ViewBag.EmployeeWiseSummeryReport[12].datavalue</td>
+                                                                <td class="text-nowrap">@ViewBag.EmployeeWiseSummeryReport[13].datavalue</td>
+                                                                <td class="text-nowrap">@ViewBag.EmployeeWiseSummeryReport[14].datavalue</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td class="text-nowrap">@ViewBag.EmployeeWiseSummeryReport[15].datavalue</td>
+                                                                <td class="text-nowrap">@ViewBag.EmployeeWiseSummeryReport[16].datavalue</td>
+
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function printDiv() {
+        var divElements = document.getElementById('divPrint').innerHTML;
+        var printWindow = window.open('', '', 'height=600,width=800');
+
+        printWindow.document.write('<html><head><title>Print</title>');
+        printWindow.document.write('<style>');
+        printWindow.document.write('table, th, td { border: 1px solid black; border-collapse: collapse; }');
+        printWindow.document.write('th, td { padding: 8px;}');
+        printWindow.document.write('.text-nowrap { white-space: nowrap; }');
+        printWindow.document.write('.text-left { text-align: left; }');
+        //printWindow.document.write('.text-center { text-align: center; }');
+        printWindow.document.write('</style></head><body>');
+        printWindow.document.write(divElements);
+        printWindow.document.write('</body></html>');
+
+        printWindow.document.close();
+        printWindow.print();
+    }
+
+
+</script>
+
+<script>
+
+    $(document).ready(function () {
+        //$("#ddlCmpId").select2();
+        //$("#ddlEmployeeId").select2();
+        //$("#txtBranchId").select2();
+        var today = new Date();
+        // Format the date as YYYY-MM (year-month)
+        var yyyy = today.getFullYear();
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+        var defaultMonth = yyyy + '-' + mm;
+        // Set the value of the input element to the default month
+
+        var CheckEmptyDate = document.getElementById('GetMonth').value;
+        if(CheckEmptyDate =="")
+        {
+            document.getElementById('GetMonth').value = defaultMonth;
+        }
+
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                });
+            }
+        }
+
+        $("#ddlCmpId").on("change", function () {
+            debugger;
+            $("#txtBranchId").find("option").remove();
+            var CmpId = $("#ddlCompanyName").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetBusinessUnit", "Rpt_EmployeeWise_Attendance")',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    debugger;
+                    if (data !=null) {
+                        //$("#txtBranchId").append("<option value=0>--Select-- </option>");
+                        $.each(data.Branch, function(i, p) {
+                            $("#txtBranchId").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                        });
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        });
+
+        $("#txtBranchId").change(function () {
+            debugger;
+            $("#ddlEmployeeId").find("option").remove();
+            var CmpId = $("#ddlCmpId").val();
+            var BranchId = $("#txtBranchId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetEmployeeName", "Rpt_EmployeeWise_Attendance")',
+                data: { BranchId: BranchId , CmpId:CmpId },
+                success: function (data) {
+                    debugger;
+                    if (data != null) {
+                        $("#ddlEmployeeId").append("<option value=0>--Select-- </option>");
+                        $.each(data, function (i, p) {
+                            $("#ddlEmployeeId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                }
+            })
+        });
+    });//Ready Funcation
+</script>
+
+
+<script>
+    //use for add regex function
+    jQuery.validator.addMethod(
+    "regex",
+     function (value, element, regexp) {
+         if (regexp.constructor != RegExp)
+             regexp = new RegExp(regexp);
+         else if (regexp.global)
+             regexp.lastIndex = 0;
+         return this.optional(element) || regexp.test(value);
+     }, "erreur expression reguliere"
+  );
+
+    $('#formMyAttendance').validate({
+        rules: {
+            //CmpId: {
+            //    required: true,
+            //},
+            //BranchId: {
+            //    required: true,
+            //},
+            //EmployeeId: {
+            //    required: true,
+            //},
+            Month: {
+                required: true,
+            },
+        },
+        messages: {
+            //CmpId: {
+            //    required: "Company name is required",
+            //},
+            //BranchId: {
+            //    required: "Business unit is required",
+            //},
+            //EmployeeId: {
+            //    required: "Employee is required",
+            //},
+            Month: {
+                required: "Month is required",
+            },
+        },
+    });
+
+    var form = $("#formMyAttendance");
+    form.validate();
+    function funEmployeeWiseReport() {
+        debugger;
+        form.valid();
+        if (form.valid() == false) {
+
+            return false;
+        }
+        $(".Userloaderbg").css("display", "flex");
+        $("#formMyAttendance").submit();
+    }
+</script>

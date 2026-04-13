@@ -1,0 +1,1207 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_TimeOffice.Atten_OutDoorCompany
+@{
+    ViewBag.Title = "OutDoor";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+<script src="~/assets/js/CaptchaVerification.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+
+
+<style>
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+     .page-header {
+        font-size: 18px !important;
+        font-family: roboto;
+        transform: translateY(6px);
+    }
+</style>
+<style>
+    #contentpass {
+    border: 1px solid #333; /* Darker border color */
+    padding: 10px; /* Optional: Adds space between the content and the border */
+    border-radius: 5px; /* Optional: Adds rounded corners */
+}
+
+    @@media print {
+        #contentpass {
+            width: 100%;
+            max-width: 8.3in; /* Limit width to A4 */
+        }
+    }
+</style>
+
+<div id="content" class="app-content">
+
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Outdoor
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_TimeOffice_Menu", "ESS_TimeOffice_Menu", new {id = 5, ScreenId=150, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Outdoor - List</h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div> <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        This is the list of schedule and planned outdoor activities.
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <a href="@Url.Action("ESS_TimeOffice_OutDoor", "ESS_TimeOffice_OutDoor", new { area = "ESS" })">
+                                <button type="button" class="btn btn-primary btn-sm  mb-10px">
+                                    <i class="fa-solid fa-plus"></i> &nbsp; Add
+                                </button>
+                            </a>
+                        </div>
+                        <!-- BEGIN table-responsive -->
+                        <div class="table-scroll div1">
+                            <div class="table-wrap">
+                                <table class="table table-bordered table-hover mb-0 text-dark align-middle TablePage" id="tblOutDoorList" style="width: 100%;">
+                                    <thead>
+                                        <tr class="trheading">
+                                            <th class="text-nowrap">Cancel</th>
+                                            <th class="text-nowrap">Delete</th>
+                                            <th class="text-nowrap">Status</th>
+                                            <th class="text-nowrap">Invoice</th>
+                                            <th class="text-nowrap text-center">Doc No </th>
+                                            @*<th class="text-nowrap text-center">Doc Date </th>*@
+                                            <th class="text-nowrap text-center">Shift</th>
+                                            <th class="text-nowrap text-center">OutDoor Type</th>
+                                            @*<th class="text-nowrap text-center">Direction</th>*@
+                                            <th class="text-nowrap text-center">For Date</th>
+                                            <th class="text-nowrap text-center">For Time</th>
+                                            <th class="text-nowrap text-center">Reason</th>
+                                            <th class="text-nowrap text-center">Visiting Unit</th>
+                                            <th class="text-nowrap text-center">Approve/Rejected by</th>
+                                            <th class="text-nowrap text-center">Approve/Rejected Date</th>
+                                            <th class="text-nowrap text-center">Rejected Reason</th>
+                                            <th class="text-nowrap text-center">Auto/Manually</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var d in ViewBag.OutDoorCompanyAll)
+                                        {
+                                        <tr>
+                                            @if (@d.CancelStatus != "")
+                                                {
+                                                <td class="text-center"> @d.CancelStatus</td>
+                                                }
+                                                else
+                                                {
+                                                <td class="text-center">
+                                                    <a href="#modal-dialogForHoldReject1" onclick="CancelRequestFun(@d.OutDoorCompanyId,'@d.Status')" id="btnmodal-dialog1">
+                                                        <i class="fa-solid fa-xmark fa-xl text-dark" style="color:black"></i>
+                                                    </a>
+                                                </td>
+                                                }
+                                            <td class="text-center">
+                                                <a id="btnCancel" onclick="DeleteOutDoor('@d.OutDoorCompanyId_Encrypted','@d.OutDoorCompanyId','@d.Status')"
+                                                   style="cursor:pointer">
+                                                    <i class="fa-solid fa-trash-alt text-danger fa-lg"></i>
+                                                </a>
+                                            </td>
+                                            <td class="text-nowrap">
+                                                <i class="fa-solid fa-circle-info text-success fa-lg" style="cursor: pointer;" onclick="ApproveStatus(@d.OutDoorCompanyId)"></i> &nbsp;
+                                                @d.ApprovedDay
+                                            </td>
+                                            <td class="text-center">
+                                                <a onclick="InvoiceFun(@d.OutDoorCompanyId)">
+                                                    <i class="fa-solid fa-download text-danger fa-lg" style="color:black"></i>
+                                                </a>
+                                            </td>
+                                            <td class="text-nowrap">@d.DocNo</td>
+                                            @*<td class="text-nowrap">@d.CreatedDate</td>*@
+                                            <td class="text-nowrap">@d.OutDoorCompanyShiftName</td>
+                                            <td class="text-nowrap">@d.OutDoorCompanyType</td>
+                                            @*<td class="text-nowrap">@d.Direction</td>*@
+                                            <td class="text-nowrap">@d.ForDate</td>
+                                            <td class="text-nowrap">@d.ForTime</td>
+                                            <td class="text-nowrap">@d.Reason</td>
+                                            <td class="text-nowrap">@d.VisitingUnit</td>
+                                            <td class="text-nowrap">@d.ApprovedBy</td>
+                                            <td class="text-nowrap">@d.ApproveRejectDate</td>
+                                            <td class="text-nowrap">@d.ApproveRejectRemark</td>
+                                            <td class="text-nowrap">@d.ApprovedAutoManually</td>
+                                        </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END panel -->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="Divcontent" class="app-content">
+    <div class="row">
+        <div class="col-md-6">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1" id="contentpass"> 
+                <div class="panel-body" >
+                    <div class="row" >
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-12 text-center"><h4><b><span id="txtCompanyName"></span></b></h4></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-12 text-center" style="background-color:#dee2e6"><h4><b>OUT PERMISSION GATE PASS</b></h4></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-12"><b>To, The HR Department (Time office/Security)</b></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-12"><b>Date :</b> <span id="txtOutDoorDate"></span></label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-12"><b>Time :</b> <span id="txtTime"></span></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-12"><b>Name : </b><span id="txtEmployeeName"></span></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-12"><b>Employee No :</b> <span id="txtEmployeeNo"></span></label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-12"><b>Department :</b> <span id="txtDepartment"></span></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-12"><b>Reason :</b> <span id="txtReason"></span></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-12 text-center"><b>Manager/Approver Informations</b></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-12 "><b>Manager/Approver Name :</b> <span id="txtApproverName"></span></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-12"><b>Employee No :</b> <span id="txtApproverEmployeeNo"></span></label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-12"><b>Department : </b><span id="txtApproverDepartment"></span></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-12"><b>Status : </b><span id="txtStatus"></span></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+<div id="content" class="app-content col-md-6" hidden>
+    <div class="card">
+        <div id="card">
+            <div class="invoice">
+                <div class="invoiceMargin">
+                    <!-- BEGIN invoice-company -->
+                    @*<div class="row hidden-print">
+                        <div class="col-12  hidden-print">
+                            <div class="invoice-company  hidden-print">
+                                <span class="float-end hidden-print">
+                                    <a href="javascript:;" type="button" id="printBtn" class="btn btn-sm btn-white mb-10px" onclick="printDiv();">
+                                        <i class="fa fa-print t-plus-1 fa-fw fa-lg"></i> Print
+                                    </a>
+                                </span>
+                            </div>
+                        </div>
+                    </div>*@
+                    <div class="invoice-company">
+                        <div class="row">
+                            <div class="col-4">
+                                <span class="CompanyName" style="font-weight: 800;">
+                            
+                                </span>
+                            </div>
+                            <div class="col-4" style="font-weight: 800;">
+                                <span class="Type d-flex justify-content-center"></span>
+                            </div>
+                            @*<div class="col-4">
+                                <span class="DocType d-flex justify-content-end" style="font-weight: 800;"> Visitor Gate Pass </span>
+                            </div>*@
+                        </div>
+                    </div>
+                    <!-- END invoice-company -->
+                    <!-- BEGIN invoice-header -->
+                    <div class="invoice-Numbers">
+                        <div class="row">
+                            <div class="col-3 col-33">
+                                <div class="invoice-number-details">
+                                    <div class="row">
+                                        <div class="col-5 col-55">
+                                            Visitor No
+                                        </div>
+                                        <div class="col-1">
+                                            :
+                                        </div>
+                                        <div class="col-6 col-44">
+                                            <span class="GatepassNumber">
+                                               
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-5 col-55">
+                                <div class="invoice-TimeZone">
+                                    <div class="row">
+                                        <div class="col-12 text-center">
+                                            <span> Date :  &nbsp;&nbsp;</span>
+                                            <span> In Time : &nbsp;&nbsp; </span>
+                                            <span> Out Time : </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4 col-33">
+                                <div class="invoice-number-details">
+                                    <div class="row" style="display: flex; align-items: center;">
+                                        <div class="col-5 col-40" style="flex: 1;">
+                                            <span class="float-end">
+                                                Badge No
+                                            </span>
+                                        </div>
+                                        <div class="col-1" style="flex: 0;">:</div>
+                                        <div class="col-6 col-44" style="flex: 1;">
+                                            <span class="GatepassNumber">
+                                               
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- BEGIN invoice-content -->
+                    <div class="invoice-content">
+                        <div class="row">
+                            <div class="col-5 col-55">
+                                <div class="invoice-details">
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <span class="heading">
+                                                Visitor
+                                            </span>
+                                        </div>
+                                        <div class="col-1">
+                                            :
+                                        </div>
+                                        <div class="col-8">
+                                            <span class="value">
+                                                
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <span class="heading">
+                                                Mobile No
+                                            </span>
+                                        </div>
+                                        <div class="col-1">
+                                            :
+                                        </div>
+                                        <div class="col-8">
+                                            <span class="value">
+                                                
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <span class="heading">
+                                                Vechile No.
+                                            </span>
+                                        </div>
+                                        <div class="col-1">
+                                            :
+                                        </div>
+                                        <div class="col-8">
+                                            <span class="value">
+                                               
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <span class="heading">
+                                                Purpose
+                                            </span>
+                                        </div>
+                                        <div class="col-1">
+                                            :
+                                        </div>
+                                        <div class="col-8">
+                                            <span class="value">
+                                             
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <span class="heading">
+                                                Company
+                                            </span>
+                                        </div>
+                                        <div class="col-1">
+                                            :
+                                        </div>
+                                        <div class="col-8">
+                                            <span class="value">
+                                               
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-7 col-77">
+                                <div class="invoice-details">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <span class="heading" style="font-weight: 800;">
+                                                Host
+                                            </span>
+                                        </div>
+                                        <div class="col-1">
+                                            :
+                                        </div>
+                                        <div class="col-7">
+                                            <span class="value" style="font-weight: 800;">
+
+                                               
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <span class="heading" style="font-weight: 800;">
+                                                Department
+                                            </span>
+                                        </div>
+                                        <div class="col-1">
+                                            :
+                                        </div>
+                                        <div class="col-7">
+                                            <span class="value" style="font-weight: 800;">
+                                               
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END invoice-content -->
+                    <!-- BEGIN invoice-footer -->
+                    <div class="invoice-footer">
+                        <div class="invoice-sign">
+                            <div class="row">
+                                <div class="col-4"> Visitor Sign.</div>
+                                <div class="col-4"> Security Sign. </div>
+                                <div class="col-4"> Host Sign.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END invoice-footer -->
+
+                </div>
+
+
+
+            </div>
+            <!-- END invoice -->
+        </div>
+    </div>
+</div>
+
+<!-- #Start Cancel Request dialog -->
+<div class="modal fade" id="CancelModal" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header bg-black text-white">
+                <h5 class="modal-title">Request For Cancellation</h5>
+                <div class="panel-heading-btn">
+                    <a href="javascript:;" class="btn btn-icon btn-danger btnClear" data-bs-dismiss="modal"
+                       aria-hidden="true" id="CloseModel">
+                        <i class="fa fa-xmark"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="modal-body-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            @* @Html.DropDownListFor(model => model.PunchMissingEmployeeID, new SelectList(ViewBag.GetAdditionalList, "Id", "Name"), new { id = "LeaveMasterLeaveYearId", name = "LeaveMasterLeaveYearId", @class = "form-select", autocomplete = "off" })*@
+                                            <h6> Select Approver Name <span class="important">*</span></h6>
+
+                                            @Html.DropDownList("Id", new SelectList(ViewBag.GetManagerEmployee, "Id", "Name"), "--Select--", new { @class = "form-control", Id = "ddlManagerName" })
+                                            <h1></h1>
+                                            <span id="ErrorMessage" class="Error" style="color:red"></span>
+                                            <h6> Enter Remark <span class="important">*</span></h6>
+
+                                            <textarea id="txtApproveRejectRemark" class="form-control" rows="4"></textarea>
+                                            <span id="AreaErrorMessage" class="Error" style="color:red"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="SendCancelRequest()" id="btnReject" class="btn btn-primary btn-sm">
+                    <i class="fa-solid fa-floppy-disk"> </i> Submit
+                </button>
+                @*<button type="button" id="btnCancel" class="btn btn-danger btnpress CloseModel" data-bs-dismiss="modal">
+                        <i class="fa-solid fa-share-from-square"></i> Cancel
+                    </button>*@
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #End Cancel Request dialog -->
+
+<style>
+    .timeline {
+        max-width: 400px;
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+        .timeline:before {
+            left: 32px;
+        }
+
+    .timeline-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+
+    .iconGreen {
+        width: 24px;
+        height: 24px;
+        background-color: green;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        margin-right: 15px;
+    }
+
+    .iconRed {
+        width: 24px;
+        height: 24px;
+        background-color: #ff5b57;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        margin-right: 15px;
+    }
+
+    .text {
+        flex-grow: 1;
+    }
+
+        .text p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .text small {
+            color: gray;
+            font-size: 12px;
+        }
+
+    .button {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+        .button button {
+            background-color: #a8d935;
+            border: none;
+            padding: 10px 20px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+            .button button:hover {
+                background-color: #8cc62f;
+            }
+</style>
+
+<div class="modal fade" id="RequestInfoModal" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-body-content" style="position: relative;">
+                <div class="timeline">
+                    <div class="panel-heading-btn" style="margin-top: -13px; position: absolute; right: 8px;" data-bs-dismiss="modal">
+                        <a href="javascript:;" class="btn btn-icon btn-danger btnClear"
+                           aria-hidden="true" id="CloseModel">
+                            <i class="fa fa-xmark"></i>
+                        </a>
+                        @*<a href="javascript:;" class="btn btn-icon btn-danger btnClear" data-bs-dismiss="modal" aria-hidden="true">
+                                <i class="fa fa-xmark"></i>
+                            </a>*@
+                    </div>
+                    <div id="timelineMainDiv">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+        $("#Divcontent").hide();
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        $('title').html("Outdoor");
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                });
+            }
+        }
+    });
+
+
+    function DeleteOutDoor(OutDoorCompanyId_Encrypted,OutDoorCompanyId,Status) {
+        if(Status!="Pending")
+        {
+            Swal.fire({
+                icon: "error",
+                text: "Approved/Rejected request can't delete",
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup()
+                    popup.classList.remove('swal2-show')
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                    })
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                    }, 500)
+                    return false
+                }
+            });
+            return false;
+        }
+        const DeleteButtons = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        DeleteButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+            allowOutsideClick: () => {
+                const popup = Swal.getPopup()
+                popup.classList.remove('swal2-show')
+                setTimeout(() => {
+                    popup.classList.add('animate__animated', 'animate__headShake')
+                })
+                setTimeout(() => {
+                    popup.classList.remove('animate__animated', 'animate__headShake')
+                }, 500)
+                return false
+            }
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $(".Userloaderbg").css("display", "flex");
+                window.location.href = '@Url.Action("OutDoorComapnyDelete", "ESS_TimeOffice_OutDoor")?OutDoorCompanyId_Encrypted=' + OutDoorCompanyId_Encrypted+'&OutDoorCompanyId='+OutDoorCompanyId;
+
+            } else if (
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+
+            }
+        })
+    }
+</script>
+
+<script>
+    @*$(document).on('click', '#tblOutDoorList', function() {
+        debugger;
+        //$('#RequestInfoModal').modal('show');
+        var currentRow=$(this).closest("tr");
+        var col0=currentRow.find("td:eq(5)").html();
+        alert(col0)
+        return false;
+        $.ajax({
+            url: '@Url.Action("RequestStatus", "ESS_TimeOffice_OutDoor")',
+            method: "GET",
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            data: JSON.stringify({ tbldata: tbldata, EmployeeId: EmployeeId }),
+            success: function (response) {
+                debugger;
+
+            }
+        });
+    });*@
+
+    function ApproveStatus(DocId) {
+        $.ajax({
+            url: '@Url.Action("RequestStatus", "ESS_TimeOffice_OutDoor")',
+            method: "GET",
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            data: { DocId: DocId },
+            success: function (response) {
+                debugger
+                $('#RequestInfoModal').modal('show');
+                var data = JSON.parse(response);
+                var timelineHtml = '';
+                for (var i = 0; i < data.length; i++) {
+                    var icon = '';
+                    var iconColor='';
+                    var textColor = '';
+                    if (data[i][5].Value === 'success') {
+                        icon = '✔';
+                        iconColor ="iconGreen";
+                        textColor = 'Green';
+                    } else if (data[i][5].Value === 'error') {
+                        icon = '✘';
+                        iconColor ="iconRed";
+                        textColor = 'Red';
+                    } else {
+                        icon = '⏳';
+                        iconColor ="iconRed";
+                        textColor = 'Black';
+                    }
+
+                    timelineHtml += '<div class="timeline-item">' +
+                                '<div class="' + iconColor + '"><span class="timelineIcon">' + icon + '</span></div>' +
+                                '<div class="text">' +
+                                '<b><p class="timelineRemark" style="color:' + textColor + ';">' + data[i][2].Value + '</p></b>' +
+                                '<small class="timelineEmployeeName" style="color:Black;">' + data[i][3].Value + '</small><br />' +
+                                 '<small class="timelineDate" style="color:Black;">' + data[i][1].Value + '</small>' +
+                                '</div>' +
+                                '</div>';
+                }
+                $('#timelineMainDiv').html(timelineHtml);
+            }
+        });
+    }
+
+
+
+</script>
+
+
+<script>
+    function CancelRequestFun(OutDoorCompanyId,Status)
+    {
+        if(Status=="Pending" || Status=="Cancel")
+        {
+            if(Status=="Pending")
+            {
+                var Message="Pending request can't cancel";
+                var Icon="error";
+            }
+            else{
+                var Message="Request already cancel";
+                var Icon="error";
+            }
+
+            Swal.fire({
+                icon: Icon,
+                text: Message,
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup()
+                    popup.classList.remove('swal2-show')
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                    })
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                    }, 500)
+                    return false
+                }
+            });
+            return false;
+        }
+        debugger;
+        localStorage.setItem('OutDoorCompanyId',OutDoorCompanyId);
+        $("#CancelModal").modal('show');
+    }
+
+    function SendCancelRequest()
+    {
+        //$("#CancelModal").modal('show');
+        var ddlManagerName = $('select#ddlManagerName option:selected').val();
+        var txtApproveRejectRemark = $('#txtApproveRejectRemark').val();
+        if(ddlManagerName=="")
+        {
+            $("#ErrorMessage").html("Select approver name");
+            $("#ddlManagerName").focus();
+            return false;
+        }
+        else
+        {
+            $("#ErrorMessage").html("");
+        }
+
+        if(txtApproveRejectRemark=="")
+        {
+            $("#AreaErrorMessage").html("Remark is required.");
+            $("#txtApproveRejectRemark").focus();
+            return false;
+        }
+        else
+        {
+            $("#AreaErrorMessage").html("");
+        }
+
+        const Approved = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        Approved.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes Submit!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+
+            allowOutsideClick: () => {
+                const popup = Swal.getPopup()
+                popup.classList.remove('swal2-show')
+                setTimeout(() => {
+                    popup.classList.add('animate__animated', 'animate__headShake')
+                })
+                setTimeout(() => {
+                    popup.classList.remove('animate__animated', 'animate__headShake')
+                }, 500)
+                return false
+            }
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                debugger;
+                var GetODId = localStorage.getItem('OutDoorCompanyId');
+
+                var ddlManagerId = $("#ddlManagerName").val();
+                var Origin="OD";
+                Remark = $("#txtApproveRejectRemark").val();
+                $("#CancelModal").modal('hide');
+                $(".Userloaderbg").css("display", "flex");
+                $.ajax({
+                    url: "@Url.Action("CancelRequest", "ESS_TimeOffice_OutDoor")",
+                    method:"get",
+                    data:{OutDoorCompanyId:GetODId,ddlManagerId:ddlManagerId,Remark:Remark,Origin:Origin},
+                    success:function(response){
+                        debugger;
+                        var Message1 = response.Message;
+                        var Icon1 = response.Icon;
+                        if (response.Icon=="error") {
+                            $(".Userloaderbg").css("display", "none");
+                            if (Message1 != null) {
+                                if (Message1 != null) {
+                                    Swal.fire({
+                                        icon: Icon1,
+                                        text: Message1,
+                                        allowOutsideClick: () => {
+                                            const popup = Swal.getPopup()
+                                            popup.classList.remove('swal2-show')
+                                            setTimeout(() => {
+                                                popup.classList.add('animate__animated', 'animate__headShake')
+                                            })
+                                            setTimeout(() => {
+                                                popup.classList.remove('animate__animated', 'animate__headShake')
+                                            }, 500)
+                                            return false
+                                        }
+                                    })
+                                    .then((result) => {
+                                        if (result.isConfirmed) {
+                                            $("#CancelModal").modal('hide');
+                                            $("#txtApproveRejectRemark").val("")
+                                            window.location.href = '@Url.Action("ESS_TimeOffice_GetApproveRejectList", "ESS_TimeOffice_OutDoor")';
+                                        } else if (
+                                            /* Read more about handling dismissals below */
+                                            result.dismiss === Swal.DismissReason.cancel
+                                        ) {
+
+                                        }
+                                    })
+                                }
+                            }
+                        }
+                        else{
+                            var Message1 = response.Message;
+                            var Icon1 = response.Icon;
+                            if (response.Icon=="success") {
+                                if (Message1 != null) {
+                                    if (Message1 != null) {
+                                        Swal.fire({
+                                            icon: Icon1,
+                                            text: Message1,
+                                            allowOutsideClick: () => {
+                                                const popup = Swal.getPopup()
+                                                popup.classList.remove('swal2-show')
+                                                setTimeout(() => {
+                                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                                })
+                                                setTimeout(() => {
+                                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                                }, 500)
+                                                return false
+                                            }
+                                        })
+                                        .then((result) => {
+                                            if (result.isConfirmed) {
+                                                window.location.href = '@Url.Action("ESS_TimeOffice_GetApproveRejectList", "ESS_TimeOffice_OutDoor")';
+                                            } else if (
+                                                /* Read more about handling dismissals below */
+                                                result.dismiss === Swal.DismissReason.cancel
+                                            ) {
+
+                                            }
+                                        })
+
+                                        $("#CancelModal").modal('hide');
+                                        $("#txtApproveRejectRemark").val("");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+            } else if (
+                /* Read more about handling dismissals below */
+                            result.dismiss === Swal.DismissReason.cancel
+                        ) {
+                $("#CancelModal").modal('hide');
+                $("#ddlManagerName").val(null);
+                $("#txtApproveRejectRemark").val("");
+            }
+        })
+    }
+</script>
+
+<script>
+    function InvoiceFun(DocId)
+    {
+        $.ajax({
+            url: '@Url.Action("OutInvoiceView", "ESS_TimeOffice_OutDoor")',
+            method: "GET",
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            data: { DocId: DocId },
+            success: function (response) {
+                debugger
+                var data =JSON.parse(response)
+                //var txtOutDoorDate=data[0][10].Value;
+                //var txtTime=data[0][12].Value;
+                //var txtEmployeeName=data[0][5].Value;
+                //var txtEmployeeNo=data[0][7].Value;
+                //var txtDepartment=data[0][5].Value;
+                //var txtReason=data[0][13].Value;
+                //var txtApproverName=data[0][17].Value;
+                //var txtApproverEmployeeNo=data[0][23].Value;
+                //var txtApproverDepartment=data[0][19].Value;
+                $("#txtCompanyName").html(data[0][24].Value);
+                $("#txtOutDoorDate").html(data[0][10].Value);
+                $("#txtTime").html(data[0][12].Value);
+                $("#txtEmployeeName").html(data[0][5].Value);
+                $("#txtEmployeeNo").html(data[0][7].Value);
+                $("#txtDepartment").html(data[0][19].Value);
+                $("#txtReason").html(data[0][13].Value);
+                $("#txtApproverName").html(data[0][17].Value);
+                $("#txtApproverEmployeeNo").html(data[0][23].Value);
+                $("#txtApproverDepartment").html(data[0][19].Value);
+                $("#txtStatus").html(data[0][14].Value);
+
+                var element = document.getElementById('contentpass');
+                console.log('Element:', element); // Debugging log
+                console.log('Content:', element.innerHTML); // Log the content
+
+                var opt = {
+                    margin: 0, // Set top, right, bottom, left margins
+                    filename: 'OutPermissionGatePass.pdf',
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2, useCORS: true }, // Higher scale for clarity
+                    jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+                };
+
+                // Check if the element exists
+                if (element) {
+                    html2pdf().set(opt).from(element).save().then(() => {
+                        console.log('PDF downloaded successfully.');
+                    }).catch(err => {
+                        console.error('Error downloading PDF:', err);
+                    });
+                } else {
+                    console.error('Element with ID contentpass not found.');
+                }
+
+
+            }
+        });
+    }
+</script>
+
+
+

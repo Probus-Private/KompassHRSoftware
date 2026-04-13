@@ -1,0 +1,331 @@
+﻿@model KompassHR.Areas.Setting.Models.Setting_Email.Tool_EmailSetting
+@{
+    ViewBag.Title = "Setting_Email_SMTPDetails";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+
+<style>
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                SMTP Details
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("ESS_AdminDashboard_Dashboard", "ESS_AdminDashboard_Dashboard", new { area = "ESS" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Setting_Email_Menu", "Setting_Email_Menu", new {id = 30, ScreenId= 119, area = "Setting" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+  
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                 <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> SMTP Details - <b>@ViewBag.AddUpdateTitle</b> </h4>
+                    <<div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Add SMTP details here!
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action="/Setting/Setting_Email_SMTPDetails/SaveUpdate" id="SaveSmptDetails" method="post" enctype="multipart/form-data">
+                                <div class="row mb-15px">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Company Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.CmpId, new SelectList(ViewBag.GetCompanyProfile, "Id", "Name"), "--Select--", new { @class = "form-control", name = "CmpId", type = "text", id = "txtCmpId", autocomplete = "Off" })
+                                                @Html.HiddenFor(model => model.EmailID_Encrypted, new { id = "EmailID_Encrypted" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Module
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.Origin, new SelectList(ViewBag.GetEmailOrigin, "Id", "Name"), "--Select--", new { @class = "form-control", name = "Origin", type = "text", id = "txtOrigin", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-15px">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                SMTP Server Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.SMTPServerName, new { @class = "form-control", type = "text", id = "txtSMTPServerName", autocomplete = "Off", Name = "SMTPServerName" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Port No
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.PortNo, new { @class = "form-control", type = "text", id = "txtPortNo", autocomplete = "Off", Name = "PortNo" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-4">
+                                        </label>
+                                        <div class="col-md-8 ">
+                                            @Html.CheckBoxFor(model => model.SSL)
+                                            &nbsp;
+                                            <label class="form-label">
+                                                SSL
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-15px">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Email Id
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.FromEmailId, new { @class = "form-control", name = "FromEmailId", type = "text", id = "txtFromEmailId", autocomplete = "Off" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Passwoard
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.Password, new { @class = "form-control", type = "text", id = "txtPassword", autocomplete = "Off", Name = "Password" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="button" id="btnSubmit"
+                                                                class="btn btn-primary btn-sm">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                        <button type="button"
+                                                                class="btn btn-danger btn-sm" id="btnSmtpDetails">
+                                                            <i class="fa-solid fa-share-from-square"></i>
+                                                            List
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                });
+            }
+        }
+    });
+</script>
+
+
+<script>
+    $("#btnSmtpDetails").click(function () {
+        var url = '@Url.Action("GetList", "Setting_Email_SMTPDetails")';
+        window.location.href = url;
+    });
+
+
+    $(document).ready(function () {
+        $("#txtFromEmailId").select2();
+    });
+
+
+    jQuery.validator.addMethod(
+ "regex",
+  function(value, element, regexp) {
+      if (regexp.constructor != RegExp)
+          regexp = new RegExp(regexp);
+      else if (regexp.global)
+          regexp.lastIndex = 0;
+      return this.optional(element) || regexp.test(value);
+  },"erreur expression reguliere"
+);
+    $("#SaveShortLeaveSetting").validate({
+        rules: {
+            CmpId: {
+                required: true,
+            },
+            PortNo: {
+                required: true,
+            },
+            FromEmailId: {
+                required: true,
+                email:true
+            },
+            Password: {
+                required: true,
+            },
+            Origin: {
+                required: true,
+            },
+
+        },
+        messages: {
+            CmpId: {
+                required: "Company name is required",
+            },
+            PortNo: {
+                required: "Port no name is required",
+            },
+            FromEmailId: {
+                required: "Email Id is required",
+                email:"Enter"
+            },
+            Password: {
+                required: "Password is required",
+            },
+            Origin: {
+                required: "Origin is required",
+            },
+        }
+    });
+
+
+    var form = $("#SaveSmptDetails");
+    form.validate();
+    $("#btnSubmit").click(function () {
+        if (form.valid() == false) {
+            return false;
+        }
+        var CompanyName = $("#txtCmpId").val();
+        var Origin = $("#txtOrigin").val();
+        var EmailIDEncrypted = $("#EmailID_Encrypted").val();
+        $.ajax({
+            url: "IsAalradySmptDetails",
+            method: "get",
+            data: { CompanyName: CompanyName, Origin: Origin, EmailIDEncrypted: EmailIDEncrypted },
+            success: function (response) {
+                debugger;
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon == "error") {
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                        }
+                    }
+                }
+                else {
+                    $("#SaveSmptDetails").submit();
+
+                }
+            }
+        });
+
+    });
+</script>

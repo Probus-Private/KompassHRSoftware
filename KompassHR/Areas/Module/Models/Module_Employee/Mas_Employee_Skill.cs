@@ -1,0 +1,24 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace KompassHR.Areas.Module.Models.Module_Employee
+{
+    public class Mas_Employee_Skill
+    {
+        public double EmployeeSkillID { get; set; }
+        public string EmployeeSkillID_Encrypted { get; set; }
+        public bool Deactivate { get; set; }
+        public bool UseBy { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public string ModifiedBy { get; set; }
+        public string ModifiedDate { get; set; }
+        public string MachineName { get; set; }
+        public double SkillEmployeeID { get; set; }
+        public double SkillID { get; set; }
+        public string Experience { get; set; }
+        public string Remark { get; set; }
+    }
+}

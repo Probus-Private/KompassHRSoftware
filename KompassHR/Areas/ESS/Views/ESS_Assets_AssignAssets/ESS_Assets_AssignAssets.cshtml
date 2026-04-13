@@ -1,0 +1,916 @@
+﻿@model KompassHR.Areas.Module.Models.Module_Employee.Mas_Employee_Asset
+
+
+@{
+    ViewBag.Title = "ESS_Assets_AssignAssets";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+
+<style>
+    .hidden {
+        display: none;
+    }
+</style>
+
+<style>
+    .table {
+        --bs-table-striped-bg: rgba(0, 0, 255, 0.02);
+    }
+
+    .text-nowrap {
+        font-size: 12px;
+    }
+
+    tbody tr td {
+        font-size: 12px;
+        padding: 4px !important;
+    }
+
+    .ListBtn {
+        background-color: transparent;
+        color: #000;
+        font-size: 15px !important;
+        padding: 5px 8px !important;
+        border: none;
+    }
+
+        .ListBtn:hover {
+            background-color: transparent;
+            color: #000;
+        }
+
+            .ListBtn:hover i {
+                transition: all 0.5s;
+                transform: scale(1.5);
+            }
+
+
+
+    .box2 {
+        width: 100px;
+        height: 100px;
+        padding: 15px 0px;
+        font-family: 'Montserrat', sans-serif;
+        position: relative;
+        z-index: 0;
+        margin-bottom: 10px;
+    }
+
+        .box2:hover {
+            border: 2px solid #ff9c19;
+            border-radius: 10px;
+            cursor: pointer;
+            transform: translateY(-10px);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.03), 0px -15px 25px rgba(0, 0, 0, 0.03), 0 15px 25px rgba(0, 0, 0, 0.05);
+        }
+
+            .box2:hover .info i {
+                color: #ff9c19;
+            }
+
+
+        .box2 .info i {
+            font-size: 20px;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 5px;
+            color: #007bff;
+        }
+
+        .box2 .info h7 {
+            position: relative;
+            font-size: 12px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            font-weight: 900 !important;
+            text-transform: capitalize;
+            margin-bottom: 2px;
+            padding: 0 10px;
+            color: #444;
+        }
+
+    .FS-12PX {
+        font-size: 12px !important;
+    }
+
+    .div1 td:nth-child(1) {
+        position: sticky;
+        left: 0;
+    }
+
+    .fixed-side {
+        position: sticky;
+        left: 0px;
+    }
+
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .empbx h4 {
+        margin-bottom: 5px;
+    }
+
+    .empbx h6 i {
+        font-size: 1rem;
+        margin-right: 5px;
+    }
+
+    .empbx {
+        margin-bottom: 20px;
+    }
+
+    .card-row-title {
+        color: #e63c3c;
+        font-size: 18px;
+        font-weight: 600;
+        text-transform: capitalize;
+        border-bottom: #009ce7 1px solid;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Asset
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_Assets_Menu", "ESS_Assets_Menu", new {id = 47, ScreenId=837, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">Asset  <b>@ViewBag.AddUpdateTitle</b></h4>
+                </div> <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Add Asset here!
+                    </p>
+                </div>
+                <div class="panel-body" data-scrollbar="false">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="empbx">
+                                        @*<span>
+                                            <h4> <i class="fa-solid fa-user"></i> @Session["EmployeeName"] -  @Session["EmployeeNo"] </h4>
+                                        </span>
+                                        <span>
+                                            <h6> <i class="fa-solid fa-briefcase"></i>  @Session["EmpDepartment"] / @Session["EmpDesignation"] </h6>
+                                        </span>
+                                        <span>
+                                            <h6> <i class="fa-solid fa-calendar"></i> @Session["EmpDoj"] </h6>
+                                        </span>*@
+
+                                        @{
+                                            var emp = ViewBag.GetEmployeeInfo;
+                                        }
+
+                                        @if (emp != null)
+                                        {
+                                            <span>
+                                                <h4><i class="fa-solid fa-user"></i> @emp.EmployeeName - @emp.EmployeeNo</h4>
+                                            </span>
+
+                                            <span>
+                                                <h6><i class="fa-solid fa-briefcase"></i> @emp.DepartmentName / @emp.DesignationName</h6>
+                                            </span>
+
+                                            <span>
+                                                <h6><i class="fa-solid fa-calendar"></i> @emp.JoiningDate</h6>
+                                            </span>
+                                        }
+
+                                        <hr>
+                                    </div>
+                                </div>
+                            </div>
+                            <form role="form" action='@Url.Action("SaveUpdate", "ESS_Assets_AssignAssets", new { area = "ESS" })' id="AssetSaveUpdate" method="post">
+                              
+                                  <div class="row mb-10px">
+                                    <div class="col-md-12">
+                                        <div class="card-row-title">
+                                         Assign Assets
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @*<div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                               Company Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-7">
+                                                @Html.DropDownListFor(model => model.CompanyId, new SelectList(ViewBag.CompanyName, "Id", "Name"), "Select", new { id = "ddlCompanyId", @class = "form-select", autocomplete = "off", name = "CompanyId" })
+                                                @Html.HiddenFor(model => model.AssignAssetId_Encrypted, new { id = "AssignAssetId_Encrypted" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                               BU 
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.BranchId, new SelectList(ViewBag.GetMasBranch, "Id", "Name"), "Select", new { id = "ddlBranchId", @class = "form-select", autocomplete = "off", name = "BranchId" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>*@
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Date
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-7">
+                                                @Html.TextBoxFor(model => model.Date, null, new { @class = "form-control", type = "date", id = "Date", name = "Date"})
+                                                @Html.ValidationMessage("FromDate", "", new { @class = "help-block", id = "ErrortxtFromDate", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Employee Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.AssetEmployeeId, new SelectList(ViewBag.GetEmployeeList, "Id", "Name"), "Select", new { id = "ddlAssetEmployeeId", @class = "form-select", autocomplete = "off", name = "AssetEmployeeId" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Asset Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-7">
+                                                @Html.DropDownListFor(model => model.AssetName, new SelectList(ViewBag.GetAssetName, "Id", "Name"), "Select", new { id = "ddlAssetId", @class = "form-select", autocomplete = "off", name = "AssetName" })
+                                                @Html.HiddenFor(model => model.AssetId_Encrypted, new { id = "AssetId_Encrypted" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Asset Remark
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-10">
+                                                @Html.TextAreaFor(model => model.Remark, new { ViewBag.GetRemarkName, @class = "form-control", id = "txtAssetRemark", autocomplete = "off", Name = "Remark" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-10px">
+                                    <div class="col-md-12">
+                                        <div class="card-row-title">
+                                            Asset Alert
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-15px">
+                                    <label class="form-label col-form-label col-md-2">
+                                    </label>
+                                    <label class="form-label col-form-label col-md-4">
+                                        @Html.CheckBoxFor(model => model.RequiredAlert, new
+                                   {
+                                       id = "chkRequiredAlert",
+                                       name = "IsActive"@*, @checked = "checked"*@ })
+                                        &nbsp;   Required Alert
+                                    </label>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                On Date
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.RequiredAlertDate, null, new { @class = "form-control", type = "date", id = "txtOnDate"})
+                                                @Html.ValidationMessage("FromDate", "", new { @class = "help-block", id = "ErrortxtFromDate1", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Alert Remark
+                                            </label>
+                                            <div class="col-md-10">
+                                                @Html.TextAreaFor(model => model.AssetRemark, new { @class = "form-control", id = "txtAlertRemark", autocomplete = "off", Name = "AssetRemark" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="row mb-20px">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        @*<button type="button" data-bs-toggle="offcanvas"
+                                                                href="#offcanvasExample" id="btnActionList" onclick="EmployeeDetails(this)" class="btn  btnpress ListBtn">
+                                                            <i class="fa-solid fa-list"></i>
+                                                        </button>*@
+                                                        <button class="btn btn-primary btn-sm" type="button" id="btnSubmit">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                        <a href="@Url.Action("GetList", "ESS_Assets_AssignAssets", new { area = "ESS" })">
+                                                            <button type="button"
+                                                                    class="btn btn-danger btn-sm" id="btnBack">
+                                                                <i class="fa-solid fa-share-from-square"></i>
+                                                                List
+                                                            </button>
+                                                        </a>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                     
+                                        <table class="table table-bordered align-middle" id="fixed-header"
+                                               style="width: 100%;">
+                                            <thead style="background-color: rgba(233, 236, 239, 1) !important;">
+                                                <tr class="text-center">
+                                                    <th class="text-nowrap"> Action</th>
+                                                    <th class="text-nowrap"> Date</th>
+                                                    <th class="text-nowrap"> Asset Name </th>
+                                                    <th class="text-nowrap"> Asset Remark </th>
+                                                    <th class="text-nowrap"> Required Alert </th>
+                                                    <th class="text-nowrap"> Required Alert Date</th>
+                                                    <th class="text-nowrap">  Remark</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var d in ViewBag.GetAssetList1)
+                                                {
+                                                    <tr>
+                                                        <td class="text-center">
+                                                            <i class="fa-solid fa-trash-alt fa-lg" onclick="DeleteAsset('@d.AssetId_Encrypted')" style="color: red; cursor: pointer;"></i>
+                                                        </td>
+                                                        <td>@($"{d.Date.ToString("dd")}/{d.Date.ToString("MMM")}/{d.Date.Year}")</td>
+
+                                                        @*<td>@d.Date</td>*@
+                                                        <td>@d.AssetName</td>
+                                                        <td>@d.Remark</td>
+                                                        @if (@d.RequiredAlert)
+                                                        {
+                                                            <td>Yes</td>
+                                                          
+                                                        }
+                                                        else
+                                                        {
+                                                            <td>No</td>
+                                                        }
+
+                                                        <td>@d.RequiredAlertDate</td>
+                                                        <td>@d.AssetRemark</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        debugger
+
+        //$("#ddlBranchId").select2({
+        //  //  placeholder: "Select",
+        //    allowClear: true,
+        //    width: "100%"
+        //});
+
+        $("#ddlAssetEmployeeId").select2({
+           // placeholder: "Select",
+            allowClear: true,
+            width: "100%"
+        });
+        //$("#ddlCompanyId").select2({
+        //  //  placeholder: "Select",
+        //    allowClear: true,
+        //    width: "100%"
+        //});
+
+        $("#ddlAssetId").select2({
+            allowClear: true,
+            width: "100%"
+        });
+
+        
+     
+        document.getElementById("Date").addEventListener("blur", function () {
+            debugger
+            var dateValue = this.value;
+
+            if (dateValue.includes("-")) {
+                var parts = dateValue.split("-"); 
+                dateValue = parts[2] + "-" + parts[1] + "-" + parts[0];
+            }
+            var regex = /^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-(19|20)\d\d$/;
+            if (!regex.test(dateValue)) {
+                $("#ErrortxtFromDate").html("Please enter valid date in DD-MM-YYYY format");
+                this.value = "";
+                this.focus();
+                return;
+            } else {
+                $("#ErrortxtFromDate").html("");
+            }
+        });
+
+        document.getElementById("txtOnDate").addEventListener("blur", function () {
+            debugger
+            var dateValue = this.value;
+
+            if (dateValue.includes("-")) {
+                var parts = dateValue.split("-"); 
+                dateValue = parts[2] + "-" + parts[1] + "-" + parts[0];
+            }
+            var regex = /^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-(19|20)\d\d$/;
+            if (!regex.test(dateValue)) {
+                $("#ErrortxtFromDate1").html("Please enter valid date in DD-MM-YYYY format");
+                this.value = "";
+                this.focus();
+                return;
+            } else {
+                $("#ErrortxtFromDate1").html("");
+            }
+        });
+
+
+        var Date = @Html.Raw(Json.Encode(TempData["Date"]));
+        $("#Date").val(Date);
+        var RequiredAlertDate = @Html.Raw(Json.Encode(TempData["RequiredAlertDate"]));
+        $("#txtOnDate").val(RequiredAlertDate);
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: false
+                }).then(function () {
+                    window.location.reload();
+                });
+            }
+        }
+
+        @*$("#ddlCompanyId").on("change", function () {
+            debugger
+            $("#ddlBranchId").empty();
+            $("#ddlAssetEmployeeId").empty();
+
+            var CompanyId = $("#ddlCompanyId").val();
+
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("GetBusinessUnit", "ESS_Assets_AssignAssets")',
+                data: { CompanyId: CompanyId },
+                success: function (data) {
+
+                    if (data && data.Branch) {
+                        $("#ddlBranchId").append("<option value=''>Select</option>");
+                        $.each(data.Branch, function (i, p) {
+                            $("#ddlBranchId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+
+                    if (data && data.EmployeeName) {
+                        $("#ddlAssetEmployeeId").append("<option value=''>Select</option>");
+                        $.each(data.EmployeeName, function (i, p) {
+                            $("#ddlAssetEmployeeId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                }
+            });
+        });*@
+
+
+
+        @*$("#ddlBranchId").on("change", function () {
+            debugger;
+            $("#ddlAssetEmployeeId").find("option").remove();
+            var BranchId = $("#ddlBranchId").val() || null;
+            var CompanyId = $("#ddlCompanyId").val();
+            // var GetYear = $("#txtFromDate").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetEmployee", "ESS_Assets_AssignAssets")',
+                data: { CompanyId: CompanyId, BranchId: BranchId },
+                success: function (data) {
+                    if (data != null) {
+                        $("#ddlAssetEmployeeId").append("<option value=''>Select</option>");
+                        $.each(data, function (i, p) {
+                            $("#ddlAssetEmployeeId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        });*@
+
+
+    });
+</script>
+
+<script>
+    //use for add regex function
+    jQuery.validator.addMethod(
+  "regex",
+   function (value, element, regexp) {
+       if (regexp.constructor != RegExp)
+           regexp = new RegExp(regexp);
+       else if (regexp.global)
+           regexp.lastIndex = 0;
+       return this.optional(element) || regexp.test(value);
+   }, "erreur expression reguliere"
+);
+
+    $('#AssetSaveUpdate').validate({
+
+        rules: {
+            //CompanyId:{
+            //    required: true,
+            //},
+            //BranchId:{
+            //    required: true,
+            //},
+            Date: {
+                required: true,
+            },
+            AssetName: {
+                required: true,
+            },
+            Remark: {
+                required: true,
+            },
+
+        },
+        messages: {
+            //CompanyId:{
+            //    required: "Company name is required",
+            //},
+            //BranchId:{
+            //    required: "Branch Name is required",
+            //},
+            Date: {
+                required: "Date Is Required",
+            },
+            AssetName: {
+                required: "Asset Name Is Required",
+            },
+            Remark: {
+                required: "Asset Remark Is Required",
+            },
+
+        },
+    });
+
+    var form = $("#AssetSaveUpdate");
+    form.validate();
+    $("#btnSubmit").click(function () {
+        if (form.valid() == false) {
+            return false;
+        }
+        var AssetId_Encrypted = $("#AssetId_Encrypted").val();
+        var AssetEmployeeId=$('#ddlAssetEmployeeId').val();
+        var AssetName = $('#ddlAssetId').val();
+       // var CompanyId=$('#ddlCompanyId').val();
+        //var BranchId=$('#ddlBranchId').val();
+        $.ajax({
+            url: '@Url.Action("IsAssetExists", "ESS_Assets_AssignAssets")',
+            method: "get",
+            data: { AssetEmployeeId: AssetEmployeeId, AssetName: AssetName,AssetId_Encrypted:AssetId_Encrypted},
+            success: function (response) {
+                debugger;
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon == "error") {
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                        }
+                    }
+                }
+                else {
+                    $("#AssetSaveUpdate").submit();
+
+                }
+            }
+        });
+
+    });
+</script>
+
+
+<script>
+    function DeleteAsset(AssetId_Encrypted) {
+        debugger;
+        const DeleteButtons = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        DeleteButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+            allowOutsideClick: () => {
+                const popup = Swal.getPopup()
+                popup.classList.remove('swal2-show')
+                setTimeout(() => {
+                    popup.classList.add('animate__animated', 'animate__headShake')
+                })
+                setTimeout(() => {
+                    popup.classList.remove('animate__animated', 'animate__headShake')
+                }, 500)
+                return false
+            }
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '@Url.Action("Delete", "ESS_Assets_AssignAssets")?AssetId_Encrypted=' + AssetId_Encrypted;
+
+            } else if (
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+
+            }
+        })
+    }
+
+</script>
+
+
+@*<script>
+    $(document).ready(function () {
+        debugger;
+
+        var Date = @Html.Raw(Json.Encode(TempData["Date"]));
+        $("#Date").val(Date);
+        var RequiredAlertDate = @Html.Raw(Json.Encode(TempData["RequiredAlertDate"]));
+        $("#txtOnDate").val(RequiredAlertDate);
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: false
+                }).then(function () {
+                    window.location.reload();
+                });
+            }
+        }
+
+
+        $("#txtOnDate").val(new Date().toISOString().split("T")[0]);
+        $("#chkRequiredAlert").on("change", function () {
+            debugger
+            var isChecked = $(this).is(":checked");
+
+            if (isChecked) {
+                $("#txtOnDate").prop("disabled", false).css("background-color", "#fff");
+            } else {
+                $("#txtOnDate").prop("disabled", true).css("background-color", "#eee");
+            }
+        });
+
+        // Ensure the date input is disabled by default if the checkbox is unchecked
+        if (!$("#chkRequiredAlert").is(":checked")) {
+            $("#txtOnDate").prop("disabled", true).css("background-color", "#eee");
+            $("#txtOnDate").val(new Date().toISOString().split("T")[0]);
+        }
+
+        $("#ddlAssetId").on("change", function () {
+            debugger;
+      
+        var AssetId = $("#ddlAssetId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetAlertRemark", "ESS_Assets_AssignAssets")',
+                data: { AssetId: AssetId },
+                success: function (data) {
+                    debugger;
+                    if (data.success) {
+                        $("#txtAlertRemark").val(data.remark); // Set the remark in the textarea
+                    } else {
+                        alert(data.message); // Show error message if any
+                    }
+                }
+            })
+        });
+
+        $("#ddlCompanyId").on("change", function () {
+            debugger;
+            $("#ddlBranchId").find("option").remove();
+            // $("#ddlEmployeeID").find("option").remove();
+            var CompanyId = $("#ddlCompanyId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url:'@Url.Action("GetBusinessUnit", "ESS_Assets_AssignAssets")',
+                data: { CompanyId: CompanyId},
+                success: function (data) {
+                    if (data != null) {
+                        $("#ddlBranchId").append("<option value=''>All </option>");
+                        $.each(data.Branch, function (i, p) {
+                            $("#ddlBranchId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                    if (data != null) {
+                        $("#ddlAssetEmployeeId").append("<option value=''>All </option>");
+                        $.each(data.EmployeeName, function (i, p) {
+                            $("#ddlAssetEmployeeId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        });
+
+        $("#ddlBranchId").on("change", function () {
+            debugger;
+            $("#ddlAssetEmployeeId").find("option").remove();
+            var BranchId = $("#ddlBranchId").val()||null;
+            var CompanyId = $("#ddlCompanyId").val();
+            // var GetYear = $("#txtFromDate").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url:'@Url.Action("GetEmployee", "ESS_Assets_AssignAssets")',
+                data: { CompanyId:CompanyId, BranchId: BranchId },
+                success: function (data) {
+                    if (data != null) {
+                        $("#ddlAssetEmployeeId").append("<option value=''>All </option>");
+                        $.each(data, function (i, p) {
+                            $("#ddlAssetEmployeeId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        });
+
+    })
+
+</script>*@
+

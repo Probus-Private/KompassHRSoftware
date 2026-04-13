@@ -1,0 +1,569 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_Vendor.Mas_Vendor_ContactDetails
+
+@{
+    ViewBag.Title = "Vendor Contact Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+
+<style>
+    .table {
+        --bs-table-striped-bg: rgba(0, 0, 255, 0.02);
+    }
+
+    .text-nowrap {
+        font-size: 12px;
+    }
+
+    tbody tr td {
+        font-size: 12px;
+        padding: 4px !important;
+    }
+
+    .ListBtn {
+        background-color: transparent;
+        color: #000;
+        font-size: 15px !important;
+        padding: 5px 8px !important;
+        border: none;
+    }
+
+        .ListBtn:hover {
+            background-color: transparent;
+            color: #000;
+        }
+
+            .ListBtn:hover i {
+                transition: all 0.5s;
+                transform: scale(1.5);
+            }
+
+
+
+    .box2 {
+        width: 100px;
+        height: 100px;
+        padding: 15px 0px;
+        font-family: 'Montserrat', sans-serif;
+        position: relative;
+        z-index: 0;
+        margin-bottom: 10px;
+    }
+
+        .box2:hover {
+            border: 2px solid #ff9c19;
+            border-radius: 10px;
+            cursor: pointer;
+            transform: translateY(-10px);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.03), 0px -15px 25px rgba(0, 0, 0, 0.03), 0 15px 25px rgba(0, 0, 0, 0.05);
+        }
+
+            .box2:hover .info i {
+                color: #ff9c19;
+            }
+
+
+        .box2 .info i {
+            font-size: 20px;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 5px;
+            color: #007bff;
+        }
+
+        .box2 .info h7 {
+            position: relative;
+            font-size: 12px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            font-weight: 900 !important;
+            text-transform: capitalize;
+            margin-bottom: 2px;
+            padding: 0 10px;
+            color: #444;
+        }
+
+    .FS-12PX {
+        font-size: 12px !important;
+    }
+
+    .div1 td:nth-child(1) {
+        position: sticky;
+        left: 0;
+    }
+
+    /*.div1 td:nth-child(2) {
+        position: sticky;
+        left: 62px;
+    }*/
+
+    .fixed-side {
+        position: sticky;
+        left: 0px;
+    }
+
+    /*.fixed-side1 {
+        position: sticky;
+        left: 62px;
+    }*/
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .empbx h4 {
+        margin-bottom: 5px;
+    }
+
+    .empbx h6 i {
+        font-size: 1rem;
+        margin-right: 5px;
+    }
+
+    .empbx {
+        margin-bottom: 20px;
+    }
+
+    .card-row-title {
+        color: #e63c3c;
+        font-size: 18px;
+        font-weight: 600;
+        text-transform: capitalize;
+        border-bottom: #009ce7 1px solid;
+    }
+</style>
+
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Contact Details
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("GetList", "ESS_Vendor", new {id = 41, ScreenId=693, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">@*@i.SET_MODULES.FormName*@ Vendor Contact Details - @ViewBag.AddUpdateTitle</h4>
+                   
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Add vendor contact details.
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "ESS_Vendor_ContactDetails", new { area = "ESS" })' id="SaveContactDetails" method="post">
+                                
+                                <div class="row mb-15px">
+                                    <div class="col-md-12">
+                                        <div class="card-row-title">
+                                           Contact Details
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Primary Contact
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.PrimaryContact, new { @class = "form-control", name = "PrimaryContact", type = "text", id = "txtPrimaryContact", autocomplete = "Off", Maxlength = 50 })
+                                            
+                                                @*@Html.TextBoxFor(model => model.PrimaryContact, new { @class = "form-control", name = "PrimaryContact", type = "text", id = "txtPrimaryContact", autocomplete = "Off", Maxlength = 10, onkeypress = " return numbervalidate(event)" })*@
+
+
+                                                    @Html.HiddenFor(model => model.ContactID_Encrypted, new { id = "txtContactID_Encrypted" })
+                                                @Html.HiddenFor(model => model.ContactVendorId, new { id = "txtContactVendorId",Value= Session["VendorId"] })
+
+
+                                             </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Designation Title 
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.Designation, new { @class = "form-control", name = "Designation", type = "text", id = "txtDesignation", autocomplete = "Off", Maxlength = 50 })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Email ID<span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.EmailID, new
+                                           {
+                                               @class = "form-control",
+                                               name = "EmailID",
+                                               id = "txtEmailID",
+                                               autocomplete = "Off"
+                                           })
+                                                <span id="emailValidationMsg" style="color: red; font-size: 13px;"></span>
+                                            </div>
+
+
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Mobile No.<span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.MobileNo, new { @class = "form-control", name = "MobileNo", type = "text", id = "txtMobileNo", autocomplete = "Off", Maxlength = 10, onkeypress = " return numbervalidate(event)" })
+
+
+                                                @*@Html.TextBoxFor(model => model.MobileNo, new { @class = "form-control", name = "MobileNo", type = "number", onkeypress = "return event.charCode >=48", id = "txtMobileNo", autocomplete = "Off", Maxlength = 10 })*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Alternate Contact No<span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.AlternateContactNo, new { @class = "form-control", name = "AlternateContactNo", type = "text", id = "txtAlternateContactNo", autocomplete = "Off", Maxlength = 10, onkeypress = " return numbervalidate(event)" })
+
+
+                                                @*@Html.TextBoxFor(model => model.AlternateContactNo, new { @class = "form-control", name = "AlternateContactNo", id = "txtAlternateContactNo", autocomplete = "Off" })*@
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Official Landline<span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.OfficialLandline, new { @class = "form-control", name = "OfficialLandline", type = "number", id = "txtOfficialLandline", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="row mb-20px">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="button" data-bs-toggle="offcanvas"
+                                                                href="#offcanvasExample" id="btnActionList" onclick="VendorDetails(this)" class="btn  btnpress ListBtn">
+                                                            <i class="fa-solid fa-list"></i>
+                                                        </button>
+                                                        <button class="btn btn-primary btn-sm" type="button" id="btnSubmit">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                        <a href="@Url.Action("GetList", "ESS_Vendor", new { area = "ESS" })">
+                                                            <button type="button"
+                                                                    class="btn btn-danger btn-sm" id="btnBack">
+                                                                <i class="fa-solid fa-share-from-square"></i>
+                                                                List
+                                                            </button>
+                                                        </a>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        @*<div class="row ShortNote pt-1">
+                                            <label>
+                                                Note : You can add multiple family member details upto 6
+                                                members
+                                            </label>
+                                        </div>*@
+                                        <!-- BEGIN table-responsive -->
+
+
+                                        <table class="table table-bordered align-middle" id="fixed-header"
+                                               style="width: 100%;">
+                                            <thead style="background-color: rgba(233, 236, 239, 1) !important;">
+                                                <tr class="text-center">
+                                                    <th class="text-nowrap">Action</th>
+                                                    <th class="text-nowrap">Primary Contact</th>
+                                                    <th class="text-nowrap">Designation</th>
+                                                    <th class="text-nowrap">EmailId </th>
+                                                    <th class="text-nowrap">Mobile No.</th>
+                                                    <th class="text-nowrap">Alternate Contact</th>
+                                                    <th class="text-nowrap">Official Landline</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (ViewBag.GetVendorContact != null)
+                                                {
+                                                    foreach (var d in ViewBag.GetVendorContact)
+                                                    {
+                                                        <tr>
+
+                                                            <td class="text-center">
+                                                                <button type="button" onclick="DeleteFamily('@d.ContactID_Encrypted')" id="btnDelete"
+                                                                        class="btn btn-danger btn-sm btnpress">
+                                                                    <i class="fa-solid fa-trash-alt"></i>
+                                                                </button>
+                                                            </td>
+                                                            <td>@d.PrimaryContact</td>
+                                                            <td>@d.Designation</td>
+                                                            <td>@d.EmailID</td>
+                                                            <td>@d.MobileNo</td>
+                                                            <td>@d.AlternateContactNo</td>
+                                                            <td>@d.OfficialLandline</td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    @Html.Action("Vendor_SidebarMenu", "ESS_Vendor_ContactDetails")
+</div>
+<script>
+    $(document).ready(function () {
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                });
+            }
+        }
+    });
+
+    $("#SaveContactDetails").validate({
+        rules: {
+            PrimaryContact: {
+                required: true
+            },
+            Designation: {
+                required: true
+            },
+            EmailID: {
+                required: true
+            },
+            MobileNo: {
+                required: true
+            },
+            AlternateContactNo: {
+                required: true
+            },
+            OfficialLandline: {
+                required: true
+            },
+        },
+        messages: {
+            PrimaryContact: {
+                required: "Primary Contact is required"
+            },
+            Designation: {
+                required: "Designation is required"
+            },
+            EmailID: {
+                required: "EmailID is required"
+            },
+            MobileNo: {
+                required: "Mobile No is required"
+            },
+            AlternateContactNo: {
+                required: "Alternate Contact No is required"
+            },
+            OfficialLandline: {
+                required: "Official Landline is required"
+            },
+        }
+    });
+
+    var form1 = $("#SaveContactDetails");
+    form1.validate();
+    $('#btnSubmit').click(function () {
+        debugger
+        if (form1.valid() == false) {
+            return false;
+        }
+        var VendorId = $("#txtContactVendorId").val();
+        var EmailId = $("#txtEmailID").val();
+        var MobileNo= $("#txtMobileNo").val();
+        var ContactID_Encrypted= $("#txtContactID_Encrypted").val();
+
+        $.ajax({
+            url: "@Url.Action("IsContactExist", "ESS_Vendor_ContactDetails")",
+            method: "get",
+            data: { VendorId: VendorId, EmailId: EmailId,MobileNo:MobileNo,ContactID_Encrypted:ContactID_Encrypted },
+            success: function (response) {
+                debugger
+                if (response.Icon == "error") {
+                    showAlert(response.Icon, response.Message);
+                } else {
+                    $("#SaveContactDetails").submit();
+                }
+            }
+        });
+    });
+    function numbervalidate(evt) {
+        var charCode = evt.which ? evt.which : evt.keyCode;
+        // Allow only digits (0-9)
+        if (charCode < 48 || charCode > 57) {
+            return false;
+        }
+        return true;
+    }
+
+    $('#txtEmailID').on('blur', function () {
+        var email = $(this).val();
+        var $msgSpan = $('#emailValidationMsg');
+        var emailPattern = /^[a-zA-Z0-9._%+-]+@@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+        if (email === '') {
+            $msgSpan.text('Email ID is required.');
+        } else if (!emailPattern.test(email)) {
+            $msgSpan.text('Please enter a valid email address.');
+        } else {
+            $msgSpan.text('');
+        }
+    });
+
+    $('#txtEmailID').on('input', function () {
+        $('#emailValidationMsg').text('');
+    });
+</script>

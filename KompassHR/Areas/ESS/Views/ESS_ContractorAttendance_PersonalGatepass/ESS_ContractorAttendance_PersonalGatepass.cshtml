@@ -1,0 +1,826 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_TimeOffice.Atten_PersonalGatepass
+@{
+    ViewBag.Title = "ESS_ContractorAttendance_PersonalGatepass";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="https://jqueryvalidation.org/files/demo/site-demos.css">
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+<script src="~/assets/js/CaptchaVerification.js"></script>
+
+<style>
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    .teambx {
+        border: 1px solid gray;
+        padding: 10px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        margin: 10px 5px;
+        border-radius: 10px;
+    }
+
+        .teambx .teamheading {
+            position: absolute;
+            right: 0px;
+            bottom: 5px;
+            padding: 5px 15px;
+            width: fit-content;
+            border-radius: 20px 0px 0px 20px;
+            background: #000;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 900;
+        }
+
+        .teambx .teamname {
+            font-size: 16px;
+            font-weight: 800;
+            border-bottom: 1px solid lightgray;
+            margin-bottom: 8px;
+        }
+
+    .teamname i {
+        margin-right: 0 10px !important;
+    }
+
+    .teamcontactBx {
+        font-size: 14px;
+        text-align: left;
+        font-weight: 600;
+    }
+
+        .teamcontactBx i {
+            margin: 0 5px;
+        }
+</style>
+
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Contractor Personal Gatepass
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_ContractorAttendance_Menu", "ESS_ContractorAttendance_Menu",  new { id = 27,ScreenId=333, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">Contractor Personal Gatepass - Add</h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        @*The employee indicates the date(s) and duration of the personal gatepass
+                            assignment, including the start and end times. This helps managers and supervisors plan and allocate resources effectively.*@
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form action='@Url.Action("SaveUpdate", "ESS_ContractorAttendance_PersonalGatepass", new { area = "ESS" })' id="SavePersonalGetpass" method="post" data-parsley-validate="true">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Doc No.
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.DocNo, new { @class = "form-control", id = "DocNo", type = "text", autocomplete = "Off", Value = @ViewBag.DocNo.DocNo, @readonly = "readonly", Style = "background-color: #eee;" })
+                                                @Html.HiddenFor(model => model.PersonalGatepassID_Encrypted, new { id = "PersonalGatepassIdEncrypted" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Employee Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                <input type="hidden" name="PersonalGatepassShiftName" id="ShiftName" name="ShiftName" />
+                                                @Html.DropDownListFor(model => model.EmployeeID, new SelectList(ViewBag.EmployeeName, "Id", "Name"), "--Select--", new { id = "ddlEmployeeID", name = "EmployeeID", @class = "form-select", autocomplete = "off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Shift
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                <input type="hidden" name="PersonalGatepassShiftName" id="ShiftName" name="ShiftName" />
+                                                @Html.DropDownListFor(model => model.PersonalGatepassShiftId, new SelectList(ViewBag.GetShiftList, "ShiftId", "ShiftName"), "--Select--", new { id = "ddlShift", name = "PersonalGatepassShiftId", @class = "form-select", autocomplete = "off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Date
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.PersonalGatepassDate, new { @class = "form-control", id = "PersoanlDate", name = "PersonalGatepassDate", Type = "date", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                From Time
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.FromTime, new { @class = "form-control", id = "FromTime", type = "datetime-local", autocomplete = "Off" })
+                                                @Html.ValidationMessageFor(model => model.FromTime, "", new { @class = "help-block", @id = "ErrorFromTime", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                To Time
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.ToTime, new { @class = "form-control", id = "ToTime", type = "datetime-local", autocomplete = "Off" })
+                                                @Html.ValidationMessageFor(model => model.ToTime, "", new { @class = "help-block", id = "ErrorToTime", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                TotalTime Allow
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.TotalDurations, new { @class = "form-control", id = "Totalallowtime", type = "text", autocomplete = "Off", @readonly = "readonly" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Duration
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.TotalDurations, new { @class = "form-control", id = "TotalDurations", type = "text", autocomplete = "Off", @readonly = "readonly", Style = "background-color: #eee;" })
+                                                @Html.ValidationMessageFor(model => model.TotalDurations, "", new { @class = "help-block", id = "ErrortxtTotalDuration", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3"
+                                                   style="width: 16.5%;">
+                                                Reason
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-9" style="min-width: 83.5%; max-width: 100%;">
+                                                @Html.TextAreaFor(model => model.Reason, new { @class = "form-control", id = "Reason", name = "Reason", type = "text", autocomplete = "Off", @required = "required" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-4 d-flex">
+                                                <div class="title d-flex align-items-center">
+
+                                                </div>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="button" id="btnSubmit" class="btn btn-primary btn-sm" value="Submit">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                        <a href="@Url.Action("ESS_ContractorAttendance_GetList", "ESS_ContractorAttendance_PersonalGatepass", new { area = "ESS" })">
+                                                            <button type="button" class="btn btn-danger btn-sm" id="btnGetList">
+                                                                <i class="fa-solid fa-share-from-square"></i> List
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#ddlEmployeeID").select2();
+        $("#ddlShift").select2();
+        //Validation for back day days
+        var BackDatedDays = @Html.Raw(Json.Encode(ViewBag.GetBackDatedDays));
+
+        $("#ddlEmployeeID").on("change",function(){
+            debugger;
+            $("#ddlShift").find("option").remove();
+            var EmployeeId=$("#ddlEmployeeID").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetShift", "ESS_ContractorAttendance_PersonalGatepass")',
+                data: { EmployeeId: EmployeeId },
+                success: function (data) {
+                    debugger;
+                    if (data != null) {
+                        $("#ddlShift").append("<option value=''>--Select-- </option>");
+                        $.each(data, function (i, p) {
+                            $("#ddlShift").append("<option value='" + p.ShiftId + "'>" + p.ShiftName + "</option>");
+                        });
+                    }
+                }
+            })
+        });
+
+        var Duration =@Html.Raw(Json.Encode(ViewBag.Duration));
+        $("#Totalallowtime").val(Duration + ' Min')
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        // return false
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+
+
+        var date = new Date();
+        var dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000 )).toISOString().split("T")[0];
+        $("#PersoanlDate").val(dateString);
+
+        $("#ddlShift").change(function () {
+            debugger;
+            var ShiftId = $("#ddlShift").val();
+
+            $.ajax({
+                type: "Get",
+                url: "@Url.Action("GetShiftFlag", "ESS_TimeOffice_PersonalGatePass")",
+                data: { ShiftId:ShiftId},
+            dataType: "text",
+            success: function (data) {
+                debugger;
+                var GetShiftFlag = JSON.parse(data)
+                var Flag=GetShiftFlag[0].Value;
+                if(Flag==false)
+                {
+                    var fromDateInput = document.getElementById("FromTime");
+                    var ToDateInput = document.getElementById("ToTime");
+
+                    var now = new Date();
+
+                    // Min Date: BackDatedDays ago at 00:00
+                    var minDate = new Date();
+                    minDate.setDate(now.getDate() - BackDatedDays);
+                    minDate.setHours(0, 0, 0, 0);
+
+                    // Max Date: today at 23:59
+                    var maxDate = new Date();
+                    maxDate.setDate(now.getDate() + 0);
+                    maxDate.setHours(23, 59, 59, 999);
+
+                    // Format to yyyy-MM-ddTHH:mm
+                    function formatDateToLocalInput(date) {
+                        const offset = date.getTimezoneOffset();
+                        const localDate = new Date(date.getTime() - (offset * 60 * 1000));
+                        return localDate.toISOString().slice(0, 16); // "yyyy-MM-ddTHH:mm"
+                    }
+
+                    fromDateInput.min = formatDateToLocalInput(minDate);
+                    fromDateInput.max = formatDateToLocalInput(maxDate);
+
+                    ToDateInput.min = formatDateToLocalInput(minDate);
+                    ToDateInput.max = formatDateToLocalInput(maxDate);
+
+
+                    var PersoanlDateInput = document.getElementById("PersoanlDate");
+
+                    var now = new Date();
+                    var minDate = new Date();
+                    minDate.setDate(now.getDate() - BackDatedDays);
+
+                    var maxDate = new Date(); // today
+
+                    function formatDate(date) {
+                        return date.toISOString().split('T')[0]; // yyyy-MM-dd
+                    }
+
+                    PersoanlDateInput.min = formatDate(minDate);
+                    PersoanlDateInput.max = formatDate(maxDate);
+                }
+                else{
+                    var fromDateInput = document.getElementById("FromTime");
+                    var ToDateInput = document.getElementById("ToTime");
+
+                    var now = new Date();
+                    // Min Date: BackDatedDays ago at 00:00
+                    var minDate = new Date();
+                    minDate.setDate(now.getDate() - BackDatedDays);
+                    minDate.setHours(0, 0, 0, 0);
+
+                    // Max Date: today at 23:59
+                    var maxDate = new Date();
+                    maxDate.setDate(now.getDate() + 1);
+                    maxDate.setHours(23, 59, 59, 999);
+
+                    // Format to yyyy-MM-ddTHH:mm
+                    function formatDateToLocalInput(date) {
+                        const offset = date.getTimezoneOffset();
+                        const localDate = new Date(date.getTime() - (offset * 60 * 1000));
+                        return localDate.toISOString().slice(0, 16); // "yyyy-MM-ddTHH:mm"
+                    }
+
+                    fromDateInput.min = formatDateToLocalInput(minDate);
+                    fromDateInput.max = formatDateToLocalInput(maxDate);
+
+                    ToDateInput.min = formatDateToLocalInput(minDate);
+                    ToDateInput.max = formatDateToLocalInput(maxDate);
+
+
+                    var PersoanlDateInput = document.getElementById("PersoanlDate");
+
+                    var now = new Date();
+                    var minDate = new Date();
+                    minDate.setDate(now.getDate() - BackDatedDays);
+
+                    var maxDate = new Date(); // today
+
+                    function formatDate(date) {
+                        return date.toISOString().split('T')[0]; // yyyy-MM-dd
+                    }
+
+                    PersoanlDateInput.min = formatDate(minDate);
+                    PersoanlDateInput.max = formatDate(maxDate);
+
+                }
+            }
+        })
+    });
+
+
+    });//Reday Funcation
+
+
+    $("#FromTime, #ToTime").change(function () {
+        debugger;
+        var FromTime = $("#FromTime").val();
+        var ToTime = $("#ToTime").val();
+
+        if (!ToTime) {
+            $('#ErrorToTime').html("To time is required");
+            return;
+        }
+
+        if (FromTime >= ToTime) {
+            $('#ErrorFromTime').html("From Time should be less than To Time");
+            return false;
+        } else {
+            $('#ErrorToTime, #ErrorFromTime').html("");
+        }
+
+        // Parse datetime-local strings into Date objects
+        var fromDate = new Date(FromTime);
+        var toDate = new Date(ToTime);
+
+        // Calculate time difference in minutes
+        var diffMs = toDate - fromDate; // in milliseconds
+        var diffMins = Math.floor(diffMs / 60000); // convert to minutes
+
+        $('#TotalDurations').val(diffMins + " Min");
+
+        var TotalTime = $('#Totalallowtime').val(); // e.g., "60Min"
+        var allowedMinutes = parseInt(TotalTime.replace("Min", "").trim());
+
+        if (diffMins > allowedMinutes) {
+            $("#ErrortxtTotalDuration").html("Total duration cannot exceed: " + allowedMinutes + " Min");
+            return false;
+        } else {
+            $("#ErrortxtTotalDuration").html("");
+        }
+    });
+
+
+    function DeletePersonalGetPass(PersonalGatepassId_Encrypted) {
+        const DeleteButtons = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        DeleteButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+            allowOutsideClick: () => {
+                const popup = Swal.getPopup()
+                popup.classList.remove('swal2-show')
+                setTimeout(() => {
+                    popup.classList.add('animate__animated', 'animate__headShake')
+                })
+                setTimeout(() => {
+                    popup.classList.remove('animate__animated', 'animate__headShake')
+                }, 500)
+                return false
+            }
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '@Url.Action("PersonalGetPassDelete", "ESS_ContractorAttendance_PersonalGatepass")?PersonalGatepassId_Encrypted=' + PersonalGatepassId_Encrypted;
+
+            } else if (
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+
+            }
+        })
+    }
+
+</script>
+
+<script>
+    jQuery.validator.addMethod(
+    "regex",
+        function(value, element, regexp) {
+            if (regexp.constructor != RegExp)
+                regexp = new RegExp(regexp);
+            else if (regexp.global)
+                regexp.lastIndex = 0;
+            return this.optional(element) || regexp.test(value);
+        },"erreur expression reguliere"
+    );
+
+    $('#SavePersonalGetpass').validate({
+        rules: {
+            EmployeeID: {
+                required: true,
+            },
+            PersonalGatepassShiftId:{
+                required: true,
+            },
+
+            PersonalGatepassDate:{
+                required: true,
+            },
+            FromTime:{
+                required: true,
+            },
+            ToTime:{
+                required: true,
+            },
+            Direction:{
+                required: true,
+            },
+            Reason:{
+                required: true,
+            },
+
+        },
+        messages: {
+            EmployeeID: {
+                required: "Please select the Employee Name",
+            },
+            PersonalGatepassShiftId:{
+                required: "Please select shift",
+            },
+
+            PersonalGatepassDate: {
+                required: "Date is required",
+            },
+            FromTime:{
+                required: "From Time is required",
+            },
+            ToTime:{
+                required: "To Time is required",
+            },
+            Direction:{
+                required: "Direction is required",
+            },
+            Reason:{
+                required: "Reason is required",
+            }
+        },
+    });
+
+    var form = $("#SavePersonalGetpass");
+    form.validate();
+    $("#btnSubmit").click(function () {
+        debugger;
+
+        form.valid();
+        if(form.valid()==false)
+        {
+            $("#PersoanlDate").removeClass('error');
+            $("#FromTime").removeClass('error');
+            $("#ToTime").removeClass('error');
+            return false;
+        }
+
+        var EmployeeID=$("#ddlEmployeeID").val();
+        var PersoanlDate = $("#PersoanlDate").val();
+        var FromTime = $("#FromTime").val();
+        var ToTime = $("#ToTime").val();
+        var ErrorFromTime = $("#ErrorFromTime").text();
+        var ErrorToTime = $("#ErrorToTime").text();
+        var ShiftId = $("#ddlShift").val();
+
+        var Duration =@Html.Raw(Json.Encode(ViewBag.Duration));
+        var TotalAllowRequest=$("#Totalallowtime").val();
+        var GetTotalAllowRequest=Number(TotalAllowRequest.replaceAll("Min", ""));
+        var TotalDurations = $("#TotalDurations").val();
+        var ErrortxtTotalDuration = $("#ErrortxtTotalDuration").text();
+
+        if(TotalDurations==0)
+        {
+            $("#ErrortxtTotalDuration").html("Total duration should not be 0");return false;
+        }
+        else{
+            $("#ErrortxtTotalDuration").html("");
+        }
+
+        var PersoanlDate = $("#PersoanlDate").val();
+        var FromTime = $("#FromTime").val();
+        var ToTime = $("#ToTime").val();
+
+        if (PersoanlDate && FromTime) {
+            var personalDateOnly = new Date(PersoanlDate);
+            var fromDateTime = new Date(FromTime);
+
+            // Compare if FromTime is before PersonalDate
+            if (fromDateTime < personalDateOnly) {
+                $('#ErrorFromTime').html("From date/time must be equal to or greater than the Personal date.");
+            } else {
+                $('#ErrorFromTime').html(""); // Clear error if valid
+            }
+        }
+
+        if (!ToTime) {
+            $('#ErrorToTime').html("To time is required");
+            return;
+        }
+
+        if (FromTime >= ToTime) {
+            $('#ErrorFromTime').html("From Time should be less than To Time");
+            return false;
+        } else {
+            $('#ErrorToTime, #ErrorFromTime').html("");
+        }
+
+        // Parse datetime-local strings into Date objects
+        var fromDate = new Date(FromTime);
+        var toDate = new Date(ToTime);
+
+        // Calculate time difference in minutes
+        var diffMs = toDate - fromDate; // in milliseconds
+        var diffMins = Math.floor(diffMs / 60000); // convert to minutes
+
+        $('#TotalDurations').val(diffMins + " Min");
+
+        var TotalTime = $('#Totalallowtime').val(); // e.g., "60Min"
+        var allowedMinutes = parseInt(TotalTime.replace("Min", "").trim());
+
+        if (diffMins > allowedMinutes) {
+            $("#ErrortxtTotalDuration").html("Total duration cannot exceed: " + allowedMinutes + " Min");
+            return false;
+        } else {
+            $("#ErrortxtTotalDuration").html("");
+        }
+
+
+        if(Duration < TotalDurations ||FromTime > ToTime || ToTime < FromTime|| TotalDurations==0 )
+        {
+            return false;
+        }
+        else
+        {
+            $(".Userloaderbg").css("display","flex");
+            $.ajax({
+                url: '@Url.Action("IsPersoanlGetPassExists", "ESS_ContractorAttendance_PersonalGatepass")',
+               // url:"IsPersoanlGetPassExists",
+                method:"get",
+                data:{EmployeeID:EmployeeID,PersoanlDate:PersoanlDate,FromTime:FromTime,ToTime:ToTime,ShiftId:ShiftId}, //,AdditionalNotifyPerson:AdditionalNotifyPerson
+                success:function(response){
+                    debugger;
+
+                    var Message1 = response.Message;
+                    var Icon1 = response.Icon;
+                    if (response.Icon=="error") {
+                        if (Message1 != null) {
+                            if (Message1 != null) {
+                                Swal.fire({
+                                    icon: Icon1,
+                                    text: Message1,
+                                    allowOutsideClick: () => {
+                                        const popup = Swal.getPopup()
+                                        popup.classList.remove('swal2-show')
+                                        return false;
+                                        setTimeout(() => {
+                                            popup.classList.add('animate__animated', 'animate__headShake')
+                                        })
+                                        setTimeout(() => {
+                                            popup.classList.remove('animate__animated', 'animate__headShake')
+                                        }, 500)
+                                        return false
+                                    }
+                                })
+                                $(".Userloaderbg").css("display","none");
+                            }
+                        }
+                        return false;
+                    }
+                    else{
+                        $("#SavePersonalGetpass").submit();
+                    }
+                }
+            });
+        }
+
+    });
+
+</script>

@@ -1,0 +1,458 @@
+﻿@model KompassHR.Areas.Reports.Models.HeadCountSummary
+@{
+    ViewBag.Title = "Reports_Attendance_DepartmentWiseHeadCount";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+
+<style>
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    label.error, .Error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+</style>
+
+
+
+<div id="content" class="app-content">
+    <ol class="breadcrumb float-xl-end">
+        <li class="breadcrumb-item"><a href="/Dashboard/Dashboard/Dashboard">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="/Reports/Reports_Attendance_HeadCountSummary/Reports_Attendance_HeadCountSummary/?ScreenSubId=342">Report Menu</a></li>
+    </ol>
+    <h1 class="page-header"> Department Wise Head Count Report </h1>
+    <div class="row">
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="panel panel-inverse" data-sortable-id="index-1">
+                    <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                        <h4 class="panel-title">Department Wise Head Count Report</h4>
+                        <div class="panel-heading-btn">
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                        </div>
+                    </div>
+                    <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                        <p class="pb-0">
+
+                        </p>
+                    </div>
+                    <div class="panel-body" style="max-height: fit-content;">
+                        <div class="row justify-content-center">
+
+                            <div class="row justify-content-center">
+                                <form role="form" action="/Reports/Reports_Attendance_DepartmentWiseHeadCount/Reports_Attendance_DepartmentWiseHeadCount" id="rptDepartmentHeadCount" method="post">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Company Name
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.CmpId, new SelectList(ViewBag.CompanyName, "Id", "Name"), new { @id = "ddlCompanyName", name = "CmpID", @class = "form-select", autocomplete = "off" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Bunieness Unit
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.BranchId, new SelectList(ViewBag.BusinessUnit, "Id", "Name"), "All", new { @id = "txtBranchId", name = "LeaveOpeningBalanceBranchID", @class = "form-select", autocomplete = "off" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    From Date
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.FromDate, new { @class = "form-control", name = "FromDate", type = "date", id = "txtFromDate" })
+                                                    <span id="ErrortxtFromDate" class="Error"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <div class="row mb-15px">
+                                                <div class="col-md-8">
+                                                    <button type="button" onclick="DeptWiseReport()" class="btn btn-sm btn-success">Show</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <hr class="mt-15px">
+                        <div class="row">
+                            <div class="table-scroll div1">
+                                <div class="table-wrap">
+                                    <table class="table table-bordered table-hover mb-0 TablePage" id="tbl" style="width: 100%;">
+                                        <thead>
+                                            @if (ViewBag.DepartmentWiseHeadCount != null && ViewBag.DepartmentWiseHeadCount.Count > 0)
+                                            {
+                                                <tr>
+                                                    @foreach (var row in ViewBag.DepartmentWiseHeadCount)
+                                                    {
+                                                        foreach (var cell in row)
+                                                        {
+
+                                                            if (@cell.Key == "id")
+                                                            {
+                                                                <th hidden Class="fixed-side">@cell.Key</th>
+                                                            }
+                                                            else if (@cell.Key == "BranchID")
+                                                            {
+                                                                <th hidden Class="fixed-side">@cell.Key</th>
+                                                            }
+                                                            else if (@cell.Key == "DepartmentID")
+                                                            {
+                                                                <th hidden Class="fixed-side">@cell.Key</th>
+                                                            }
+                                                            else
+                                                            {
+                                                                <th class="fixed-side">@cell.Key</th>
+                                                            }
+                                                        }
+                                                        break;
+                                                    }
+                                                </tr>
+                                            }
+
+                                        </thead>
+                                        <tbody id="tblDeptWiseReport" class="table-body-scroll">
+                                            @if (ViewBag.DepartmentWiseHeadCount != null)
+                                            {
+                                                foreach (var row in ViewBag.DepartmentWiseHeadCount)
+                                                {
+                                                    <tr>
+                                                        @foreach (var cell in row)
+                                                        {
+                                                            if (@cell.Key == "id")
+                                                            {
+                                                                <td hidden>@cell.Key</td>
+                                                            }
+                                                            else if (@cell.Key == "Date")
+                                                            {
+                                                                <td>@cell.Value.ToString("dd/MMM/yyyy")</td>
+                                                            }
+                                                            else if (@cell.Key == "BranchID")
+                                                            {
+                                                                <td hidden>@cell.Key</td>
+                                                            }
+                                                            else if (@cell.Key == "DepartmentID")
+                                                            {
+                                                                <td hidden>@cell.Key</td>
+                                                            }
+                                                            else
+                                                            {
+                                                                <td>@cell.Value</td>
+                                                            }
+                                                        }
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+        var FD = document.getElementById("txtFromDate").value;
+
+        $('title').html("Department Wise Head Count Report ("+FD+" )");
+        var CheckEmptyDate = document.getElementById('txtFromDate').value;
+        if (CheckEmptyDate == "") {
+            document.getElementById('txtFromDate').value = SetTodaysDate;
+
+        }
+
+        $("#ddlCompanyName").select2();
+        $("#txtBranchId").select2();
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                });
+            }
+        }
+
+        $("#ddlCompanyName").on("change", function () {
+            debugger;
+            $("#txtBranchId").find("option").remove();
+            var CmpId = $("#ddlCompanyName").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetBusinessUnit", "Reports_Attendance_DepartmentWiseHeadCount")',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    debugger;
+                    if (data !=null) {
+                        // $("#txtBranchId").append("<option value=0>All </option>");
+                        $.each(data, function(i, p) {
+                            $("#txtBranchId").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                        });
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        });
+
+        var ShowData = @Html.Raw(Json.Encode(TempData["ShowData"]));
+        if(ShowData!=true)
+        {
+
+            var CmpId = $("#ddlCompanyName").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetBusinessUnit", "Reports_Attendance_DepartmentWiseHeadCount")',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    debugger;
+                    if (data !=null) {
+                        // $("#txtBranchId").append("<option value=0>--Select-- </option>");
+                        $.each(data, function(i, p) {
+                            $("#txtBranchId").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                        });
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        }
+
+
+
+    });//Ready Funcation
+</script>
+
+
+<script>
+    //use for add regex function
+    jQuery.validator.addMethod(
+    "regex",
+     function (value, element, regexp) {
+         if (regexp.constructor != RegExp)
+             regexp = new RegExp(regexp);
+         else if (regexp.global)
+             regexp.lastIndex = 0;
+         return this.optional(element) || regexp.test(value);
+     }, "erreur expression reguliere"
+  );
+
+    $('#rptDepartmentHeadCount').validate({
+        rules: {
+            CmpId: {
+                required: true,
+            },
+
+            FromDate: {
+                required: true,
+            },
+            //ToDate: {
+            //    required: true,
+            //},
+        },
+        messages: {
+            CmpId: {
+                required: "Company name is required",
+            },
+
+            FromDate: {
+                required: "From date is required",
+            },
+            //ToDate: {
+            //    required: "To date is required",
+            //},
+        },
+    });
+
+    var form = $("#rptDepartmentHeadCount");
+
+    form.validate();
+    function DeptWiseReport() {
+        debugger;
+
+        form.valid();
+        if (form.valid() == false) {
+
+            $("#txtFromDate").removeClass("error");
+            return false;
+        }
+        var EmptyCheck = $("#ErrortxtFromDate").text();
+        if (EmptyCheck != "") {
+            return false;
+        }
+        $(".Userloaderbg").css("display", "flex");
+        $("#rptDepartmentHeadCount").submit();
+    }
+</script>

@@ -1,0 +1,444 @@
+﻿
+@{
+    ViewBag.Title = "ESS_Recruitment_OfferLetterApprovedList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+<!-- Include dompurify -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.4.0/purify.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<style>
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Offer Letter Approved
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("ESS_Recruitment_Menu", "ESS_Recruitment_Menu", new {id = 1, ScreenId=126, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Offer Letter Approved - List</h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        This is the list of candidates with approved offer letters.HR can send the offer letter to candidates directly from here .Candidates can access there offer letters by clicking the link.
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <a href="@Url.Action("ESS_Recruitment_Menu", "ESS_Recruitment_Menu", new { id = 1, area = "ESS" })">
+                                <button type="button" class="btn btn-danger btn-sm  mb-10px">
+                                    <i class="fa-solid fa-share fa-flip-horizontal"></i> &nbsp; Back
+                                </button>
+                            </a>
+
+                            <!-- BEGIN table-responsive -->
+                            <div class="table-scroll div1">
+                                <div class="table-wrap">
+                                    <table class="table table-bordered table-hover mb-0 text-dark align-middle TablePage2" id="tbl"
+                                           style="width: 100%;">
+                                        <thead>
+                                            <tr class="trheading">
+
+
+                                                <th class="text-nowrap">Create Link</th>
+                                                <th class="text-nowrap">Offer Letter</th>
+                                                @*<th class="text-nowrap">Appointment Letter</th>*@
+                                                <th class="text-nowrap text-center">Company Name</th>
+                                                <th class="text-nowrap text-center">Business Unit </th>
+                                                <th class="text-nowrap text-center">Candidate Name </th>
+                                                <th class="text-nowrap text-center">Joining Date</th>
+                                                <th class="text-nowrap text-center">CTC</th>
+
+                                                <th class="text-nowrap text-center">Offter Letter Status </th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tblShortListCandidate">
+                                            @foreach (var d in ViewBag.OfferLetterApprovedList)
+                                            {
+                                                <tr>
+
+                                                    <td class="text-center">
+                                                        <button type="button" id="btnDelete" onclick="OfferLetterApprovalCandidate('@d.OfferLetterGenResumeId','@d.CmpId','@d.OfferLetterGenId_Encrypted')"
+                                                                class="btn  btnpress ListBtn" style="background-color:#fff;">
+                                                            <i class="fa-solid fa-paper-plane text-dark"></i>
+                                                        </button>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <button type="button" id="btnDelete" onclick="OfferLetterApprovalMail('@d.OfferLetterGenId_Encrypted')"
+                                                                class="btn  btnpress ListBtn" style="background-color:#fff;">
+                                                            <i class="fa-solid fa-paper-plane text-dark"></i>
+                                                        </button>
+                                                    </td>
+                                                    @*<td class="text-center">
+                                                        <button type="button" id="btnDelete" onclick="AppointmentLetter('@d.OfferLetterGenId_Encrypted')"
+                                                                class="btn  btnpress ListBtn" style="background-color:#fff;">
+                                                            <i class="fa-solid fa-paper-plane text-dark"></i>
+                                                        </button>
+                                                    </td>*@
+                                                    <td class="text-nowrap">@d.CompanyName</td>
+                                                    <td class="text-nowrap">@d.BranchName</td>
+                                                    <td class="text-nowrap">@d.CandidateName</td>
+                                                    <td class="text-nowrap">@d.JoiningDate</td>
+                                                    <td class="text-nowrap">@d.CTC</td>
+                                                    <td class="text-nowrap">@d.OffterLetterStatus</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END panel -->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- #Start Appprove Reject Modal -dialog -->
+<div class="modal fade" id="PayslipMDL" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-md modal-lg">
+        <div class="modal-content">
+            <div class="modal-header btn-default text-white" style="display:flex; padding:8px;">
+                <div class="panel-heading-btn">
+                    <a href="javascript:void(0);" class="btn btn-icon btn-danger btnClear" onclick="location.reload();" id="btnClose" data-bs-dismiss="modal">
+                        <i class="fa fa-xmark"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="modal-body " id="payslip" margin 20px; padding:10px;">
+                <div class="row">
+                    <div class="col-md-12" >
+                        <div class="row mb-15px">
+                            <div id="SomeDivWithOfferLetter">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #End modal-dialog -->
+
+<script>
+    $(document).ready(function () {
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500000)
+                        return false
+                    }
+                });
+            }
+        }
+
+    });
+
+    function OfferLetterApprovalCandidate(OfferLetterGenResumeId,CmpId,OfferLetterGenId_Encrypted){
+        debugger;
+        var url = '@Url.Action("Module_Preboarding_CreateLink", "Module_Preboarding_CreateLink" ,(new { Area="Module"}))?OfferLetterGenId_Encrypted=' + OfferLetterGenId_Encrypted+'&CmpId='+CmpId +'&OfferLetterGenResumeId='+OfferLetterGenResumeId;
+        window.location.href = url;
+    }
+
+
+
+    function OfferLetterApprovalMail(OfferLetterGenResumeId) {
+        debugger;
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Are yor sure for send mail!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, send it!',
+            cancelButtonText: 'No, cancel!',
+            allowOutsideClick: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: 'GET',
+                    dataType: 'JSON',
+                    contentType: "application/json; charset=utf-8",
+                    url: '@Url.Action("GetOfferTemplate", "ESS_Recruitment_OfferLetterApprovedList")',
+                    data: { OfferLetterGenResumeId: OfferLetterGenResumeId },
+                    success: function (data) {
+                        debugger;
+                        if (data!= null) {
+                            $("#SomeDivWithOfferLetter").html(data.OfferLetterTemplate);
+                            generateAndSendPDF(data.OfferLetterResumeId);
+
+                            //$('#PayslipMDL').modal('show');
+                        }
+                        else {
+                            $('#ErrorESSPassword').html(" ");
+                        }
+                    }
+                })
+            }
+        });
+    }
+   function generateAndSendPDF(OfferLetterResumeId) {
+    debugger;
+
+    $(".Userloaderbg").css("display", "flex");
+    const jsPDF = window.jspdf.jsPDF;
+    const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'pt',
+        format: 'a4' // 595 x 842 pt
+    });
+
+
+     // Define padding
+    //const padding = 40;
+    //   // Get page width
+    //const pageWidth = pdf.internal.pageSize.getWidth();
+    //   // Add text with padding (x = padding, y = padding)
+    //pdf.text(padding, padding);
+   // Better scoped styles and padding container
+    const printStyles = `
+    <style>
+        body {
+            margin: 40,40,40,40;
+           padding: 40,40,40,40;
+            font-family: 'Helvetica', Arial, sans-serif;
+            font-size: 14px;
+            line-height: 1.6;
+            color: #000;
+        }
+        .pdf-container {
+            padding: 40px; /* true visual padding */
+            width: 100%;
+            box-sizing: border-box;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+            border-collapse: collapse;
+            padding: 5px;
+        }
+        h1, h2, h3 {
+            font-weight: bold;
+        }
+        p {
+           margin: 10px 10px 10px 10px;
+            text-align: justify;
+        }
+    </style>
+    `;
+
+    // Wrap innerHTML in a container div that receives the padding
+    const payslipContent = document.getElementById('payslip').innerHTML;
+    const fullContent = `
+        ${printStyles}
+        <div class="pdf-container">
+            ${payslipContent}
+        </div>
+    `;
+
+    // Render to PDF
+    pdf.html(fullContent, {
+        callback: function (doc) {
+            // Optional: doc.save('OfferLetter.pdf');
+
+            // Send to backend
+            $.ajax({
+                url: '@Url.Action("GenerateAndSendEmail", "ESS_Recruitment_OfferLetterApprovedList")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    htmlContent: fullContent,
+                    OfferLetterResumeId: OfferLetterResumeId
+                }),
+                success: function (response) {
+                    $(".Userloaderbg").css("display", "none");
+                    Swal.fire({
+                        icon: response.success ? "success" : "error",
+                        text: response.success ? "Email sent successfully!" : `Failed to send email: ${response.error}`,
+                        allowOutsideClick: false
+                    });
+                },
+                error: function () {
+                    $(".Userloaderbg").css("display", "none");
+                    Swal.fire({
+                        icon: "error",
+                        text: "An error occurred while sending the email.",
+                        allowOutsideClick: false
+                    });
+                }
+            });
+        },
+        margin: [40, 40, 40, 40], // disable jsPDF margin — we use CSS padding
+        html2canvas: {
+            scale: 1,
+            scrollY: 0
+        },
+        width: 595, // full A4
+        windowWidth: 800
+    });
+}
+
+
+
+
+</script>
+

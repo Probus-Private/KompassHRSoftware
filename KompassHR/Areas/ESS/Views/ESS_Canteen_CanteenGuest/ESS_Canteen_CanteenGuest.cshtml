@@ -1,0 +1,432 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_Canteen.Canteen_GuestMaster
+@{
+    ViewBag.Title = "ESS_Canteen_CanteenGuest";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+
+<style>
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <!-- BEGIN breadcrumb -->
+    <ol class="breadcrumb float-xl-end">
+        <li class="breadcrumb-item"><a href="/Dashboard/Dashboard/Dashboard">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="/ESS/ESS_Canteen_Menu/ESS_Canteen_Menu">Canteen Guest Menu</a></li>
+    </ol>
+    <!-- END breadcrumb -->
+    <!-- BEGIN page-header -->
+    <h1 class="page-header"> Canteen Guest </h1>
+    <!-- END page-header -->
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Canteen Guest -  <b>@ViewBag.AddUpdateTitle</b> </h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default"
+                           data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        
+                           
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Define create guest notification here!
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action="/ESS/ESS_Canteen_CanteenGuest/SaveUpdate" id="SaveCanteenGuest" method="post">
+                                <div class="row mb-15px">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Doc No.                                                
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.DocNo, new { @class = "form-control", name = "DocNo", type = "text", id = "txtDocNo", autocomplete = "Off", @readonly = "readonly", Value = @ViewBag.DocNo.DocNo })
+                                                @Html.HiddenFor(model => model.CanteenGuestID_Encrypted, new { id = "CanteenGuestID_Encrypted" })
+                                                @Html.HiddenFor(model => model.CanteenGuestID)
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Doc Date                                                
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.DocDate, new { @class = "form-control", type = "date", id = "dateDocDate", autocomplete = "Off", Name = "DocDate" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-15px">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                No. of Guest
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.NoOfGuest, new { @class = "form-control", type = "number", onkeypress = "return event.charCode >=48", id = "txtNoOfGuest", autocomplete = "Off", Name = "NoOfGuest" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Veg / NonVeg
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.FoodPreference, new List<SelectListItem> {
+                                                    new SelectListItem { Text = "Veg", Value = "Veg"},
+                                                    new SelectListItem { Text = "NonVeg", Value = "NonVeg"},
+                                                     new SelectListItem { Text = "Both", Value = "Both"},
+                                                }, "--Select--", new { id = "ddlFoodPreference", @class = "form-select", autocomplete = "off", name = "FoodPreference" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row ">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                            </label>
+                                            <div class="col-md-8 ">
+                                                @Html.CheckBoxFor(model => model.MorningBreakfast, new { name = "MorningBreakfast" })
+                                                &nbsp;
+                                                <label class="form-label">
+                                                    Morning Breakfast
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                            </label>
+                                            <div class="col-md-8 ">
+                                                @Html.CheckBoxFor(model => model.Lunch, new { name = "Lunch" })
+                                                &nbsp;
+                                                <label class="form-label">
+                                                    Lunch
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="row ">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                            </label>
+                                            <div class="col-md-8 ">
+                                                @Html.CheckBoxFor(model => model.EveningBreakfast, new { name = "EveningBreakfast" })
+                                                &nbsp;
+                                                <label class="form-label">
+                                                    Evening Breakfast
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                            </label>
+                                            <div class="col-md-8 ">
+                                                @Html.CheckBoxFor(model => model.Dinner, new { name = "Dinner" })
+                                                &nbsp;
+                                                <label class="form-label">
+                                                    Dinner
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row ">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                            </label>
+                                            <div class="col-md-8 ">
+                                                @Html.CheckBoxFor(model => model.Brunch, new { name = "Brunch" })
+                                                &nbsp;
+                                                <label class="form-label">
+                                                    Brunch
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-15px">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                From Date
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.CanteenGuestFormDate, new { @class = "form-control", type = "date", id = "dateCanteenGuestFormDate", autocomplete = "Off", Name = "CanteenGuestFormDate" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                To Date
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.CanteenGuestToDate, new { @class = "form-control", type = "date", id = "dateCanteenGuestToDate", autocomplete = "Off", Name = "CanteenGuestToDate" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-15px">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Remark
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-10">
+                                                @Html.TextAreaFor(model => model.CanteenGuestRemark, new { @class = "form-control", type = "text", id = "txtCanteenGuestRemark", autocomplete = "Off", Name = "CanteenGuestRemark" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-4 d-flex">
+                                                <div class="title d-flex align-items-center">
+                                                    Last Record :
+                                                    <span>@ViewBag.LastRecored</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="submit" id="btnsubmit"
+                                                                class="btn btn-primary btn-sm">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                        <a href="/ESS/ESS_Canteen_CanteenGuest/GetList" class="menu-link">
+                                                            <button type="button"
+                                                                    class="btn btn-danger btn-sm">
+                                                                <i class="fa-solid fa-share-from-square" id="btnCanteenGuestList"></i>
+                                                                List
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        debugger;
+        var date = new Date();
+        var dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000 )).toISOString().split("T")[0];
+        $("#dateDocDate").val(dateString);
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+
+                        return false
+                    }
+                });
+            }
+        }
+
+        var Doc = @Html.Raw(Json.Encode(TempData["DocDate"]));
+        var TDate = @Html.Raw(Json.Encode(TempData["CanteenGuestToDate"]));
+        var FDate = @Html.Raw(Json.Encode(TempData["CanteenGuestFormDate"]));
+
+
+        if(Doc =="" || TDate == "" ||FDate == "")
+        {
+
+        }
+        else
+        {
+            var DocDate =  convertDate(Doc);
+            var CanteenGuestFormDate =  convertDate(FDate);
+            var CanteenGuestToDate = convertDate (TDate);
+
+            $("#dateDocDate").val(DocDate);
+            $("#dateCanteenGuestFormDate").val(CanteenGuestFormDate);
+            $("#dateCanteenGuestToDate").val(CanteenGuestToDate);
+
+        }
+
+        $("#formReset").click(function () {
+            $("#SaveCanteenGuest")[0].reset()
+        });
+
+        var date = new Date();
+        var dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000 )).toISOString().split("T")[0];
+        $("#dateDocDate").val(dateString);
+        $("#dateCanteenGuestFormDate").val(dateString);
+        $("#dateCanteenGuestToDate").val(dateString);
+    });//Ready Funcation
+
+    var today = new Date().toISOString().split('T')[0];
+    document.getElementById("dateCanteenGuestFormDate").setAttribute("min", today);
+    document.getElementById("dateCanteenGuestToDate").setAttribute("min", today);
+
+</script>
+
+<script>
+    function millisecTodate(milliDate) {
+        var date = new Date(milliDate);
+        var mnth = ("0" + (date.getMonth() + 1)).slice(-2);
+        var day = ("0" + date.getDate()).slice(-2);
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        hours = hours < 10 ? '0'+hours : hours;
+        minutes = minutes < 10 ? '0'+minutes : minutes;
+        var ddmmyyyy = [date.getFullYear(), mnth,day].join("-");
+        return ddmmyyyy;
+    }
+
+    function convertDate(data) {
+        var getdate = parseInt(data.replace("/Date(", "").replace(")/", ""));
+        var date = millisecTodate(getdate);
+        return date;
+    }
+</script>
+
+<script>
+    //use for add regex function
+    jQuery.validator.addMethod(
+    "regex",
+     function(value, element, regexp) {
+         if (regexp.constructor != RegExp)
+             regexp = new RegExp(regexp);
+         else if (regexp.global)
+             regexp.lastIndex = 0;
+         return this.optional(element) || regexp.test(value);
+     },"erreur expression reguliere"
+  );
+
+    $('#SaveCanteenGuest').validate({
+        rules: {
+            NoOfGuest: {
+                required: true,
+                regex:/^[0-9]+$/
+            },
+            FoodPreference: {
+                required: true,
+            },
+            CanteenGuestFormDate: {
+                required: true,
+            },
+            CanteenGuestToDate:{
+                required:true,
+            },
+            CanteenGuestRemark:{
+                required:true,
+            },
+        },
+        messages: {
+            NoOfGuest: {
+                required: "No Of Guest is required",
+                regex:"Please enter only number"
+            },
+            FoodPreference: {
+                required: "Food preference is required",
+
+            },
+            CanteenGuestFormDate: {
+                required: "Form Date is required",
+            },
+            CanteenGuestToDate: {
+                required: "To Date is required",
+            },
+            CanteenGuestRemark: {
+                required: "Remark is required",
+            },          
+        },
+    });
+
+    var form = $("#SaveCanteenGuest");
+    form.validate();
+    $("#btnsubmit").click(function () {
+        debugger;
+        form.valid();
+        if(form.valid()==false)
+        {
+            debugger;
+            $("#dateCanteenGuestFormDate").removeClass("error");
+            $("#dateCanteenGuestToDate").removeClass("error");
+            return false;
+        }
+    });
+</script>
+

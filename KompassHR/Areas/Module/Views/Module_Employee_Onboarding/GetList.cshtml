@@ -1,0 +1,357 @@
+﻿
+@{
+    ViewBag.Title = "GetList";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<!-- Required library for validation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/additional-methods.min.js"></script>
+
+
+<style>
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    .div1 td:nth-child(1) {
+        position: sticky;
+        left: 0;
+    }
+
+    .div1 td:nth-child(2) {
+        position: sticky;
+        left: 62px;
+    }
+
+    .fixed-side {
+        position: sticky;
+        left: 0;
+    }
+
+    .fixed-side1 {
+        position: sticky;
+        left: 62px;
+    }
+</style>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>DesignationList</title>
+</head>
+<body>
+    <div id="content" class="app-content">
+        <!-- BEGIN breadcrumb -->
+        <ol class="breadcrumb float-xl-end">
+            <li class="breadcrumb-item"><a href="/Dashboard/Dashboard/Dashboard">Dashboard</a></li>
+            <li class="breadcrumb-item active"><a href="/Module/MenuEmployeeSetting/MenuEmployeeSetting">Admin Onboarding</a></li>
+        </ol>
+        <!-- END breadcrumb -->
+        <!-- BEGIN page-header -->
+        <h1 class="page-header">Admin Onboarding</h1>
+        <!-- END page-header -->
+        <div class="row">
+            <div class="col-md-12">
+                <!-- BEGIN panel -->
+                <div class="panel panel-inverse" data-sortable-id="index-1">
+                    <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                        <h4 class="panel-title"> Admin Onboarding - List</h4>
+                        <div class="panel-heading-btn">
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-default"
+                               data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-success"
+                               data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        </div>
+                    </div> <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                        <p class="pb-0">
+                            
+                        </p>
+                    </div>
+                    <div class="panel-body" data-scrollbar="true">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <a href="/Module/Module_Employee_Onboarding/Module_Employee_Onboarding">
+                                    <button type="button" class="btn btn-primary btn-sm  mb-10px">
+                                        <i class="fa-solid fa-plus"></i> &nbsp; Add
+                                    </button>
+                                </a>
+                            </div>
+                            <!-- BEGIN table-responsive -->
+                            <div class="table-scroll div1">
+                                <div class="table-wrap">
+                                    <table class="table table-bordered align-middle" id="data-table-combine"
+                                           style="width: 100%;">
+                                        <thead>
+                                            <tr class="trheading">
+                                                <th class="text-nowrap text-center">Update</th>
+                                                <th class="text-nowrap text-center">Delete</th>
+                                                <th class="text-nowrap text-center">Company Name</th>
+                                                <th class="text-nowrap text-center">Busniess Name</th>
+                                                <th class="text-nowrap text-center">Employee Name</th>
+                                                <th class="text-nowrap text-center">Employee No</th>
+                                                <th class="text-nowrap text-center">Employee Card No </th>
+                                                <th class="text-nowrap text-center">Local/Expat</th>
+                                                <th class="text-nowrap text-center">Employee Level</th>
+                                                <th class="text-nowrap text-center">Department Name</th>
+                                                <th class="text-nowrap text-center">Sub-Department Name</th>
+                                                <th class="text-nowrap text-center">Designation Name</th>
+                                                <th class="text-nowrap text-center">Grade</th>
+                                                <th class="text-nowrap text-center">Employee Type Name</th>
+                                                <th class="text-nowrap text-center">Employee Group Name</th>
+                                                <th class="text-nowrap text-center">Wage Catagory Name</th>
+                                                <th class="text-nowrap text-center">Cost Center Name</th>
+                                                <th class="text-nowrap text-center">Zone Name</th>
+                                                <th class="text-nowrap text-center">Unit Name</th>
+                                                <th class="text-nowrap text-center">Joing Date</th>
+                                                <th class="text-nowrap text-center">Trainee Due Date</th>
+                                                <th class="text-nowrap text-center">Provision Due Date</th>
+                                                <th class="text-nowrap text-center">Confirmation Date</th>
+                                                <th class="text-nowrap text-center">Confirmation By </th>
+                                                <th class="text-nowrap text-center">Company Moblie No.</th>
+                                                <th class="text-nowrap text-center">Company Mail</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var d in ViewBag.AdminOnboardingGetList)
+                                            {
+                                                <tr>
+                                                    <td class="text-center">
+                                                        <button type="button" onclick="UpdateEmployee('@d.EmployeeId_Encrypted')" id="btnUpdate"
+                                                                class="btn btn-success btnpress ListBtn">
+                                                            <i class="fa-solid fa-pencil-alt"></i>
+                                                        </button>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <button type="button" onclick="DeleteEmployee('@d.EmployeeId_Encrypted')" id="btnDelete"
+                                                                class="btn btn-danger ListBtn btnpress">
+                                                            <i class="fa-solid fa-trash-alt"></i>
+                                                        </button>
+                                                    </td>
+                                                    <td class="text-nowrap">@d.CompanyName</td>
+                                                    <td class="text-nowrap">@d.BranchName</td>
+                                                    <td class="text-nowrap">@d.EmployeeName</td>
+                                                    <td class="text-nowrap">@d.EmployeeNo</td>
+                                                    <td class="text-nowrap">@d.EmployeeCardNo</td>
+                                                    <td class="text-nowrap">@d.LocalExpat</td>
+                                                    <td class="text-nowrap">@d.EmployeeLevel</td>
+                                                    <td class="text-nowrap">@d.DepartmentName</td>
+                                                    <td class="text-nowrap">@d.EmployeeSubDepartmentName</td>
+                                                    <td class="text-nowrap">@d.DesignationName</td>
+                                                    <td class="text-nowrap">@d.GradeName</td>
+                                                    <td class="text-nowrap">@d.EmployeeType</td>
+                                                    <td class="text-nowrap">@d.EmployeeGroupName</td>
+                                                    <td class="text-nowrap">@d.WageCategoryName</td>
+                                                    <td class="text-nowrap">@d.CostCenterName</td>
+                                                    <td class="text-nowrap">@d.ZoneName</td>
+                                                    <td class="text-nowrap">@d.UnitName</td>
+                                                    <td class="text-nowrap">@d.JoiningDate</td>
+                                                    <td class="text-nowrap">@d.TraineeDueDate</td>
+                                                    <td class="text-nowrap">@d.ProbationDueDate</td>
+                                                    <td class="text-nowrap">@d.ConfirmationDate</td>
+                                                    <td class="text-nowrap">@d.ConfirmationBy</td>
+                                                    <td class="text-nowrap">@d.CompanyMobileNo</td>
+                                                    <td class="text-nowrap">@d.CompanyMailID</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END panel -->
+                </div>
+            </div>
+        </div>
+</body>
+</html>
+<script>
+    $(document).ready(function () {
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                });
+            }
+        }
+    });
+</script>
+<script>
+
+    function UpdateEmployee(EmployeeId_Encrypted) {
+        var url = '@Url.Action("Module_Employee_Onboarding", "Module_Employee_Onboarding")?EmployeeId_Encrypted=' + EmployeeId_Encrypted;
+        window.location.href = url;
+    }
+
+
+
+    function DeleteEmployee(EmployeeId_Encrypted) {
+             const DeleteButtons = Swal.mixin({
+                 customClass: {
+                     cancelButton: ' btnpress',
+                     confirmButton: ' btnpress'
+                 },
+                 buttonsStyling: true
+             })
+             DeleteButtons.fire({
+                 title: 'Are you sure?',
+                 text: "You won't be able to revert this!",
+                 icon: 'warning',
+                 confirmButtonColor: '#d33',
+                 cancelButtonColor: '#3085d6',
+                 showCancelButton: true,
+                 confirmButtonText: 'Yes, delete it!',
+                 cancelButtonText: 'No, cancel!',
+                 reverseButtons: false,
+                 allowOutsideClick: () => {
+                     const popup = Swal.getPopup()
+                     popup.classList.remove('swal2-show')
+                     setTimeout(() => {
+                         popup.classList.add('animate__animated', 'animate__headShake')
+                     })
+                     setTimeout(() => {
+                         popup.classList.remove('animate__animated', 'animate__headShake')
+                     }, 500)
+                     return false
+                 }
+
+             }).then((result) => {
+                 if (result.isConfirmed) {
+                     window.location.href = '@Url.Action("Delete", "Module_Employee_Onboarding")?EmployeeId_Encrypted=' + EmployeeId_Encrypted;
+
+                 } else if (
+                     result.dismiss === Swal.DismissReason.cancel
+                 ) {
+
+                 }
+             })
+    }
+
+</script>

@@ -1,0 +1,807 @@
+﻿
+@{
+    ViewBag.Title = "ESS_Ticket_Menu";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+<link href="~/assets/MyCSS/MenuImages.css" rel="stylesheet" />
+<link href="~/Content/Site.css" rel="stylesheet" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+<style>
+    #detached-tickets-wrapper .card {
+        border: none;
+        border-radius: 10px;
+        background-color: #fff;
+        margin-bottom: 1.5rem;
+    }
+
+    #detached-tickets-wrapper .card-header {
+        border-color: #ededed;
+        position: relative;
+        background: transparent;
+        padding: 1rem 1.25rem 1rem;
+        border-bottom: 1px solid #ededed;
+    }
+
+    #detached-tickets-wrapper .card-title {
+        font-size: 18px;
+        font-weight: 600;
+        text-transform: capitalize;
+        color: #111827;
+        margin-bottom: 0;
+    }
+
+    #detached-tickets-wrapper .card-body {
+        padding: 1.25rem;
+    }
+
+    #detached-tickets-wrapper .badge {
+        font-size: 12px;
+        padding: 5px 10px;
+        border-radius: 6px;
+        margin-left: 6px;
+    }
+
+    #detached-tickets-wrapper .list-group-item {
+        border-color: #f3f4f6;
+        background-color: #fff;
+    }
+
+    /* Ticket Status Top Cards */
+    .card2 {
+        position: relative;
+        margin-bottom: 1.5rem;
+        width: 100%;
+        height: -webkit-fill-available;
+        background-color: #ffffff;
+        border-radius: 10px;
+        padding: 0px;
+        -webkit-transition: .5s;
+        transition: .5s;
+        display: -ms-flexbox;
+        display: flex;
+        justify-content: space-between;
+        border: 1px solid #ededed;
+        box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    .ticket-iconbx {
+        width: 48px;
+        height: 48px;
+        border-radius: 10px;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 22px;
+        margin-right: 15px;
+        margin-top: 15px;
+        transform: rotate(45deg);
+        flex-shrink: 0;
+    }
+
+        .ticket-iconbx i {
+            transform: rotate(-45deg);
+        }
+
+    .ticket-content {
+        padding: 18px;
+    }
+
+    .ticket-title {
+        font-size: 16px;
+        font-weight: 500;
+        color: #202C4B;
+    }
+
+    .ticket-count {
+        font-size: 30px;
+        font-weight: 800;
+        color: #202C4B;
+    }
+
+    /* Colored background overrides for tickets */
+    .ticket-iconbx.bg-primary {
+        background-color: #0d6efd !important;
+        color: #fff !important;
+    }
+
+    .ticket-iconbx.bg-info {
+        background-color: #0dcaf0 !important;
+        color: #fff !important;
+    }
+
+    .ticket-iconbx.bg-warning {
+        background-color: #ff9800 !important;
+        color: #fff !important;
+    }
+
+    .ticket-iconbx.bg-danger {
+        background-color: #dc3545 !important;
+        color: #fff !important;
+    }
+
+    .ticket-iconbx.bg-success {
+        background-color: #198754 !important;
+        color: #fff !important;
+    }
+</style>
+
+<style>
+    .detached-ticket-card {
+        background-color: #ffffff;
+        border: 1px solid #ededed;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        margin-bottom: 24px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .detached-ticket-header {
+        background-color: #ffffff;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #ededed;
+        padding: 20px 24px;
+    }
+
+    .detached-ticket-title {
+        margin: 0;
+        font-weight: 700;
+        color: #1D2A3A;
+        font-size: 18px;
+        line-height: 1.2;
+    }
+
+    .detached-ticket-btn {
+        font-weight: 500;
+        border-radius: 6px;
+        background-color: #F8F9FA;
+        border: 1px solid #ededed;
+        color: #4B5563;
+        padding: 6px 16px;
+        text-decoration: none;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: inline-block;
+    }
+
+        .detached-ticket-btn:hover {
+            background-color: #e2e6ea;
+            color: #1D2A3A;
+        }
+
+    .detached-ticket-body {
+        padding: 0;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .detached-ticket-table {
+        width: 100%;
+        margin-bottom: 0;
+        font-size: 14px;
+        color: #4B5563;
+        border-collapse: collapse;
+        white-space: nowrap;
+        text-align: left;
+    }
+
+        .detached-ticket-table thead th {
+            font-weight: 600;
+            color: #6B7280;
+            padding: 12px 24px;
+            border-bottom: 1px solid #ededed;
+            background-color: #F8F9FA;
+        }
+
+        .detached-ticket-table tbody td {
+            padding: 12px 24px;
+            vertical-align: middle;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .detached-ticket-table tbody tr {
+            transition: background-color 0.2s ease;
+        }
+
+            .detached-ticket-table tbody tr:hover {
+                background-color: #f8f9fa;
+            }
+
+            .detached-ticket-table tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+    .detached-flex-row {
+        display: flex;
+        align-items: center;
+    }
+
+    .detached-badge {
+        padding: 6px 12px;
+        border-radius: 6px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: fit-content;
+        font-size: 12px;
+    }
+
+    .detached-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        margin-right: 12px;
+        font-size: 12px;
+        flex-shrink: 0;
+        overflow: hidden;
+    }
+
+        .detached-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+    .detached-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 4px;
+        font-style: normal;
+    }
+
+    /* Internal SVG icon for info circle so it doesn't even rely on standard icon fonts if detached */
+    .detached-info-icon {
+        width: 12px;
+        height: 12px;
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 4px;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%236B7280'%3E%3Cpath d='M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z'/%3E%3Cpath d='m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+</style>
+
+
+<div id="content" class="app-content">
+    <div class="pageHeader d-flex align-items-center justify-content-between" style="flex-wrap:nowrap;">
+        <h5 class="page-header text-center text-md-start">Tickets</h5>
+        <ol class="breadcrumb float-md-end mb-0">
+            <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+            </a>
+        </ol>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Are you looking for a description of the "Support Desk" menu structure, or do you need help implementing it in an ASP.NET MVC project?
+                        Please provide more details so I can assist you better.
+                    </p>
+                </div>
+              
+                <div class="panel-body">
+                    @*<div class="row mb-20px">
+                        <div class="col-lg-3 col-sm-6">
+                            <div class="widget widget-stats bg-purple mb-7px">
+                                <div class="stats-icon stats-icon-lg"><i class="fa fa-archive fa-fw"></i></div>
+                                <div class="stats-content" style="height:100px;">
+                                    <div class="stats-title">Total Tickets</div>
+                                    <div class="stats-number">
+                                        <a href="@Url.Action("GetList", "ESS_Ticket_TicketRaise")" id="TotalTickets" onClick="Showdata('RECR01','Open raised by me')" style="color:white;">@TempData["GetTotalTickets"]</a>
+                                    </div>
+                                    <div class="stats-progress progress">
+                                        <div class="progress-bar" style="width: 76.3%;"></div>
+                                    </div>
+                                    <div class="stats-desc">Tickets raised by me</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-sm-6">
+                            <div class="idget widget-stats bg-teal mb-7px">
+                                <div class="stats-icon stats-icon-lg"><i class="fa fa-globe fa-fw"></i></div>
+                                <div class="stats-content" style="height:100px;">
+                                    <div class="stats-title">Responded Tickets</div>
+                                    <div class="stats-number">
+                                        <a href="@Url.Action("ESS_Ticket_TicketRaisedList", "ESS_Ticket_TicketRaisedList", new { area = "ESS" })" id="RespondedTickets" style="color:white;" onClick="Showdata('RECR03','Approvals pending with me')">@TempData["GetRespondedTickets"]</a>
+                                    </div>
+                                    <div class="stats-progress progress">
+                                        <div class="progress-bar" style="width: 40.5%;"></div>
+                                    </div>
+                                    <div class="stats-desc">Solved Tickets by me</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-sm-6">
+                            <div class="widget widget-stats bg-purple mb-7px">
+                                <div class="stats-icon stats-icon-lg"><i class="fa fa-archive fa-fw"></i></div>
+                                <div class="stats-content" style="height:100px;">
+                                    <div class="stats-title">Resolved Tickets </div>
+                                    <div class="stats-number">
+                                        <a href="@Url.Action("ESS_Ticket_TicketRaisedList", "ESS_Ticket_TicketRaisedList", new { area = "ESS" })" id="ResolvedTickets" onClick="Showdata('RECR01','Open raised by me')" style="color:white;">@TempData["GetResolvedTickets"]</a>
+                                    </div>
+                                    <div class="stats-progress progress">
+                                        <div class="progress-bar" style="width: 76.3%;"></div>
+                                    </div>
+                                    <div class="stats-desc">Pending for actions</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-sm-6">
+                            <div class="widget widget-stats bg-orange mb-7px">
+                                <div class="stats-icon stats-icon-lg"><i class="fa fa-file-alt fa-fw"></i></div>
+                                <div class="stats-content" style="height:100px;">
+                                    <div class="stats-title">Pending Tickets</div>
+                                    <div class="stats-number">
+                                        <a href="@Url.Action("ESS_Ticket_TicketRaisedList", "ESS_Ticket_TicketRaisedList", new { area = "ESS" })" id="PendingTickets" onClick="Showdata('RECR07','Interviews pending with me')" style="color:white;">@TempData["GetPendingTickets"] </a>
+                                    </div>
+                                    <div class="stats-progress progress">
+                                        <div class="progress-bar" style="width: 23.5%;"></div>
+                                    </div>
+                                    <div class="stats-desc">Pending for actions</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>*@
+
+
+                    @*<div class="gradientLine-Div">
+                        <div class="gradientLine1"> </div>
+                        <div><strong>Menu</strong></div>
+                        <div class="gradientLine2"> </div>
+                    </div>*@
+
+
+                    @*<div class="row">
+                        <div class="col-md-12">
+                            <div class="row" style="padding: 0px 5px;">
+                                @foreach (var item in ViewBag.GetUserMenuList)
+                                {
+                                    <a href="@Url.Action(item.ViewName.ToString(), item.ControllerName.ToString(), new { area = item.AreaName.ToString(), id = item.ModuleID, ScreenId = item.ScreenId })" class="col-md-2 col-3 d-flex" style="text-decoration:none !important; padding: 0px 5px;">
+                                        <div class="quickLinks-box">
+                                            <img src="~/assets/MenuImages/@item.Icon" />
+                                            <h3>@item.ScreenDisplayMenuName</h3>
+                                        </div>
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    </div>*@
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+   
+    @*<div class="row">
+        <div class="col-lg-12 col-md-12">
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-body" style="max-height:fit-content;">
+                </div>
+            </div>
+        </div>
+    </div>*@
+
+    <div class="" id="detached-tickets-wrapper">
+  
+
+        <div class="row">
+            <!-- Open Ticket -->
+            <div class="col-xl col-lg-3 col-md-6 mb-3">
+                <div class="card2">
+                    <div class="ticket-content">
+                        <div class="ticket-title">Open Ticket</div>
+                        @*<a href="@Url.Action("GetList", "ESS_Ticket_TicketRaise")" id="TotalTickets" onClick="Showdata('RECR01','Open raised by me')" style="color:white;">@TempData["GetTotalTickets"]</a>*@
+
+                        <div class="ticket-count">@TempData["GetOpenTickets"]</div>
+                    </div>
+                    <div class="ticket-iconbx bg-primary">
+                        <i class="fa-regular fa-folder-open"></i>
+                    </div>
+                </div>
+            </div>
+            <!-- Inprocess Ticket -->
+            <div class="col-xl col-lg-3 col-md-6 mb-3">
+                <div class="card2">
+                    <div class="ticket-content">
+                        <div class="ticket-title">Inprocess Ticket</div>
+                        <div class="ticket-count">@TempData["GetInProcessTickets"]</div>
+                    </div>
+                    <div class="ticket-iconbx bg-warning">
+                        <i class="bi bi-hourglass-split"></i>
+                    </div>
+                </div>
+            </div>
+            <!-- Resolved Ticket -->
+            <div class="col-xl col-lg-3 col-md-6 mb-3">
+                <div class="card2">
+                    <div class="ticket-content">
+                        <div class="ticket-title">Resolved Ticket</div>
+                        <div class="ticket-count">@TempData["GetResolvedTickets"]</div>
+                    </div>
+                    <div class="ticket-iconbx bg-success">
+                        <i class="bi bi-patch-check"></i>
+                    </div>
+                </div>
+            </div>
+            <!-- Reopen Ticket (Changed from ti to fa) -->
+            <div class="col-xl col-lg-3 col-md-6 mb-3">
+                <div class="card2">
+                    <div class="ticket-content">
+                        <div class="ticket-title">Reopen Ticket</div>
+                        <div class="ticket-count">0</div>
+                    </div>
+                    <div class="ticket-iconbx bg-info">
+                        <i class="fa-solid fa-arrow-rotate-right"></i>
+                    </div>
+                </div>
+            </div>
+            <!-- Overdue Ticket  -->
+            <div class="col-xl col-lg-3 col-md-6 mb-3">
+                <div class="card2">
+                    <div class="ticket-content">
+                        <div class="ticket-title">Overdue Ticket</div>
+                        <div class="ticket-count">@TempData["GetOverdueTickets"]</div>
+                    </div>
+                    <div class="ticket-iconbx bg-danger">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Breakdown Cards Row -->
+        <div class="row">
+            <!-- Ticket Count by Priority -->
+            <div class="col-md-8 mb-4">
+                <div class="card"
+                     style="border: 1px solid #ededed; box-shadow: 0 4px 12px rgba(0,0,0,0.02); border-radius: 12px; height: 100%;">
+                    <div class="card-header bg-white"
+                         style="border-bottom: 1px solid #ededed; padding: 20px 24px;">
+                        <h4 class="card-title mb-0" style="font-weight: 700; color: #1D2A3A; font-size: 16px;">
+                            Tickets by Priority
+                        </h4>
+                    </div>
+                    <div class="card-body" style="padding: 20px 24px;">
+                        <div class="row align-items-center">
+                            <div class="col-md-5 d-flex justify-content-center mb-3 mb-md-0">
+                                <!-- Chart.js Donut Chart -->
+                                <div style="position: relative; width: 160px; height: 160px;">
+                                    <canvas id="priorityTicketChart"></canvas>
+                                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); display: flex; align-items: center; justify-content: center; flex-direction: column; pointer-events: none;">
+                                        <span style="font-size: 24px; font-weight: 700; color: #1D2A3A; line-height: 1.2;">@TempData["GetTotalTickets"]</span>
+                                        <span style="font-size: 11px; font-weight: 500; color: #6B7280;">Tickets</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-7">
+                                <ul class="list-group list-group-flush">
+
+                                    @{
+
+                                      Dictionary<string, string> priorityDotColor = new Dictionary<string, string> {
+                                        {"Critical", "#8b0000"},
+                                        {"High", "#dc3545"},
+                                        {"Medium", "#ff9800"},
+                                        {"Low", "#0dcaf0"}
+                                     };
+
+                                    Dictionary<string, string> priorityBgColor = new Dictionary<string, string> {
+                                      {"Critical", "rgba(139, 0, 0, 0.1)"},
+                                      {"High", "rgba(220, 53, 69, 0.1)"},
+                                      {"Medium", "rgba(255, 152, 0, 0.1)"},
+                                      {"Low", "rgba(13, 202, 240, 0.1)"}
+                                    };
+
+                                    }
+                                  @foreach (var item in ViewBag.PriorityCounts)
+                                  {
+                                       string priority = item.Priority;
+                                       int count = (int)item.Total;
+                                       int percentage = (int)item.Percentage;
+
+                                 <li class="list-group-item d-flex justify-content-between align-items-center"
+                                         style="padding: 12px 0; border-bottom: 1px solid #f3f4f6;">
+
+                                      <div class="d-flex align-items-center">
+                                         <span style="width: 10px; height: 10px; border-radius: 50%;
+                                           background-color:@priorityDotColor[priority];
+                                            display: inline-block; margin-right: 12px;"></span>
+                                         <span style="font-weight: 500; color: #4B5563; font-size: 14px;">
+                                          @priority Priority
+                                         </span>
+                                       </div>
+                                      <span class="badge"
+                                         style="background-color:@priorityBgColor[priority];
+                                         color:@priorityDotColor[priority];
+                                         font-size: 13px; font-weight: 600;
+                                         padding: 6px 10px; border-radius: 6px;">
+                                          @count (@percentage%)
+                                       </span>
+                                       </li>
+                                         }
+
+
+                                    @*<li class="list-group-item d-flex justify-content-between align-items-center"
+                                        style="padding: 12px 0; border-bottom: 1px solid #f3f4f6;">
+                                        <div class="d-flex align-items-center">
+                                            <span style="width: 10px; height: 10px; border-radius: 50%; background-color: #8b0000; display: inline-block; margin-right: 12px;"></span>
+                                            <span style="font-weight: 500; color: #4B5563; font-size: 14px;">Critical</span>
+                                        </div>
+                                        <span class="badge"
+                                              style="background-color: rgba(139, 0, 0, 0.1); color: #8b0000; font-size: 13px; font-weight: 600; padding: 6px 10px; border-radius: 6px;">
+                                            6
+                                            (10%)
+                                        </span>
+                                    </li>*@
+                                   
+                                     @*<li class="list-group-item d-flex justify-content-between align-items-center"
+                                        style="padding: 12px 0; border-bottom: 1px solid #f3f4f6;">
+                                        <div class="d-flex align-items-center">
+                                            <span style="width: 10px; height: 10px; border-radius: 50%; background-color: #dc3545; display: inline-block; margin-right: 12px;"></span>
+                                            <span style="font-weight: 500; color: #4B5563; font-size: 14px;">
+                                                High
+                                                Priority
+                                            </span>
+                                        </div>
+                                        <span class="badge"
+                                              style="background-color: rgba(220, 53, 69, 0.1); color: #dc3545; font-size: 13px; font-weight: 600; padding: 6px 10px; border-radius: 6px;">
+                                            24
+                                            (40%)
+                                        </span>
+                                    </li>
+                                   
+                                     <li class="list-group-item d-flex justify-content-between align-items-center"
+                                        style="padding: 12px 0; border-bottom: 1px solid #f3f4f6;">
+                                        <div class="d-flex align-items-center">
+                                            <span style="width: 10px; height: 10px; border-radius: 50%; background-color: #ff9800; display: inline-block; margin-right: 12px;"></span>
+                                            <span style="font-weight: 500; color: #4B5563; font-size: 14px;">
+                                                Medium
+                                                Priority
+                                            </span>
+                                        </div>
+                                        <span class="badge"
+                                              style="background-color: rgba(255, 152, 0, 0.1); color: #ff9800; font-size: 13px; font-weight: 600; padding: 6px 10px; border-radius: 6px;">
+                                            18
+                                            (30%)
+                                        </span>
+                                    </li>
+                                   
+                                     <li class="list-group-item d-flex justify-content-between align-items-center"
+                                        style="padding: 12px 0; border-bottom: none;">
+                                        <div class="d-flex align-items-center">
+                                            <span style="width: 10px; height: 10px; border-radius: 50%; background-color: #0dcaf0; display: inline-block; margin-right: 12px;"></span>
+                                            <span style="font-weight: 500; color: #4B5563; font-size: 14px;">
+                                                Low
+                                                Priority
+                                            </span>
+                                        </div>
+                                        <span class="badge"
+                                              style="background-color: rgba(13, 202, 240, 0.1); color: #0dcaf0; font-size: 13px; font-weight: 600; padding: 6px 10px; border-radius: 6px;">
+                                            12
+                                            (20%)
+                                        </span>
+                                    </li>*@
+                               
+                                
+                                 </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ticket List by Category -->
+            <div class="col-md-4 mb-4">
+                <div class="card"
+                     style="border: 1px solid #ededed; box-shadow: 0 4px 12px rgba(0,0,0,0.02); border-radius: 12px; height: 100%;">
+                    <div class="card-header bg-white"
+                         style="border-bottom: 1px solid #ededed; padding: 20px 24px;">
+                        <h4 class="card-title mb-0" style="font-weight: 700; color: #1D2A3A; font-size: 16px;">
+                            Tickets by Category
+                        </h4>
+                    </div>
+                    <div class="card-body" style="padding: 20px 24px;overflow:auto; max-height:250px;">
+                        <ul class="list-group list-group-flush">
+
+                        @foreach (var item in ViewBag.TicketCategoryCount)
+                            {
+                            <li class="list-group-item d-flex justify-content-between align-items-center"
+                                 style="padding: 12px 0; border-bottom: 1px solid #f3f4f6;">
+                                <div class="d-flex align-items-center">
+                                      <div style="width: 32px; height: 32px; border-radius: 8px; background-color: rgba(13, 110, 253, 0.1); color: #0d6efd; display: flex; align-items: center; justify-content: center; margin-right: 12px;">
+                                  
+                                          <i class="bi bi-person-badge-fill "style="font-size: 16px;"></i>
+                                     </div>
+                                    <span style="font-weight: 500; color: #4B5563; font-size: 14px;">
+                                      @item.TicketCategoryName
+                                   </span>
+                             </div>
+                                   <span style="font-weight: 600; color: #1D2A3A; font-size: 14px;">@item.Total</span>
+                              </li>
+                             }
+
+                         </ul>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+        <!-- Recent Tickets List Table (Independent block for easy detachment) -->
+        <div class="row">
+            <div class="col-12 mb-4">
+         
+
+                <div class="detached-ticket-card">
+                    <div class="detached-ticket-header">
+                        <h4 class="detached-ticket-title">Recent Tickets</h4>
+                        <div>
+                            @{
+                                string[] colors = { "#0d6efd", "#198754", "#dc3545" }; // Blue, Green, Red
+                                int index = 0;
+                            }
+                            @foreach (var item in ViewBag.GetUserMenuList)
+                            {
+                                var bgColor = colors[index % colors.Length];
+                                index++;
+
+                                <a href="@Url.Action(item.ViewName.ToString(), item.ControllerName.ToString(),
+                                   new { area = item.AreaName.ToString(), id = item.ModuleID, ScreenId = item.ScreenId })"
+                                   class="detached-ticket-btn"
+                                   style="background-color:@bgColor; color:#fff; border-color:@bgColor; margin-right:8px;">
+                                    <i class="fa-solid fa-plus" style="margin-right: 4px;"></i>
+                                    @item.ScreenDisplayMenuName
+                                </a>
+                            }
+                            @*@foreach (var item in ViewBag.GetUserMenuList)
+                            {
+                                <a href="@Url.Action(item.ViewName.ToString(), item.ControllerName.ToString(), new { area = item.AreaName.ToString(), id = item.ModuleID, ScreenId = item.ScreenId })"  class="detached-ticket-btn"
+                               style="background-color: #0d6efd; color: #fff; border-color: #0d6efd; margin-right: 8px;">
+                                 
+                                     
+                                        <i class="fa-solid fa-plus" style="margin-right: 4px;"></i> @item.ScreenDisplayMenuName
+                                   
+                                </a>
+                            }*@
+                          
+                            <a href="javascript:void(0);" class="detached-ticket-btn">View All</a>
+                        </div>
+                    </div>
+                    <div class="detached-ticket-body">
+                        <table class="detached-ticket-table">
+                            <thead>
+                                <tr>
+                                    @*<th class="fixed-side">Update</th>
+                                    <th class="fixed-side1">Delete</th>*@
+                                    <th class="text-nowrap">Doc No</th>
+                                    <th class="text-nowrap">Doc Date </th>
+                                    <th class="text-nowrap">Ticket Category</th>
+                                    <th class="text-nowrap">TicketRaisedby</th>
+                                    <th class="text-nowrap">Ticket Raise Title</th>
+                                    <th class="text-nowrap">Description</th>
+                                    <th class="text-nowrap">Download Attachment</th>
+                                    <th class="text-nowrap"> Priority</th>
+                                    <th class="text-nowrap"> Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var d in ViewBag.GetTicketRaiseList)
+                                {
+                                    <tr>
+                                      
+                                        <td>@d.DocNo</td>
+                                        <td>@d.DocDate</td>
+                                        <td>@d.TicketCategoryName</td>
+                                        <td>@d.TicketRaisedby</td>
+                                        <td>@d.TicketRaiseTitle</td>
+                                        <td>@d.Description</td>
+
+                                        @if (d.AttachFile != "No")
+                                        {
+                                            <td class="text-center">
+                                               
+                                                <a href="@Url.Action("DownloadAttachment","ESS_Ticket_TicketRaise", new { DownloadAttachment = @d.AttachFile })"><i class="fa fa-download"></i></a>
+                                            </td>
+                                        }
+
+                                        else
+                                        {
+                                            <td>
+
+                                                <div style="display:flex; justify-content:center; align-items:center;">
+                                                    <i class="fa fa-times" style="color:red;"></i>
+                                                </div>
+
+                                            </td>
+                                        }
+
+                                        <td>@d.Priority</td>
+                                        <td>@d.TicketStatus</td>
+                                    </tr>
+                                }
+                            </tbody>
+
+
+                             
+                           
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Page Wrapper -->
+    </div>
+
+</div>
+
+
+<script>
+            document.addEventListener("DOMContentLoaded", function () {
+                var pChartCtx = document.getElementById('priorityTicketChart');
+                if (pChartCtx) {
+                    new Chart(pChartCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Critical', 'High', 'Medium', 'Low'],
+                            datasets: [{
+                                data: [
+                                   @(ViewBag.Critical ?? 0),
+                                   @(ViewBag.High ?? 0),
+                                  @(ViewBag.Medium ?? 0),
+                                  @(ViewBag.Low ?? 0)],
+                                backgroundColor: [
+                                    '#8b0000', // Critical
+                                    '#dc3545', // High
+                                    '#ff9800', // Medium
+                                    '#0dcaf0'  // Low
+                                ],
+                                borderWidth: 0,
+                                hoverOffset: 4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            cutout: '75%',
+                            plugins: {
+                                legend: {
+                                    display: false
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function (context) {
+                                            return ' ' + context.label + ': ' + context.parsed + ' Tickets';
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            });
+</script>

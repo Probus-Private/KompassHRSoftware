@@ -1,0 +1,515 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_Recruitment.Recruitment_ResourceRequest
+@{
+    ViewBag.Title = "ESS_Recruitment_BulkCandidateData";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.0/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.0/dist/xlsx.full.min.js"></script>
+
+
+<style>
+
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    #tblBulkUploadItems input[type="text"] {
+        height: 25px; /* Adjust the height as needed */
+    }
+
+    #tblBulkUploadItems input[type="number"] {
+        height: 25px; /* Adjust the height as needed */
+    }
+
+    #tblBulkUploadItems input[type="datetime-local"] {
+        height: 25px; /* Adjust the height as needed */
+    }
+
+    #tblBulkUploadItems tbody tr td {
+        padding: 4px;
+    }
+</style>
+
+<style>
+    #tblBulkUploadItems {
+        table-layout: auto;
+        width: 100%;
+        white-space: nowrap;
+    }
+
+        #tblBulkUploadItems th,
+        #tblBulkUploadItems td {
+            padding: 10px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        #tblBulkUploadItems th {
+            white-space: nowrap;
+        }
+
+    input[type="text"], input[type="email"], input[type="number"], input[type="date"] {
+        width: auto;
+        max-width: 100%;
+        box-sizing: border-box;
+        padding: 5px;
+        border: 1px solid #ccc;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Upload Bulk CandidateData 
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_Recruitment_RequestPool", "ESS_Recruitment_RequestPool", new {id = 1, ScreenId=130, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="panel panel-inverse" data-sortable-id="index-1">
+                    <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                        <h4 class="panel-title">Upload Bulk CandidateData  </h4>
+                        <div class="panel-heading-btn">
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                        </div>
+                    </div>
+                    <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                        <p class="pb-0">
+
+                        </p>
+                    </div>
+                    <div class="panel-body" style="max-height: fit-content;">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <form role="form" action='@Url.Action("ESS_Recruitment_BulkCandidateData", "ESS_Recruitment_BulkCandidateData", new { area = "ESS" })' method="post" enctype="multipart/form-data" id="SaveBulkUpload">
+                                    <div class="row">
+                                        <div class="col-md-1">
+                                            <a href="@Url.Content("~/assets/BulkUpload/BulkCandidate.xlsx")">
+                                                <button type="button" class="btn btn-success">
+                                                    @*<i class="fa-solid fa-download text-success fa-lg" style="color:black"></i>*@
+                                                    Export 
+                                                </button>
+                                            </a>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <input type="file" name="AttachFile" class="form-control" id="txtAttachFile" onchange="ResetFile()" />
+                                            <span id="ErrorFile" class="error" style="color:red"></span>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <button type="button" class="btn btn-sm btn-danger" id="btnfileupload">Import</button> 
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-3">
+                                                    Agency Assign
+                                                </label>
+                                                <div class="col-md-9">
+                                                    @Html.DropDownListFor(model => model.AgencyAssignId, new SelectList(ViewBag.AgencyAssign, "Id", "Name"), "--Select--", new { id = "ddlAgencyAssignId", @class = "form-control select2", name = "AgencyAssignId" })
+                                                    <span id="ErrorAgencyAssign" class="error" style="color:red"></span>
+                                                 </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                       
+                                    </div>
+                                        <hr />
+</form>
+                            </div>
+                        </div>
+                        @*<div class="row">
+
+                                <button type="button" class="btn btn-success btn-sm" style="margin-left:25px; width:60px" onclick="addRow()">
+                                    <i class="fas fa-plus"></i> Add
+                                </button>
+                            </div>*@
+                        <div>
+                            <div class="panel-body">
+                                <div class="w3-responsive" style="overflow-y:auto">
+                                    <table class="table table-bordered table-hover mb-0 text-dark align-middle  tblAddData" id="tblBulkUploadItems">
+                                        <thead style="background-color: rgba(233, 236, 239, 1) !important;">
+                                            <tr class="trheading">
+                                                <th class="text-start text-center">Action</th>
+                                                <th class="text-start text-center">Sr. No.</th>
+                                                <th class="text-start text-center">Salutation</th>
+                                                <th class="text-start text-center">Candidate Name</th>
+                                                <th class="text-start text-center">Mobile No.</th>
+                                                <th class="text-start text-center">Alternate Mobile No.</th>
+                                                <th class="text-start text-center">Email ID</th>
+                                                <th class="text-start text-center">Gender</th>
+                                                <th class="text-start text-center">Date of Birth</th>
+                                                <th class="text-start text-center">Age</th>
+                                                <th class="text-start text-center">Current City</th>
+                                                <th class="text-start text-center">Marital Status</th>
+                                                <th class="text-start text-center">Highest Qualification</th>
+                                                <th class="text-start text-center">Specific Qualification</th>
+                                                <th class="text-start text-center">Nationality</th>
+                                                <th class="text-start text-center">Family Info</th>
+                                                <th class="text-start text-center">Candidate Type</th>
+                                                <th class="text-start text-center">Currently Working Yes/No</th>
+                                                <th class="text-start text-center">Current Company Name</th>
+                                                <th class="text-start text-center">Total Experience</th>
+                                                <th class="text-start text-center">Relevant Experience</th>
+                                                <th class="text-start text-center">Current Designation</th>
+                                                <th class="text-start text-center">Suitable for Designation</th>
+                                                <th class="text-start text-center">Technical Details</th>
+                                                <th class="text-start text-center">Communication Skill</th>
+                                                <th class="text-start text-center">Relevant Skill</th>
+                                                <th class="text-start text-center">Ready To Travel</th>
+                                                <th class="text-start text-center">Current CTC</th>
+                                                <th class="text-start text-center">Expected CTC</th>
+                                                <th class="text-start text-center">Local/Outstation</th>
+                                                <th class="text-start text-center">Job Descriptions</th>
+                                                <th class="text-start text-center">Notice Period Applicable Yes/No</th>
+                                                <th class="text-start text-center">Bal. Notice Period</th>
+                                                <th class="text-start text-center">Legal Bond Applicable Yes/No</th>
+                                                <th class="text-start text-center">Bal. Legal Bond (Months)</th>
+                                                <th class="text-start text-center">Holding Any Offers</th>
+                                                <th class="text-start text-center">Offer Remark</th>
+                                                <th class="text-start text-center">HR Selection</th>
+                                                <th class="text-start text-center">HR Ranking</th>
+                                                <th class="text-start text-center">Resume Source</th>
+                                                <th class="text-start text-center">HR Comment</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tbodyBulkUploadItems">
+
+                                            @if (ViewBag.GetExceldata != null)
+                                                    {
+                                                        int SrNo = 0;
+                                                        foreach (var d in ViewBag.GetExceldata)
+                                                        {
+                                                            SrNo++;
+                                                    <tr>
+                                                        <td class="text-center" style="background-color:#eee">
+                                                            <i class="fa-regular fa-trash-can fa-xl" onclick="removeRow(this)" id="btnDelete" style="color:#ff5b57"></i>
+                                                        </td>
+                                                        <td>@SrNo</td>
+                                                        <td><input type="text" style="width: 100%;" name="Salutation" class="form-control nowrap" value="@(d.Salutation ?? "")"></td>
+                                                        <td><input type="text" style="width: 100%;" name="CandidateName" class="form-control nowrap" value="@(d.CandidateName ?? "")"></td>
+                                                        <td><input type="text" name="MobileNo" class="form-control col-sm-10" value="@(d.MobileNo ?? "")"></td>
+                                                        <td><input type="text" name="AlternateMobileNo" class="form-control" value="@(d.AlternateMobileNo ?? "")"></td>
+                                                        <td><input type="email" name="EmailId" class="form-control" value="@(d.EmailId ?? "")"></td>
+                                                        <td><input type="text" style="width: 100%;" name="Gender" class="form-control" value="@(d.Gender ?? "")"></td>
+                                                        <td><input type="date" name="DateOfBirth" class="form-control" value="@(d.DateOfBirth.ToString("yyyy-MM-dd"))"></td>
+                                                        <td><input type="number" style="width: 50px;" name="Age" class="form-control" value="@(d.Age)"></td>
+                                                        <td><input type="text" name="CurrentCity" class="form-control" value="@(d.CurrentCity ?? "")"></td>
+                                                        <td><input type="text" name="MaritalStatus" class="form-control" value="@(d.MaritalStatus ?? "")"></td>
+                                                        <td><input type="text" name="HighestQualification" class="form-control" value="@(d.HighestQualification ?? "")"></td>
+                                                        <td><input type="text" name="SpecificQualification" class="form-control" value="@(d.SpecificQualification ?? "")"></td>
+                                                        <td><input type="text" name="Nationality" class="form-control" value="@(d.Nationality ?? "")"></td>
+                                                        <td><input type="text" name="FamilyInfo" class="form-control" value="@(d.FamilyInfo ?? "")"></td>
+                                                        <td><input type="text" name="CandidateType" class="form-control" value="@(d.CandidateType ?? "")"></td>
+                                                        <td><input type="text" name="CurrentlyWorking" class="form-control" value="@(d.CurrentlyWorking ?? "")"></td>
+                                                        <td><input type="text" name="CurrentCompanyName" class="form-control" value="@(d.CurrentCompanyName ?? "")"></td>
+                                                        <td><input type="number" step="0.1" name="TotalExperience" class="form-control" value="@(d.TotalExperience)"></td>
+                                                        <td><input type="number" step="0.1" name="RelevantExperience" class="form-control" value="@(d.RelevantExperience)"></td>
+                                                        <td><input type="text" name="CurrentDesignation" class="form-control" value="@(d.CurrentDesignation ?? "")"></td>
+                                                        <td><input type="text" name="SuitableForDesignation" class="form-control" value="@(d.SutableForDesignation ?? "")"></td>
+                                                        <td><input type="text" name="TechnicalDetails" class="form-control" value="@(d.TechnicalDetails ?? "")"></td>
+                                                        <td><input type="text" name="CommunicationSkill" class="form-control" value="@(d.CommunicationSkill ?? "")"></td>
+                                                        <td><input type="text" name="RelevantSkill" class="form-control" value="@(d.RelevantSkill ?? "")"></td>
+                                                        <td><input type="text" name="ReadyToTravel" class="form-control" value="@(d.ReadyToTravel ?? "")"></td>
+                                                        <td><input type="number" step="0.01" name="CurrentCTC" class="form-control" value="@(d.CurrentCTC)"></td>
+                                                        <td><input type="number" step="0.01" name="ExpectedCTC" class="form-control" value="@(d.ExpectedCTC)"></td>
+                                                        <td><input type="text" name="LocalOrOutstation" class="form-control" value="@(d.LocalOrOutstation ?? "")"></td>
+                                                        <td><input type="text" name="JobDescriptions" class="form-control" value="@(d.JobDescriptions ?? "")"></td>
+                                                        <td><input type="text" name="NoticePeriodApplicable" class="form-control" value="@(d.NoticePeriodApplicable ?? "")"></td>
+                                                        <td><input type="number" name="BalanceNoticePeriod" class="form-control" value="@(d.BalanceNoticePeriod)"></td>
+                                                        <td><input type="text" name="LegalBondApplicable" class="form-control" value="@(d.LegalBondApplicable ?? "")"></td>
+                                                        <td><input type="number" name="BalanceLegalBondMonths" class="form-control" value="@(d.BalanceLegalBondMonths)"></td>
+                                                        <td><input type="text" name="HoldingAnyOffers" class="form-control" value="@(d.HoldingAnyOffers ?? "")"></td>
+                                                        <td><input type="text" name="OfferRemark" class="form-control" value="@(d.OfferRemark ?? "")"></td>
+                                                        <td><input type="text" name="HRSelection" class="form-control" value="@(d.HRSelection ?? "")"></td>
+                                                        <td><input type="number" name="HRRanking" class="form-control" value="@(d.HRRanking)"></td>
+                                                        <td><input type="text" name="ResumeSource" class="form-control" value="@(d.ResumeSource ?? "")"></td>
+                                                        <td><input type="text" name="HRComment" class="form-control" value="@(d.HRComment ?? "")"></td>
+                                                    </tr>
+                                                        }
+                                                    }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="LastShortLeaveBx">
+                                <div class="row">
+                                    <div class="col-md-10">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="BtnBx">
+                                            <div>
+                                                <button type="button" id="btnSave" class="btn btn-success">
+                                                    Save
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        $("#ddlAgencyAssignId").select2();
+        debugger;
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        // return false
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+    });//Ready Funcation
+</script>
+
+<script>
+    $("#btnfileupload").click(function(){
+        debugger;
+        var fileInput = document.getElementById('txtAttachFile');
+        if (fileInput.files.length === 0) {
+            Swal.fire({
+                icon:  "error",
+                text: "Please import excel file",
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup()
+                    popup.classList.remove('swal2-show')
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                    })
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                    }, 500)
+                    return false
+                }
+            });
+            return false;
+        }
+        $(".Userloaderbg").css("display","flex");
+        $('#tblBulkUploadItems').not(function(){return!!$(this).has('th').length;}).remove();
+        $("#SaveBulkUpload").submit();
+    })
+
+
+    $("#btnSave").click(function () {
+        //function ManualUploadSave() {
+        debugger;
+        var hasError = true;
+        var table = document.getElementById("tblBulkUploadItems");
+        var rowCount = table.rows.length;
+        if (rowCount <= 1)
+        {
+            $("#ErrorFile").html("Please import file");
+            return false;
+        }
+        else
+        {
+            $("#ErrorFile").html("");
+        }
+        var AgencyAssignId=$("#ddlAgencyAssignId").val();
+        if (AgencyAssignId=="")
+        {
+            $("#ErrorAgencyAssign").html("Agency Assign is required");
+            return false;
+        }
+        else
+        {
+            $("#ErrorAgencyAssign").html("");
+        }
+        var RecordList = new Array();
+        $("#tblBulkUploadItems tbody tr").each(function (i) {
+            var data = {};
+            var currentRow = $(this).closest("tr");
+            // Find column index dynamically based on column name
+            //var columnIndexMap = {};
+            //$("#tblBulkUploadItems").closest("table").find("thead th").each(function (index) {
+            //    columnIndexMap[$(this).text().trim()] = index;
+            //});
+            debugger;
+            var row = $(this).closest("tr");
+
+            data.SrNo = row.find("td").eq(1).text().trim();
+            data.Salutation = row.find("td").eq(2).find("input").val();
+            data.CandidateName = row.find("td").eq(3).find("input").val();
+            data.MobileNo = row.find("td").eq(4).find("input").val();
+            data.AlternateMobileNo = row.find("td").eq(5).find("input").val();
+            data.EmailId = row.find("td").eq(6).find("input").val();
+            data.Gender = row.find("td").eq(7).find("input").val();
+            data.DateOfBirth = row.find("td").eq(8).find("input").val() || new Date().toISOString().split('T')[0];
+            data.Age = row.find("td").eq(9).find("input").val();
+            data.CurrentCity = row.find("td").eq(10).find("input").val();
+            data.MaritalStatus = row.find("td").eq(11).find("input").val();
+            data.HighestQualification = row.find("td").eq(12).find("input").val();
+            data.SpecificQualification = row.find("td").eq(13).find("input").val();
+            data.Nationality = row.find("td").eq(14).find("input").val();
+            data.FamilyInfo = row.find("td").eq(15).find("input").val();
+            data.CandidateType = row.find("td").eq(16).find("input").val();
+            data.CurrentlyWorking = row.find("td").eq(17).find("input").val();
+            data.CurrentCompanyName = row.find("td").eq(18).find("input").val();
+            data.TotalExperience = row.find("td").eq(19).find("input").val();
+            data.RelevantExperience = row.find("td").eq(20).find("input").val();
+            data.CurrentDesignation = row.find("td").eq(21).find("input").val();
+            data.SuitableForDesignation = row.find("td").eq(22).find("input").val();
+            data.TechnicalDetails = row.find("td").eq(23).find("input").val();
+            data.CommunicationSkill = row.find("td").eq(24).find("input").val();
+            data.RelevantSkill = row.find("td").eq(25).find("input").val();
+            data.ReadyToTravel = row.find("td").eq(26).find("input").val();
+            data.CurrentCTC = row.find("td").eq(27).find("input").val();
+            data.ExpectedCTC = row.find("td").eq(28).find("input").val();
+            data.LocalOrOutstation = row.find("td").eq(29).find("input").val();
+            data.JobDescriptions = row.find("td").eq(30).find("input").val();
+            data.NoticePeriodApplicable = row.find("td").eq(31).find("input").val();
+            data.BalanceNoticePeriod = row.find("td").eq(32).find("input").val();
+            data.LegalBondApplicable = row.find("td").eq(33).find("input").val();
+            data.BalanceLegalBondMonths = row.find("td").eq(34).find("input").val();
+            data.HoldingAnyOffers = row.find("td").eq(35).find("input").val();
+            data.OfferRemark = row.find("td").eq(36).find("input").val();
+            data.HRSelection = row.find("td").eq(37).find("input").val();
+            data.HRRanking = row.find("td").eq(38).find("input").val();
+            data.ResumeSource = row.find("td").eq(39).find("input").val();
+            data.HRComment = row.find("td").eq(40).find("input").val();
+
+            RecordList.push(data);
+        });
+        var jsonData = JSON.stringify(RecordList);
+        //var jsonData = JSON.stringify(RecordList);
+        if(hasError == false)
+        {
+            return false;
+            $(".Userloaderbg").css("display","none");
+        }
+        $(".Userloaderbg").css("display","flex");
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("SaveUpdate", "ESS_Recruitment_BulkCandidateData")',
+            data: JSON.stringify({ BulkObj: RecordList,AgencyAssignId:AgencyAssignId }),
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            success: function (response) {
+                debugger;
+                var Getdata = JSON.parse(response);
+                $(".Userloaderbg").css("display","none");
+                var Message1 = Getdata.Message;
+                var Icon1 = Getdata.Icon;
+                if(Icon1=='error')
+                {
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                        }
+                    }
+                }
+                else{
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    $('#tblBulkUploadItems').not(function(){return!!$(this).has('th').length;}).remove();
+                                    window.location.href = '@Url.Action("ESS_Recruitment_BulkCandidateData", "ESS_Recruitment_BulkCandidateData")';
+                                } else if (
+                                    result.dismiss === Swal.DismissReason.cancel
+                                ) {
+                                }
+                            })
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+<script>
+    //THIS CODE IS USE FOR REMOVE ROW IN A TABLE
+    function removeRow(button) {
+        var row = button.parentNode.parentNode;
+        row.parentNode.removeChild(row);
+        updateSrNo();
+    }
+</script>

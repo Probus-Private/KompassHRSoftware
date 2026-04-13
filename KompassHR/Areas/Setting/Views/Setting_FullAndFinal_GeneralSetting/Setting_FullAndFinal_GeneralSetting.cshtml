@@ -1,0 +1,228 @@
+﻿@model KompassHR.Areas.Setting.Models.Setting_FullAndFinal.FNF_GeneralSetting
+@{
+    ViewBag.Title = "Setting_FullAndFinal_GeneralSetting";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+<style>
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+</style>
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                General Setting
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("ESS_AdminDashboard_Dashboard", "ESS_AdminDashboard_Dashboard", new { id = 32, ScreenId = 121, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Setting_FullAndFinal_Menu", "Setting_FullAndFinal_Menu", new { id = 7, ScreenId =68, area = "Setting" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Settings">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> General Setting - <b>@ViewBag.AddUpdateTitle</b></h4>
+
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Add general setting manual here!
+                    </p>
+                </div>
+                <div class="panel-body" data-scrollbar="false">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "Setting_FullAndFinal_GeneralSetting", new { area = "Setting" })' id="SaveGeneralSetting" method="post">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <div class="col-md-3"></div>
+                                            <div class="col-md-9">
+                                                <div class="row">
+                                                    <div class="col-md-6 d-flex">
+                                                        @Html.CheckBoxFor(model => model.IsImmediatelyShow, new { @id = "IsImmediatelyShow", name = "IsImmediatelyShow" })
+                                                        @Html.HiddenFor(model => model.FNFSettingId_Encrypted)
+                                                        &nbsp;
+                                                        <label class="form-label col-form-label col-md-10">
+                                                            Immediate Relive
+                                                        </label>
+                                                    </div>
+                                                    <div class="col-md-6 d-flex">
+                                                        @Html.CheckBoxFor(model => model.IsNoticePeriodPurchaseShow, new { @id = "IsNoticePeriodPurchaseShow", name = "IsNoticePeriodPurchaseShow" }) &nbsp;
+                                                        <label class="form-label col-form-label col-md-10">
+                                                            Notice Period Purchase
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Back Date (Days)
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-10">
+                                                @Html.TextBoxFor(model => model.BackDateEntryDays, new { @class = "form-control", name = "BackDateEntryDays", type = "text", id = "txtBackDateEntryDays", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Future Date
+                                                (Days)
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-10">
+                                                @Html.TextBoxFor(model => model.FutureDateEntryDays, new { @class = "form-control", name = "FutureDateEntryDays", type = "text", id = "txtFutureDateEntryDays", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="submit" id="SubmitBtn" class="btn btn-primary btn-sm">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+
+                                                        @*<button type="button" class="btn btn-danger btn-sm">
+                                                                <i class="fa-solid fa-share-from-square"></i> List
+                                                            </button>*@
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- END panel -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        debugger;
+
+        var list = @Html.Raw(Json.Encode(ViewBag.data));
+
+        $("#IsImmediatelyShow").prop("checked",list[0].IsImmediatelyShow);
+        $("#IsNoticePeriodPurchaseShow").prop("checked",list[0].IsNoticePeriodPurchaseShow);
+
+        $("#txtBackDateEntryDays").val(list[0].BackDateEntryDays);
+        $("#txtFutureDateEntryDays").val(list[0].FutureDateEntryDays);
+        console.log(list);
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                });
+            }
+        }
+    });
+</script>
+
+<script>
+    //use for add regex function
+    jQuery.validator.addMethod(
+  "regex",
+   function(value, element, regexp) {
+       debugger;
+       if (regexp.constructor != RegExp)
+           regexp = new RegExp(regexp);
+       else if (regexp.global)
+           regexp.lastIndex = 0;
+       return this.optional(element) || regexp.test(value);
+   },"erreur expression reguliere"
+);
+
+    $("#SaveGeneralSetting").validate({
+
+        rules: {
+            BackDateEntryDays:{
+                required:true,
+            },
+            FutureDateEntryDays: {
+                required: true,
+            }
+        },
+        messages: {
+
+            BackDateEntryDays: {
+                required: "This field is required",
+            },
+            FutureDateEntryDays: {
+                required: "This field is required",
+            },
+        }
+    });
+
+    //<-----------------------------Alreay exist---------------------------------->
+    var form=$("#SaveGeneralSetting");
+    form.validate();
+    $("#btnSubmit").click(function () {
+        debugger;
+        form.valid();
+        if(form.valid()==false)
+        {
+            return false;
+        }
+        $("#SaveGeneralSetting").submit();
+    });
+</script>

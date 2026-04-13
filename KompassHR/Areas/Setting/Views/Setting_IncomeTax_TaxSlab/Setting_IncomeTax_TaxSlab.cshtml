@@ -1,0 +1,724 @@
+﻿@model KompassHR.Areas.Setting.Models.Setting_IncomeTax.IncomeTax_Slab
+@{
+    ViewBag.Title = "Setting_IncomeTax_TaxSlab";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+<style>
+    .width-45 {
+        width: 45px !important;
+    }
+
+    .table {
+        --bs-table-striped-bg: rgba(0, 0, 255, 0.02);
+    }
+
+    .text-nowrap {
+        font-size: 12px;
+    }
+
+    tbody tr td {
+        font-size: 12px;
+        padding: 4px !important;
+    }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .lbl {
+        border: none;
+        outline: none;
+        text-align: center;
+    }
+
+    /*.table td:nth-child(1) {
+        display: none;
+    }
+
+    .table td:nth-child(2) {
+        display: none;
+    }*/
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Income Tax Slab
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("ESS_AdminDashboard_Dashboard", "ESS_AdminDashboard_Dashboard", new { id = 32, ScreenId = 121, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Setting_IncomeTax_Menu", "Setting_IncomeTax_Menu", new { id = 9, ScreenId =74, area = "Setting" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Settings">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                 <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">Income Tax Slab <span>- @ViewBag.AddUpdateTitle</span></h4>
+                   
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Define Income Tax Slab here!
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "Setting_Statutory_PTSlab", new { area = "Setting" })' id="SaveStatutoryPTSlab" method="post">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Financial Year <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.TaxFyearId, new SelectList(ViewBag.GetTaxYear, "Id", "Name"), "--Select--", new { id = "ddlTaxFyearId", name = "TaxFyearId", @class = "form-select", autocomplete = "off" })
+                                                @Html.ValidationMessageFor(model => model.TaxFyearId, "", new { @class = "help-block", @id = "ErrorTaxFyearId", @style = "color:red" })
+                                                @Html.HiddenFor(model => model.TaxRateMasterId_Encrypted, new { @id = "TaxRateMasterId_Encrypted" })
+                                                @Html.HiddenFor(model => model.TaxRateMasterId, new { @id = "TaxRateMasterId" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Income Tax Type <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.TaxRateTypeId, new List<SelectListItem> {
+                                                                            new SelectListItem { Text = "OldRegime", Value = "1" },
+                                                                            new SelectListItem { Text = "NewRegime", Value = "2" },
+                                                                        }, "--Select--", new { id = "ddlTaxRateType", @class = "form-select", autocomplete = "off", name = "TaxRateType" })
+                                                @Html.ValidationMessageFor(model => model.TaxRateType, "", new { @class = "help-block", @id = "ErrorTaxRateType", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Age <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.TaxRateAgeId, new List<SelectListItem> {
+                                                                            new SelectListItem { Text = "Less than 60 years ", Value = "1" },
+                                                                            new SelectListItem { Text = "60 years or more but less than 80 years", Value = "2" },
+                                                                            new SelectListItem { Text = "Above 80 years", Value = "3" },
+                                                                        }, "--Select--", new { id = "ddlTaxRateAge", @class = "form-select", autocomplete = "off", name = "TaxRateAge" })
+                                                @Html.ValidationMessageFor(model => model.TaxRateAge, "", new { @class = "help-block", @id = "ErrorTaxRateAge", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr />
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Lower Limit (Rs.) <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.LowerLimit, new { @class = "form-control", name = "LowerLimit", type = "number", id = "txtLowerLimit", autocomplete = "Off", @onchange = "check()", style = "text-align: right;" })
+                                                @Html.ValidationMessageFor(model => model.LowerLimit, "", new { @class = "help-block", @id = "ErrorLowerLimit", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Upper Limit (Rs.) <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.UpperLimit, new { @class = "form-control", name = "UpperLimit", type = "number", id = "txtUpperLimit", autocomplete = "Off", style = "text-align: right;" })
+                                                @Html.ValidationMessageFor(model => model.UpperLimit, "", new { @class = "help-block", @id = "ErrorUpperLimit", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Tax Rate Amount (Rs.) <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-3">
+                                                @Html.TextBoxFor(model => model.TaxRateAmount, new { @class = "form-control", name = "TaxRateAmount", type = "number", id = "txtTaxRateAmount", autocomplete = "Off", style = "text-align: right;" })
+                                                @Html.ValidationMessageFor(model => model.TaxRateAmount, "", new { @class = "help-block", @id = "ErrorTaxRateAmount", @style = "color:red" })
+                                            </div>
+                                            <label class="form-label col-form-label col-md-1">
+                                                &nbsp; &nbsp; <b>+</b>
+                                            </label>
+                                            <div class="col-md-3">
+                                                @Html.TextBoxFor(model => model.TaxRatePercentage, new { @class = "form-control", name = "TaxRatePercentage", type = "number", id = "txtTaxRatePercentage", autocomplete = "Off" })
+                                                @Html.ValidationMessageFor(model => model.TaxRatePercentage, "", new { @class = "help-block", @id = "ErrorTaxRatePercentage", @style = "color:red" })
+                                            </div>
+                                            <label class="form-label col-form-label col-md-1">
+                                                <b>%</b>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Above amount <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.TaxRate_AboveAmt, new { @class = "form-control", name = "TaxRate_AboveAmt", type = "number", id = "txtTaxRate_AboveAmt", autocomplete = "Off", style = "text-align: right;" })
+                                                @Html.ValidationMessageFor(model => model.TaxRateAmount, "", new { @class = "help-block", @id = "ErrorTaxRateAmount", @style = "color:red" })
+                                                @*@Html.TextBoxFor(model => model.TaxSurcharge, new { @class = "form-control", name = "TaxSurcharge", type = "number", id = "txtTaxSurcharge", autocomplete = "Off", style = "text-align: right;" })
+                                                    @Html.ValidationMessageFor(model => model.TaxSurcharge, "", new { @class = "help-block", @id = "ErrorTaxSurcharge", @style = "color:red" })*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @*<div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+
+                                                </label>
+                                                <div class="col-md-3">
+                                                    @Html.TextBoxFor(model => model.TaxRate_AboveAmt, new { @class = "form-control", name = "TaxRate_AboveAmt", type = "number", id = "txtTaxRate_AboveAmt", autocomplete = "Off", style = "text-align: right;" })
+                                                    @Html.ValidationMessageFor(model => model.TaxRateAmount, "", new { @class = "help-block", @id = "ErrorTaxRateAmount", @style = "color:red" })
+                                                </div>
+                                                <label class="form-label col-form-label col-md-1">
+                                                    <b>Above</b>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>*@
+
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="button" id="btnAdd"
+                                                                class="btn btn-primary btn-sm">
+                                                            <i class="fa-solid fa-plus"></i> Add
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="table-scroll div1">
+                                    <div class="table-wrap">
+                                        <table class="table table-bordered" id="AddedTable" style="width: 100%">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-nowrap">Delete  </th>
+                                                    @*<th hidden class="text-nowrap">Financial year Id  </th>
+                                                        <th hidden class="text-nowrap">Income Tax Type Id  </th>
+                                                        <th hidden class="text-nowrap">Age id </th>*@
+                                                    <th class="text-nowrap">Financial year  </th>
+                                                    <th class="text-nowrap">Income Tax Type </th>
+                                                    <th class="text-nowrap">Age </th>
+                                                    <th class="text-nowrap">Lower Limit</th>
+                                                    <th class="text-nowrap">Upper Limit</th>
+                                                    <th class="text-nowrap">Tax Rate(AMT)</th>
+                                                    <th class="text-nowrap">Tax Rate(%)</th>
+                                                    <th class="text-nowrap">Tax Rate(Above)  </th>
+                                                    @*<th class="text-nowrap">Surcharge</th>*@
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tblTaxSlabs"></tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+
+                                    </div>
+                                    @*<div class="row">
+                                            <div class="col-md-2">
+                                                <button type="button" id="btnDeleteRow" style="margin-top: 3px;"
+                                                        class="btn btn-danger btn-sm">
+                                                    <i class="fa-solid fa-trash-alt"></i> Delete Row
+                                                </button>
+                                            </div>
+                                        </div>*@
+                                    <br /><br />
+                                    <div class="row">
+                                        <div class="LastShortLeaveBx">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="BtnBx">
+                                                        <div>
+                                                            <button type="button" id="btnSubmit"
+                                                                    class="btn btn-primary btn-sm">
+                                                                <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                            </button>
+                                                            <a href="@Url.Action("GetList", "Setting_IncomeTax_TaxSlab", new { area = "Setting" })">
+                                                                <button type="button" id="btnPTSlabGetList" class="btn btn-danger btn-sm">
+                                                                    <i class="fa-solid fa-share-from-square"></i>
+                                                                    List
+                                                                </button>
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $("#ddlTaxFyearId").select2();
+        $("#ddlTaxRateType").select2();
+        $("#ddlTaxRateAge").select2();
+
+        var payroll_Taxslabget =@Html.Raw(Json.Encode(ViewBag.TaxSlab_Master));
+        debugger;
+        if(payroll_Taxslabget!=null)
+        {
+            for(var i=0;i <= payroll_Taxslabget.length-1;i++)
+            {
+                var table = document.getElementById("tblTaxSlabs");
+                var rowCount = table.rows.length;
+                var row = table.insertRow(rowCount);
+                var count = $('#tblTaxSlabs tr').length;
+
+                row.insertCell(0).innerHTML = "<center><a style='cursor:pointer' class='btnDeleteRow'><i class='fa-solid fa-trash-alt text-danger fa-lg'></i></a></center>";
+
+                row.insertCell(1).innerHTML = "" + payroll_Taxslabget[i][0].Value + "";
+                row.insertCell(2).innerHTML = "" + payroll_Taxslabget[i][1].Value + "";
+                row.insertCell(3).innerHTML = "" + payroll_Taxslabget[i][2].Value + "";
+                row.insertCell(4).innerHTML = "" + payroll_Taxslabget[i][3].Value + "";
+                row.insertCell(5).innerHTML = "" + payroll_Taxslabget[i][4].Value + "";
+                row.insertCell(6).innerHTML = "" + payroll_Taxslabget[i][5].Value + "";
+                row.insertCell(7).innerHTML = "" + payroll_Taxslabget[i][7].Value + "";
+                //row.insertCell(8).innerHTML = "" + payroll_Taxslabget[i][8].Value + "";
+                row.insertCell(8).innerHTML = "" + payroll_Taxslabget[i][8].Value + "";
+            }
+        }
+        var count1 = $('#tblTaxSlabs tr').length;
+        if (count1!=0 ) {
+            $("#ddlTaxFyearId").attr("disabled", "disabled");
+            $('#ddlTaxFyearId').next('.select2').find('.select2-selection').css('background-color', '#e9ecef');
+            $("#ddlTaxRateType").attr("disabled", "disabled");
+            $('#ddlTaxRateType').next('.select2').find('.select2-selection').css('background-color', '#e9ecef');
+            $("#ddlTaxRateAge").attr("disabled", "disabled");
+            $('#ddlTaxRateAge').next('.select2').find('.select2-selection').css('background-color', '#e9ecef');
+            $("#txtLowerLimit").attr("disabled", "disabled");
+        }
+        else
+        {
+            $("#ddlTaxFyearId").removeAttr("disabled");
+            $("#ddlTaxRateType").removeAttr("disabled");
+            $("#ddlTaxRateAge").removeAttr("disabled");
+        }
+
+        var LowerLast= $('#tblTaxSlabs').find('tr').last();
+        if(LowerLast.length!=0){
+            var LowerLastCell= LowerLast[0].cells;
+            var c = LowerLastCell[5].innerHTML;
+            var LowerLimit = c
+            $("#txtLowerLimit").val(LowerLimit);
+            var sum= 0;
+            var LowerTotal=Number( $('#txtLowerLimit').val());
+            var sum = (LowerTotal+1);
+            $("#txtLowerLimit").val(sum);
+        }
+
+
+    });
+    ////Ready end
+
+    //validation for upperlimit
+    $("#txtUpperLimit").keyup(function () {
+        var LowerLimit = Number($('#txtLowerLimit').val());
+        var UpperLimit = Number($('#txtUpperLimit').val());
+
+        if (UpperLimit <= LowerLimit)
+        { $('#ErrorUpperLimit').html("Upper Limit is Always Greater"); return false; }
+        else { $('#ErrorUpperLimit').html(""); }
+
+        var UpperLimitval = $("#txtUpperLimit").val();
+        if (UpperLimitval == "")
+        { $('#ErrorUpperLimit').html("Enter Upper Limit"); return false; }
+        else { $('#ErrorUpperLimit').html(""); }
+    });
+
+    $("#txtTaxRatePercentage, #txtTaxSurcharge").keyup(function () {
+        var TaxRatePercentage = parseFloat($('#txtTaxRatePercentage').val());
+        var TaxSurcharge = parseFloat($('#txtTaxSurcharge').val());
+
+        // Check if TaxRatePercentage is greater than 100
+        if (!isNaN(TaxRatePercentage) && TaxRatePercentage > 100) {
+            $('#ErrorTaxRatePercentage').html("Tax rate percentage should not be greater than 100%");
+            $('#txtTaxRatePercentage').val(0)
+            return false;
+        } else {
+            $('#ErrorTaxRatePercentage').html("");
+        }
+
+        // Check if TaxSurcharge is greater than 100
+        if (!isNaN(TaxSurcharge) && TaxSurcharge > 100) {
+            $('#ErrorTaxSurcharge').html("Tax surcharge should not be greater than 100%");
+            $('#txtTaxSurcharge').val(0)
+            return false;
+        } else {
+            $('#ErrorTaxSurcharge').html("");
+        }
+    });
+
+
+
+    $("#btnAdd").click(function (e) {
+        debugger;
+
+        var TaxFyearIdText = $('#ddlTaxFyearId option:selected').text();
+        var TaxFyearId = $('#ddlTaxFyearId option:selected').val();
+
+        var TaxRateTypeText = $('#ddlTaxRateType option:selected').text();
+        var TaxRateType = $('#ddlTaxRateType option:selected').val();
+
+        var TaxRateAgeText = $('#ddlTaxRateAge option:selected').text();
+        var TaxRateAge = $('#ddlTaxRateAge option:selected').val();
+
+        var LowerLimit = $('#txtLowerLimit').val();
+        var UpperLimit = $('#txtUpperLimit').val();
+        var TaxRateAmount = $('#txtTaxRateAmount').val();
+        var TaxRatePercentage = $('#txtTaxRatePercentage').val();
+        var TaxRate_AboveAmt = $('#txtTaxRate_AboveAmt').val();
+        var TaxSurcharge = $('#txtTaxSurcharge').val();
+
+        if (TaxFyearId == "--Select--")
+        { $('#ErrorTaxFyearId').html("Financial Year is required"); return false; }
+        else { $('#ErrorTaxFyearId').html(""); }
+
+        if (TaxRateType == "")
+        { $('#ErrorTaxRateType').html("Tax Rate Type is required"); return false; }
+        else { $('#ErrorTaxRateType').html(""); }
+
+        if (TaxRateAge == "")
+        { $('#ErrorTaxRateAge').html("Tax Rate Age is required"); return false; }
+        else { $('#ErrorLowerLimit').html(""); }
+
+
+        if (LowerLimit == "")
+        { $('#ErrorLowerLimit').html("Lower limit is required"); return false; }
+        else { $('#ErrorLowerLimit').html(""); }
+
+
+        if (UpperLimit == "")
+        { $('#ErrorUpperLimit').html("Upper limit is required"); return false; }
+        else { $('#ErrorUpperLimit').html(""); }
+
+        if (TaxRateAmount == "")
+        { $('#ErrorTaxRateAmount').html("Tax rate amount is required"); return false; }
+        else { $('#ErrorTaxRateAmount').html(""); }
+
+        if (TaxSurcharge == "")
+        { $('#ErrorTaxSurcharge').html("Tax surcharge is required"); return false; }
+        else { $('#ErrorTaxSurcharge').html(""); }
+
+        if (TaxRatePercentage == "")
+        { $('#ErrorTaxRatePercentage').html("Tax rate percentage is required"); return false; }
+        else { $('#ErrorTaxRatePercentage').html(""); }
+
+        //for upper limit is always greater
+        var sum = 0;
+        var IncomeTotal = Number($('#txtUpperLimit').val());
+        var sum = IncomeTotal + 1;
+
+        //to add row into list
+        e.preventDefault();
+        var table = document.getElementById("tblTaxSlabs");
+        var rowCount = table.rows.length;
+        var row = table.insertRow(rowCount);
+        var count = $('#tblTaxSlabs tr').length;
+
+        row.insertCell(0).innerHTML = "<center><a style='cursor:pointer' class='btnDeleteRow'><i class='fa-solid fa-trash-alt text-danger fa-lg'></i></a></center>";
+
+        //row.insertCell(1).innerHTML = "" + TaxFyearId + "";
+        //row.insertCell(2).innerHTML = "" + TaxRateType + "";
+        //row.insertCell(3).innerHTML = "" + TaxRateAge + "";
+        row.insertCell(1).innerHTML = "" + TaxFyearIdText + "";
+        row.insertCell(2).innerHTML = "" + TaxRateTypeText + "";
+        row.insertCell(3).innerHTML = "" + TaxRateAgeText + "";
+        row.insertCell(4).innerHTML = "" + LowerLimit + "";
+        row.insertCell(5).innerHTML = "" + UpperLimit + "";
+        row.insertCell(6).innerHTML = "" + TaxRateAmount + "";
+        row.insertCell(7).innerHTML = "" + TaxRatePercentage + "";
+        row.insertCell(8).innerHTML = "" + TaxRate_AboveAmt + "";
+        //row.insertCell(9).innerHTML = "" + TaxSurcharge + "";
+
+        $('#txtLowerLimit').val(0),
+        $('#txtUpperLimit').val(0),
+        $('#txtTaxRateAmount').val(0),
+        $('#txtTaxSurcharge').val(0);
+        $('#txtTaxRatePercentage').val(0);
+        $('#txtTaxRate_AboveAmt').val(0);
+        $('#txtLowerLimit').val(sum);
+
+        //validation for dropdown
+       // var PTStateCode = $('#ddlPTStateCode option:selected').text();
+        var count = $('#tblTaxSlabs tr').length;
+
+        if (count != "") {
+            $("#ddlTaxFyearId").attr("disabled", "disabled");
+            $('#ddlTaxFyearId').next('.select2').find('.select2-selection').css('background-color', '#e9ecef');
+            $("#ddlTaxRateType").attr("disabled", "disabled");
+            $('#ddlTaxRateType').next('.select2').find('.select2-selection').css('background-color', '#e9ecef');
+            $("#ddlTaxRateAge").attr("disabled", "disabled");
+            $('#ddlTaxRateAge').next('.select2').find('.select2-selection').css('background-color', '#e9ecef');
+            $("#txtLowerLimit").attr("disabled", "disabled");
+
+        }
+        else {
+            $("#ddlTaxFyearId").removeAttr("disabled");
+            $("#ddlTaxRateType").removeAttr("disabled");
+            $("#ddlTaxRateAge").removeAttr("disabled");
+        }
+
+    });
+
+
+    $("#tblTaxSlabs").on("click", ".btnDeleteRow", function () {
+        debugger;
+        var table = document.getElementById("tblTaxSlabs");
+        var rowCount = table.rows.length;
+
+        // Ensure there are rows to delete (excluding the header row)
+        if (rowCount >= 1) {
+            var row = $(this).closest("tr"); // Get the row containing the clicked delete button
+            row.remove(); // Remove the row
+
+            var LowerLast = $('#tblTaxSlabs tr').last(); // Get the last row in tbody
+            if (LowerLast.length != 0) {
+                var LowerLastCell = LowerLast[0].cells;
+                var c = LowerLastCell[5].innerHTML;
+                var LowerLimit = c;
+                $("#txtLowerLimit").val(LowerLimit);
+
+                // Increment LowerLimit by 1
+                var sum = Number(LowerLimit) + 1;
+                $("#txtLowerLimit").val(sum);
+            }
+        }
+
+        // Check if the table is empty after deletion
+        var rowCountAfterDelete = $("#tblTaxSlabs tr").length;
+        if (rowCountAfterDelete == 0) { // No rows left in tbody
+            $("#ddlTaxFyearId").removeAttr("disabled");
+            $("#ddlTaxRateType").removeAttr("disabled");
+            $("#ddlTaxRateAge").removeAttr("disabled");
+            $("#txtLowerLimit").removeAttr("disabled");
+            $('#ddlTaxRateType').next('.select2').find('.select2-selection').css('background-color', '');
+            $("#txtLowerLimit").val("");
+            $('#ddlTaxRateAge').next('.select2').find('.select2-selection').css('background-color', '');
+            $('#ddlTaxFyearId').next('.select2').find('.select2-selection').css('background-color', '');
+        }
+    });
+
+
+</script>
+<script>
+    $("#btnSubmit").click(function () {
+        debugger;
+        var TaxRateMasterId_Encrypted = $("#TaxRateMasterId_Encrypted").val();
+        var TaxRate_MasterId = $("#TaxRateMasterId").val();
+        var TaxFyearIdText = $('#ddlTaxFyearId option:selected').text();
+        var TaxFyearId = $('#ddlTaxFyearId option:selected').val();
+
+        var TaxRateTypeText = $('#ddlTaxRateType option:selected').text();
+        var TaxRateType = $('#ddlTaxRateType option:selected').val();
+
+        var TaxRateAgeText = $('#ddlTaxRateAge option:selected').text();
+        var TaxRateAge = $('#ddlTaxRateAge option:selected').val();
+        $(".Userloaderbg").css("display", "flex");
+        $.ajax({
+            url: '@Url.Action("IsTaxSlabExists", "Setting_IncomeTax_TaxSlab")',
+            method: "get",
+            data: { TaxRateMasterId_Encrypted: TaxRateMasterId_Encrypted, TaxFyearId: TaxFyearId, TaxRateType: TaxRateType, TaxRateAge: TaxRateAge },
+            success: function (response) {
+                debugger;
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon == "error") {
+                    $(".Userloaderbg").css("display", "none");
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                        }
+                    }
+                }
+
+                else {
+                    var table = document.getElementById("tblTaxSlabs");
+                    var rowCount = table.rows.length;
+                    var Task = new Array();
+                    var data = {};
+                    for (i = 0; i <= rowCount - 1; i++) {
+                        var data = {};
+                        data.LowerLimit = table.rows[i].cells[4].innerHTML;
+                        data.UpperLimit = table.rows[i].cells[5].innerHTML;
+                        data.TaxRateAmount = table.rows[i].cells[6].innerHTML;
+                        data.TaxRatePercentage = table.rows[i].cells[7].innerHTML;
+                        data.TaxRate_AboveAmt = table.rows[i].cells[8].innerHTML;
+                        //data.TaxSurcharge = table.rows[i].cells[9].innerHTML;
+                        Task.push(data);
+                    }
+
+                    $(".Userloaderbg").css("display", "flex");
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("SaveUpdate", "Setting_IncomeTax_TaxSlab")',
+                        data: JSON.stringify({TaxRate_MasterId:TaxRate_MasterId, Task: Task, TaxFyearId: TaxFyearId,  TaxRateType: TaxRateType, TaxRateTypeText: TaxRateTypeText, TaxRateAgeText: TaxRateAgeText, TaxRateAge: TaxRateAge, TaxRateMasterId_Encrypted: TaxRateMasterId_Encrypted }),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "text",
+                        success: function (response) {
+                            debugger;
+                            var data = JSON.parse(response);
+                            var Message1 = data.Message;
+                            var Icon1 = data.Icon;
+                            if (data != null) {
+                                if (Message1 != null) {
+                                    Swal.fire({
+                                        icon: Icon1,
+                                        text: Message1,
+                                        allowOutsideClick: () => {
+                                            const popup = Swal.getPopup()
+                                            popup.classList.remove('swal2-show')
+                                            setTimeout(() => {
+                                                popup.classList.add('animate__animated', 'animate__headShake')
+                                            })
+                                            setTimeout(() => {
+                                                popup.classList.remove('animate__animated', 'animate__headShake')
+                                            }, 500)
+                                            return false
+                                        }
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            window.location.href = '@Url.Action("Setting_IncomeTax_TaxSlab", "Setting_IncomeTax_TaxSlab")';
+                                        } else if (
+                                            /* Read more about handling dismissals below */
+                                            result.dismiss === Swal.DismissReason.cancel
+                                        ) {
+
+                                        }
+                                    })
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+
+        });
+    });
+</script>

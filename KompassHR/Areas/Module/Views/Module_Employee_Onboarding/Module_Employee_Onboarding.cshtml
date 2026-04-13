@@ -1,0 +1,1919 @@
+﻿@model KompassHR.Models.Mas_Employee
+@{
+    ViewBag.Title = "Module_Employee_Onboarding";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+
+<style>
+    .table {
+        --bs-table-striped-bg: rgba(0, 0, 255, 0.02);
+    }
+
+    .text-nowrap {
+        font-size: 12px;
+    }
+
+    tbody tr td {
+        font-size: 12px;
+        padding: 4px !important;
+    }
+
+    .ListBtn {
+        background-color: transparent;
+        color: #000;
+        font-size: 15px !important;
+        padding: 5px 8px !important;
+        border: none;
+    }
+
+        .ListBtn:hover {
+            background-color: transparent;
+            color: #000;
+        }
+
+            .ListBtn:hover i {
+                transition: all 0.5s;
+                transform: scale(1.5);
+            }
+
+
+
+    .box2 {
+        width: 100px;
+        height: 100px;
+        padding: 15px 0px;
+        font-family: 'Montserrat', sans-serif;
+        position: relative;
+        z-index: 0;
+        margin-bottom: 10px;
+    }
+
+        .box2:hover {
+            border: 2px solid #ff9c19;
+            border-radius: 10px;
+            cursor: pointer;
+            transform: translateY(-10px);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.03), 0px -15px 25px rgba(0, 0, 0, 0.03), 0 15px 25px rgba(0, 0, 0, 0.05);
+        }
+
+            .box2:hover .info i {
+                color: #ff9c19;
+            }
+
+
+        .box2 .info i {
+            font-size: 20px;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 5px;
+            color: #007bff;
+        }
+
+        .box2 .info h7 {
+            position: relative;
+            font-size: 12px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            font-weight: 900 !important;
+            text-transform: capitalize;
+            margin-bottom: 2px;
+            padding: 0 10px;
+            color: #444;
+        }
+
+    .FS-12PX {
+        font-size: 12px !important;
+    }
+
+    .div1 td:nth-child(1) {
+        position: sticky;
+        left: 0;
+    }
+
+    /*.div1 td:nth-child(2) {
+        position: sticky;
+        left: 62px;
+    }*/
+
+    .fixed-side {
+        position: sticky;
+        left: 0px;
+    }
+
+    /*.fixed-side1 {
+        position: sticky;
+        left: 62px;
+    }*/
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    .card-row-title {
+        color: #e63c3c;
+        font-size: 18px;
+        font-weight: 600;
+        text-transform: capitalize;
+        border-bottom: #009ce7 1px solid;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .empbx h4 {
+        margin-bottom: 5px;
+    }
+
+    .empbx h6 i {
+        font-size: 1rem;
+        margin-right: 5px;
+    }
+
+    .empbx {
+        margin-bottom: 20px;
+    }
+</style>
+
+<div id="content" class="app-content">
+
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Admin Onboarding
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Module_Employee_Menu", "Module_Employee_Menu", new {id = 3, ScreenId=140, area = "Module" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">@*@i.SET_MODULES.FormName*@ Admin Onboarding</h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Information related to the employee's job position, department, start date, work location, job title, reporting structure (supervisor or manager), and employment status (full-time, part-time, contract, etc.) is maintained.
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "Module_Employee_Onboarding", new { area = "Module" })' id="SaveAdminOnboarding" method="post">
+                                <div class="row mb-10px">
+                                    <div class="col-md-12">
+                                        <div class="card-row-title">
+                                            Employee Information
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Company Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.CmpID, new SelectList(ViewBag.CompanyName, "Id", "Name"), new { id = "txtComapnyName", name = "CmpID", @class = "form-select", autocomplete = "off" })
+                                                @Html.HiddenFor(model => model.EmployeeId_Encrypted, new { id = "txtEmployeeId_Encrypted" })
+                                                @Html.HiddenFor(model => model.EmployeeId, new { id = "txtEmployeeId" })
+                                                @Html.HiddenFor(model => model.PreboardingFid, new { id = "txtPreboardingFid", Value = @ViewBag.PreboardFid })
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Business Unit
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EmployeeBranchId, new SelectList(ViewBag.BranchName, "Id", "Name"), new { id = "txtBankBranchName", name = "BankBranchName", @class = "form-select", autocomplete = "off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Salutation
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.Salutation, new List<SelectListItem>{
+                                                new SelectListItem { Text = "Mr.", Value = "Mr." },
+                                                new SelectListItem { Text = "Ms.", Value = "Ms." },
+                                                new SelectListItem { Text = "Mrs.", Value = "Mrs." },
+                                              }, new { @class = "form-select", name = "SalutationName", @id = "txtSalutationName" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-9">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Employee Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.EmployeeName, new { name = "EmployeeName", @class = "form-control", id = "txtEmployeeName", Type = "text", autocomplete = "Off", Maxlength = 100, oninput = "this.value = this.value.toUpperCase()" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Employee No
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.EmployeeNo, new { id = "txtEmployeeNo", name = "EmployeeNo", @class = "form-control", autocomplete = "Off", Maxlength = 10, oninput = "this.value = this.value.toUpperCase()" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Employee Card No
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.EmployeeCardNo, new { id = "txtEmployeeCardNo", name = "EmployeeCardNo", @class = "form-control", autocomplete = "Off", Maxlength = 10 })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-10px">
+                                    <div class="col-md-12">
+                                        <div class="card-row-title">
+                                            Admin Information
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Contractor Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.ContractorID, new SelectList(ViewBag.ContractorName, "Id", "Name"), new
+                                           {
+                                               id = "ddlContractorID",
+                                               name = "ContractorID",
+                                               @class = "form-control select2"@*, @disabled = "disabled", style = "background-color: #e9ecef;"*@ })
+                                                @Html.HiddenFor(model => model.EmployeeId_Encrypted)
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Line Master
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EmployeeLineID, new SelectList(ViewBag.LineMasterName1, "Id", "Name"), "--Select--", new { id = "ddlLineMasterID", name = "LineMasterID", @class = "form-control select2" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @*<div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-10px">
+                                                <label class="form-label col-form-label col-md-12">
+                                                    Critical Stage Applicable
+
+                                                </label>
+                                                <div class="col-md-12">
+                                                    @Html.DropDownListFor(model => model.IsCriticalStageApplicable, new List<SelectListItem>{
+                                                    new SelectListItem {Text ="Yes", Value="true"},
+                                                     new SelectListItem {Text ="No", Value="false"},
+                                                  }, "--Select--", new { @class = "form-control select2", name = "IsCriticalStageApplicable", @id = "ddlIsCriticalStageApplicable" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-10px">
+                                                <label class="form-label col-form-label col-md-12">
+                                                    Critical Stage Category
+
+                                                </label>
+                                                <div class="col-md-12">
+                                                    @Html.DropDownListFor(model => model.EmployeeCriticalStageID, new SelectList(ViewBag.CriticalStageName, "Id", "Name"), "--Select--", new { id = "ddlEmployeeCriticalStageID", name = "EmployeeCriticalStageID", @class = "form-control select2" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>*@
+
+
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Department
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EmployeeDepartmentID, new SelectList(ViewBag.DepartmentName, "Id", "Name"), "--Select--", new { id = "txtEmployeeDepartmentID", name = "EmployeeDepartmentID", @class = "form-select", autocomplete = "off" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Sub- Department
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EmployeeSubDepartmentName, new SelectList(ViewBag.SubDepartmentName, "Id", "Name"), "--Select--", new { id = "ddlEmployeeSubDepartmentName", name = "EmployeeSubDepartmentName", @class = "form-control select2" })
+                                                @*@Html.TextBoxFor(model => model.EmployeeSubDepartmentName, new { id = "txtEmployeeSubDepartmentName", name = "EmployeeSubDepartmentName", @class = "form-control", autocomplete = "Off", Maxlength = 50})*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Manpower Category
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EmployeeAllocationCategoryId, new SelectList(ViewBag.EmployeeAllocationCategory, "Id", "Name"), "--Select--", new { id = "ddlEmployeeAllocationCategoryId", name = "EmployeeAllocationCategoryId", @class = "form-select", autocomplete = "off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Designation
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EmployeeDesignationID, new SelectList(ViewBag.Designation, "Id", "Name"), "--Select--", new { id = "txtEmployeeDesignationID", name = "EmployeeDesignationID", @class = "form-select", autocomplete = "off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Grade
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EmployeeGradeID, new SelectList(ViewBag.Grade, "Id", "Name"), "--Select--", new { id = "txtGradeId", name = "Grade", @class = "form-select", autocomplete = "off" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Employee Level
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EmployeeLevelID, new SelectList(ViewBag.EmployeeLevel, "Id", "Name"), "--Select--", new { id = "txtEmployeeLevel", name = "EmployeeLevelID", @class = "form-control", autocomplete = "off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Employee Type
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EmployeeTypeID, new SelectList(ViewBag.EmployeeType, "Id", "Name"), new { id = "txtEmployeeTypeID", name = "EmployeeTypeID", @class = "form-select", autocomplete = "off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Employee Group
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EmployeeGroupID, new SelectList(ViewBag.EmployeeGroupName, "Id", "Name"), "--Select--", new { id = "txtEmployeeGroupID", name = "EmployeeGroupID", @class = "form-select", autocomplete = "off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Wage Catagory
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EmployeeWageID, new SelectList(ViewBag.Wage, "Id", "Name"), new { id = "txtEmployeeWage", name = "EmployeeWageID", @class = "form-select", autocomplete = "off" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Cost Center
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EmployeeCostCenterID, new SelectList(ViewBag.CostCenterName, "Id", "Name"), new { id = "txtEmployeeCostCenter", name = "EmployeeCostCenterID", @class = "form-select", autocomplete = "off" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Zone
+
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EmployeeZoneID, new SelectList(ViewBag.Zone, "Id", "Name"), new { id = "txtEmployeeZone", name = "EmployeeZoneID", @class = "form-select", autocomplete = "off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Sub Unit
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EmployeeUnitID, new SelectList(ViewBag.Unit, "Id", "Name"), new { id = "txtEmployeeUnit", name = "EmployeeUnitID", @class = "form-select", autocomplete = "off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Local/Expat
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.LocalExpat, new List<SelectListItem>{
+                                                new SelectListItem {Text ="Local", Value="Local"},
+                                                 new SelectListItem {Text ="Expat", Value="Expat"},
+                                              }, "--Select--", new { @class = "form-select", name = "LocalExpat", @id = "LocalExpat" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Nationality
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                              @Html.DropDownListFor(model => model.EmployeeCountryId,new SelectList(ViewBag.CountryList, "Id", "Name"),new { @class = "form-select",name= "EmployeeCountryId", autocomplete = "off" ,id= "ddlEmployeeCountryId" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-10px">
+                                    <div class="col-md-12">
+                                        <div class="card-row-title">
+                                            Date Information
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Joining Date
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.JoiningDate, new { id = "txtJoiningDate", name = "JoiningDate", @class = "form-control", type = "date", autocomplete = "Off" })
+                                                <span id="ErrorFile" class="error" style="color:red; display:none"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-form-label mb-20px"> </label>
+                                            <div class="col-md-8">
+                                                @Html.CheckBoxFor(model => model.IsJoiningSpecial)
+                                                &nbsp; <label class="form-check-label form-label">
+                                                    Need celebration on every birthday/Anniversary special
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Trainee Due Date
+
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.TraineeDueDate, new { id = "txtTraineeDueDate", name = "TraineeDueDate", @class = "form-control", type = "date" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Probation Due  Date
+
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.ProbationDueDate, new { id = "txtProbationDueDate", name = "ProbationDueDate", @class = "form-control", type = "date" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Tentative Confirmation Date
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.ConfirmationDate, new { id = "txtConfirmationDate", name = "ConfirmationDate", @class = "form-control", type = "date" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-form-label mb-20px"> </label>
+                                            <div class="col-md-8">
+                                                @Html.CheckBoxFor(model => model.IsConfirmation)
+                                                &nbsp; <label class="form-check-label form-label">
+                                                    Is Confirmation
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Company Moblie
+                                                No.
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.CompanyMobileNo, new { id = "txtCompanyMobileNo", name = "CompanyMobileNo", @class = "form-control", type = "text", Maxlength = 10 })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Company Mail
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.CompanyMailID, new { id = "txtCompanyMailID", name = "CompanyMailID", @class = "form-control", type = "text", autocomplete = "Off", Maxlength = 70 })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Confirmation By
+
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.ConfirmationBy, new { id = "txtConfirmationBy", name = "ConfirmationBy", @class = "form-control", type = "text", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @*<div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-form-label mb-20px"> </label>
+                                                <div class="col-md-8">
+                                                    @Html.CheckBoxFor(model => model.EmployeeLeft, new { id = "chkEmployeeLeft" })
+                                                    &nbsp; <label class="form-check-label form-label">
+                                                        Left Employee
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>*@
+                                </div>
+
+                                <div class="row mb-10px">
+                                    <div class="col-md-12">
+                                        <div class="card-row-title">
+                                            CTC Information
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Salary Process (Category)
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EM_ProcessCategoryId, new SelectList(ViewBag.SalaryProcess, "Id", "Name"), new { id = "ddlSalaryProcess", name = "EM_ProcessCategoryId", @class = "form-select", autocomplete = "off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Salary Sheet(Print)
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EM_SalarySheetId, new SelectList(ViewBag.SalarySheet, "Id", "Name"), new { id = "ddlSalarySheet", name = "EM_SalarySheetId", @class = "form-select", autocomplete = "off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Salary Process
+                                                Payable Type
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EM_Atten_DailyMonthly, new List<SelectListItem>{
+                                                new SelectListItem { Text = "Monthly", Value = "Monthly"},
+                                                    new SelectListItem { Text = "Daily", Value = "Daily"},
+                                                    new SelectListItem { Text = "Hourly", Value = "Hourly"},
+                                                }, new { id = "ddlEM_Atten_DailyMonthly", @class = "form-select", autocomplete = "off", name = "EM_Atten_DailyMonthly" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Notice Period
+                                                Type
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.NoticePeriodType, new List<SelectListItem>{
+                                                new SelectListItem { Text = "ByPolicy", Value = "ByPolicy"},
+                                                    new SelectListItem { Text = "Month", Value = "Month"},
+                                                    new SelectListItem { Text = "Days", Value = "Days"},
+                                                }, new { id = "ddlNoticePeriodType", @class = "form-select", autocomplete = "off", name = "NoticePeriodType" })
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3" id="divNoticePeriodValue" style="display:none;">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Notice Period Value
+                                            </label>
+                                            <div class="col-md-12">
+                                                @*@Html.DropDownListFor( model => model.NoticePeriodMonthDays, new SelectList(ViewBag.NoticePeriodMonthDays, "Id", "Name"),
+                                                    new { id = "ddlNoticePeriodValue", @class = "form-select", autocomplete = "off" })*@
+
+
+                                                @Html.DropDownListFor(model => model.NoticePeriodMonthDays, new SelectList(ViewBag.NoticePeriodMonthDays ?? new List<SelectListItem>(),
+                                                "Name", "Name"), new { id = "ddlNoticePeriodValue", @class = "form-select", name = "NoticePeriodMonthDays", autocomplete = "off" })
+                                                <span id="ErrorddlNoticePeriodValue" class="Error" style="color:red"></span>
+
+                                                @*<input type="text" id="txtNoticePeriodValue" name="NoticePeriodValue" class="form-control" autocomplete="off" />*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-10px divHiddenLeftEmployee">
+                                    <div class="col-md-12">
+                                        <div class="card-row-title">
+                                            Leaving Details
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row divHiddenLeftEmployee">
+                                    <div class="col-md-3">
+                                        <div class="row mb-10px">
+                                            <label class="col-form-label mb-20px"> </label>
+                                            <div class="col-md-8">
+                                                @Html.CheckBoxFor(model => model.EmployeeLeft, new { id = "chkEmployeeLeft" })
+                                                &nbsp; <label class="form-check-label form-label">
+                                                    Left Employee
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3" id="Hiddenleavingdate">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Leaving Date
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.LeavingDate, new { id = "txtLeavingDate", name = "LeavingDate", @class = "form-control", type = "date" })
+                                                @Html.ValidationMessageFor(model => model.LeavingDate, "", new { @class = "help-block", @id = "ErrorLeavingDate", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @*<div id="Hiddenleavingdate">
+                                        <div class="row Hiddenleavingdate">
+                                            <div class="col-md-6">
+                                                <div class="row mb-10px">
+                                                    <label class="form-label col-form-label col-md-12">
+                                                        Leaving Date
+                                                    </label>
+                                                    <div class="col-md-12">
+                                                        @Html.TextBoxFor(model => model.LeavingDate, new { id = "txtLeavingDate", name = "LeavingDate", @class = "form-control", type = "date" })
+                                                        @Html.ValidationMessageFor(model => model.LeavingDate, "", new { @class = "help-block", @id = "ErrorLeavingDate", @style = "color:red" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>*@
+
+
+
+                                <div class="row mb-20px">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        @*<button type="button" data-bs-toggle="offcanvas"
+                                                                    href="#offcanvasExample" id="btnActionList" onclick="EmployeeDetails(this)" class="btn  btnpress ListBtn">
+                                                                <i class="fa-solid fa-list"></i>
+                                                            </button>*@
+                                                        <button type="button" id="btnSubmit" class="btn btn-primary btn-sm">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                        <a href="@Url.Action("Module_Employee_EmployeeList", "Module_Employee_EmployeeList", new {id=3, ScreenId=142, area = "Module" })">
+                                                            <button type="button" id="btnGetList"
+                                                                    class="btn btn-danger btn-sm">
+                                                                <i class="fa-solid fa-share-from-square"></i>
+                                                                List
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    @Html.Action("Onboarding_SidebarMenu", "Module_Employee_PersonalInfo")
+</div>
+
+
+<!-- #Start Cancel Request dialog -->
+<div class="modal fade" id="ReportingModal" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header bg-black text-white">
+                <h5 class="modal-title">Reporting </h5>
+                <div class="panel-heading-btn">
+                    <a href="javascript:;" class="btn btn-icon btn-danger btnClear" data-bs-dismiss="modal"
+                       aria-hidden="true" id="CloseModel">
+                        <i class="fa fa-xmark"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="modal-body-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            @* @Html.DropDownListFor(model => model.PunchMissingEmployeeID, new SelectList(ViewBag.GetAdditionalList, "Id", "Name"), new { id = "LeaveMasterLeaveYearId", name = "LeaveMasterLeaveYearId", @class = "form-select", autocomplete = "off" })*@
+                                            <h6> Select Reporting Manager <span class="important">*</span></h6>
+
+                                            @Html.DropDownList("Id", new SelectList(ViewBag.GetManagerEmployee, "Id", "Name"), "--Select--", new { @class = "form-select", Id = "ddlManagerName", @style = "width:auto;" })
+                                            <h1></h1>
+                                            <span id="ErrorMessage" class="Error" style="color:red"></span>
+                                            @*<h6> Enter Remark <span class="important">*</span></h6>
+
+                                                <textarea id="txtApproveRejectRemark" class="form-control" rows="4"></textarea>
+                                                <span id="AreaErrorMessage" class="Error" style="color:red"></span>*@
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="SubmitRequest()" id="btnReject" class="btn btn-primary btn-sm">
+                    <i class="fa-solid fa-floppy-disk"> </i> Submit
+                </button>
+                @*<button type="button" id="btnCancel" class="btn btn-danger btnpress CloseModel" data-bs-dismiss="modal">
+                        <i class="fa-solid fa-share-from-square"></i> Cancel
+                    </button>*@
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #End Cancel Request dialog -->
+<script>
+    $(document).ready(function () {
+        debugger;
+        $("#ddlEmployeeCountryId").select2();
+
+        var isManualChange = false;
+var selectedLineMaster = @Html.Raw(Json.Encode(Model.EmployeeLineID));
+
+setTimeout(function () {
+    $("#txtBankBranchName").trigger("change");
+}, 300);
+        $("#ddlEmployeeCriticalStageID").attr("disabled","disabled");
+        $("#Hiddenleavingdate").hide();
+        $("#ddlContractorID").select2();
+        $('#ReportingModal').on('shown.bs.modal', function () {
+            $('#ddlManagerName').select2({
+                dropdownParent: $('#ReportingModal'),
+                placeholder: "--Select--"
+            });
+        });
+        var GetVal = @Html.Raw(Json.Encode(TempData["NoticePeriodMonthDays"]));
+        $("#ddlNoticePeriodValue").val(GetVal);
+        var getddlPType = $("#ddlNoticePeriodType").val();
+        if (getddlPType === "ByPolicy")
+       {
+           $("#divNoticePeriodValue").hide();
+       }
+       if (getddlPType === "Month" || getddlPType === "Days")
+       {
+           $("#divNoticePeriodValue").show();
+       }
+       else
+       {
+           $("#divNoticePeriodValue").hide();
+       }
+
+       $("#ddlNoticePeriodType").on("change", function () {
+            var val = $(this).val();
+            if (val === "ByPolicy")
+            {
+                $("#divNoticePeriodValue").hide();
+                $("#ddlNoticePeriodValue").find("option").remove();
+                return false;
+            }
+            if (val === "Month" || val === "Days")
+            {
+                $("#divNoticePeriodValue").show();
+            }
+            else
+            {
+                $("#divNoticePeriodValue").hide();
+                $("#txtNoticePeriodValue").val("");
+            }
+
+
+            $("#ddlNoticePeriodValue").find("option").remove();
+            var NoticePeriodType = $("#ddlNoticePeriodType").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetNoticePeriodMonthDays", "Module_Employee_Onboarding")',
+                data: { NoticePeriodType: NoticePeriodType },
+                success: function (data) {
+                    if (data !=null) {
+                        $("#ddlNoticePeriodValue").append("<option value=0>--Select-- </option>");
+                        $.each(data.NoticePeriodMonthDays, function(i, p) {
+                            $("#ddlNoticePeriodValue").append("<option value='" + p.Name +"'>" + p.Name +"</option>");
+                        });
+                    }
+                    else {
+                        //$('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        });
+        //var fromDateInputMin = document.getElementById("txtLeavingDate");
+        //var currentDateMin = new Date();
+        //var minDate = new Date();
+        //minDate.setDate(currentDateMin.getDate() - 90);
+        //var minDateString = minDate.toISOString().split('T')[0];
+        //fromDateInputMin.setAttribute("min", minDateString);
+        var TransferOrigin = @Html.Raw(Json.Encode(Session["TransferOrigin"]));
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        if (Message && Icon) {
+            Swal.fire({
+                icon: Icon,
+                text: Message,
+                allowOutsideClick: false // Disable outside clicks
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var TransferOrigin = localStorage.getItem('TransferOrigin');
+                    if (TransferOrigin === "Trans_BU") {
+                        window.location.href = '@Url.Action("Module_Employee_AttendanceInfo", "Module_Employee_AttendanceInfo", new { area= "Module" })';
+                    } else {
+                        window.location.href = '@Url.Action("Module_Employee_Onboarding", "Module_Employee_Onboarding", new { area= "Module" })';
+                    }
+                }
+            });
+        }
+
+        var List = @Html.Raw(Json.Encode(ViewBag.PreOnboardList));
+        debugger;
+        if(List!=null)
+        {
+            $("#txtComapnyName").val(List[2].Value).select2();
+            $("#txtBankBranchName").val(List[3].Value).select2();
+            $("#txtEmployeeDesignationID").val(List[5].Value).select2();
+            $("#txtEmployeeDepartmentID").val(List[4].Value).select2();
+            $("#txtSalutationName").val(List[12].Value).select2();
+            $("#txtSalutationName").val(List[12].Value).select2();
+            $("#txtEmployeeName").val(List[9].Value);
+        }
+        else
+        {
+
+        }
+
+        var TransferOrigin = @Html.Raw(Json.Encode(Session["TransferOrigin"]));
+        if (TransferOrigin=="Trans_BU")
+        {
+            localStorage.setItem('TransferOrigin', TransferOrigin)
+
+            var OnboardBranchId = @Html.Raw(Json.Encode(Session["OnboardBranchId"]));
+            var OnboardCmpId = @Html.Raw(Json.Encode(Session["OnboardCmpId"]));
+
+
+            $("#txtBankBranchName").val(OnboardBranchId).select2();
+            $("#txtComapnyName").val(OnboardCmpId).select2();
+            //$("#txtBankBranchName").attr('disabled', true);
+            //$("#txtComapnyName").attr('disabled', true);
+            $("#txtEmployeeName").attr('readOnly', true);
+            $("#txtEmployeeNo").attr('readOnly', true);
+            $("#txtEmployeeCardNo").attr('readOnly', true);
+            $("#txtSalutationName").attr('disabled', true);
+            document.querySelector('#txtBankBranchName').style.backgroundColor = '#eee';
+            document.querySelector('#txtComapnyName').style.backgroundColor = '#eee';
+            document.querySelector('#txtSalutationName').style.backgroundColor = '#eee';
+            document.querySelector('#txtEmployeeCardNo').style.backgroundColor = '#eee';
+            document.querySelector('#txtEmployeeName').style.backgroundColor = '#eee';
+            document.querySelector('#txtEmployeeNo').style.backgroundColor = '#eee';
+        }
+
+        $("#txtComapnyName").on("change", function () {
+            debugger;
+            isManualChange = true;
+            $("#txtBankBranchName").find("option").remove();
+            $("#txtEmployeeUnit").find("option").remove();
+           // $("#ddlLineMasterID").find("option").remove();
+            //$("#ddlEmployeeAllocationCategoryId").find("option").remove();
+            var CmpId = $("#txtComapnyName").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetBusinessUnit", "Module_Employee_Onboarding")',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    debugger;
+                    var Branch=data.BranchName;
+                    if (Branch !=null) {
+                        $.each(Branch, function(i, p) {
+                            $("#txtBankBranchName").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                        });
+                    }
+                    var UnitName=data.UnitName;
+                    var List_LineMaster=data.List_LineMaster;
+                    var EmployeeAllocationCategory= data.EmployeeAllocationCategory;
+                    //var GetDesignationNameId= data.GetDesignationName;
+                    if (UnitName !=null) {
+                        $.each(UnitName, function(i, p) {
+                            $("#txtEmployeeUnit").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                        });
+                    }
+                    debugger;
+                    //if (List_LineMaster !=null) {
+                    //    $.each(List_LineMaster, function(i, p) {
+                    //        $("#ddlLineMasterID").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                    //    });
+                    //}
+                    //if (EmployeeAllocationCategory != null) {
+                    //    $.each(EmployeeAllocationCategory, function (i, p) {
+                    //        $("#ddlEmployeeAllocationCategoryId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                    //    });
+                    //}
+
+                    //else {
+                    //    $('#ErrorESSPassword').html(" ");
+                    //}
+                }
+            })
+        });
+
+        $("#txtBankBranchName").on("change", function () {
+            isManualChange = true;
+            $("#txtEmployeeUnit").find("option").remove();
+            $("#ddlLineMasterID").find("option").remove();
+            //$("#ddlEmployeeAllocationCategoryId").find("option").remove();
+            //$("#txtEmployeeDesignationID").find("option").remove();
+            var CmpId = $("#txtComapnyName").val();
+            var UnitBranchId = $("#txtBankBranchName").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetUnit", "Module_Employee_Onboarding")',
+                data: { CmpId: CmpId,UnitBranchId:UnitBranchId },
+                success: function (data) {
+                    debugger;
+                    if(data==false)
+                    {
+                        $("#ddlLineMasterID").find("option").remove();
+                        $("#txtEmployeeUnit").find("option").remove();
+                        $("#ddlContractorID").find("option").remove();
+                        //$("#ddlEmployeeAllocationCategoryId").find("option").remove();
+                        //$("#txtEmployeeDesignationID").find("option").remove();
+                    }
+                    else
+                    {
+                        $("#ddlLineMasterID").find("option").remove();
+                        $("#txtEmployeeUnit").find("option").remove();
+                        $("#ddlContractorID").find("option").remove();
+                        //$("#ddlEmployeeAllocationCategoryId").find("option").remove();
+                        //$("#txtEmployeeDesignationID").find("option").remove();
+                        var UnitName=data.UnitName;
+                        var List_LineMaster=data.List_LineMaster;
+                        var ContractorDropdown=data.GetContractorDropdown;
+                        var EmployeeAllocationCategory= data.EmployeeAllocationCategory;
+                        //var GetDesignationNameId= data.GetDesignationName;
+                        if (UnitName !=null) {
+                            $.each(UnitName, function(i, p) {
+                                $("#txtEmployeeUnit").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                            });
+                        }
+                        debugger;
+                        if (List_LineMaster != null) {
+                            $.each(List_LineMaster, function (i, p) {
+                                $("#ddlLineMasterID").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+
+                            // 👉 ONLY SELECT SAVED LINE MASTER IF USER DID NOT CHANGE COMPANY
+                            if (!isManualChange && selectedLineMaster && selectedLineMaster != 0) {
+                                $("#ddlLineMasterID").val(selectedLineMaster).trigger("change");
+                            }
+                        }
+
+
+                        if (ContractorDropdown != null) {
+                            $.each(ContractorDropdown, function (i, p) {
+                                $("#ddlContractorID").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+
+                        }
+                        //if (EmployeeAllocationCategory != null) {
+                        //    $.each(EmployeeAllocationCategory, function (i, p) {
+                        //        $("#ddlEmployeeAllocationCategoryId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        //    });
+                        //}
+                    }
+                }
+            })
+        });
+
+        $("#txtEmployeeDepartmentID").on("change", function () {
+            debugger;
+            $("#ddlEmployeeSubDepartmentName").find("option").remove();
+            var DepartmentId = $("#txtEmployeeDepartmentID").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetSubDepartment", "Module_Employee_Onboarding")',
+                data: { DepartmentId: DepartmentId },
+                success: function (data) {
+                    if (data !=null) {
+                        $("#ddlEmployeeSubDepartmentName").append("<option value=0>--Select-- </option>");
+                        $.each(data, function(i, p) {
+                            $("#ddlEmployeeSubDepartmentName").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                        });
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        });
+
+        $("#ddlIsCriticalStageApplicable").on("change", function () {
+            debugger;
+            $("#ddlEmployeeCriticalStageID").val("").select2();
+            var IsCriticalStageApplicable = $("#ddlIsCriticalStageApplicable").val();
+            if(IsCriticalStageApplicable!="false")
+            {
+                $("#ddlEmployeeCriticalStageID").removeAttr("disabled","disabled")
+            }
+            else
+            {
+                $("#ddlEmployeeCriticalStageID").attr("disabled","disabled")
+            }
+
+        });
+
+        $("#txtEmployeeNo").on("keyup", function () {
+            debugger;
+            var EmployeeNumber= $("#txtEmployeeNo").val();
+            $("#txtEmployeeCardNo").val(EmployeeNumber);
+
+        });
+        var ConfirmationDate = @Html.Raw(Json.Encode(TempData["ConfirmationDate"]));
+        var JoiningDate = @Html.Raw(Json.Encode(TempData["JoiningDate"]));
+        var ProbationDueDate=@Html.Raw(Json.Encode(TempData["ProbationDueDate"]));
+        var TraineeDueDate=@Html.Raw(Json.Encode(TempData["TraineeDueDate"]));
+        debugger;
+        if(JoiningDate=="" && ConfirmationDate ==""  )
+        {
+            var date = new Date();
+            var dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().split("T")[0];
+            $("#txtJoiningDate").val(dateString);
+
+            // Add 6 months to the current date
+            date.setMonth(date.getMonth() + 6);
+            var sixMonthsLater = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().split("T")[0];
+
+            // Set the calculated date to all fields
+            $("#txtTraineeDueDate").val(sixMonthsLater);
+            $("#txtConfirmationDate").val(sixMonthsLater);
+            $("#txtProbationDueDate").val(sixMonthsLater);
+        }
+        else
+        {
+            var Joining =  convertDate(JoiningDate);
+            $("#txtJoiningDate").val(Joining);
+            var Confirmation =  convertDate(ConfirmationDate);
+            $("#txtConfirmationDate").val(Confirmation);
+            var Probation=convertDate(ProbationDueDate);
+            $("#txtProbationDueDate").val(Probation);
+            var Trainee=convertDate(TraineeDueDate);
+            $("#txtTraineeDueDate").val(Trainee);
+        }
+
+
+
+        $("#LocalExpat").val("Local")
+        $("#txtEmployeeDepartmentID").select2();
+        $("#ddlEmployeeSubDepartmentName").select2();
+        $("#txtEmployeeDesignationID").select2();
+        $("#txtGradeId").select2();
+        $("#txtEmployeeCostCenter").select2();
+        $("#txtEmployeeZone").select2();
+        $("#txtEmployeeGroupID").select2();
+        $("#txtEmployeeUnit").select2();
+        $("#txtEmployeeTypeID").select2();
+        $("#txtEmployeeWage").select2();
+        $("#txtComapnyName").select2();
+        $("#txtBankBranchName").select2();
+        $("#txtEmployeeLevel").select2();
+        $("#ddlEmployeeSeries").select2();
+        //$("#ddlContractorID").select2();
+        $("#ddlLineMasterID").select2();
+        $("#ddlEmployeeCriticalStageID").select2();
+        $("#ddlEmployeeAllocationCategoryId").select2();
+        $("#ddlManagerName").select2();
+
+        var EmployeeLeftA = @Html.Raw(Json.Encode(TempData["EmployeeLeft"]));
+        var LeavingDateA = @Html.Raw(Json.Encode(TempData["LeavingDate"]));
+        debugger;
+        if(EmployeeLeftA===false)
+        {
+            //$("#Hiddenleavingdate").hide();
+            $(".divHiddenLeftEmployee").hide();
+        }
+        else
+        {
+            //$("#Hiddenleavingdate").show();
+            $(".divHiddenLeftEmployee").show();
+            if(LeavingDateA=="")
+            {
+                var date = new Date();
+                var dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000 )).toISOString().split("T")[0];
+                $("#txtLeavingDate").val(dateString);
+            }
+            else{
+                var LeavingA =  convertDate(LeavingDateA);
+                $("#txtLeavingDate").val(LeavingA);
+            }
+        }
+
+
+        $("#txtJoiningDate").on("change", function () {
+            debugger;
+            var joiningDate = $("#txtJoiningDate").val();
+            if (joiningDate) {
+                // Parse the entered date
+                var date = new Date(joiningDate);
+                var currentDate = new Date();
+
+                // Check if the joining date is in the future
+                //if (date < currentDate) {
+                //    $("#ErrorFile").text("Joining date cannot be greater than the current date.");
+                //    $("#txtJoiningDate").val(""); // Clear the field
+                //    return false;
+                //}
+
+                // Format the date to YYYY-MM-DD
+                var dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().split("T")[0];
+                $("#txtJoiningDate").val(dateString);
+
+                // Add 6 months to the joining date
+                date.setMonth(date.getMonth() + 6);
+                var sixMonthsLater = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().split("T")[0];
+
+                // Set the calculated date to all fields
+                $("#txtTraineeDueDate").val(sixMonthsLater);
+                $("#txtConfirmationDate").val(sixMonthsLater);
+                $("#txtProbationDueDate").val(sixMonthsLater);
+            }
+        });
+
+
+        var TempEmployeeNo = @Html.Raw(Json.Encode(TempData["EmployeeNo"]));
+        var TempEmployeeSeries = @Html.Raw(Json.Encode(TempData["EmployeeSeries"]));
+        if(TempEmployeeSeries!=null)
+        {
+            debugger;
+            if(TempEmployeeSeries.length!=0)
+            {
+                var series=TempEmployeeSeries[0][0].Value;
+                $("#ddlHiddenEmployeeSeries").val(series).select2();
+            }
+
+            if(TempEmployeeSeries.length!=0)
+            {
+                let result = EmployeeSeries.concat("", TempEmployeeNo);
+                $("#HiddenEmployeeNo").val(result);
+            }
+        }
+
+
+        var TempIsCriticalStageApplicable = @Html.Raw(Json.Encode(TempData["IsCriticalStageApplicable"]));
+        if(TempIsCriticalStageApplicable!="")
+        {
+            debugger;
+            if(TempIsCriticalStageApplicable==true)
+            {
+                $("#ddlEmployeeCriticalStageID").removeAttr("disabled","disabled")
+            }
+            else
+            {
+                $("#ddlEmployeeCriticalStageID").attr("disabled","disabled")
+            }
+        }
+
+
+
+
+
+
+    });//ready Function
+
+    //use for add regex function
+    jQuery.validator.addMethod(
+    "regex",
+     function(value, element, regexp) {
+         if (regexp.constructor != RegExp)
+             regexp = new RegExp(regexp);
+         else if (regexp.global)
+             regexp.lastIndex = 0;
+         return this.optional(element) || regexp.test(value);
+     },"erreur expression reguliere"
+  );
+    $.validator.addMethod("greaterThan", function (value, element, params) {
+        var JoiningDate =  $("#txtJoiningDate").val();
+        if (!value || !JoiningDate) return true;
+        return new Date(value) > new Date(JoiningDate);
+    });
+
+    $.validator.addMethod("lessThan", function (value, element, params) {
+        var ConfirmationDate = $("#txtConfirmationDate").val();
+        if (!value || !ConfirmationDate) return true;
+        return new Date(value) <= new Date(ConfirmationDate);
+    });
+
+    $.validator.addMethod("greaterThan", function (value, element, params) {
+        var TraineeDueDate =  $("#txtTraineeDueDate").val();
+        if (!value || !TraineeDueDate) return true;
+        return new Date(value) >= new Date(TraineeDueDate);
+    });
+
+    $.validator.addMethod("lessThan", function (value, element, params) {
+        var ProbationDueDate = $("#txtProbationDueDate").val();
+        if (!value || !ProbationDueDate) return true;
+        return new Date(value) <= new Date(ProbationDueDate);
+    });
+
+    $('#SaveAdminOnboarding').validate({
+        rules: {
+            CmpID: {
+                required: true,
+            },
+            EmployeeBranchId: {
+                required: true,
+            },
+            Salutation: {
+                required: true,
+            },
+            EmployeeName: {
+                required: true,
+                regex:/^[a-zA-Z ]+$/
+            },
+            EmployeeNo:{
+                required: true,
+            },
+            EmployeeLevelID:{
+                required: true,
+            },
+            EmployeeDepartmentID:{
+                required: true,
+            },
+            EmployeeSubDepartmentName:{
+                required: true,
+            },
+            EmployeeDesignationID:{
+                required: true,
+            },
+            EmployeeGradeID:{
+                required: true,
+            },
+            JoiningDate:{
+                required: true,
+                date: true, // Ensure the EndDate is a valid date
+                lessThan: "#txtJoiningDate", // Apply the custom validation rule
+            },
+            ConfirmationDate:{
+                date: true, // Ensure the EndDate is a valid date
+                greaterThan: "#txtConfirmationDate", // Apply the custom validation rule
+            },
+            TraineeDueDate:{
+                date: true, // Ensure the EndDate is a valid date
+                lessThan: "#txtTraineeDueDate", // Apply the custom validation rule
+            },
+            ProbationDueDate:{
+                date: true, // Ensure the EndDate is a valid date
+                greaterThan: "#txtProbationDueDate", // Apply the custom validation rule
+            },
+            EmployeeCardNo:{
+                required: true,
+            },
+            EmployeeAllocationCategoryId:{
+                required: true,
+            },
+            EmployeeUnitID:{
+                required: true,
+            },
+            EmployeeCountryId:{
+                required: true,
+            },
+        },
+        messages: {
+            CmpID: {
+                required:"Company name is required",
+            },
+            EmployeeBranchId: {
+                required:"Busniess name is required"
+            },
+            Salutation: {
+                required:"Salutation Name is required",
+            },
+            EmployeeName: {
+                required:"Employee Name is required",
+                regex:"Please enter only alphabet"
+            },
+            EmployeeNo: {
+                required:"Employee No is required",
+                regex:"Please enter only alphabet or number"
+            },
+            EmployeeLevelID:{
+                required: "Employee Level is required",
+            },
+            EmployeeDepartmentID:{
+                required: "Department Name is required",
+            },
+            EmployeeDesignationID:{
+                required: "Designation Name is required",
+            },
+            EmployeeGradeID:{
+                required: "Grade Name is required",
+            },
+            JoiningDate:{
+                required: "Joining date is required",
+                //lessThan: "Joining Date must be less than Confirmation date",
+            },
+            ConfirmationDate:{
+                //greaterThan: "Confirmation Date must be greater than Joining date",
+                greaterThan: "Trainee and probation due dates must match confirmation date.",
+            },
+            TraineeDueDate:{
+                lessThan: "Trainee due date must be less than probation due date",
+            },
+            ProbationDueDate:{
+                greaterThan: "Probation due date Date must be greater than Trainee due date",
+            },
+            EmployeeCardNo:{
+                required: "Employee card no is required",
+                regex:"Please enter only alphabet or number"
+            },
+
+            EmployeeSubDepartmentName:{
+                required: "Sub- Department is required",
+            },
+            EmployeeUnitID:{
+                required: "Sub unit is required",
+            },
+            EmployeeAllocationCategoryId:{
+                required: "Manpower Category is required",
+            },
+            EmployeeCountryId:{
+                required: "Nationality is required",
+            },
+        },
+    });
+
+    function validateNoticePeriodValue() {
+        debugger;
+        var GetNPType = $("#ddlNoticePeriodType").val();
+        if (GetNPType!="ByPolicy") {
+            var val = $("#ddlNoticePeriodValue").val();
+            if (val == "" || val == null || val == 0) {
+                
+                $("#ErrorddlNoticePeriodValue").html("Please select a value.");
+                return false;
+            } else {
+                $("#ErrorddlNoticePeriodValue").html("");
+            }
+        }
+    }
+
+    var form = $("#SaveAdminOnboarding");
+    form.validate();
+    $("#btnSubmit").click(function () {
+        debugger;
+        form.valid();
+        if(form.valid()==false)
+        {
+            $("#txtJoiningDate").removeClass('error');
+            return false;
+        }
+        validateNoticePeriodValue();
+
+        //var joiningDate = $("#txtJoiningDate").val();
+        //if (joiningDate) {
+        //    var date = new Date(joiningDate);
+        //    var currentDate = new Date();
+        //    if (date < currentDate) {
+        //        $("#ErrorFile").text("Joining date cannot be Less than the current date.");
+        //        return false;
+        //    }
+        //}
+        var EmployeeNo=$("#txtEmployeeNo").val();
+        var EmployeeId_Encrypted=$("#txtEmployeeId_Encrypted").val();
+        var EmployeeId=$("#txtEmployeeId").val();
+        var EmployeeCardNo=$("#txtEmployeeCardNo").val();
+        var EmployeeLeft = document.getElementById("chkEmployeeLeft").checked;
+        debugger;
+        if (EmployeeLeft==true)
+        {
+            var LeavingDate=$("#txtLeavingDate").val();
+            if (LeavingDate=="")
+            {
+                $("#ErrorLeavingDate").html("Leaving date is required");
+                return false;
+            }
+            else{
+                $("#ErrorLeavingDate").html("");
+            }
+
+            const leavingDateInput = document.getElementById('txtLeavingDate');
+            const confirmationDateInput = document.getElementById('txtConfirmationDate');
+
+            const leavingDate = new Date(leavingDateInput.value);
+            const confirmationDate = new Date(confirmationDateInput.value);
+            var IsConfirmation = $("#IsConfirmation").prop("checked");
+            if(IsConfirmation==true)
+            {
+                if (leavingDateInput.value && confirmationDateInput.value) {
+                    if (leavingDate < confirmationDate)
+                    {
+                        $("#ErrorLeavingDate").html("Leaving date cannot be less than confirmation date.");
+                        return false;
+                    }
+                    else {
+                        $("#ErrorLeavingDate").html("");
+                    }
+                }
+            }
+            else{
+                  $("#ErrorLeavingDate").html("");
+            }
+
+        }
+
+        //var EmployeeLeft=$("#chkEmployeeLeft").val();
+        var LeavingDate=$("#txtLeavingDate").val();
+        var JoiningDate=$("#txtJoiningDate").val();
+        var BranchId=$("#txtBankBranchName").val();
+        $(".Userloaderbg").css("display", "flex");
+        $.ajax({
+            url: '@Url.Action("IsOnboardingExists", "Module_Employee_Onboarding")',
+            method:"get",
+            data:{EmployeeNo:EmployeeNo,EmployeeId_Encrypted:EmployeeId_Encrypted,EmployeeId:EmployeeId,EmployeeLeft:EmployeeLeft,EmployeeCardNo:EmployeeCardNo,LeavingDate:LeavingDate,JoiningDate:JoiningDate,BranchId:BranchId},
+            success:function(response){
+                debugger;
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon=="error") {
+                    $(".Userloaderbg").css("display", "none");
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            })
+                            if (Message1==="There are employees who report to this person.")
+                            {
+                                $("#ReportingModal").modal('show');
+                            }
+                        }
+                    }
+                }
+                else{
+                    $(".Userloaderbg").css("display", "flex");
+                    $("#SaveAdminOnboarding").submit();
+
+                }
+            }
+        });
+    });
+
+
+</script>
+
+<script>
+    function millisecTodate(milliDate) {
+        var date = new Date(milliDate);
+        var mnth = ("0" + (date.getMonth() + 1)).slice(-2);
+        var day = ("0" + date.getDate()).slice(-2);
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        hours = hours < 10 ? '0'+hours : hours;
+        minutes = minutes < 10 ? '0'+minutes : minutes;
+        var ddmmyyyy = [date.getFullYear(), mnth,day].join("-");
+        return ddmmyyyy;
+    }
+
+    function convertDate(data) {
+        var getdate = parseInt(data.replace("/Date(", "").replace(")/", ""));
+        var date = millisecTodate(getdate);
+        return date;
+    }
+
+    $("#chkEmployeeLeft").click(function() {
+        if ($(this).is(':checked')) {
+            $("#Hiddenleavingdate").show();
+            var CheckEmptyDate = document.getElementById('txtLeavingDate').value;
+            if (CheckEmptyDate == "") {
+                document.getElementById('txtLeavingDate').value = SetTodaysDate;
+            }
+        }
+        else{
+            $("#Hiddenleavingdate").hide();
+        }
+    });
+
+
+
+
+
+    function SubmitRequest()
+    {
+        //$("#CancelModal").modal('show');
+        var ddlManagerName = $('select#ddlManagerName option:selected').val();
+        if(ddlManagerName=="")
+        {
+            $("#ErrorMessage").html("Please select approver name");
+            $("#ddlManagerName").focus();
+            return false;
+        }
+        else
+        {
+            $("#ErrorMessage").html("");
+        }
+
+        const Approved = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        Approved.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes Submit!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+
+            allowOutsideClick: () => {
+                const popup = Swal.getPopup()
+                popup.classList.remove('swal2-show')
+                setTimeout(() => {
+                    popup.classList.add('animate__animated', 'animate__headShake')
+                })
+                setTimeout(() => {
+                    popup.classList.remove('animate__animated', 'animate__headShake')
+                }, 500)
+                return false
+            }
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                debugger;
+                var EmployeeId = localStorage.getItem('txtEmployeeId');
+                var ddlManagerId = $("#ddlManagerName").val();
+                $.ajax({
+                    url: "@Url.Action("UpdateReportingManager", "Module_Employee_Onboarding")",
+                    method:"get",
+                    data:{EmployeeId:EmployeeId,ddlManagerId:ddlManagerId},
+                    success:function(response){
+                        debugger;
+                        var Message1 = response.Message;
+                        var Icon1 = response.Icon;
+                        if (response.Icon=="success") {
+                            if (Message1 != null) {
+                                if (Message1 != null) {
+                                    Swal.fire({
+                                        icon: Icon1,
+                                        text: Message1,
+                                        allowOutsideClick: () => {
+                                            const popup = Swal.getPopup()
+                                            popup.classList.remove('swal2-show')
+                                            setTimeout(() => {
+                                                popup.classList.add('animate__animated', 'animate__headShake')
+                                            })
+                                            setTimeout(() => {
+                                                popup.classList.remove('animate__animated', 'animate__headShake')
+                                            }, 500)
+                                            return false
+                                        }
+                                    })
+                                    .then((result) => {
+                                        if (result.isConfirmed) {
+                                            $("#ReportingModal").modal('hide');
+
+                                            window.location.href = '@Url.Action("Module_Employee_Onboarding", "Module_Employee_Onboarding")';
+                                        } else if (
+                                            /* Read more about handling dismissals below */
+                                            result.dismiss === Swal.DismissReason.cancel
+                                        ) {
+
+                                        }
+                                    })
+                                }
+                            }
+                        }
+                        else{
+                            var Message1 = response.Message;
+                            var Icon1 = response.Icon;
+                            if (response.Icon=="success") {
+                                if (Message1 != null) {
+                                    if (Message1 != null) {
+                                        Swal.fire({
+                                            icon: Icon1,
+                                            text: Message1,
+                                            allowOutsideClick: () => {
+                                                const popup = Swal.getPopup()
+                                                popup.classList.remove('swal2-show')
+                                                setTimeout(() => {
+                                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                                })
+                                                setTimeout(() => {
+                                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                                }, 500)
+                                                return false
+                                            }
+                                        })
+                                        .then((result) => {
+                                            if (result.isConfirmed) {
+                                                window.location.href = '@Url.Action("ESS_TimeOffice_GetApproveRejectList", "ESS_TimeOffice_OutDoor")';
+                                            } else if (
+                                                /* Read more about handling dismissals below */
+                                                result.dismiss === Swal.DismissReason.cancel
+                                            ) {
+
+                                            }
+                                        })
+
+                                        $("#CancelModal").modal('hide');
+                                        $("#txtApproveRejectRemark").val("");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+            } else if (
+                /* Read more about handling dismissals below */
+                            result.dismiss === Swal.DismissReason.cancel
+                       ) {
+
+            }
+        })
+    }
+</script>

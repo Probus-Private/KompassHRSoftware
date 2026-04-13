@@ -1,0 +1,1688 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_TimeOffice.EmployeeWiseAttendance
+@{
+    ViewBag.Title = "ESS_TimeOffice_EmployeeWiseAttendance";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    /*select Row CSS Start*/
+    body table.dataTable tbody tr.selected td {
+        background: #fff7cc !important;
+        color: black !important;
+        font-weight: 600;
+    }
+
+    table.dataTable.table-hover > tbody > tr.selected:hover > * {
+        box-shadow: inset 0 0 0 9999px #D0D3D4 !important;
+    }
+
+    /*Table Row Hover   rgba(0, 0, 0, 0.075);*/
+    table.dataTable.table-hover > tbody > tr:hover > * {
+        box-shadow: inset 0 0 0 9999px #D0D3D4 !important;
+    }
+    /*Table select Row BackGround Color */
+    table.dataTable > tbody > tr.selected > * {
+        box-shadow: inset 0 0 0 9999px #D0D3D4 !important;
+        color: white;
+    }
+
+    /*.table{
+           --bs-table-active-bg: #9bc2ce !important;
+       }*/
+    /*tr:nth-child(even) {
+             --bs-table-accent-bg: #D0D3D4   !important;
+             }*/
+    /*select Row CSS End*/
+    .dataTables_scrollBody::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+        margin-top: 0px;
+    }
+
+    .dataTables_scrollBody::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .dataTables_scrollBody::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+        height: 10px;
+    }
+
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    label.error, .Error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    .div1 td:nth-child(1) {
+        position: sticky;
+        left: 0;
+        border-collapse: collapse;
+        background-color: #eee;
+    }
+
+    .fixed-side {
+        position: sticky;
+        left: 0;
+        background-color: #eee;
+        border-collapse: collapse;
+    }
+    
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    .fa-share-from-square {
+        transform: rotate(180deg);
+    }
+
+    #tblEmployeeWise input[type="text"] {
+        height: 25px; /* Adjust the height as needed */
+    }
+
+    #tblEmployeeWise input[type="datetime-local"] {
+        height: 25px; /* Adjust the height as needed */
+    }
+
+
+    #tblEmployeeWise td:nth-child(3) {
+        display: none;
+    }
+
+
+    .divEmployeeLog {
+        height: 250px; /* Adjust height as needed */
+        overflow-y: auto;
+    }
+
+    .tblheadEmployeeLog {
+        position: sticky;
+        top: 0;
+        border-color: black;
+    }
+
+    .dataTables_wrapper .dataTables_scroll table.dataTable th, .dataTables_wrapper .dataTables_scroll tr.even td,
+    .dataTables_wrapper .dataTables_scroll table.dataTable th, .dataTables_wrapper .dataTables_scroll tr.odd td {
+        border-color: black !important;
+        background-color: white !important;
+    }
+
+    #ShiftIconColor {
+        color: #f39c12;
+    }
+
+    .table-responsive {
+    height: 120px;
+}
+</style>
+
+<div id="content" class="app-content">
+    <ol class="breadcrumb float-xl-end">
+        <li class="breadcrumb-item"><a href="/Dashboard/Dashboard/Dashboard">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="/ESS/ESS_TimeOffice_AttendanceRegularization_SubMenu/ESS_TimeOffice_AttendanceRegularization_SubMenu">Attendance Menu</a></li>
+    </ol>
+    <h1 class="page-header"> Employee Wise Attendance Regularization</h1>
+    <div class="row">
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="panel panel-inverse" data-sortable-id="index-1">
+                    <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                        <h4 class="panel-title">Employee Wise Attendance Regularization </h4>
+                        <div class="panel-heading-btn">
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                        </div>
+                    </div>
+                    <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                        <p class="pb-0">
+
+                        </p>
+                    </div>
+                    <div class="panel-body" style="max-height: fit-content;">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <form role="form" action="/ESS/ESS_TimeOffice_EmployeeWiseAttendance/ESS_TimeOffice_EmployeeWiseAttendance" id="SaveEmployeeWiseAttendance" method="post">
+                                    @*<div class="row">
+                                        <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-4">
+                                        Company Name
+                                        <span class="important">*</span>
+                                        </label>
+                                        <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.CmpId, new SelectList(ViewBag.CompanyName, "Id", "Name"), "--Select--", new { @class = "form-select", name = "CompanyName", id = "ddlCmpId" })
+                                        </div>
+                                        </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-4">
+                                        Business Unit
+                                        <span class="important">*</span>
+                                        </label>
+                                        <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.BranchId, new SelectList(ViewBag.BranchName, "Id", "Name"), "--Select--", new { @class = "form-select", type = "text", name = "BranchId", id = "ddlBranchId" })
+                                        </div>
+                                        </div>
+                                        </div>
+                                        </div>*@
+
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-5">
+                                                    From date
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-7">
+                                                    @Html.TextBoxFor(model => model.FromDate, new { @class = "form-control", id = "txtFromDate", type = "date", name = "FromDate"})
+                                                    <span class="Error" id="ErrortxtFromDate"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-5">
+                                                    To Date
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-7">
+                                                    @Html.TextBoxFor(model => model.ToDate, new { @class = "form-control", id = "txtToDate", type = "date", name = "ToDate" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-3">
+                                                    Employee Name
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-7">
+                                                    @Html.DropDownListFor(model => model.EmployeeID, new SelectList(ViewBag.EmployeeName, "Id", "Name"), "--Select--", new { @class = "form-select", name = "EmployeeID", id = "ddlEmployeeID" })
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <button type="button" class="btn btn-primary btn-sm" id="btnload" onclick="LoadEmployee()" style="margin-left:-10px;">
+                                                        <i class="fa-solid fa-spinner fa-lg"></i>&nbsp;Load
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <hr class="mt-2px">
+
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="row mb-15px">
+                                            <div class="col-md-12">
+                                                @Html.TextBox("ApplyDate", null, new { @class = "form-control", id = "ApplyTime", type = "datetime-local", name = "FromDate" })
+                                                <span class="Error" id="ErrorApplyTime"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="row mb-15px">
+                                            <div class="col-md-8">
+                                                @Html.DropDownList("Status", new SelectList(new List<object>() {
+                                                new {text="In",value="In"},
+                                                new {text="Out",value="Out"},
+                                                }, "text", "value"), "Select Punch Type", new { @class = "form-select", @id = "ddlApplyInOut", name = "ApplyInOut" })
+                                                <span class="Error" id="ErrorddlApplyInOut"></span>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <button type="button" onclick="funSetInOutPunch(this)" class="btn btn-info" style="margin-left:-13px;margin-right:-10px">
+                                                    <i class="fa-solid fa-pencil"></i> Adjust Punch
+                                                </button>
+                                                @*<input type="button" class="btn btn-primary btn-sm" onclick="funSetInOutPunch(this)" value="Adjust Punch" />*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="row mb-15px">
+                                            <div class="col-md-8">
+                                                @Html.DropDownList("Status", new SelectList(new List<object>() {
+                                                new {text="P",value="P"},
+                                                new {text="AB",value="AB"},
+                                                 new {text="WO",value="WO"},
+                                                 new {text="PH",value="PH"},
+                                                 new {text="OD",value="OD"},
+                                                 new {text="WFH",value="WFH"},
+                                                 new {text="CO",value="CO"},
+                                                 new {text="SL",value="SL"},
+                                                 new {text="CL",value="CL"},
+                                                 new {text="PL",value="PL"},
+                                                 new {text="EL",value="EL"},
+                                                 new {text="LWP",value="LWP"},
+                                                }, "text", "value"), "Select Status", new { @class = "form-select", @id = "ddlStatus", name = "ApplyInOut" })
+                                                <span class="Error" id="ErrorddlStatus"></span>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button" class="btn btn-info" onclick="funSetStatus(this)" id="btnApplyStatus" style="margin-left: -15px;margin-right: -25px;">
+                                                    <i class="fa-solid fa-pencil"></i> Set
+                                                </button>
+                                                @*<input type="button" class="btn btn-danger btn-sm" value="Set" onclick="funSetStatus(this)" id="btnApplyStatus" />*@
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button" data-bs-toggle="offcanvas" class="btn btn-warning btnpress" href="#offcanvasExample" id="btnActionList" onclick="funSetDate(this)" style="width:110px; margin-left: 5px;">
+                                                    <i class="fa-solid fa-eye fa-lg blink"></i> &nbsp; Show Log
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="table-scroll div1">
+                                        <div class="table-wrap">
+                                            <table class="table table-bordered table-hover mb-0 " id="tblEmployeeWise" style="width: 100%;">
+                                                <thead class="table-active horizontal-scroll" style="background-color: rgba(233, 236, 239, 1) !important;">
+                                                    <tr class="trheading">
+                                                        <th class="fixed-side" style="border: 1px solid black !important; z-index:3"> Action</th>
+                                                        <th class="text-nowrap text-center"> Date</th>
+                                                        <th class="text-nowrap text-center" hidden>Day</th>
+                                                        <th class="text-nowrap text-center">In Time</th>
+                                                        <th class="text-nowrap text-center">Out Time</th>
+                                                        <th class="text-nowrap text-center">Status</th>
+                                                        <th class="text-nowrap text-center">Shift</th>
+                                                        <th class="text-nowrap text-center">Total <br />Duration</th>
+                                                        <th class="text-nowrap text-center">Over <br />Time</th>
+                                                        @*<th class="text-nowrap text-center">Late <br />Mark</th>*@
+                                                        <th class="text-nowrap text-center">Late <br /> Coming</th>
+                                                        @*<th class="text-nowrap text-center">Early Coming</th>*@
+                                                        <th class="text-nowrap text-center">Early<br /> Going</th>
+                                                        <th class="text-nowrap text-center">No Of <br />COFF</th>
+                                                        <th class="text-nowrap text-center" style="width:200px;">Remark</th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tbodyEmployeeWise">
+                                                    @if (ViewBag.AttendanceList != null)
+                                                    {
+                                                        foreach (var d in ViewBag.AttendanceList)
+                                                        {
+                                                            string formattedInTime = "";
+                                                            string formattedOutTime = "";
+                                                            <tr>
+
+                                                                @if (@d.InTime != null || @d.OutTime != null)
+                                                                {
+                                                                    if (@d.InTime != null)
+                                                                    {
+                                                                        formattedInTime = @d.InTime.ToString("yyyy-MM-ddTHH:mm");
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        formattedInTime = "2999-01-01T00:00";
+                                                                    }
+                                                                    if (@d.OutTime != null)
+                                                                    {
+                                                                        formattedOutTime = @d.OutTime.ToString("yyyy-MM-ddTHH:mm");
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        formattedOutTime = "2999-01-01T00:00";
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    formattedInTime = "2999-01-01T00:00";
+                                                                    formattedOutTime = "2999-01-01T00:00";
+                                                                }
+                                                                <td class="text-nowrap text-center fixed-side" style="background-color:#eee !important">
+                                                                    @*<button type="button" onclick="deleteRow(this)" id="btnDelete" class="btn btn-danger btn-sm">  </button>*@
+                                                                    <i class="fa-regular fa-trash-can fa-xl" onclick="deleteRow(this)" id="btnDelete" style="color:#ff5b57"></i>
+                                                                </td>
+                                                                @if (@d.attenDate != null)
+                                                                {
+                                                                    <td class="text-nowrap" id="AttenDate" style="background-color:white !important"><span>@d.attenDate.ToString("dd-MM-yyyy")</span><span style="font-size: 10px;">&nbsp;&nbsp;(@d.Day)</span></td>
+                                                                    <td class="text-nowrap">@d.Day</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-nowrap" id="AttenDate" style="background-color:white !important"></td>
+                                                                    <td class="text-nowrap"></td>
+                                                                }
+
+                                                                @if (formattedInTime == "2999-01-01T00:00")
+                                                                {
+                                                                    <td class="text-nowrap" style="background-color:white !important">
+                                                                        <input type="datetime-local" class="form-control InTime" id="txtInTime" value="" name="timeInput" onclick="getRowNumber(this)" onchange="validateTimeInput(this)" style="width:170px">
+                                                                    </td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    DateTime myDate = @d.InTime.AddDays(1);
+                                                                    string InTimeMax = myDate.ToString("yyyy-MM-ddTHH:mm");
+
+                                                                    <td class="text-nowrap" style="background-color:white !important">
+                                                                        <input type="datetime-local" class="form-control InTime" id="txtInTime" min="@d.InTime.ToString("yyyy-MM-ddTHH:mm")" max="@InTimeMax" value="@d.InTime.ToString("yyyy-MM-ddTHH:mm")" name="timeInput" onclick="getRowNumber(this)" onchange="validateTimeInput(this)" style="width:170px">
+                                                                    </td>
+                                                                }
+                                                                @if (formattedOutTime == "2999-01-01T00:00")
+                                                                {
+                                                                    <td class="text-nowrap" style="background-color:white !important">
+                                                                        <input type="datetime-local" class="form-control OutTime" id="txtOutTime" value="" onclick="getRowNumber(this)" name="timeInput" onchange="validateTimeInput(this)" style="width:170px">
+                                                                    </td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    DateTime myDate = @d.InTime.AddDays(1);
+                                                                    string OutTimeMax = myDate.ToString("yyyy-MM-ddTHH:mm");
+                                                                    <td class="text-nowrap" style="background-color:white !important">
+                                                                        <input type="datetime-local" class="form-control OutTime" min="@d.OutTime.ToString("yyyy-MM-ddTHH:mm")" max="@OutTimeMax" id="txtOutTime" value="@d.OutTime.ToString("yyyy-MM-ddTHH:mm")" onclick="getRowNumber(this)" name="timeInput" onchange="validateTimeInput(this)" style="width:170px">
+                                                                    </td>
+                                                                }
+
+                                                                @if (@d.Status == "AB")
+                                                                {
+                                                                    <td class="text-nowrap" style="background-color:white !important">
+                                                                        <input type="text" class="form-control" id="txtInOutStatus" onclick="getRowNumber(this)" name="timeInput" value="@d.Status" style="width:60px;text-align: center; background-color:#ff5b57" readonly>
+                                                                    </td>
+                                                                }
+                                                                else if (@d.Status == "WO")
+                                                                {
+                                                                    <td class="text-nowrap" style="background-color:white !important">
+                                                                        <input type="text" class="form-control" id="txtInOutStatus" onclick="getRowNumber(this)" name="timeInput" value="@d.Status" style="width:60px;text-align: center; background-color:orange" readonly>
+                                                                    </td>
+                                                                }
+                                                                else if (@d.Status != "AB" && @d.Status != "WO")
+                                                                {
+                                                                    <td class="text-nowrap" style="background-color:white !important">
+                                                                        <input type="text" class="form-control" id="txtInOutStatus" onclick="getRowNumber(this)" name="timeInput" value="@d.Status" style="width:60px;text-align: center;" readonly>
+                                                                    </td>
+                                                                }
+
+                                                                <td class="text-nowrap" style="background-color:white !important">
+                                                                    <input type="text" class="form-control" id="txtShift" onclick="getRowNumber(this)" name="timeInput" value="@d.Shift" style="width:60px;text-align: center;" readonly>
+                                                                </td>
+                                                                <td class="text-nowrap text-center" style="background-color:white !important">@d.TotalDuration</td>
+                                                                <td class="text-nowrap text-center" style="background-color:white !important">@d.OverTime</td>
+
+                                                                @* <td class="text-nowrap">@d.InOutLateBy</td>*@
+                                                                <td class="text-nowrap text-center" style="background-color:white !important">@d.LateComing</td>
+                                                                <td class="text-nowrap text-center" style="background-color:white !important">@d.EarlyGoing</td>
+                                                                <td class="text-nowrap text-center" style="background-color:white !important">@d.NoOffCOFF</td>
+                                                                <td class="text-nowrap text-center" style="background-color:white !important"><input type="text" id="txtRemark" class="form-control" style="width:200px;" /></td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                    @if (ViewBag.AttendanceListNew != null)
+                                                    {
+
+                                                        foreach (var d in ViewBag.AttendanceListNew)
+                                                        {
+                                                            @*<script>
+                                                                    var GetDay = @d.EM_WO_CurrentDay;
+                                                                    var Day = GetDay.slice(0, 3);
+                                                                </script>*@
+                                                            <tr>
+                                                                <td class="text-nowrap text-center" style="background-color:#eee !important">
+                                                                    <i class="fa-regular fa-trash-can fa-xl" onclick="deleteRow(this)" id="btnDelete" style="color:#ff5b57"></i>
+                                                                </td>
+                                                                <td class="text-nowrap" id="AttenDate" style="background-color:white !important">
+                                                                   
+                                                                    <span>@d.InOut_AttendanceDate.ToString("dd-MM-yyyy")</span>
+                                                                    @if (@d.EM_WO_CurrentDay != null)
+                                                                    {
+                                                                        <span style="font-size: 10px;">&nbsp;&nbsp;(@d.EM_WO_CurrentDay.Substring(0, 3))</span>
+                                                                    }
+                                                                </td>
+
+                                                                @if (@d.EM_WO_CurrentDay != null)
+                                                                {
+                                                                    <td class="text-nowrap">@d.EM_WO_CurrentDay</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-nowrap"></td>
+                                                                }
+
+                                                                @if (@d.InOut_InTime == null)
+                                                                {
+                                                                    <td class="text-nowrap">
+                                                                        <input type="datetime-local" class="form-control InTime" id="txtInTime" value="" name="timeInput" onclick="getRowNumber(this)" onchange="validateTimeInput(this)" style="width:170px">
+                                                                    </td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    DateTime GetInTimeDate = @d.InOut_InTime;
+                                                                    DateTime myDate = GetInTimeDate.AddDays(1);
+                                                                    string InTimeMax = myDate.ToString("yyyy-MM-ddTHH:mm");
+
+                                                                    <td class="text-nowrap">
+                                                                        <input type="datetime-local" class="form-control InTime" min="@d.InTime" max="@InTimeMax" id="txtInTime" value="@d.InOut_InTime.ToString("yyyy-MM-ddTHH:mm")" name="timeInput" onclick="getRowNumber(this)" onchange="validateTimeInput(this)" style="width:170px">
+                                                                    </td>
+                                                                }
+                                                                @if (@d.InOut_OutTime == null)
+                                                                {
+                                                                    <td class="text-nowrap">
+                                                                        <input type="datetime-local" class="form-control OutTime" id="txtOutTime" value="" onclick="getRowNumber(this)" name="timeInput" onchange="validateTimeInput(this)" style="width:170px">
+                                                                    </td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    DateTime GetOutTimeDate = @d.InOut_OutTime;
+                                                                    DateTime myDate = GetOutTimeDate.AddDays(1);
+                                                                    string OutTimeMax = myDate.ToString("yyyy-MM-ddTHH:mm");
+                                                                    <td class="text-nowrap">
+                                                                        <input type="datetime-local" class="form-control OutTime" min="@d.InOut_OutTime" max="@OutTimeMax" id="txtOutTime" value="@d.InOut_OutTime.ToString("yyyy-MM-ddTHH:mm")" onclick="getRowNumber(this)" name="timeInput" onchange="validateTimeInput(this)" style="width:170px">
+                                                                    </td>
+                                                                }
+
+                                                                @if (@d.InOut_Status == "AB")
+                                                                {
+                                                                    <td class="text-nowrap text-center">
+                                                                        <input type="text" class="form-control" id="txtInOutStatus" onclick="getRowNumber(this)" name="timeInput" value="@d.InOut_Status" style="width:60px;text-align: center; background-color:#ff5b57" readonly>
+                                                                    </td>
+                                                                }
+                                                                else if (@d.InOut_Status == "WO")
+                                                                {
+                                                                    <td class="text-nowrap text-center">
+                                                                        <input type="text" class="form-control" id="txtInOutStatus" onclick="getRowNumber(this)" name="timeInput" value="@d.InOut_Status" style="width:60px;text-align: center; background-color:orange" readonly>
+                                                                    </td>
+                                                                }
+                                                                else if (@d.InOut_Status != "AB" && @d.InOut_Status != "WO")
+                                                                {
+                                                                    <td class="text-nowrap text-center">
+                                                                        <input type="text" class="form-control" id="txtInOutStatus" onclick="getRowNumber(this)" name="timeInput" value="@d.InOut_Status" style="width:60px;text-align: center;" readonly>
+                                                                    </td>
+                                                                }
+                                                                <td class="text-nowrap text-center">
+                                                                    <input type="text" class="form-control" id="txtShift" onclick="getRowNumber(this)" name="timeInput" value="@d.InOut_Shift" style="width:60px;text-align: center;" readonly>
+                                                                </td>
+                                                              
+                                                               @{
+                                                                   double durationMinutes = (double)@d.InOut_Duration;
+                                                                   var hours = (int)Math.Floor(durationMinutes / 60);
+                                                                   var remainingMinutes = (int)(durationMinutes % 60);
+                                                                   var InOut_Duration = $"{hours}:{(remainingMinutes < 10 ? "0" : "")}{remainingMinutes}";
+
+                                                                   double OTdurationMinutes = (double)@d.InOut_OT;
+                                                                   var OThours = (int)Math.Floor(OTdurationMinutes / 60);
+                                                                   var OTremainingMinutes = (int)(OTdurationMinutes % 60);
+                                                                   var OTInOut_OT = $"{OThours}:{(OTremainingMinutes < 10 ? "0" : "")}{OTremainingMinutes}";
+
+                                                                   double LCdurationMinutes = (double)@d.InOut_LateMin;
+                                                                   var LChours = (int)Math.Floor(LCdurationMinutes / 60);
+                                                                   var LCremainingMinutes = (int)(LCdurationMinutes % 60);
+                                                                   var LCInOut_LateMin = $"{LChours}:{(LCremainingMinutes < 10 ? "0" : "")}{LCremainingMinutes}";
+
+                                                                   double EGdurationMinutes = (double)@d.InOut_EarlyMin;
+                                                                   var EGhours = (int)Math.Floor(EGdurationMinutes / 60);
+                                                                   var EGremainingMinutes = (int)(EGdurationMinutes % 60);
+                                                                   var EGInOut_EarlyMin = $"{EGhours}:{(EGremainingMinutes < 10 ? "0" : "")}{EGremainingMinutes}";
+                                                                }
+                                                                <td class="text-nowrap text-center">@InOut_Duration</td>
+                                                                <td class="text-nowrap text-center">@OTInOut_OT</td>
+                                                                <td class="text-nowrap text-center">@LCInOut_LateMin</td>
+                                                                <td class="text-nowrap text-center">@EGInOut_EarlyMin</td>
+                                                                @*<td class="text-nowrap text-center">@InOut_Duration</td>*@
+                                                                @* <td class="text-nowrap text-center">@d.InOut_OT</td>*@
+                                                                @* <td class="text-nowrap">@d.InOutLateBy</td>*@
+                                                                @*<td class="text-nowrap text-center">@d.InOut_LateMin</td>*@
+                                                                @*<td class="text-nowrap text-center">@d.InOut_EarlyMin</td>*@
+                                                                <td class="text-nowrap text-center">@d.InOut_Coff</td>
+                                                                <td class="text-nowrap text-center"><input type="text" id="txtRemark" value="@d.Remark" class="form-control" style="width:200px;" /></td>
+                                                            </tr>
+                                                             }
+                                                            }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="table-responsive row">
+                                    <div class="col-md-12">
+                                        <table class="table table-hover mb-0 text-dark align-middle" id="tblSummary" style="width: 100%;">
+                                            <thead>
+                                            </thead>
+                                            <tbody>
+                                                @if (ViewBag.AttendanceListSummury != null)
+                                                {
+                                                    <tr>
+                                                        <td class="text-nowrap">@ViewBag.AttendanceListSummury[0].datavalue</td>
+                                                        <td class="text-nowrap">@ViewBag.AttendanceListSummury[1].datavalue</td>
+                                                        <td class="text-nowrap">@ViewBag.AttendanceListSummury[2].datavalue</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-nowrap">@ViewBag.AttendanceListSummury[3].datavalue</td>
+                                                        <td class="text-nowrap">@ViewBag.AttendanceListSummury[4].datavalue</td>
+                                                        <td class="text-nowrap">@ViewBag.AttendanceListSummury[5].datavalue</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td class="text-nowrap">@ViewBag.AttendanceListSummury[6].datavalue</td>
+                                                        <td class="text-nowrap">@ViewBag.AttendanceListSummury[7].datavalue</td>
+                                                        @*<td class="text-nowrap">@ViewBag.AttendanceListSummury[8].datavalue</td>*@
+                                                    </tr>
+
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <span class="Error" id="ErrortblEmployeeWise" style="margin-top: 12px; margin-right:31px; font-size:15px;"></span>
+                                                    <button type="button" id="btnCalculate" class="btn btn-secondary">
+                                                        <i class="fa-solid fa-calculator fa-lg"></i> Calculate
+                                                    </button>
+
+                                                    <button type="button" id="btnSubmit" class="btn btn-primary btn-sm">
+                                                        <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                    </button>
+
+                                                    <a href="/ESS/ESS_TimeOffice_Menu/ESS_TimeOffice_Menu/?id=5">
+                                                        <button type="button" class="btn btn-danger">
+                                                            <i class="fa-solid fa-share-from-square"></i> Back
+                                                        </button>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Start panel -->
+<div class="row">
+    <div class="offcanvas offcanvas-end" id="offcanvasExample" data-bs-backdrop="false" data-bs-scroll=true style="width:23%">
+        <div class="offcanvas-header" style="border-bottom: 1px solid #d3d3d38a;">
+            <h6 class="offcanvas-title text-center" id="EmpName1"
+                style="width: 100%;">
+                <span id="EmpName">@ViewBag.EmpName</span>
+            </h6>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row mb-15px">
+                        <label class="form-label col-form-label col-md-5">
+                            From date
+                            <span class="important">*</span>
+                        </label>
+                        <div class="col-md-7">
+                            @Html.TextBox("LogFromDate", null, new { @class = "form-control", id = "LogFromDate", type = "date" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row mb-15px">
+                        <label class="form-label col-form-label col-md-5">
+                            To date
+                            <span class="important">*</span>
+                        </label>
+                        <div class="col-md-7">
+                            @Html.TextBox("LogToDate", null, new { @class = "form-control", id = "LogToDate", type = "date" })
+                        </div>
+                        <span class="Error" id="ErrorLogFromToDate"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row mb-15px">
+                        <button type="button" class="btn btn-primary btn-sm" id="btnload" onclick="LoadEmployeeLog()">
+                            <i class="fa-solid fa-spinner"></i>&nbsp; Load Log
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="table-scroll divEmployeeLog">
+                    <div class="table-wrap">
+                        <table class="table table-bordered table-hover mb-0 text-dark align-middle" id="tblEmployeeLog" style="width: 100%;">
+                            <thead class="table-active horizontal-scroll tblheadEmployeeLog" style="background-color: rgba(233, 236, 239, 1) !important;">
+                                <tr class="text-center">
+                                    <th class="text-nowrap text-center">Log Date</th>
+                                    <th class="text-nowrap text-center">I/O</th>
+                                    <th class="text-nowrap text-center" hidden>Hidden</th>
+                                    <th class="text-nowrap text-center">In</th>
+                                    <th class="text-nowrap text-center">Out</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @*@foreach (var d in ViewBag.EmployeeLog)
+                                    {
+                                        <tr onclick="tblEmployeeLogRowColor(this)">
+                                            <td class="text-nowrap text-center">@d.LoDate</td>
+                                            <td class="text-nowrap text-center">@d.Direction</td>
+                                            <td hidden>TimeSend 24Hr</td>
+                                            <td><i class="fa-regular fa-circle-up"></i></td>
+                                            <td><i class="fa-regular fa-circle-up"></i></td>
+                                        </tr>
+                                    }*@
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <br />
+            @*<div class="row">
+                    <div class="col-md-12">
+                        <div class="row mb-15px">
+                            <div class="col-md-12">
+                                <button type="button" class="btn btn-success btn-sm" id="btnLogInTime" onclick="funLogInOutTime()" style="width:100%">
+                                    In-Out Time
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>*@
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-bordered table-hover mb-0 text-dark align-middle" id="tblShift" style="width: 100%;">
+                        <thead style="background-color:#eee">
+                            <tr class="text-center">
+                                <th class="text-nowrap text-center">Action</th>
+                                <th class="text-nowrap text-center">Shift Name</th>
+                                <th class="text-nowrap text-center">Group Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @*@foreach (var d in ViewBag.EmployeeShifts)
+                                {
+                                    <tr>
+                                        <td class="text-nowrap">@d.SName</td>
+                                        <td class="text-nowrap">@d.ShiftGroupSName</td>
+                                    </tr>
+                                }*@
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <br />
+            @*<div class="row">
+                    <div class="col-md-12">
+                        <div class="row mb-15px">
+                            <div class="col-md-12">
+                                <button type="button" class="btn btn-success btn-sm" id="btnShift" onclick="funSetShift()" style="width:100%">
+                                    Set Shift
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>*@
+        </div>
+    </div>
+</div>
+<!-- END panel -->
+
+<script>
+    $(document).ready(function () {
+        $("#ddlBranchId").select2();
+        $("#ddlCmpId").select2();
+        $("#ddlEmployeeID").select2();
+
+        var LogFromDate = $("#txtFromDate").val();
+        var LogToDate = $("#txtToDate").val();
+       
+        if(LogFromDate=="")
+        {
+            let today = new Date();
+            let firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 2);
+            let formattedFirstDay = firstDayOfMonth.toISOString().substr(0, 10);
+            $("#txtFromDate").val(formattedFirstDay);
+            let formattedDate = today.toISOString().substr(0, 10);
+            $("#txtToDate").val(formattedDate);
+        }
+        debugger;
+        var EmployeeId = $('select#ddlEmployeeID option:selected').val();
+       
+        if (EmployeeId != null) {
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetEmployeeLogAndShift", "ESS_TimeOffice_EmployeeWiseAttendance")',
+                data: { EmployeeId: EmployeeId, LogFromDate: LogFromDate, LogToDate: LogToDate },
+                success: function (data) {
+                    debugger;
+                    $("#tblEmployeeLog  tbody tr").detach();
+                    $("#tblShift  tbody tr").detach();
+                    var Logdata = data.Logdata;
+                    var Shiftdata = data.Shiftdata;
+                    var tableLogContent = '';
+                    var tableShiftContent = '';
+
+                    for (var i = 0; i < Logdata.length; i++) {
+                        tableLogContent += '<tr id="LogSelectRow_NotUse">';
+                        tableLogContent += '<td class="text-nowrap text-center">' + convertDateTime12Hr(Logdata[i][0].Value) + '</td>'; // thi is for showing purpose
+                        tableLogContent += '<td class="text-nowrap text-center">' + Logdata[i][1].Value + '</td>';
+                        tableLogContent += '<td hidden>' + convertDateTime(Logdata[i][0].Value) + '</td>';
+                        tableLogContent += '<td class="text-nowrap text-center"><i class="fa-solid fa-circle-down" style="color:#5cce40;padding:0px" onclick="funLogInOutTime(\'IN\', \'' + convertDateTime(Logdata[i][0].Value) + '\')"></i></td>';
+                        tableLogContent += '<td class="text-nowrap text-center"><i class="fa-solid fa-circle-up" style="color:#fe6966;padding:0px" onclick="funLogInOutTime(\'OUT\', \'' + convertDateTime(Logdata[i][0].Value) + '\')"></i></td>';
+                        tableLogContent += '</tr>';
+                    }
+                    $('#tblEmployeeLog tbody').append(tableLogContent);
+
+                    for (var i = 0; i < Shiftdata.length; i++) {
+                        tableShiftContent += '<tr id="ShiftSelectRow">';
+                        tableShiftContent += '<td class="text-nowrap text-center" onclick="funSettblShift(\'' + Shiftdata[i][4].Value + '\')"><i class="fa-solid fa-circle-arrow-left fa-xl" id="ShiftIconColor"></i> <span id="shiftText" style="font-size:8px;">Set Shift</span> </td>';
+                        tableShiftContent += '<td class="text-nowrap text-center" style="width: 70px;">' + Shiftdata[i][4].Value + '</td>';
+                        tableShiftContent += '<td class="text-nowrap text-center">' + Shiftdata[i][5].Value + '</td>';
+                        tableShiftContent += '</tr>';
+                    }
+                    $('#tblShift tbody').append(tableShiftContent);
+                }
+            });
+        }
+
+        //$('#tblEmployeeLog').DataTable({
+        //    //dom: '<"row"<"col-sm-4"B><"col-sm-4"l><"col-sm-4"f>>' + 't' + '<"row"<"col-sm-6"l><"col-sm-6">>',
+        //    //buttons: [
+        //    //    'copy',
+        //    //    'excel',
+        //    //    'csv',
+        //    //    'pdf',
+        //    //    'print'
+        //    //],
+        //    scrollY: 300,
+        //    scrollCollapse: true,
+        //    paging: false,
+        //    scrollX: true,
+        //    searching: false, // Enable searching
+        //});
+        $('#tblEmployeeWise').DataTable({
+            //dom: '<"row"<"col-sm-4"B><"col-sm-4"l><"col-sm-4"f>>' + 't' + '<"row"<"col-sm-6"l><"col-sm-6">>',
+            //buttons: [
+            //    'copy',
+            //    'excel',
+            //    'csv',
+            //    'pdf',
+            //    'print'
+            //],
+            scrollY: 300,
+            scrollCollapse: true,
+            paging: false,
+            scrollX: true,
+            ordering: false, // Disable sorting
+            searching: false, // Enable searching
+        });
+
+
+        //This code use for selected table row background color change
+        //$('#tblEmployeeWise tr').click(function () {
+        //    if ($(this).hasClass('selected')) {
+        //        $(this).removeClass('selected');
+        //    } else {
+        //        $('#tblEmployeeWise tr').removeClass('selected');
+        //        $(this).addClass('selected');
+        //    }
+        //});
+
+    });
+
+    //use for add regex function
+    jQuery.validator.addMethod(
+    "regex",
+     function (value, element, regexp) {
+         if (regexp.constructor != RegExp)
+             regexp = new RegExp(regexp);
+         else if (regexp.global)
+             regexp.lastIndex = 0;
+         return this.optional(element) || regexp.test(value);
+     }, "erreur expression reguliere"
+  );
+
+    $('#SaveEmployeeWiseAttendance').validate({
+        rules: {
+            CmpId: {
+                required: true,
+            },
+            BranchId: {
+                required: true,
+            },
+            EmployeeID: {
+                required: true,
+            },
+            ToDate: {
+                required: true,
+            },
+            FromDate: {
+                required: true,
+            },
+        },
+        messages: {
+            CmpId: {
+                required: "Company name is required",
+            },
+            BranchId: {
+                required: "Business unit is required",
+            },
+            EmployeeID: {
+                required: "Employee name is required",
+            },
+            FromDate: {
+                required: "Fromn date is required",
+            },
+            ToDate: {
+                required: "To date is required",
+            },
+        },
+    });
+
+    var form = $("#SaveEmployeeWiseAttendance");
+    form.validate();
+    function LoadEmployee() {
+        debugger;
+        var input = document.getElementById("txtFromDate").value;
+        var input1 = document.getElementById("txtToDate").value;
+        //define two date object variables with dates inside it
+        fromDateObj = new Date(input);
+        toDateObj = new Date(input1);
+        //calculate time difference
+        var time_difference = toDateObj.getTime() - fromDateObj.getTime();
+        //calculate days difference by dividing total milliseconds in a day
+        var days_differences = time_difference / (1000 * 60 * 60 * 24);
+        var days_difference = days_differences + 1;
+        // Check if toDate is greater than fromDate
+        var from = $("#txtFromDate").val();
+        var to = $("#txtToDate").val();
+        if (Date.parse(from) > Date.parse(to)) {
+
+            $("#ErrortxtFromDate").html("From date should not be greater than todate");
+            return false;
+        }
+        else {
+            $("#ErrortxtFromDate").html("");
+        }
+        if (days_difference > 31) {
+            $("#ErrortxtFromDate").html("You should not allow greter than 31 days");
+        }
+
+        form.valid();
+        if (form.valid() == false) {
+            $("#txtFromDate").removeClass("error");
+            $("#txtToDate").removeClass("error");
+            return false;
+        }
+        $(".Userloaderbg").css("display", "flex");
+        $("#SaveEmployeeWiseAttendance").submit();
+        var GettxtFromDate = $("#txtFromDate").val();
+        var GettxtToDate = $("#txtToDate").val();
+    }
+
+    function funSetDate() {
+        var GettxtFromDate = $("#txtFromDate").val();
+        var GettxtToDate = $("#txtToDate").val();
+
+        let dateFD = document.getElementById("LogFromDate");
+        let value = GettxtFromDate.split('/').reverse().join('-');
+        dateFD.value = value;
+
+        let dateTD = document.getElementById("LogToDate");
+        let value1 = GettxtToDate.split('/').reverse().join('-');
+        dateTD.value = value1;
+
+        return false;
+    }
+
+</script>
+
+<script>
+    var rowIndex;
+    function getRowNumber(input) {
+        var row = input.parentNode.parentNode; // Get the parent row of the clicked input
+        rowIndex = row.rowIndex; // Get the index of the row
+        console.log("Row number: " + rowIndex); // Output the row number to console (you can change this as needed)
+        clearInputStyles(input);
+        //inputTypeId = row.find("input").attr("id");
+        input.style.backgroundColor = 'lightgray';
+    }
+
+    $("#txtFromDate, #txtToDate").on("change", function () {
+        var input = document.getElementById("txtFromDate").value;
+        var input1 = document.getElementById("txtToDate").value;
+        //define two date object variables with dates inside it
+        fromDateObj = new Date(input);
+        toDateObj = new Date(input1);
+        //calculate time difference
+        var time_difference = toDateObj.getTime() - fromDateObj.getTime();
+        //calculate days difference by dividing total milliseconds in a day
+        var days_differences = time_difference / (1000 * 60 * 60 * 24);
+        var days_difference = days_differences + 1;
+        // Check if toDate is greater than fromDate
+        var from = $("#txtFromDate").val();
+        var to = $("#txtToDate").val();
+        if (Date.parse(from) > Date.parse(to)) {
+
+            $("#ErrortxtFromDate").html("From date should not be greater than todate");
+            return false;
+        }
+        else {
+            $("#ErrortxtFromDate").html("");
+        }
+        if (days_difference > 31) {
+            $("#ErrortxtFromDate").html("You should not allow greter than 31 days");
+        }
+    });
+
+    $("#LogFromDate, #LogToDate").on("change", function () {
+        debugger;
+        var input = document.getElementById("LogFromDate").value;
+        var input1 = document.getElementById("LogToDate").value;
+        //define two date object variables with dates inside it
+        fromDateObj = new Date(input);
+        toDateObj = new Date(input1);
+        //calculate time difference
+        var time_difference = toDateObj.getTime() - fromDateObj.getTime();
+        //calculate days difference by dividing total milliseconds in a day
+        var days_differences = time_difference / (1000 * 60 * 60 * 24);
+        var days_difference = days_differences + 1;
+
+        var from = $("#LogFromDate").val();
+        var to = $("#LogToDate").val();
+        if (Date.parse(from) > Date.parse(to)) {
+            $("#ErrorLogFromToDate").html("From date should not be greater than todate");
+            return false;
+        }
+        else {
+            $("#ErrorLogFromToDate").html("");
+        }
+        if (days_difference > 31) {
+            $("#ErrorLogFromToDate").html("You should not allow greter than 31 days");
+            return false;
+        }
+        else {
+            $("#ErrorLogFromToDate").html("");
+        }
+    });
+
+    $(".InTime , .OutTime").change(function () {
+        debugger;
+        var $row = $('#tblEmployeeWise tbody tr:eq(' + (rowIndex - 1) + ')');
+        var GetInTime = $row.find("td").eq(3).find("input").val();
+        var GetOutTime = $row.find("td").eq(4).find("input").val();
+
+        var GetInDate = GetInTime.substring(0, 10);
+        var GetOutDate = GetOutTime.substring(0, 10);
+
+        var GetInTime = GetInTime.substring(11);
+        var GetOutTime = GetOutTime.substring(11);
+
+        //For Date Check
+        if (GetInDate === GetOutDate) // If Same Date
+        {
+            //For Time Check
+            if (GetInTime > GetOutTime) {
+                swal("In time should be greater than from time in line no. " + rowIndex + "", '', 'error');
+                return false;
+            }
+        }
+        else if (GetInDate != GetOutDate)// If Diffrent Date
+        {
+            var fromDate = new Date(GetInDate);
+            var toDate = new Date(GetOutDate);
+
+            // Compare the dates
+            if (fromDate > toDate) {
+                swal("From date should not be greater than to date " + rowIndex + "", '', 'error');
+                return false;
+            }
+        }
+
+
+        //var GetInTime = $row.find("td").eq(3).find("input").val();
+        //var GetOutTime = $row.find("td").eq(4).find("input").val();
+        //if (GetInTime >= GetOutTime) {
+        //    //alert("In time should be greater than from time");
+        //    swal("In time should be greater than from time in line no. " + rowIndex + "", '', 'error');
+        //    return false;
+        //}
+    });
+    //$(".OutTime").change(function () {
+    //    debugger;
+    //    var $row = $('#tblEmployeeWise tbody tr:eq(' + (rowIndex - 1) + ')');
+    //    var GetInTime = $row.find("td").eq(3).find("input").val();
+    //    var GetOutTime = $row.find("td").eq(4).find("input").val();
+
+    //    if (GetInTime >= GetOutTime) {
+    //        //alert("To time should not be less than from time");
+    //        swal("To time should not be less than from time in line no. " + rowIndex + "", '', 'error');
+    //        return false;
+    //    }
+    //})
+
+    //function validateTimeInput(input) {
+    //    debugger;
+    //    var regex = /^([01][0-9]|2[0-3]):[0-5][0-9]$/; // Regular expression for HH:MM format
+    //    if (!regex.test(input.value)) {
+    //        var Message = "Please enter time in HH:MM";
+    //        var Icon = "error";
+    //        if (Message != null) {
+    //            if (Message != null) {
+    //                Swal.fire({
+    //                    icon: Icon,
+    //                    text: Message,
+    //                    allowOutsideClick: () => {
+    //                        const popup = Swal.getPopup()
+    //                        popup.classList.remove('swal2-show')
+    //                        setTimeout(() => {
+    //                            popup.classList.add('animate__animated', 'animate__headShake')
+    //                        })
+    //                        setTimeout(() => {
+    //                            popup.classList.remove('animate__animated', 'animate__headShake')
+    //                        }, 500000)
+    //                        return false
+    //                    }
+    //                });
+    //            }
+    //        }
+    //        input.value = ""; // Clear the input field if the format is incorrect
+    //    }
+    //}
+
+    function clearInputStyles(input) {
+        var inputs = document.querySelectorAll('#tblEmployeeWise input[type="text"]');
+        var datetime = document.querySelectorAll('#tblEmployeeWise input[type="datetime-local"]');
+        inputs.forEach(function (input) {
+            input.style.backgroundColor = ''; // Set background color to empty string to clear it
+        });
+        datetime.forEach(function (input) {
+            input.style.backgroundColor = ''; // Set background color to empty string to clear it
+        });
+    }
+
+
+    //Change The code This is not is Use
+    //var LogTime;
+    //var Direction;
+    //$(document).on('click', '#LogSelectRow', function () {
+    //    var currentRow = $(this).closest("tr");
+    //    var GetLogTime = currentRow.find("td:eq(2)").html();
+    //    Direction = currentRow.find("td:eq(1)").html();
+    //    LogTime = convertTo24HourFormat(GetLogTime);
+
+    //});
+    function convertTo24HourFormat(time12h) {
+        var splitTime = time12h.split(' ');
+        var time = splitTime[0];
+        var period = splitTime[1];
+
+        var splitHoursMinutes = time.split(':');
+        var hours = splitHoursMinutes[0];
+        var minutes = splitHoursMinutes[1];
+
+        if (period === 'PM') {
+            hours = parseInt(hours, 10) + 12;
+            if (hours === 24) {
+                hours = 12; // Special case: 12 PM should be converted to 12:00, not 24:00
+            }
+        } else {
+            if (hours === '12') {
+                hours = '00'; // Special case: 12 AM should be converted to 00:00
+            }
+        }
+        return hours + ':' + minutes;
+    }
+
+    function funLogInOutTime(GetInOut, GetTime) {
+        debugger;
+
+        var $row = $('#tblEmployeeWise tbody tr:eq(' + (rowIndex - 1) + ')');
+        if (GetInOut == "IN") {
+            $row.find("td").eq(3).find("input").val(GetTime);
+        }
+        else if (GetInOut == "OUT") {
+            $row.find("td").eq(4).find("input").val(GetTime);
+        }
+
+        //var $row = $('#tblEmployeeWise tbody tr:eq(' + (rowIndex - 1) + ')');
+        //if (GetInOut == "IN") {
+        //    $row.find("td").eq(3).find("input").val(LogTime);
+        //}
+        //else if (GetInOut == "OUT") {
+        //    $row.find("td").eq(4).find("input").val(LogTime);
+        //}
+    }
+
+    //var ShiftName;
+    //var ShiftGroup;
+    //$(document).on('click', '#ShiftSelectRow', function () {
+    //    debugger;
+    //    var currentRow = $(this).closest("tr");
+    //    ShiftName = currentRow.find("td:eq(0)").html();
+    //    ShiftGroup = currentRow.find("td:eq(1)").html();
+    //});
+
+
+    function funSettblShift(ShiftName) {
+        debugger;
+        var $row = $('#tblEmployeeWise tbody tr:eq(' + (rowIndex - 1) + ')');
+        //$row.find("td").eq(6).html(ShiftName);
+        $row.find("td").eq(6).find("input").val(ShiftName);
+    }
+
+    //Change code inline table so no need this code
+    //function funSetShift() {
+    //    debugger;
+    //    var $row = $('#tblEmployeeWise tbody tr:eq(' + (rowIndex - 1) + ')');
+    //    //$row.find("td").eq(6).html(ShiftName);
+    //    $row.find("td").eq(6).find("input").val(ShiftName);
+    //}
+
+    function funSetInOutPunch() {
+        debugger;
+
+        //currentRow = $(this).closest("tr");
+        var ApplyTime = $("#ApplyTime").val();
+        if (ApplyTime == "") {
+            $("#ErrorApplyTime").html("Please select time");
+            return false;
+        }
+        else {
+            $("#ErrorApplyTime").html("");
+        }
+        var SetInOut = $("#ddlApplyInOut option:selected").val();
+        if (SetInOut == "") {
+            $("#ErrorddlApplyInOut").html("Please select Punch Type");
+            return false;
+        }
+        else {
+            $("#ErrorddlApplyInOut").html("");
+        }
+        var $row = $('#tblEmployeeWise tbody tr:eq(' + (rowIndex - 1) + ')');
+
+        if (SetInOut == "In") {
+            $row.find("td").eq(3).find("input").val(ApplyTime);
+        }
+        else if (SetInOut == "Out") {
+            $row.find("td").eq(4).find("input").val(ApplyTime);
+        }
+    }
+
+    function funSetStatus() {
+        debugger;
+        var Status = $("#ddlStatus option:selected").val();
+        if (Status == "") {
+            $("#ErrorddlStatus").html("Please select Punch Type");
+            return false;
+        }
+        else {
+            $("#ErrorddlStatus").html("");
+        }
+        var $row = $('#tblEmployeeWise tbody tr:eq(' + (rowIndex - 1) + ')');
+        $row.find("td").eq(5).find("input").val(Status);
+        //$row.find("td:eq(4)").html(Status);
+    }
+
+
+    function LoadEmployeeLog() {
+        debugger;
+
+        //let dateFD = document.getElementById("LogFromDate");
+        //let value = GettxtFromDate.split('/').reverse().join('-');
+        //dateFD.value = value;
+
+        //let dateTD = document.getElementById("LogToDate");
+        //let value1 = GettxtToDate.split('/').reverse().join('-');
+        //dateTD.value = value1;
+        var EmployeeId = $('select#ddlEmployeeID option:selected').val();
+        if (EmployeeId == "") {
+            $("#ErrorLogFromToDate").html("Please select employee name");
+            return false;
+        }
+        else {
+            $("#ErrorLogFromToDate").html("");
+        }
+        var LogFromDate = $("#LogFromDate").val();
+        var LogToDate = $("#LogToDate").val();
+        $.ajax({
+            type: 'GET',
+            dataType: 'JSON',
+            contentType: "application/json; charset=utf-8",
+            url: '@Url.Action("GetEmployeeLogAndShift", "ESS_TimeOffice_EmployeeWiseAttendance")',
+            data: { EmployeeId: EmployeeId, LogFromDate: LogFromDate, LogToDate: LogToDate },
+            success: function (data) {
+                debugger;
+                $("#tblEmployeeLog  tbody tr").detach();
+                $("#tblShift  tbody tr").detach();
+                var Logdata = data.Logdata;
+                var Shiftdata = data.Shiftdata;
+                var tableLogContent = '';
+                var tableShiftContent = '';
+
+                for (var i = 0; i < Logdata.length; i++) {
+                    tableLogContent += '<tr id="LogSelectRow_NotUse">';
+                    tableLogContent += '<td>' + convertDateTime12Hr(Logdata[i][0].Value) + '</td>';
+                    tableLogContent += '<td>' + Logdata[i][1].Value + '</td>';
+                    tableLogContent += '<td hidden>' + convertDateTime(Logdata[i][0].Value) + '</td>';
+                    tableLogContent += '<td  class="text-nowrap text-center"><i class="fa-solid fa-circle-down" style="color:#5cce40;padding:0px" onclick="funLogInOutTime(\'IN\', \'' + convertDateTime(Logdata[i][0].Value) + '\')"></i></td>';
+                    tableLogContent += '<td  class="text-nowrap text-center"><i class="fa-solid fa-circle-up" style="color:#fe6966;padding:0px" onclick="funLogInOutTime(\'OUT\', \'' + convertDateTime(Logdata[i][0].Value) + '\')"></i></td>';
+                    tableLogContent += '</tr>';
+                }
+                $('#tblEmployeeLog tbody').append(tableLogContent);
+
+                for (var i = 0; i < Shiftdata.length; i++) {
+                    tableShiftContent += '<tr id="ShiftSelectRow">';
+                    tableShiftContent += '<td class="text-nowrap text-center" onclick="funSettblShift(\'' + Shiftdata[i][4].Value + '\')"> <i class="fa-solid fa-building-circle-arrow-right fa-xl" id="ShiftIconColor"></i> <span id="shiftText" style="font-size:8px;">Set Shift</span> </td>';
+                    tableShiftContent += '<td style="width: 70px;">' + Shiftdata[i][4].Value + '</td>';
+                    tableShiftContent += '<td>' + Shiftdata[i][5].Value + '</td>';
+                    tableShiftContent += '</tr>';
+                }
+                $('#tblShift tbody').append(tableShiftContent);
+            }
+        });
+    }
+</script>
+
+<script>
+
+    $("#btnCalculate").click(function () {
+        debugger;
+
+        var EmployeeId = $('select#ddlEmployeeID option:selected').val();
+        var tbldata = [];
+        $("#tblEmployeeWise tbody tr").each(function (index) {
+            var rowNumber = index + 1;
+            var row = $(this);
+            //CHECK VALIDATION BEFORE CALCULATION
+            var from = row.find("td").eq(3).find("input").val();
+            var to = row.find("td").eq(4).find("input").val();
+
+            if (Date.parse(from) > Date.parse(to)) {
+                $("#ErrortblEmployeeWise").html("From date should not be greater than todate in row no. " + rowNumber + "");
+                return false;
+            }
+            else {
+                $("#ErrortblEmployeeWise").html("");
+            }
+
+            //Convert DateTime To Date and Get Days Diffrent
+            var datefrom = from.split("T")[0];
+            var dateto = to.split("T")[0];
+            var startDate = new Date(datefrom);
+            var endDate = new Date(dateto);
+            var timeDifference = endDate - startDate;
+            var daysDifference = timeDifference / (1000 * 3600 * 24);
+
+            if (daysDifference > 1) {
+                $("#ErrortblEmployeeWise").html("From date and To date diffrent should not greater than 2 days in row no. " + rowNumber + "");
+                return false;
+            }
+            else {
+                $("#ErrortblEmployeeWise").html("");
+            }
+
+            var tblRowData = {};
+            tblRowData.EmployeeId = EmployeeId;
+            // tblRowData.Date = row.find("td:eq(1)").innerHtml();
+            //tblRowData.Date = row.find("td:eq(1) span").html();
+
+            var GetDate = row.find("td:eq(1) span").html();
+            var parts = GetDate.split('-');
+            var day = parts[0];
+            var month = parts[1];
+            var year = parts[2];
+            var formattedDate = year + '-' + month + '-' + day;
+            tblRowData.Date = formattedDate;
+
+            //tblRowData.Day = row.find("td").eq(2).find("input").val();
+            tblRowData.Day = row.find("td:eq(2)").html();
+            let dateTimeStringInTime = row.find("td").eq(3).find("input").val();
+            tblRowData.InTime = dateTimeStringInTime.replace(/T/g, ' ');
+            let dateTimeStringOutTime = row.find("td").eq(4).find("input").val();
+            tblRowData.OutTime = dateTimeStringOutTime.replace(/T/g, ' ');
+            //tblRowData.InTime = row.find("td").eq(3).find("input").val();
+            //tblRowData.OutTime = row.find("td").eq(4).find("input").val();
+            tblRowData.Status = row.find("td").eq(5).find("input").val();
+            tblRowData.Shift = row.find("td").eq(6).find("input").val();
+            tblRowData.TotalDuration = row.find("td:eq(7)").html();
+            tblRowData.OverTime = row.find("td:eq(8)").html();
+            //tblRowData.LateMark = row.find("td:eq(9)").html();
+            tblRowData.LateComing = row.find("td:eq(9)").html();
+            tblRowData.EarlyGoing = row.find("td:eq(10)").html();
+            tblRowData.NoOffCOFF = row.find("td:eq(11)").html();
+            tblRowData.Remark = row.find("td").eq(12).find("input").val();
+
+            tbldata.push(tblRowData);
+        });
+
+        var CheckError = $("#ErrortblEmployeeWise").html();
+        if (CheckError != "") {
+            return false;
+        }
+
+        $(".Userloaderbg").css("display", "flex");
+        $.ajax({
+            url: '@Url.Action("CalculateData", "ESS_TimeOffice_EmployeeWiseAttendance")',
+            method: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            data: JSON.stringify({ tbldata: tbldata, EmployeeId: EmployeeId }),
+            success: function (response) {
+                debugger;
+                data = JSON.parse(response);
+                if (data != null) {
+                    window.location.reload();
+                }
+                //var Empdata = data.data;
+                //("#tblEmployeeWise tbody tr").detach();
+                //for (var i = 0; i < Empdata.length; i++) {
+                //    tableLogContent += '<tr id="LogSelectRow">';
+                //    tableLogContent += '<td>' + Empdata[i][0].Value + '</td>';
+                //    tableLogContent += '<td>' + Empdata[i][1].Value + '</td>';
+                //    tableLogContent += '</tr>';
+                //}
+
+                //data = JSON.parse(response);
+                //var Message1 = data.Message;
+                //var Icon1 = data.Icon;
+                //if (Message1 != null) {
+                //    if (Message1 != null) {
+                //        Swal.fire({
+                //            icon: Icon1,
+                //            text: Message1,
+                //            allowOutsideClick: () => {
+                //                const popup = Swal.getPopup()
+                //                popup.classList.remove('swal2-show')
+                //                setTimeout(() => {
+                //                    popup.classList.add('animate__animated', 'animate__headShake')
+                //                })
+                //                setTimeout(() => {
+                //                    popup.classList.remove('animate__animated', 'animate__headShake')
+                //                }, 500)
+                //                return false
+                //            }
+                //        });
+                //    }
+                //}
+            }
+        });
+    });
+
+
+
+    $("#btnSubmit").click(function () {
+        debugger;
+        //$(".Userloaderbg").css("display", "flex");
+        var EmployeeId = $('select#ddlEmployeeID option:selected').val();
+        var tbldata = [];
+        $("#tblEmployeeWise tbody tr").each(function (index) {
+            var rowNumber = index + 1;
+            var row = $(this);
+            //CHECK VALIDATION BEFORE CALCULATION
+            var from = row.find("td").eq(3).find("input").val();
+            var to = row.find("td").eq(4).find("input").val();
+            if (Date.parse(from) > Date.parse(to)) {
+                $("#ErrortblEmployeeWise").html("From date should not be greater than todate in row no. " + rowNumber + "");
+                return false;
+            }
+            else {
+                $("#ErrortblEmployeeWise").html("");
+            }
+
+            //Convert DateTime To Date and Get Days Diffrent
+            var datefrom = from.split("T")[0];
+            var dateto = to.split("T")[0];
+            var startDate = new Date(datefrom);
+            var endDate = new Date(dateto);
+            var timeDifference = endDate - startDate;
+            var daysDifference = timeDifference / (1000 * 3600 * 24);
+
+            if (daysDifference > 1) {
+                $("#ErrortblEmployeeWise").html("From date and To date diffrent should not greater than 2 days in row no. " + rowNumber + "");
+                return false;
+            }
+            else {
+                $("#ErrortblEmployeeWise").html("");
+            }
+            var tblRowData = {};
+            tblRowData.EmployeeId = EmployeeId;
+            //tblRowData.Date = row.find("td:eq(1)").html();
+            tblRowData.Date = row.find("td:eq(1) span").html();
+            tblRowData.Day = row.find("td").eq(2).find("input").val();
+            tblRowData.InTime = row.find("td").eq(3).find("input").val();
+            tblRowData.OutTime = row.find("td").eq(4).find("input").val();
+            tblRowData.Status = row.find("td").eq(5).find("input").val();
+            tblRowData.Shift = row.find("td").eq(6).find("input").val();
+            tblRowData.TotalDuration = row.find("td:eq(7)").html();
+            tblRowData.OverTime = row.find("td:eq(8)").html();
+            //tblRowData.LateMark = row.find("td:eq(9)").html();
+            tblRowData.LateComing = row.find("td:eq(9)").html();
+            tblRowData.EarlyGoing = row.find("td:eq(10)").html();
+            tblRowData.NoOffCOFF = row.find("td:eq(11)").html();
+            tblRowData.Remark = row.find("td").eq(12).find("input").val();
+
+            tbldata.push(tblRowData);
+        });
+        var CheckError = $("#ErrortblEmployeeWise").html();
+        if (CheckError != "") {
+            return false;
+        }
+        $(".Userloaderbg").css("display", "flex");
+        $.ajax({
+            url: '@Url.Action("FinalSubmit", "ESS_TimeOffice_EmployeeWiseAttendance")',
+            method: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            data: JSON.stringify({ tbldata: tbldata, EmployeeId: EmployeeId }),
+            success: function (response) {
+                debugger;
+                data = JSON.parse(response);
+                if (data != null) {
+                    data = JSON.parse(response);
+                    var Message1 = data.Message;
+                    var Icon1 = data.Icon;
+                    if (Message1 != null) {
+                        $(".Userloaderbg").css("display", "none");
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                            //    .then(function () {
+                            //    // window.location.reload();
+                            //    $('#tblEmployeeWise').DataTable().destroy();
+                            //    //$("#tblEmployeeWise tbody").empty();
+                            //    $("#tblEmployeeLog tbody").empty();
+                            //    $("#tblShift tbody").empty();
+                            //    $("#tblSummary tbody").empty();
+
+                            //    $("#txtFromDate").val("");
+                            //    $("#txtToDate").val("");
+                            //    $("#ddlEmployeeID").val("").select2();
+                            //});
+                        }
+                    }
+                }
+            }
+        });
+
+    });
+
+    function deleteRow(r) {
+        var i = r.parentNode.parentNode.rowIndex;
+        document.getElementById("tblEmployeeWise").deleteRow(i);
+    }
+
+
+
+    //$("#txtInTime").change(function () {
+    //    debugger;
+    //    alert("Yessss");
+    //    var FromTime = $("#txtInTime").val();
+    //    var ToTime = $("#txtOutTime").val();
+
+    //    if (FromTime > ToTime) {
+    //        alert("From Time should be less than To time");
+    //    }
+    //});
+</script>
+
+<script>
+    //This Function use for only show in td tag
+    function convertDateTime(data) {
+        var getdate = parseInt(data.replace("/Date(", "").replace(")/", ""));
+        var date = millisecToDateTime(getdate);
+        return date;
+    }
+    function millisecToDateTime(milliDate) {
+        var date = new Date(milliDate);
+        var mnth = ("0" + (date.getMonth() + 1)).slice(-2);
+        var day = ("0" + date.getDate()).slice(-2);
+        var hours = ("0" + date.getHours()).slice(-2);
+        var minutes = ("0" + date.getMinutes()).slice(-2);
+        var yyyyMMdd = [date.getFullYear(), mnth, day].join("-");
+        var hhmm = [hours, minutes].join(":");
+        return yyyyMMdd + "T" + hhmm;
+    }
+
+    //This Function use for bind in input type
+    function convertDateTime12Hr(data) {
+        var getdate = parseInt(data.replace("/Date(", "").replace(")/", ""));
+        var date1 = millisecToDateTime12Hour(getdate);
+        return date1;
+    }
+    function millisecToDateTime12Hour(milliDate) {
+        var date = new Date(milliDate);
+        var mnth = ("0" + (date.getMonth() + 1)).slice(-2);
+        var day = ("0" + date.getDate()).slice(-2);
+        var hours = date.getHours();
+        var minutes = ("0" + date.getMinutes()).slice(-2);
+
+        var ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour '0' should be '12'
+        hours = ("0" + hours).slice(-2);
+
+        var yyyyMMdd = [date.getFullYear(), mnth, day].join("-");
+        var hhmm = [hours, minutes].join(":");
+        return yyyyMMdd + " " + hhmm + " " + ampm;
+    }
+
+
+
+</script>
+

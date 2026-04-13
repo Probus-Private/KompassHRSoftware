@@ -1,0 +1,1561 @@
+﻿
+@using System.Drawing;
+@model KompassHR.Areas.CRMS.Models.ACCMAIN
+@{
+    ViewBag.Title = "LeadDashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var dataList = ViewBag.List;
+    
+    string mmValue = "";
+    if (ViewBag.mm != null)
+    {
+        DateTime parsedDate = DateTime.ParseExact(ViewBag.mm, "MM-yyyy", null);
+        mmValue = parsedDate.ToString("MMMM yyyy");
+    }
+}
+
+    @*<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>*@
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- ================== BEGIN page-css ================== -->
+<link href="~/assets/plugins/datepickk/dist/datepickk.min.css" rel="stylesheet" />
+
+  <!-- ================== END page-css ================== -->
+<style>
+    .navbar-brand{
+        overflow:clip;
+    }
+    ..widget-stats .stats-icon.stats-icon-square, .widget.widget-stats .stats-icon.stats-icon-square{
+        font-size:40px;
+    }
+</style>
+
+<style>
+    body {
+        background-color: #e4e7e8;
+    }
+</style>
+
+<style>
+        #ESSDashboard .menu-submenu {
+            box-sizing: border-box;
+            display: block;
+        }
+
+            #ESSDashboard .menu-submenu .LeadDashboard {
+                font-size: 14px;
+                color: #fff !important;
+            }
+
+        @@media (max-width: 768px) {
+            .highcharts-contextbutton {
+                display: none !important;
+            }
+        }
+    </style>
+
+<style>
+        .datepickk {
+            all: initial;
+            font-family: Arial, sans-serif;
+        }
+    </style>
+
+<style>
+            .cardbX {
+                color: #fff;
+                height: fit-content;
+                padding: 20px;
+                background: rgb(4,34,100);
+                border-radius: 10px;
+                backdrop-filter: blur(5px);
+                -webkit-backdrop-filter: blur(5px);
+                border: 3px solid rgba(255, 255, 255, 1);
+                overflow: auto;
+            }
+
+                .cardbX:hover {
+                    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+                    border: 3px solid skyblue;
+                    transition: all 0.5s;
+                    overflow: auto;
+                }
+
+                .cardbX .cardbX-body .MainHeading {
+                    text-align: center;
+                    font-size: 20px;
+                    color: skyblue;
+                    letter-spacing: 1px;
+                    overflow: auto;
+                }
+
+            a {
+                text-decoration: none;
+                overflow: auto;
+            }
+
+            .display-6 {
+                font-size: 20px;
+                font-weight: 500;
+                overflow: auto;
+            }
+
+            .cardbX .cardbX-body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-direction: column;
+                overflow: auto;
+            }
+
+            img.box-icon {
+                width: 100px;
+                margin-bottom: 10px;
+                overflow: auto;
+            }
+
+                img.box-icon:hover {
+                    transform: scale(1.1);
+                    overflow: auto;
+                }
+
+            .highcharts-credits {
+                display: none;
+                overflow: auto;
+            }
+
+            .highcharts-background {
+                overflow: auto;
+                overflow-y: scroll;
+            }
+
+            .data-selector {
+                width: auto; /* Limit width for larger screens */
+                border: none; /* Remove border */
+                margin: 0 auto; /* Center align */
+                font-weight: bold; /* Remove default styles */
+                background: none; /* Optional: Set background to transparent */
+                padding: 8px; /* Add some padding for a better touch target */
+                display: block; /* Ensures it behaves like a block element */
+                font-size: 12px;
+                outline: none;
+            }
+
+            /* Centering the select element in its container */
+            .highcharts-figure {
+                text-align: center;
+                flex: 1; /* Ensures the pie charts take up equal space */
+                min-width: 300px; /* Center the content */
+            }
+
+            .data-selector .option {
+                background: #1b76a3bf;
+                color: white;
+            }
+
+            .highcharts-figure #container, .highcharts-figure #container1 {
+                width: 100%;
+                height: 300px; /* Adjust the height as necessary */
+            }
+
+            .chart-container {
+                display: flex; /* Use flexbox to align the charts side by side */
+                justify-content: space-between; /* Optional: space between the two charts */
+                gap: 20px; /* Optional: adds space between the charts */
+                flex-wrap: wrap; /* Allow the charts to wrap on smaller screens */
+            }
+
+            @@media (max-width: 320px) {
+                .highcharts-button-symbol {
+                    width: 12px;
+                    height: 12px;
+                }
+
+                /* Add space between buttons and edges of the screen */
+                .highcharts-button {
+                    margin: 0 10px; /* Adds space on both sides of the button */
+                }
+            }
+        </style>
+
+<style>
+            .dataTables_length label {
+                display: flex;
+                align-items: center;
+            }
+
+                .dataTables_length label .select2 {
+                    margin: 0 10px;
+                }
+        </style>
+
+ <style>
+            .pace.pace-active {
+                display: none !important;
+            }
+
+            .dataTables_length label {
+                display: flex;
+                align-items: center;
+            }
+
+                .dataTables_length label .select2 {
+                    margin: 0 10px;
+                }
+
+            /*button Css*/
+            .btn-icon {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .btnpress:active {
+                transform: translateY(4px);
+            }
+
+
+            .select2.select2-container {
+                width: 100% !important;
+            }
+
+            label {
+                font-weight: 600;
+            }
+
+            .width-45 {
+                width: 45px;
+            }
+        </style>
+
+ <style>
+            .Userloaderbg {
+                background: rgb(0 0 0 / 90%);
+                display: flex;
+                flex-direction: column;
+            }
+
+            .loader {
+                width: 35px;
+                height: 35px;
+                border-radius: 50%;
+                display: inline-block;
+                border-top: 4px solid #FFF;
+                border-right: 4px solid transparent;
+                box-sizing: border-box;
+                animation: rotation 1s linear infinite;
+            }
+
+                .loader::after {
+                    content: '';
+                    box-sizing: border-box;
+                    position: absolute;
+                    left: 0;
+                    top: 0;
+                    width: 35px;
+                    height: 35px;
+                    border-radius: 50%;
+                    border-left: 4px solid #FF3D00;
+                    border-bottom: 4px solid transparent;
+                    animation: rotation 0.5s linear infinite reverse;
+                }
+
+            @@keyframes rotation {
+                0% {
+                    transform: rotate(0deg);
+                }
+
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+        </style>
+
+ @if (Convert.ToBoolean(Session["IsMobile"]) != false)
+ {
+ <style>
+                .MobileHidden {
+                    display: none !important;
+                }
+
+                .app-header-fixed {
+                    padding-top: 20px !important;
+                }
+            </style>
+ }
+
+     
+            <!-- BEGIN #content -->
+            <div id="content" class="app-content">
+                <!-- BEGIN breadcrumb -->
+                <ol class="breadcrumb float-xl-end">
+                    @*<li class="breadcrumb-item"><a href="javascript:;">Home</a></li>
+                        <li class="breadcrumb-item"><a href="javascript:;">Dashboard</a></li>
+                        <li class="breadcrumb-item active">Dashboard v2</li>*@
+                </ol>
+                <!-- END breadcrumb -->
+                <!-- BEGIN page-header -->
+                <h1 class="page-header">Lead Dashboard</h1>
+                <!-- END page-header -->
+
+
+
+                @using (Html.BeginForm("LeadDashboard", "CRM", FormMethod.Post, new { id = "SENDDATA", enctype = "multipart/form-data" }))
+            {
+                    <div class="row">
+                        <div class="col-lg-2 col-md-4 col-12 mb-3 mb-md-0 order-1 order-md-0">
+                            @Html.TextBoxFor(model => model.Fdate, "{0:yyyy-MM}", new
+                   {
+                       @class = "btn btn-white text-truncate form-control w-100",
+                       type = "month",
+                       id = "single-date",
+                       value = mmValue,
+                       autocomplete = "Off",
+                       onchange = "updateDate()"
+                   })
+                        </div>
+
+                        <div class="col-md-6 col-12 mb-3 me-2 order-0 order-md-1">
+                            <a href="@Url.Action("CRM_Dashboard1", "CRM", new { area = "CRMS" })" class="btn btn-warning me-2" style="width: 51px">
+                                @*<i class="fa fa-home"></i>*@ MD
+                            </a>
+                            <a href="@Url.Action("OpportunityDashboard", "CRM", new { area = "CRMS" })" class="btn btn-success me-2" style="width: 51px">
+                                @*<i class="fa fa-home"></i>*@ OD
+                            </a>
+                            <a href="@Url.Action("AccountDashboard", "CRM", new { area = "CRMS" })" class="btn btn-primary me-2" style="width: 51px">
+                                @*<i class="fa fa-home"></i>*@ AD
+                            </a>
+                        </div>
+                    </div>
+                }
+
+                <!-- BEGIN row -->
+                <div class="row">
+                    <!-- BEGIN col-3 -->
+                    <div class="col-xl-3 col-md-6">
+                        <div class="widget widget-stats bg-white text-dark">
+                            <div class="stats-icon stats-icon-square bg-gradient-cyan-blue text-white d-flex align-items-center justify-content-center">
+                                <ion-icon name="analytics-outline"></ion-icon>
+                            </div>
+                            <div class="stats-content">
+                                <a href="#" id="activeLeadsLink" class="text-decoration-none text-dark">
+
+                                    <div class="stats-title text-dark text-opacity-75">Active Leads</div>
+                                    <div class="stats-number">@ViewBag.crntmontLead</div>
+                                </a>
+                                <div class="stats-progress progress">
+                                    <div class="progress-bar" style="width: 70.1%;"></div>
+                                </div>
+                                <a href="#" id="activeLeadsLink1" class="text-decoration-none text-dark">
+
+                                    <div class="stats-desc text-dark text-opacity-75">  &nbsp;  </div>
+                                    Total Leads @ViewBag.ActiveLeads
+                                </a>
+                            </div>
+
+                            @*<div class="stats-content">
+                                    <div class="stats-title text-dark text-opacity-75">Active Leads</div>
+                                    <div class="stats-number">@ViewBag.crntmontLead</div>
+                                    <div class="stats-progress progress">
+                                        <div class="progress-bar" style="width: 70.1%;"></div>
+                                    </div>
+                                    <div class="stats-desc text-dark text-opacity-75">  &nbsp;  </div>
+                                    Total Leads @ViewBag.ActiveLeads
+                                </div>*@
+                        </div>
+
+                    </div>
+                    <!-- END col-3 -->
+                    <!-- BEGIN col-3 -->
+                    @*<div class="col-xl-3 col-md-6">
+                                            <a href="#" id="transferedleadLink" class="text-decoration-none text-dark">
+
+                                                <div class="widget widget-stats bg-white text-dark">
+                                                    <div class="stats-icon stats-icon-square bg-gradient-cyan-blue text-white d-flex align-items-center justify-content-center">
+                                                        <ion-icon name="pricetags-outline"></ion-icon>
+                                                    </div>
+                                                    <div class="stats-content">
+                                                        <div class="stats-title text-dark text-opacity-75">Transferred  Leads</div>
+                                                        <div class="stats-number">@ViewBag.CurrentMonthTransferLeads</div>
+                                                        <div class="stats-progress progress">
+                                                            <div class="progress-bar" style="width: 40.5%;"></div>
+                                                        </div>
+                                                        Total Transferred Leads @ViewBag.TotalTransferLeads
+                                                        <div class="stats-desc text-dark text-opacity-75">&nbsp;</div>
+                                                    </div>
+                                                </div>
+                                                </a>
+                        </div>*@
+                    <div class="col-xl-3 col-md-6">
+
+                        <div class="widget widget-stats bg-white text-dark">
+                            <div class="stats-icon stats-icon-square bg-gradient-cyan-blue text-white d-flex align-items-center justify-content-center">
+                                <ion-icon name="pricetags-outline"></ion-icon>
+                            </div>
+                            <div class="stats-content">
+                                <a href="#" id="transferedleadLink" class="text-decoration-none text-dark">
+
+                                    <div class="stats-title text-dark text-opacity-75">Transferred  Leads</div>
+                                    <div class="stats-number">@ViewBag.CurrentMonthTransferLeads</div>
+                                </a>
+                                <div class="stats-progress progress">
+                                    <div class="progress-bar" style="width: 40.5%;"></div>
+                                </div>
+                                <a href="#" id="transferedleadLink1" class="text-decoration-none text-dark">
+
+                                    Total Transferred Leads @ViewBag.TotalTransferLeads
+                                    <div class="stats-desc text-dark text-opacity-75">&nbsp;</div>
+
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- END col-3 -->
+                    <!-- BEGIN col-3 -->
+                    <div class="col-xl-3 col-md-6">
+                        <div class="widget widget-stats bg-white text-dark">
+                            <div class="stats-icon stats-icon-square bg-gradient-cyan-blue text-white d-flex align-items-center justify-content-center">
+                                <ion-icon name="cart-outline"></ion-icon>
+                            </div>
+                            <div class="stats-content">
+                                <a href="#" id="ExpectedContractValueLink" class="text-decoration-none text-dark">
+                                    <div class="stats-title text-dark text-opacity-75">Expected Contract Value</div>
+                                    <div class="stats-number">@(((double?)ViewBag.CurrentMonthContractValue ?? 0).ToString("N0", System.Globalization.CultureInfo.CreateSpecificCulture("hi-IN")))</div>
+                                    <div class="stats-progress progress">
+                                        <div class="progress-bar" style="width: 76.3%;"></div>
+                                    </div>
+                                </a>
+                                <a href="#" id="ExpectedContractValueLink1" class="text-decoration-none text-dark">
+                                    Total Contract Value @(((double?)ViewBag.TotalCurrentMonthContractValue ?? 0).ToString("N0", System.Globalization.CultureInfo.CreateSpecificCulture("hi-IN")))
+                                    <div class="stats-desc text-dark text-opacity-75">&nbsp;</div>
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    @*<div class="col-xl-3 col-md-6">
+                                            <a href="#" id="ExpectedContractValueLink" class="text-decoration-none text-dark">
+
+                                                <div class="widget widget-stats bg-white text-dark">
+                                                    <div class="stats-icon stats-icon-square bg-gradient-cyan-blue text-white d-flex align-items-center justify-content-center">
+                                                        <ion-icon name="cart-outline"></ion-icon>
+                                                    </div>
+                                                    <div class="stats-content">
+                                                        <div class="stats-title text-dark text-opacity-75">Expected Contract Value</div>
+                                                        <div class="stats-number">@(((double?)ViewBag.CurrentMonthContractValue ?? 0).ToString("N0", System.Globalization.CultureInfo.CreateSpecificCulture("hi-IN")))</div>
+                                                        <div class="stats-progress progress">
+                                                            <div class="progress-bar" style="width: 76.3%;"></div>
+                                                        </div>
+
+                                                        Total Contract Value @(((double?)ViewBag.TotalCurrentMonthContractValue ?? 0).ToString("N0", System.Globalization.CultureInfo.CreateSpecificCulture("hi-IN")))
+                                                        <div class="stats-desc text-dark text-opacity-75">&nbsp;</div>
+                                                    </div>
+                                                </div>
+                                                </a>
+                        </div>*@
+                    <!-- END col-3 -->
+                    <!-- BEGIN col-3 -->
+                    <div class="col-xl-3 col-md-6">
+                        <div class="widget widget-stats bg-white text-dark">
+                            <div class="stats-icon stats-icon-square bg-gradient-cyan-blue text-white d-flex align-items-center justify-content-center">
+                                <ion-icon name="chatbox-outline"></ion-icon>
+                            </div>
+                            <div class="stats-content" style="margin-bottom :-5px;">
+                                <a href="#" id="HotPriorityLeadsLink" class="text-decoration-none text-dark">
+
+                                    @*<div class="stats-title text-dark text-opacity-75">Priority Leads </div>*@
+                                    <div class="stats-title text-dark text-opacity-75">Hot Leads : @(ViewBag.HotPriorityCount?.HotPriorityCount ?? 0)</div>
+                                    <div class="stats-title text-dark text-opacity-75">Cold Leads : @(ViewBag.HotPriorityCount?.ColdPriorityCount ?? 0)</div>
+                                    <div class="stats-title text-dark text-opacity-75">Warm Leads : @(ViewBag.HotPriorityCount?.WarmPriorityCount ?? 0)</div>
+
+                                </a>
+                                @*<div class="stats-number">@ViewBag.HotPriorityCount</div>*@
+                                <a href="#" id="HotPriorityLeadsLink1" class="text-decoration-none text-dark">
+
+                                    <div class="stats-progress progress" style="margin-top :14px;">
+                                        <div class="progress-bar" style="width: 54.9%;"></div>
+                                    </div>
+                                    Total Priority Leads  @ViewBag.TotalPriorityCount
+                                    <div class="stats-desc text-dark text-opacity-75">&nbsp;</div>
+                                </a>
+                            </div>
+                        </div>
+                        <!-- END col-3 -->
+
+                    </div>
+
+                    <!-- END row -->
+                    <!-- BEGIN row -->
+                    <div class="row">
+                        <!-- BEGIN col-8 -->
+                        <div class="col-xl-8">
+                            <div class="widget-chart with-sidebar" data-bs-theme="dark">
+                                <div class="card-body" style="background: #fff;">
+                                    <div class="chart-container">
+                                        <figure class="highcharts-figure">
+                                            <div style="height: 30px;"> </div>
+                                            <div id="container"></div>
+                                        </figure>
+                                        <figure class="highcharts-figure">
+                                            <select class="data-selector" id="dataSelector">
+                                                <option class="option" id="IndustryType" value="Industry Type Wise Lead" onclick="IndustryType()">Industry Type Wise Lead</option>
+                                                <option class="option" id="Companycategory" value="Company category Wise Lead" onclick="Companycategory()">Company category Wise Lead</option>
+                                                <option class="option" id="Leadsource" value="Leadsource Wise Lead" onclick="Leadsource()">Leadsource Wise Lead</option>
+                                            </select>
+                                            <div id="container1"></div>
+                                        </figure>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- END col-8 -->
+
+                        <!-- BEGIN col-4 -->
+                        <div class="col-xl-4">
+                            <div class="card border-0 mb-3 text-dark">
+                                <div class="card-body">
+                                    <div class="mb-2">
+                                        <b> LOCATIONS</b>
+                                        @*<span class="ms-2"><i class="fa fa-info-circle" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-title="Total sales" data-bs-placement="top" data-bs-content="Net sales (gross sales minus discounts and returns) plus taxes and shipping. Includes orders from all sales channels."></i></span>*@
+                                    </div>
+                                    <div id="visitors-map" class="mb-2" style="height: 150px"></div>
+                                    <div class="rounded-bottom" data-scrollbar="true" data-height="135px">
+                                        @foreach (var item in ViewBag.StateList)
+                                        {
+                                            var FinalPath = "";
+                                            <a href="@Url.Action("LocationViseInfo", "CRM", new { Fid= @item.State_Fid,Origin = "Lead",Zones = "LeadDashboard"  })" style="text-decoration:none">
+                                                <div class="d-flex align-items-center mb-2">
+
+
+                                                    @if (!Directory.Exists(item.country))
+                                                    {
+                                                        try
+                                                        {
+                                                            using (Image image = Image.FromFile(item.country))  // Load the image
+                                                            {
+                                                                using (MemoryStream m = new MemoryStream())  // Convert image to stream
+                                                                {
+                                                                    image.Save(m, image.RawFormat);
+                                                                    byte[] imageBytes = m.ToArray();  // Convert stream to byte array
+
+                                                                    // Convert byte[] to Base64 String
+                                                                    string base64String = Convert.ToBase64String(imageBytes);
+                                                                    string mimeType = "image/jpg";  // Change this based on the actual image type (e.g., "image/jpeg" for jpg images)
+
+                                                                    // Update FinalPath to include the mime type and Base64 string
+                                                                    FinalPath = "data:" + mimeType + ";base64," + base64String;
+
+                                                                    <span class="widget-img widget-img-xs rounded bg-dark me-2 w-40px" style="background-image: url(@FinalPath)"></span>
+                                                                }
+                                                            }
+                                                        }
+                                                        catch (Exception ex)
+                                                        {
+                                                            // Fallback to default image if there's an error
+                                                            <span class="bg-primary rounded-circle d-inline-flex align-items-center justify-content-center text-white me-2"
+                                                                  style="width: 28px; height: 28px;">
+                                                                <i class="fas fa-arrow-right"></i>
+                                                            </span>                                                    }
+                                                    }
+                                                    <span class="text-black">@item.StateName</span>
+                                                    <span class="ms-auto text-black"><span data-animation="number" data-value="@item.Count">0.00</span></span>
+                                                </div>
+                                            </a>
+                                        }
+
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <!-- END col-4 -->
+
+
+
+
+
+                    </div>
+
+                    <!--New Chart for Lead Priority -->
+
+                    <div class="row">
+                        <!-- BEGIN col-8 -->
+
+                        <div class="col-xl-8">
+                            <div class="widget-chart with-sidebar" data-bs-theme="dark">
+                                <div class="card-body" style="background: #fff; padding: 10px; display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+
+                                    <!-- Lead Priority Chart -->
+                                    <div class="custom-chart-container" style="width: 250px; height: 330px;">
+                                        <canvas id="leadPriorityChartNew" style="width: 100%; height: 100%;"></canvas>
+                                    </div>
+
+                                    <!-- Company Category Wise Chart -->
+                                    <div class="custom-chart-container" style="width: 250px; height: 330px;">
+                                        <canvas id="companyCategoryChart" style="width: 100%; height: 100%;"></canvas>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- END col-8 -->
+                        <!-- BEGIN col-4 -->
+                        <div class="col-xl-4">
+                            <div class="card border-0 mb-3 text-dark">
+                                <div class="card-body">
+                                    <div class="mb-2">
+                                        <b> LOCATIONS</b>
+                                        @*<span class="ms-2"><i class="fa fa-info-circle" data-bs-toggle="popover" data-bs-trigger="hover" data-bs-title="Total sales" data-bs-placement="top" data-bs-content="Net sales (gross sales minus discounts and returns) plus taxes and shipping. Includes orders from all sales channels."></i></span>*@
+                                    </div>
+                                    <div id="visitors-map1" class="mb-2" style="height: 150px"></div>
+                                    <div class="rounded-bottom" data-scrollbar="true" data-height="135px">
+                                        @foreach (var item in ViewBag.StateList)
+                                        {
+                                            var FinalPath = "";
+                                            <a href="@Url.Action("LocationViseInfo", "CRM", new { Fid= @item.State_Fid,Origin = "Lead",Zones = "LeadDashboard"  })" style="text-decoration:none">
+                                                <div class="d-flex align-items-center mb-2">
+
+
+                                                    @if (!Directory.Exists(item.country))
+                                                    {
+                                                        try
+                                                        {
+                                                            using (Image image = Image.FromFile(item.country))  // Load the image
+                                                            {
+                                                                using (MemoryStream m = new MemoryStream())  // Convert image to stream
+                                                                {
+                                                                    image.Save(m, image.RawFormat);
+                                                                    byte[] imageBytes = m.ToArray();  // Convert stream to byte array
+
+                                                                    // Convert byte[] to Base64 String
+                                                                    string base64String = Convert.ToBase64String(imageBytes);
+                                                                    string mimeType = "image/jpg";  // Change this based on the actual image type (e.g., "image/jpeg" for jpg images)
+
+                                                                    // Update FinalPath to include the mime type and Base64 string
+                                                                    FinalPath = "data:" + mimeType + ";base64," + base64String;
+
+                                                                    <span class="widget-img widget-img-xs rounded bg-dark me-2 w-40px" style="background-image: url(@FinalPath)"></span>
+                                                                }
+                                                            }
+                                                        }
+                                                        catch (Exception ex)
+                                                        {
+                                                            // Fallback to default image if there's an error
+                                                            <span class="bg-primary rounded-circle d-inline-flex align-items-center justify-content-center text-white me-2"
+                                                                  style="width: 28px; height: 28px;">
+                                                                <i class="fas fa-arrow-right"></i>
+                                                            </span>                                                    }
+                                                    }
+                                                    <span class="text-black">@item.StateName</span>
+                                                    <span class="ms-auto text-black"><span data-animation="number" data-value="@item.Count">0.00</span></span>
+                                                </div>
+                                            </a>
+                                        }
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @*<div class="col-xl-4">
+                            <div class="card border-0 mb-3 text-dark">
+                                <div class="card-body">
+                                    <div class="mb-2">
+                                        <b> LOCATIONS</b>
+                                    </div>
+                                    <div id="visitors-map1" class="mb-2" style="height: 150px"></div>
+                                    <div class="rounded-bottom" data-scrollbar="true" data-height="135px">
+                                        @foreach (var item in ViewBag.StateList)
+                                        {
+                                            var FinalPath = "";
+                                            <a href="@Url.Action("LocationViseInfo", "CRM", new { Fid= @item.State_Fid,Origin = "Lead",Zones = "LeadDashboard"  })" style="text-decoration:none">
+                                                <div class="d-flex align-items-center mb-2">
+
+
+                                                    @if (!Directory.Exists(item.country))
+                                                    {
+                                                        try
+                                                        {
+                                                            using (Image image = Image.FromFile(item.country))  // Load the image
+                                                            {
+                                                                using (MemoryStream m = new MemoryStream())  // Convert image to stream
+                                                                {
+                                                                    image.Save(m, image.RawFormat);
+                                                                    byte[] imageBytes = m.ToArray();  // Convert stream to byte array
+
+                                                                    string base64String = Convert.ToBase64String(imageBytes);
+                                                                    string mimeType = "image/jpg";  // Change this based on the actual image type (e.g., "image/jpeg" for jpg images)
+
+                                                                    FinalPath = "data:" + mimeType + ";base64," + base64String;
+
+                                                                    <span class="widget-img widget-img-xs rounded bg-dark me-2 w-40px" style="background-image: url(@FinalPath)"></span>
+                                                                }
+                                                            }
+                                                        }
+                                                        catch (Exception ex)
+                                                        {
+                                                       
+                                                            <span class="widget-img widget-img-xs rounded bg-dark me-2 w-40px" style="background-image: url(~/assets/img/flag/us.jpg)"></span>
+                                                        }
+                                                    }
+                                                    <span class="text-black">@item.StateName</span>
+                                                    <span class="ms-auto text-black"><span data-animation="number" data-value="@item.Count">0.00</span></span>
+                                                </div>
+                                            </a>
+                                        }
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>*@
+                        <!-- END col-4 -->
+                    </div>
+                    <!--New Chart for Lead Priority -->
+
+                    <div class="row">
+                        <div class="col-xl-8">
+                            <div class="row">
+                                <div class="card border-0 mb-3 text-dark">
+                                    <div class="card-body">
+                                        <div class="mb-3 d-flex justify-content-between align-items-center">
+                                            <b>Expected Contract Value</b>
+                                            <select id="filterType" class="form-select form-select-sm w-auto">
+                                                <option value="Weekly">Weekly</option>
+                                                <option value="Monthly" selected>Monthly</option>
+                                            </select>
+                                        </div>
+                                        <div style="height: 300px; position: relative;">
+                                            <canvas id="analyticsChart" class="w-100"></canvas>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-4 col-lg-6">
+                            <!-- BEGIN panel -->
+                            <div class="panel panel-inverse" data-sortable-id="index-4">
+                                @*<div class="panel-heading bg-success" >*@
+                                <div class="panel-heading" style="background-color: #004d00; color: #fff;">
+                                    <h4 class="panel-title">Expected Contract Value</h4>
+                                </div>
+                                <div class="chats" data-scrollbar="true" data-height="325px">
+                                    <div>
+
+                                        <div class="align-items-center mb-2">
+
+                                            @foreach (var i in ViewBag.top10ECV)
+                                            {
+                                                <h6 style="margin:0;" class="username text-ellipsis">
+                                                    @i.CompanyName : @(((double?)i.ExpectedContractValue ?? 0).ToString("N0", System.Globalization.CultureInfo.CreateSpecificCulture("hi-IN")))
+                                                </h6>
+                                                <hr />
+                                            }
+
+                                        </div>
+
+                                    </div>
+                                </div>
+
+
+                            </div>
+                            <!-- END panel -->
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- END row -->
+                    <!-- BEGIN row -->
+                    <div class="row">
+                        <!-- BEGIN col-4 -->
+                        <div class="col-xl-4 col-lg-6">
+                            <!-- BEGIN panel -->
+                            <div class="panel panel-inverse">
+                                <div class="panel-heading" style="background-color: #004d00; color: #fff;">
+                                    <h4 class="panel-title">Communication History</h4>
+                                    @*<span class="badge bg-blue">4 message</span>*@
+                                </div>
+                                <div class="panel-body bg-light">
+                                    <div class="chats" data-scrollbar="true" data-height="340px">
+                                        @for (int i = 0; i < ViewBag.Communication.Count; i++)
+                                        {
+                                            var communication = ViewBag.Communication[i];
+
+                                            // Check if the index is even or odd to alternate the classes
+                                            string chatClass = (i % 2 == 0) ? "chats-item start" : "chats-item end";
+                                            <div class="@chatClass">
+                                                <span class="date-time">@Convert.ToDateTime(communication.CommunicationDate).ToString("dd-MMM-yyyy")</span>
+
+                                                <a href="javascript:;" class="name">
+                                                    @communication.EmployeeName
+                                                </a>
+
+                                                <a href="javascript:;" class="image">
+                                                    <img alt="" src="~/assets/img/user/user-13.jpg" />
+                                                </a>
+
+
+                                                @*<div class="message">
+                                                    <h6 style="margin:0;">
+                                                        <span style="display:block; margin-bottom:5px">@communication.LeadName</span>
+                                                    </h6>
+                                                    <span style="display:block; margin-bottom:5px">@communication.CompanyName</span>
+                                                    @HtmlHelpers.StripHtmlTags(communication.Description)
+                                                </div>*@
+                                            </div>
+                                            
+                                        }
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                            <!-- END panel -->
+                        </div>
+                        <!-- END col-4 -->
+                        <!-- BEGIN col-4 -->
+                        <div class="col-xl-4 col-lg-6">
+                            <!-- BEGIN panel -->
+                            <div class="panel panel-inverse">
+                                <div class="panel-heading" style="background-color: #004d00; color: #fff;">
+                                    <h4 class="panel-title">Today's Schedule</h4>
+                                </div>
+
+                                <!-- Calendar -->
+                                <div id="schedule-calendar" class="datepickk"></div>
+
+                                <!-- Separator -->
+                                <hr class="m-0 bg-gray-500" />
+
+                                <!-- BEGIN: All Scheduled Items -->
+                                <div class="chats" data-scrollbar="true" data-height="82px">
+                                    <div class="list-group list-group-flush">
+
+                                        <!-- Activity Section -->
+                                        @*<h6 class="px-3 pt-2 fw-bold text-dark">Activities</h6>*@
+                                        @if (ViewBag.CalendarData != null && ViewBag.CalendarData.Count > 0)
+                                        {
+                                         foreach (var item in ViewBag.CalendarData)
+                                           {
+                                                <a href="javascript:;" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center text-ellipsis">
+                                                    The Activity Count: @item.ActivityType
+                                                    <span class="badge bg-blue fs-10px">@item.ActivityCount</span>
+                                                </a>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <div class="list-group-item text-muted">No Activity Found For Today.</div>
+                                        }
+
+                                        <!-- Communication Section -->
+                                        @*<h6 class="px-3 pt-3 fw-bold text-dark">Communications</h6>*@
+                                        @if (ViewBag.CommunicationData != null && ViewBag.CommunicationData.Count > 0)
+                                          {
+                                              foreach (var item in ViewBag.CommunicationData)
+                                           {
+                                                <a href="javascript:;" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center text-ellipsis">
+                                                    The Communication Type: @item.CommunicationType
+                                                    <span class="badge bg-success fs-10px">@item.CommunicationCount</span>
+                                                </a>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <div class="list-group-item text-muted">No Communication Found For today.</div>
+                                        }
+
+                                        <!-- Attendance Section -->
+                                        @*<h6 class="px-3 pt-3 fw-bold text-dark">Visit Count</h6>*@
+                                        @{
+                                            var visitList = ViewBag.VisitCount as List<dynamic>;
+                                            var hasValidData = visitList != null && visitList.Any(x => x != null && x.VisitCount > 0);
+                                        }
+                                        @if (hasValidData)
+                                        {
+                                            foreach (var item in visitList)
+                                            {
+                                                if (item != null && item.VisitCount > 0)
+                                                {
+                                                    <a href="javascript:;" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center text-ellipsis">
+                                                        Today's Visit Count:
+                                                        <span class="badge bg-warning fs-10px">@item.VisitCount</span>
+                                                    </a>
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <div class="list-group-item text-muted">No Visit Found For Today.</div>
+                                        }
+
+                                    </div>
+                                </div>
+                                <!-- END: All Scheduled Items -->
+                            </div>
+                            <!-- END panel -->
+                        </div>
+
+                        <script>
+                            const calendar = new Datepickk();
+                            calendar.container = document.getElementById('schedule-calendar');
+                            calendar.inline = true;
+
+                            calendar.onSelect = function(date) {
+                                const selectedDate = date.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+                                window.location.href = `/CRM/Dashboard?selectedDate=${selectedDate}`;
+                            };
+
+                            calendar.render();
+                        </script>
+
+                        <!-- END col-4 -->
+                        <!-- BEGIN col-4 -->
+                        <div class="col-xl-4 col-lg-6">
+                            <!-- BEGIN panel -->
+                            <div class="panel panel-inverse">
+                                <div class="panel-heading" style="background-color: #004d00; color: #fff;">
+
+                                    <h4 class="panel-title">Leads</h4>
+                                    @*<span class="badge bg-blue">24 new users</span>*@
+                                </div>
+                                <div class="chats" data-scrollbar="true" data-height="369px">
+                                    <div>
+                                        @foreach (var item in ViewBag.LeadList)
+                                        {
+                                            <a href="@Url.Action("Lead_Details", "CRM", new { EncryptedId = item.Encrypted_Id, area = "CRMS" })" class="text-decoration-none text-dark">
+                                                <div class="d-flex align-items-center mb-2">
+                                                    <!-- Company Logo as image -->
+                                                    <div class="me-2">
+                                                        <a href="javascript:;" class="image">
+                                                            <img alt="" src="~/assets/img/user/user-13.jpg" style="width: 30px; height: 30px; object-fit: cover;" class="rounded-circle" />
+                                                        </a>
+                                                    </div>
+
+                                                    <div>
+                                                        <h6 style="margin: 0;" class="username text-ellipsis">@item.CompanyName</h6>
+                                                        <small class="username text-ellipsis">Lead Name : @item.LeadName</small>
+                                                        <br /><small class="username text-ellipsis">Priority : @item.LeadPriority</small>
+                                                        <br /><small class="username text-ellipsis">Active Days : @item.fdateCount</small>
+                                                    </div>
+                                                </div>
+                                            </a>
+                                            <hr />
+                                        }
+                                    </div>
+
+                                </div>
+
+                                @*<div class="panel-footer text-center">
+                                        <a href="@Url.Action("LeadDashboard", "CRM", new {area = "CRM" })" class="text-decoration-none text-dark">View All</a>
+                                    </div>*@
+                            </div>
+                            <!-- END panel -->
+                        </div>
+                        <!-- END col-4 -->
+                    </div>
+                    <!-- END row -->
+                </div>
+                <!-- END #content -->
+                <!-- BEGIN theme-panel -->
+                <!-- END theme-panel -->
+                <!-- BEGIN scroll-top-btn -->
+                <a href="javascript:;" class="btn btn-icon btn-circle btn-theme btn-scroll-to-top" data-toggle="scroll-to-top"><i class="fa fa-angle-up"></i></a>
+                <!-- END scroll-top-btn -->
+            </div>
+            <!-- END #app -->
+          
+            <!-- ================== BEGIN page-js ================== -->
+            <script src="~/assets/plugins/d3/d3.min.js"></script>
+        
+
+            <script src="https://code.highcharts.com/highcharts.js"></script>
+            <script src="https://code.highcharts.com/modules/exporting.js"></script>
+            <script src="https://code.highcharts.com/modules/export-data.js"></script>
+            <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+            <script src="https://code.highcharts.com/modules/offline-exporting.js"></script>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    // Parse the ViewBag data to the format required by Highcharts
+                    var chartData = @Html.Raw(Json.Encode(ViewBag.List));
+                    var seriesData = chartData.map(function(item) {
+                        var origin = item.find(x => x.Key === "Stage").Value;
+                        var total = item.find(x => x.Key === "Total").Value;
+                        return {
+                            name: origin,
+                            y: parseInt(total)
+                        };
+                    });
+
+                    // Monochrome fill setup
+                    var colors = [],
+                        base = Highcharts.getOptions().colors[0],
+                        i;
+
+                    for (i = 0; i < 10; i += 1) {
+                        // Start out with a darkened base color (negative brighten), and end up with a brightened color
+                        colors.push(Highcharts.color(base).brighten((i - 3) / 7).get());
+                    }
+
+                    Highcharts.chart('container', {
+                        chart: {
+                            type: 'pie'
+                        },
+                        title: {
+                            text: 'Lead Stage'
+                        },
+                        plotOptions: {
+                            pie: {
+                                colors: colors,
+                                dataLabels: {
+                                    enabled: true,
+                                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                                    distance: -50,
+                                }
+                            }
+                        },
+                        series: [{
+                            name: 'Count',
+                            data: seriesData
+                        }]
+                    });
+                });
+            </script>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    // Parse the ViewBag data to the format required by Highcharts
+                    var chartData = @Html.Raw(Json.Encode(ViewBag.List1));
+                    var seriesData = chartData.map(function(item) {
+                        var origin = item.find(x => x.Key === "IndustryType").Value;
+                        var total = item.find(x => x.Key === "Total").Value;
+                        var title = $("#IndustryType").text();
+                        return {
+                            name: origin,
+                            y: parseInt(total)
+                        };
+                    });
+
+                    // Monochrome fill setup
+                    var colors = [],
+                        base = Highcharts.getOptions().colors[0],
+                        i;
+
+                    for (i = 0; i < 10; i += 1) {
+                        // Start out with a darkened base color (negative brighten), and end up with a brightened color
+                        colors.push(Highcharts.color(base).brighten((i - 3) / 7).get());
+                    }
+
+                    Highcharts.chart('container1', {
+                        chart: {
+                            type: 'pie'
+                        },
+                        title: {
+                            text: 'Industry Type Wise Lead'
+                        },
+                        plotOptions: {
+                            pie: {
+                                colors: colors,
+                                dataLabels: {
+                                    enabled: true,
+                                    format: '<b>{point.name}</b>: {point.y}',
+                                    distance: -50,
+                                }
+                            }
+                        },
+                        series: [{
+                            name: 'Count',
+                            data: seriesData
+                        }]
+                    });
+                });
+            </script>
+
+            <script>
+                $("#dataSelector").change(function() {
+                    debugger
+                    var title = $("#dataSelector").val();
+                    if (title == "Industry Type Wise Lead"){
+                        var chartData = @Html.Raw(Json.Encode(ViewBag.List1));
+                        var seriesData = chartData.map(function(item) {
+                            var origin = item.find(x => x.Key === "IndustryType").Value;
+                            var total = item.find(x => x.Key === "Total").Value;
+                            return {
+                                name: origin,
+                                y: parseInt(total)
+                            };
+                        });
+
+
+                        // Monochrome fill setup
+                        var colors = [],
+                            base = Highcharts.getOptions().colors[0],
+                            i;
+
+                        for (i = 0; i < 10; i += 1) {
+                            // Start out with a darkened base color (negative brighten), and end up with a brightened color
+                            colors.push(Highcharts.color(base).brighten((i - 3) / 7).get());
+                        }
+
+                        Highcharts.chart('container1', {
+                            chart: {
+                                type: 'pie'
+                            },
+                            title: {
+                                text: title
+                            },
+                            plotOptions: {
+                                pie: {
+                                    colors: colors,
+                                    dataLabels: {
+                                        enabled: true,
+                                        format: '<b>{point.name}</b>: {point.y}',
+                                        distance: -50,
+                                    }
+                                }
+                            },
+                            series: [{
+                                name: 'Count',
+                                data: seriesData
+                            }]
+                        });
+
+                    }
+                    if (title == "Company category Wise Lead"){
+                        debugger
+                        var chartData = @Html.Raw(Json.Encode(ViewBag.List2));
+                        var seriesData = chartData.map(function(item) {
+                            var origin = item.find(x => x.Key === "CompanyCategory").Value;
+                            var total = item.find(x => x.Key === "Total").Value;
+                            var title = $("#Companycategory").val();
+                            return {
+                                name: origin,
+                                y: parseInt(total)
+                            };
+                        });
+
+                        // Monochrome fill setup
+                        var colors = [],
+                            base = Highcharts.getOptions().colors[0],
+                            i;
+
+                        for (i = 0; i < 10; i += 1) {
+                            // Start out with a darkened base color (negative brighten), and end up with a brightened color
+                            colors.push(Highcharts.color(base).brighten((i - 3) / 7).get());
+                        }
+
+                        Highcharts.chart('container1', {
+                            chart: {
+                                type: 'pie'
+                            },
+                            title: {
+                                text: title
+                            },
+                            plotOptions: {
+                                pie: {
+                                    colors: colors,
+                                    dataLabels: {
+                                        enabled: true,
+                                        format: '<b>{point.name}</b>: {point.y}',
+                                        distance: -50,
+                                    }
+                                }
+                            },
+                            series: [{
+                                name: 'Count',
+                                data: seriesData
+                            }]
+                        });
+                    }
+                    if (title == "Leadsource Wise Lead"){
+                        debugger
+                        var chartData = @Html.Raw(Json.Encode(ViewBag.List3));
+                        var seriesData = chartData.map(function(item) {
+                            debugger
+                            var origin = item.find(x => x.Key === "LeadSource").Value;
+                            var total = item.find(x => x.Key === "Total").Value;
+                            return {
+                                name: origin,
+                                y: parseInt(total)
+                            };
+                        });
+
+                        // Monochrome fill setup
+                        var colors = [],
+                            base = Highcharts.getOptions().colors[0],
+                            i;
+
+                        for (i = 0; i < 10; i += 1) {
+                            // Start out with a darkened base color (negative brighten), and end up with a brightened color
+                            colors.push(Highcharts.color(base).brighten((i - 3) / 7).get());
+                        }
+
+                        Highcharts.chart('container1', {
+                            chart: {
+                                type: 'pie'
+                            },
+                            title: {
+                                text: title
+                            },
+                            plotOptions: {
+                                pie: {
+                                    colors: colors,
+                                    dataLabels: {
+                                        enabled: true,
+                                        format: '<b>{point.name}</b>: {point.y}',
+                                        distance: -50,
+                                    }
+                                }
+                            },
+                            series: [{
+                                name: 'Count',
+                                data: seriesData
+                            }]
+                        });
+                    }
+                })
+            </script>
+
+            <!-- ================== END page-js ================== -->
+
+<script>
+    function updateDate() {
+        debugger;
+
+        // Get the selected date value from the input
+        const selectedDate = document.getElementById("single-date").value;
+
+        if (selectedDate) {
+            const dateParts = selectedDate.split("-");
+            const year = dateParts[0];  // Year part (e.g., "2024")
+            const month = dateParts[1]; // Month part (e.g., "10")
+            console.log("Month:", month); // e.g., "10"
+            console.log("Year:", year);   // e.g., "2024"
+            var formattedDate = `${month}-${year}`;
+
+
+            $("#SENDDATA").submit();
+
+        }
+    }
+
+</script>
+
+<script>
+    $(document).ready(function () {
+        debugger
+        let chartInstance;
+        function loadChartData(filterType) {
+            var d1 = $("#single-date").val();
+            $.ajax({
+                url: '@Url.Action("GetAnalyticsData", "CRM")',
+                type: 'GET',
+                data: { filterType: filterType, d1: d1 },
+                success: function (response) {
+                    if (response.success) {
+                        const labels = filterType === "Weekly"
+                        ? response.labels.map(label => `Day ${label}`)
+                        : response.labels;
+
+                        renderChart(labels, response.leadCounts, response.opportunityCounts, response.accountCounts);
+                    } else {
+                        console.error(response.message || response.error);
+                        alert("Failed to load analytics data.");
+                    }
+                },
+                error: function () {
+                    alert("Server error while loading chart data.");
+                }
+            });
+        }
+
+        function renderChart(labels, leadData, opportunityData, accountData) {
+            const ctx = document.getElementById('analyticsChart').getContext('2d');
+
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            // ✅ Calculate totals
+            const totalLeads = leadData.reduce((sum, val) => sum + val, 0);
+            const totalOpportunities = opportunityData.reduce((sum, val) => sum + val, 0);
+            const totalAccounts = accountData.reduce((sum, val) => sum + val, 0);
+
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                    {
+                        label: `Lead (Total: ${totalLeads})`,
+                        data: leadData,
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        fill: true,
+                        tension: 0.3
+                    },
+                    {
+                        label: `Opportunity (Total: ${totalOpportunities})`,
+                        data: opportunityData,
+                        borderColor: 'rgba(255, 206, 86, 1)',
+                        backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                        fill: true,
+                        tension: 0.3
+                    },
+                    {
+                        label: `Account (Total: ${totalAccounts})`, // ✅ new dataset
+                        data: accountData,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        fill: true,
+                        tension: 0.3
+                    }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Lead vs Opportunity vs Account' // ✅ updated title
+                        }
+                    }
+                }
+            });
+        }
+
+        // Load default chart on page load
+        loadChartData($('#filterType').val());
+
+        // Reload on dropdown change
+        $('#filterType').on('change', function () {
+            loadChartData($(this).val());
+        });
+    });
+</script>
+
+<script>
+    // Lead Priority Data
+    var leadPriorityLabelsNew = [];
+    var leadPriorityDataNew = [];
+
+    @foreach (var item in ViewBag.LeadPriorityData)
+    {
+        <text>
+    leadPriorityLabelsNew.push('@item.LeadPriority');
+    leadPriorityDataNew.push(@item.Lead);
+    </text>
+    }
+
+    // Company Category Data
+    var categoryLabels = [];
+    var categoryData = [];
+
+    @foreach (var item in ViewBag.CategoryWise)
+    {
+        <text>
+    categoryLabels.push('@item.CompanyCategory');
+    categoryData.push(@item.LeadCount);
+    </text>
+    }
+
+    // Lead Priority Chart
+    const ctxNew = document.getElementById('leadPriorityChartNew').getContext('2d');
+    let leadPriorityChartNew = new Chart(ctxNew, {
+     
+        type: 'doughnut',
+        data: {
+            labels: leadPriorityLabelsNew,
+            datasets: [{
+                label: 'Lead Priority Distribution',
+                data: leadPriorityDataNew,
+                backgroundColor: [
+      'rgba(44, 175, 254, 0.9)',  // Bright Sky
+    'rgba(153, 255, 255, 0.9)', // Light Aqua
+    'rgba(0, 66, 145, 0.9)'     // Deep Blue
+                ],
+
+                borderColor: 'rgba(255, 255, 255, 1)',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { font: { size: 12 } }
+                },
+                title: {
+                    display: true,
+                    text: 'Lead Priority',
+                    font: { size: 16 }
+                },
+                tooltip: {
+                    callbacks: {
+                        title: function (context) {
+                            return context[0].label; // Show label (e.g., "High Priority")
+                        },
+                        label: function (context) {
+                            return 'Lead: ' + context.raw; // Show value below
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Company Category Chart
+    const ctxCategory = document.getElementById('companyCategoryChart').getContext('2d');
+    let companyCategoryChart = new Chart(ctxCategory, {
+        type: 'doughnut',
+        data: {
+            labels: categoryLabels,
+            datasets: [{
+                label: 'Company Category Leads',
+                data: categoryData,
+                backgroundColor: [
+                     'rgba(44, 175, 254, 0.9)',  // Large
+    'rgba(153, 255, 255, 0.9)', // Growth
+    'rgba(0, 66, 145, 0.9)',    // Medium
+    'rgba(0, 51, 102, 0.9)'     // Small
+                ],
+                borderColor: 'rgba(255, 255, 255, 1)',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { font: { size: 12 } }
+                },
+                title: {
+                    display: true,
+                    text: 'Company Category Wise Leads',
+                    font: { size: 16 }
+                },
+                tooltip: {
+                    callbacks: {
+
+                        label: function (context) {
+                            return 'Leads: ' + context.raw; // Show lead count below
+                        },title: function (context) {
+                            return context[0].label; // Show category name
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+
+<script>
+    $('#activeLeadsLink').on('click', function (e) {
+        e.preventDefault(); // prevent default anchor navigation
+        var dateValue = $('#single-date').val(); // get the value from textbox
+        // Build the URL with the date as a query parameter
+        var targetUrl = '@Url.Action("CurrentMonthActiveLeads", "CRM", new { area = "CRMS" })' + '?date=' + encodeURIComponent(dateValue);
+        // Redirect to the new URL
+        window.location.href = targetUrl;
+    });
+
+    $('#activeLeadsLink1').on('click', function (e) {
+        e.preventDefault(); // prevent default anchor navigation
+        var dateValue = $('#single-date').val(); // get the value from textbox
+        // Build the URL with the date as a query parameter
+        var targetUrl = '@Url.Action("TotalActiveLeads", "CRM", new { area = "CRMS" })' + '?date=' + encodeURIComponent(dateValue);
+        // Redirect to the new URL
+        window.location.href = targetUrl;
+    });
+
+
+    $('#transferedleadLink').on('click', function (e) {
+        e.preventDefault(); // prevent default anchor navigation
+        var dateValue = $('#single-date').val(); // get the value from textbox
+        // Build the URL with the date as a query parameter
+        var targetUrl = '@Url.Action("CurrentmonthTransferedLeads", "CRM", new { area = "CRMS" })' + '?date=' + encodeURIComponent(dateValue);
+        // Redirect to the new URL
+        window.location.href = targetUrl;
+    });
+
+
+    $('#transferedleadLink1').on('click', function (e) {
+        e.preventDefault(); // prevent default anchor navigation
+        var dateValue = $('#single-date').val(); // get the value from textbox
+        // Build the URL with the date as a query parameter
+        var targetUrl = '@Url.Action("TotalTransferLeads", "CRM", new { area = "CRM" })' + '?date=' + encodeURIComponent(dateValue);
+        // Redirect to the new URL
+        window.location.href = targetUrl;
+    });
+
+
+    $('#HotPriorityLeadsLink').on('click', function (e) {
+        e.preventDefault(); // prevent default anchor navigation
+        var dateValue = $('#single-date').val(); // get the value from textbox
+        // Build the URL with the date as a query parameter
+        var targetUrl = '@Url.Action("HotPriorityLeadsLinkLeads", "CRM", new { area = "CRMS" })' + '?date=' + encodeURIComponent(dateValue);
+        // Redirect to the new URL
+        window.location.href = targetUrl;
+    });
+
+    $('#HotPriorityLeadsLink1').on('click', function (e) {
+        e.preventDefault(); // prevent default anchor navigation
+        var dateValue = $('#single-date').val(); // get the value from textbox
+        // Build the URL with the date as a query parameter
+        var targetUrl = '@Url.Action("TotalLeadPriority", "CRM", new { area = "CRMS" })' + '?date=' + encodeURIComponent(dateValue);
+        // Redirect to the new URL
+        window.location.href = targetUrl;
+    });
+
+    $('#ExpectedContractValueLink').on('click', function (e) {
+        e.preventDefault(); // prevent default anchor navigation
+        var dateValue = $('#single-date').val(); // get the value from textbox
+        // Build the URL with the date as a query parameter
+        var targetUrl = '@Url.Action("ExpectedContractValueDetails", "CRM", new { area = "CRMS" })' + '?date=' + encodeURIComponent(dateValue);
+        // Redirect to the new URL
+        window.location.href = targetUrl;
+    });
+
+
+    $('#ExpectedContractValueLink1').on('click', function (e) {
+        e.preventDefault(); // prevent default anchor navigation
+        var dateValue = $('#single-date').val(); // get the value from textbox
+        // Build the URL with the date as a query parameter
+        var targetUrl = '@Url.Action("TotalLeadContractValue", "CRM", new { area = "CRMS" })' + '?date=' + encodeURIComponent(dateValue);
+        // Redirect to the new URL
+        window.location.href = targetUrl;
+    });
+</script>
+
+
+
+
+
+
+
+

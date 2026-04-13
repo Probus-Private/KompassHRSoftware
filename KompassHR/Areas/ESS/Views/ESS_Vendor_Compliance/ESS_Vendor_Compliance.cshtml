@@ -1,0 +1,672 @@
+﻿ @model KompassHR.Areas.ESS.Models.ESS_Vendor.Mas_Vendor_Compliance
+@{
+    ViewBag.Title = "ESS_Vendor_Compliance";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+
+<style>
+
+    .table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.TablePagee th,
+.TablePagee td {
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+@@media (max-width: 768px) {
+    .TablePagee {
+        font-size: 12px;
+    }
+
+    .TablePagee .btn {
+        padding: 2px 6px;
+        font-size: 11px;
+    }
+}
+
+
+    .table {
+        --bs-table-striped-bg: rgba(0, 0, 255, 0.02);
+    }
+
+    .text-nowrap {
+        font-size: 12px;
+    }
+
+    tbody tr td {
+        font-size: 12px;
+        padding: 4px !important;
+    }
+
+    .ListBtn {
+        background-color: transparent;
+        color: #000;
+        font-size: 15px !important;
+        padding: 5px 8px !important;
+        border: none;
+    }
+
+        .ListBtn:hover {
+            background-color: transparent;
+            color: #000;
+        }
+
+            .ListBtn:hover i {
+                transition: all 0.5s;
+                transform: scale(1.5);
+            }
+
+
+
+    .box2 {
+        width: 100px;
+        height: 100px;
+        padding: 15px 0px;
+        font-family: 'Montserrat', sans-serif;
+        position: relative;
+        z-index: 0;
+        margin-bottom: 10px;
+    }
+
+        .box2:hover {
+            border: 2px solid #ff9c19;
+            border-radius: 10px;
+            cursor: pointer;
+            transform: translateY(-10px);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.03), 0px -15px 25px rgba(0, 0, 0, 0.03), 0 15px 25px rgba(0, 0, 0, 0.05);
+        }
+
+            .box2:hover .info i {
+                color: #ff9c19;
+            }
+
+
+        .box2 .info i {
+            font-size: 20px;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 5px;
+            color: #007bff;
+        }
+
+        .box2 .info h7 {
+            position: relative;
+            font-size: 12px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            font-weight: 900 !important;
+            text-transform: capitalize;
+            margin-bottom: 2px;
+            padding: 0 10px;
+            color: #444;
+        }
+
+    .FS-12PX {
+        font-size: 12px !important;
+    }
+
+    .div1 td:nth-child(1) {
+        position: sticky;
+        left: 0;
+    }
+
+    /*.div1 td:nth-child(2) {
+        position: sticky;
+        left: 62px;
+    }*/
+
+    .fixed-side {
+        position: sticky;
+        left: 0px;
+    }
+
+    /*.fixed-side1 {
+        position: sticky;
+        left: 62px;
+    }*/
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .empbx h4 {
+        margin-bottom: 5px;
+    }
+
+    .empbx h6 i {
+        font-size: 1rem;
+        margin-right: 5px;
+    }
+
+    .empbx {
+        margin-bottom: 20px;
+    }
+
+    .card-row-title {
+        color: blue;
+        font-size: 18px;
+        font-weight: 600;
+        text-transform: capitalize;
+        border-bottom: #009ce7 1px solid;
+    }
+</style>
+
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Vendor Compliance Information
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("GetList", "ESS_Vendor", new {id = 41, ScreenId=693, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">@*@i.SET_MODULES.FormName*@ Vendor Compliance Information - @ViewBag.AddUpdateTitle</h4>
+                    
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Add vendor compliance details.
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "ESS_Vendor_Compliance", new { area = "ESS" })' id="SaveVendorCompliance" method="post">
+                                @*<div class="row">
+                                    <div class="col-md-12">
+                                        <div class="empbx">
+                                            <span>
+                                                <h4>
+                                                    <i class="fa-solid fa-building"></i> Vendor Compliance Information
+                                                </h4>
+                                            </span>
+                                            <hr>
+                                        </div>
+                                    </div>
+                                </div>*@
+
+                                <div class="row mb-15px">
+                                    <div class="col-md-12">
+                                        <div class="card-row-title">
+                                            Compliance Details
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                   
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Scope of Services
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.ScopeOfServices, new { @class = "form-control", id = "txtScopeOfServices", autocomplete = "Off", Maxlength = 50 ,name= "ScopeOfServices" })
+                                                @Html.HiddenFor(model => model.VendorId, new { id = "txtVendorId", Value = Session["VendorId"] })
+                                                @Html.HiddenFor(model => model.VendorComplianceId_Encrypted, new { id = "txtVendorComplianceId" })
+
+
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Agreement Start Date
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.AgreementStartDate, new { @class = "form-control",name= "AgreementStartDate", id = "txtAgreementStartDate",type="date" ,autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Agreement End Date
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.AgreementEndDate, new { @class = "form-control", id = "txtAgreementEndDate", autocomplete = "Off", type = "date",name = "AgreementEndDate" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                SLA Details
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.SLADetails, new { @class = "form-control", id = "txtSLADetails", autocomplete = "Off",name= "SLADetails" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Service Charges
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.ServiceCharges, new { @class = "form-control", id = "txtServiceCharges", autocomplete = "Off", Maxlength = 50,name= "ServiceCharges" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Payment Terms
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.PaymentTerms, new { @class = "form-control", id = "txtPaymentTerms", autocomplete = "Off", Maxlength = 50,name= "PaymentTerms" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Bank Name
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.BankName, new { @class = "form-control", id = "txtBankName", autocomplete = "Off", Maxlength = 50,name= "BankName" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                IFSC Code
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.IFSCCode, new { @class = "form-control", id = "txtIFSCCode", autocomplete = "Off", Maxlength = 50,name= "IFSCCode" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    @*<div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Cancelled Check Upload
+                                            </label>
+                                            <div class="col-md-12">
+                                                <input type="file" class="form-control" id="fileCancelledCheck" name="CancelledCheckUpload" />
+                                                @if (!string.IsNullOrEmpty(Model.CancelledCheckUpload))
+                                                {
+                                                    <a href="@Model.CancelledCheckUpload" target="_blank">View Uploaded File</a>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>*@
+                                </div>
+
+                                <div class="row mb-20px">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="button" data-bs-toggle="offcanvas"
+                                                                href="#offcanvasExample" id="btnActionList" onclick="VendorDetails(this)" class="btn  btnpress ListBtn">
+                                                            <i class="fa-solid fa-list"></i>
+                                                        </button>
+                                                        <button class="btn btn-primary btn-sm" type="button" id="btnSubmit">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                        <a href="@Url.Action("GetList", "ESS_Vendor", new { area = "ESS" })">
+                                                            <button type="button"
+                                                                    class="btn btn-danger btn-sm" id="btnBack">
+                                                                <i class="fa-solid fa-share-from-square"></i>
+                                                                List
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-striped align-middle TablePagee"
+                                                   id="fixed-header" style="width:100%;">
+                                                <thead class="table-light">
+                                                    <tr class="text-center">
+                                                        <th class="text-nowrap">Action</th>
+                                                        <th class="text-nowrap">Vendor</th>
+                                                        <th class="text-nowrap">Agreement Start Date</th>
+                                                        <th class="text-nowrap">Agreement End Date</th>
+                                                        <th class="text-nowrap">Scope of Services</th>
+                                                        <th class="text-nowrap">SLA Details</th>
+                                                        <th class="text-nowrap">Service Charges</th>
+                                                        <th class="text-nowrap">Payment Terms</th>
+                                                        <th class="text-nowrap">Bank Name</th>
+                                                        <th class="text-nowrap">IFSC Code</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @if (ViewBag.ComplianceDetails != null)
+                                                    {
+                                                        foreach (var d in ViewBag.ComplianceDetails)
+                                                        {
+                                                            <tr>
+                                                                <td class="text-center">
+                                                                    <button type="button"
+                                                                            onclick="EditCompliance('@d.VendorComplianceId_Encrypted')"
+                                                                            class="btn btn-success btn-sm">
+                                                                        <i class="fa-solid fa-pencil"></i>
+                                                                    </button>
+                                                                </td>
+                                                                <td class="text-nowrap">@d.CompanyName</td>
+                                                                <td class="text-nowrap">
+                                                                    @Convert.ToDateTime(d.AgreementStartDate).ToString("dd/MM/yyyy")
+                                                                </td>
+                                                                <td class="text-nowrap">
+                                                                    @Convert.ToDateTime(d.AgreementEndDate).ToString("dd/MM/yyyy")
+                                                                </td>
+                                                                <td>@d.ScopeOfServices</td>
+                                                                <td>@d.SLADetails</td>
+                                                                <td class="text-end">@d.ServiceCharges</td>
+                                                                <td>@d.PaymentTerms</td>
+                                                                <td>@d.BankName</td>
+                                                                <td class="text-nowrap">@d.IFSCCode</td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+<div class="row">
+    @Html.Action("Vendor_SidebarMenu", "ESS_Vendor_ContactDetails")
+</div>
+
+<script>
+    $(document).ready(function () {
+        debugger
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                });
+
+        }
+    });
+
+
+    $("#SaveVendorCompliance").validate({
+        rules: {
+            ScopeOfServices: {
+                required: true
+            },
+            AgreementStartDate: {
+                required: true
+            },
+            AgreementEndDate: {
+                required: true
+            },
+            SLADetails: {
+                required: true
+            },
+            ServiceCharges: {
+                required: true
+            },
+            PaymentTerms: {
+                required: true
+            },
+            BankName: {
+                required: true
+            },
+            IFSCCode: {
+                required: true
+            },
+        },
+        messages: {
+            ScopeOfServices: {
+                required: "Scope Of Services is required"
+            },
+            AgreementStartDate: {
+                required: "Agreement Start Date is required"
+            },
+            AgreementEndDate: {
+                required: "Agreement End Date is required"
+            },
+            SLADetails: {
+                required: "SLA Details is required"
+            },
+            ServiceCharges: {
+                required: "Service Charges No is required"
+            },
+            PaymentTerms: {
+                required: "Payment Terms is required"
+            },
+            BankName: {
+                required: "Bank Name is required"
+            },
+            IFSCCode: {
+                required: "IFSC Code is required"
+            },
+        }
+    });
+
+    var form1 = $("#SaveVendorCompliance");
+    form1.validate();
+    $('#btnSubmit').click(function () {
+        debugger
+        if (form1.valid() == false) {
+            return false;
+        }
+        var VendorComplianceId_Encrypted = $("#txtVendorComplianceId").val();
+        var VendorId=$("#txtVendorId").val();
+        $.ajax({
+            url: "@Url.Action("IsComplianceExist", "ESS_Vendor_Compliance")",
+            method: "get",
+            data: { VendorComplianceId_Encrypted: VendorComplianceId_Encrypted,VendorId:VendorId},
+            success: function (response) {
+                debugger
+                if (response.Icon=="error") {
+                    debugger;
+                    if (response.Message != null) {
+                        Swal.fire({
+                            icon: response.Icon,
+                            text: response.Message,
+                            allowOutsideClick: () => {
+                                const popup = Swal.getPopup()
+                                popup.classList.remove('swal2-show')
+                                setTimeout(() => {
+                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                })
+                                setTimeout(() => {
+                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                }, 500)
+                                return false
+                            }
+                        });
+                    }
+                }
+                else{
+                    $("#SaveVendorCompliance").submit();
+                }
+
+            }
+        });
+    });
+
+ function EditCompliance(id) {
+    $.ajax({
+        url: '@Url.Action("GetComplianceById", "ESS_Vendor_Compliance")',
+        type: 'GET',
+        data: { id: id },
+        success: function (res) {
+
+            var data = convertKeyValueArray(res);
+
+            $("#txtVendorComplianceId").val(data.VendorComplianceId_Encrypted);
+            $("#txtScopeOfServices").val(data.ScopeOfServices);
+            $("#txtSLADetails").val(data.SLADetails);
+            $("#txtServiceCharges").val(data.ServiceCharges);
+            $("#txtPaymentTerms").val(data.PaymentTerms);
+            $("#txtBankName").val(data.BankName);
+            $("#txtIFSCCode").val(data.IFSCCode);
+
+            $("#txtAgreementStartDate").val(convertDate(data.AgreementStartDate));
+            $("#txtAgreementEndDate").val(convertDate(data.AgreementEndDate));
+
+            $("#btnSubmit").html('<i class="fa-solid fa-pen"></i> Update');
+        }
+    });
+}
+
+
+    // Helper for yyyy-MM-dd (HTML5 date input)
+    function convertDate(data) {
+        var getdate = parseInt(data.replace("/Date(", "").replace(")/", ""));
+        var date = millisecTodate(getdate);
+        return date;
+    }
+
+    function convertKeyValueArray(arr) {
+        var obj = {};
+        $.each(arr, function (i, item) {
+            obj[item.Key] = item.Value;
+        });
+        return obj;
+    }
+
+
+</script>
+

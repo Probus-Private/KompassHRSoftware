@@ -1,0 +1,665 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_Ticket.Ticket_Solution
+@{
+    ViewBag.Title = "ESS_Ticket_TicketSolution";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+<style>
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    .div1 td:nth-child(1) {
+        position: sticky;
+        left: 0;
+    }
+
+    .div1 td:nth-child(2) {
+        position: sticky;
+        left: 62px;
+    }
+
+    .fixed-side {
+        position: sticky;
+        left: 0;
+    }
+
+    .fixed-side1 {
+        position: sticky;
+        left: 62px;
+    }
+</style>
+
+<style>
+    .info-box {
+        background: #fff;
+        border: 1px solid #ddd;
+        padding: 20px;
+        border-radius: 6px;
+        margin-bottom: 20px;
+        font-family: roboto, sans-serif;
+    }
+
+    .info-row {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 6px;
+    }
+
+    .info-item {
+        width: 50%;
+        display: flex;
+        margin-bottom: 4px;
+    }
+
+    .info-label {
+        min-width: 140px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .info-value {
+        color: #000;
+    }
+</style>
+
+
+
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Ticket Solution
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_Ticket_TicketRaisedList", "ESS_Ticket_TicketRaisedList",  new { id = 13,ScreenId= 201, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Ticket Solution - <b>@ViewBag.AddUpdateTitle</b> </h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default"
+                           data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <!-- Ticket Information Section -->
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <h5 style="border-bottom:2px solid #ccc; padding-bottom:5px;">Ticket Information</h5>
+                                    <div class="table-responsive">
+                                  @foreach (var d in ViewBag.GetTicketList)
+                                  {
+                                    <div class="info-box">
+                                        <div class="info-row">
+                                            <div class="info-item">
+                                                <div class="info-label">Doc No:</div>
+                                                <div class="info-value">@d.DocNo</div>
+                                            </div>
+
+                                            <div class="info-item">
+                                                <div class="info-label">Doc Date:</div>
+                                                <div class="info-value">@d.DocDate</div>
+                                            </div>
+                                        </div>
+
+                                        <div class="info-row">
+                                            <div class="info-item">
+                                                <div class="info-label">Category:</div>
+                                                <div class="info-value">@d.TicketCategoryName</div>
+                                            </div>
+
+                                            <div class="info-item">
+                                                <div class="info-label">Sub Category:</div>
+                                                <div class="info-value">@d.TicketSubCategoryName</div>
+                                            </div>
+                                        </div>
+
+                                        <div class="info-row">
+                                            <div class="info-item">
+                                                <div class="info-label">Ticket Raised By:</div>
+                                                <div class="info-value">@d.TicketRaisedby</div>
+                                            </div>
+                                            <div class="info-item">
+                                                <div class="info-label">Priority:</div>
+                                                <div class="info-value">@d.Priority</div>
+                                            </div>
+                                            @*<div class="info-item">
+                                                <div class="info-label">Ticket Raised To:</div>
+                                                <div class="info-value">@d.TicketRaisedToName</div>
+                                            </div>*@
+                                        </div>
+
+                                        <div class="info-row">
+                                            <div class="info-item">
+                                                <div class="info-label">Status:</div>
+                                                <div class="info-value">@d.TicketStatus</div>
+                                            </div>
+
+                                            <div class="info-item">
+                                                <div class="info-label">Attachment:</div>
+                                                <div class="info-value">
+                                                    @if (!string.IsNullOrEmpty(d.FilePath) && d.FilePath != "File Not Found")
+                                                    {
+                                                        <a href="@Url.Action("DownloadFile", "ESS_Ticket_TicketSolution",new { AttachFile = @d.AttachFile })"
+                                                           class="btn btn-link"
+                                                           style="color:#007bff; text-decoration:underline;">
+                                                            View File
+                                                        </a>
+
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>No Attachment</span>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="info-row">
+                                            <div class="info-item" style="width:100%;">
+                                                <div class="info-label">Description:</div>
+                                                <div class="info-value">@d.Description</div>
+                                            </div>
+                                        </div>
+
+                                        @*<div class="info-row">
+                                            <div class="info-item" style="width:100%;">
+                                                <div class="info-label">Attachment:</div>
+                                                <div class="info-value">
+                                                    @if (!string.IsNullOrEmpty(d.FilePath) && d.FilePath != "File Not Found")
+                {
+                                                        <a href="@d.FilePath" class="btn btn-primary btn-sm" target="_blank">View File</a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>No Attachment</span>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>*@
+                                    </div>
+                                  }
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <h5 style="border-bottom:2px solid #ccc; padding-bottom:5px;" class="mb-3">Ticket Solution</h5>
+
+                            <form role="form" action='@Url.Action("SaveUpdate", "ESS_Ticket_TicketSolution", new { area = "ESS" })' id="saveTicketSolution" method="post" enctype="multipart/form-data">
+                                <div class="row mb-15px">
+                                    <div class="col-md-6">
+                                        @Html.HiddenFor(model => Model.TicketSolutionID_Encrypted)
+                                        @Html.HiddenFor(model => Model.TicketSolutionID)
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Doc No.
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => Model.DocNo, new { @class = "form-control mb-5px", id = "DocNo", name = "DocNo", @readonly = "readonly", Value = @ViewBag.DocNo.DocNo })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Doc Date
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.DocDate, new { name = "DocDate", @class = "form-control", id = "DocDate", type = "date", @readonly = "readonly" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Solution
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-10">
+                                                @Html.TextAreaFor(model => model.Solution, new { @class = "form-control", id = "Solution", name = "Solution" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Attachment
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => Model.FilePath, new { @type = "file", name = "Image", @class = "form-control", id = "FilePath" })
+
+                                                @*@if (Model.FilePath != null)
+                                                    {
+                                                        if (Model.FilePath != "No")
+                                                        {
+                                                            <p>
+                                                                Existing File:
+                                                                <a href="@Url.Action("DownloadAttachment", "TicketSolution", new { TicketSolutionID_Encrypted = Model.TicketSolutionID_Encrypted })">Download Existing File</a>
+                                                            </p>
+                                                        }
+                                                    }*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Status
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.Status, new List
+                                                <SelectListItem>
+                                                {
+                                                   new SelectListItem { Text = "Close",Value = "Close"},
+                                                   new SelectListItem { Text = "In process",Value = "In process"},
+                                                   }, "--Select--",
+                                                   new { @class = "form-select", id = "Status", name = "Status" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Complete
+                                                Percentage
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.CompeletedPercentage, new { @class = "form-control", type = "", id = "CompeletedPercentage", autocomplete = "Off", name = "CompeletedPercentage" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="submit" id="btnSubmit"
+                                                                class="btn btn-primary btn-sm">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                        <button type="button"
+                                                                class="btn btn-danger btn-sm" id="btnTicketSolutionGetList">
+                                                            <i class="fa-solid fa-share-from-square"></i>
+                                                            List
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+<!-- BEGIN scroll-top-btn -->
+<a href="javascript:;" class="btn btn-icon btn-circle btn-success btn-scroll-to-top"
+   data-toggle="scroll-to-top"><i class="fa fa-angle-up"></i></a>
+<!-- END scroll-top-btn -->
+<!-- END #app -->
+
+<script>
+    debugger;
+    function millisecTodate(milliDate) {
+        var date = new Date(milliDate);
+        var mnth = ("0" + (date.getMonth() + 1)).slice(-2);
+        var day = ("0" + date.getDate()).slice(-2);
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        hours = hours < 10 ? '0'+hours : hours;
+        minutes = minutes < 10 ? '0'+minutes : minutes;
+        var ddmmyyyy = [date.getFullYear(), mnth,day].join("-");
+        return ddmmyyyy;
+    }
+
+
+
+    function convertDate(data) {
+        var getdate = parseInt(data.replace("/Date(", "").replace(")/", ""));
+        var date = millisecTodate(getdate);
+        return date;
+    }
+
+</script>
+
+<script>
+    $(document).ready(function () {
+        debugger;
+        var dt = @Html.Raw(Json.Encode(TempData["DocDate"]));
+
+        if(dt != null )
+        {
+            var DocDatedt =  convertDate(dt);
+            $("#DocDate").val(DocDatedt);
+        }
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        // return false
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+        $("#btnTicketSolutionGetList").click(function () {
+            window.location.href= '@Url.Action("ESS_Ticket_TicketRaisedList", "ESS_Ticket_TicketRaisedList")';
+        });
+        var date = new Date();
+        var dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000 )).toISOString().split("T")[0];
+        $("#DocDate").val(dateString);
+
+    });//Ready Funcation
+</script>
+
+
+<script>
+    //use for add regex function
+    jQuery.validator.addMethod(
+  "regex",
+   function(value, element, regexp) {
+       debugger;
+       if (regexp.constructor != RegExp)
+           regexp = new RegExp(regexp);
+       else if (regexp.global)
+           regexp.lastIndex = 0;
+       return this.optional(element) || regexp.test(value);
+   },"regular expression require"
+);
+    jQuery.validator.addMethod("percentRange", function (value, element) {
+        var num = parseInt(value);
+        return num >= 1 && num <= 100;
+    }, "Please enter a value between 1 and 100");
+    $("#saveTicketSolution").validate({
+
+        rules: {
+            DocDate:{
+                required:true,
+            },
+            Solution: {
+                required: true,
+
+            },
+            Status: {
+                required:true,
+            },
+            CompeletedPercentage:{
+                required:true,
+                percentRange: true
+            },
+
+
+        },
+        messages: {
+
+            DocDate: {
+                required: "This field is required",
+            },
+            Solution: {
+                required: "This field is required",
+
+            },
+            Status: {
+                required: "This field is required",
+            },
+
+            CompeletedPercentage:{
+                required: "This field is required",
+                percentRange: "Please enter a value between 1 and 100"
+            },
+
+
+
+        }
+    });
+
+    //<-----------------------------Alreay exist---------------------------------->
+    var form=$("#saveTicketSolution");
+    form.validate();
+
+    //$("#btnSubmit").click(function () {
+    //    debugger;
+    //    form.valid();
+    //    if(form.valid()==false)
+    //    {
+    //        $("#DocDate").removeClass('error');
+    //        //$('#txtCorporationDate').removeClass('error');
+    //        return false;
+    //    }
+    //    debugger;
+    //    var TicketSolutionID_Encrypted=$("#TicketSolutionID_Encrypted").val();
+    //    var DocDate=$("#DocDate").val();
+    //    var Solution=$("#Solution").val();
+    //    var Status=$("#Status").val();
+    //    var CompeletedPercentage=$("#CompeletedPercentage").val();
+
+    //    var FilePath=$("#FilePath").val();
+    //    if(FilePath!=null && FilePath!="")
+    //    {
+    //        var fileUpload = $("#FilePath").get(0);
+    //        var files = fileUpload.files;
+    //        var fileData = new FormData();
+    //        fileData.append(files[0].name, files[0]);
+
+    //    }
+
+    //    $.ajax({
+    //        url:"IsTicketSolutionExists",
+    //        method:"get",
+    //        data:{DocDate:DocDate,
+    //            TicketSolutionID_Encrypted:TicketSolutionID_Encrypted,
+    //            Solution:Solution,
+    //            Status:Status,
+    //            CompeletedPercentage:CompeletedPercentage,
+    //            FilePath:FilePath
+    //            //,fileData:fileData
+    //        },
+    //        success:function(response){
+    //            var Message1 = response.Message;
+    //            var Icon1 = response.Icon;
+    //            if (response.Icon=="error") {
+    //                debugger;
+    //                if (Message1 != null) {
+    //                    Swal.fire({
+    //                        icon: Icon1,
+    //                        text: Message1,
+    //                        allowOutsideClick: () => {
+    //                            const popup = Swal.getPopup()
+    //                            popup.classList.remove('swal2-show')
+    //                            setTimeout(() => {
+    //                                popup.classList.add('animate__animated', 'animate__headShake')
+    //                            })
+    //                            setTimeout(() => {
+    //                                popup.classList.remove('animate__animated', 'animate__headShake')
+    //                            }, 500)
+    //                            return false
+    //                        }
+    //                    });
+    //                }
+    //            }
+    //            else{
+    //                //End BtnSubmit
+    //                $("#saveTicketSolution").submit();
+    //            }
+    //        }
+    //    });
+    //});
+</script>
+
+

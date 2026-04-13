@@ -1,0 +1,679 @@
+﻿@model KompassHR.Areas.Reports.Models.DailyAttendanceReportFilter
+@{
+    ViewBag.Title = "Reports_Leave_LeaveDetails";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+
+
+<style>
+    .Col-md-2 {
+        margin: 10px 0;
+    }
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    label.error, .Error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Leave Details Report
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Reports_Leave_RptMenu", "Reports_Leave_RptMenu", new {id = 4, ScreenId=299, area = "Reports" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="panel panel-inverse" data-sortable-id="index-1">
+                    <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                        <h4 class="panel-title">@*@i.SET_MODULES.FormName*@ Leave Details Report </h4>
+                        <div class="panel-heading-btn">
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                        </div>
+                    </div>
+                    <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                        <p class="pb-0">
+                            A leave details report outlines specific information about individual employee leave records.
+                        </p>
+                    </div>
+                    <div class="panel-body" style="max-height: fit-content;">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <form role="form" action='@Url.Action("Reports_Leave_LeaveDetails", "Reports_Leave_LeaveDetails", new { area = "Reports" })' id="SaveContinueOnLeave" method="post">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Company
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.CmpId, new SelectList(ViewBag.CompanyName, "Id", "Name"), new { @class = "form-select", name = "CompanyName", id = "ddlCmpId" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Business Unit
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.BranchId, new SelectList(ViewBag.BranchName, "Id", "Name"), "All", new { @class = "form-select", type = "text", name = "BranchId", id = "ddlBranchId" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Department
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.DepartmentId, new SelectList(ViewBag.DepartmentName, "Id", "Name"), "All", new { @class = "form-select", name = "DepartmentId", id = "ddlDepartmentId" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Sub Department
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.SubDepartmentId, new SelectList(ViewBag.SubDepartmentName, "Id", "Name"), "All", new { @class = "form-select", type = "text", name = "SubDepartmentId", id = "ddlSubDepartmentId" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Designation
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.DesignationId, new SelectList(ViewBag.DesignationName, "Id", "Name"), "All", new { @class = "form-select", name = "DesignationId", id = "ddlDesignationId" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Grade
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.GradeId, new SelectList(ViewBag.GradeName, "Id", "Name"), "All", new { @class = "form-select", type = "text", name = "GradeId", id = "ddlGradeId" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Line Master
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.LineId, new SelectList(ViewBag.LineName, "Id", "Name"), "All", new { @class = "form-select", name = "LineId", id = "ddlLineId" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Sub Unit
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.SubUnitId, new SelectList(ViewBag.SubUnit, "Id", "Name"), "All", new { @class = "form-select", name = "SubUnit", id = "ddlSubUnit" })
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    From date
+
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.FromDate, new { @class = "form-control", id = "txtFromDate", type = "date", name = "FromDate"})
+                                                    <span id="ErrortxtFromDate" class="Error"></span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    To Date
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.ToDate, new { @class = "form-control", id = "txtToDate", type = "date", name = "ToDate"})
+                                                    <span id="ErrortxtToDate" class="Error"></span>
+                                                 </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Employee
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.EmployeeID, new SelectList(ViewBag.EmployeeName, "Id", "Name"), "All", new { @class = "form-select", name = "EmployeeID", id = "ddlEmployeeID" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="LastShortLeaveBx">
+                                            <div class="row">
+                                                <div class="col-md-10">
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="BtnBx">
+                                                        <div>
+                                                            <button type="button" class="btn btn-success" id="btlExportToExcel" onclick="downloadExcelFile()">
+                                                                <i class="fa-regular fa-file-excel fa-xl"></i> Export To Excel
+                                                            </button>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                
+                                @*<div class="row">
+                                    <div class="table-scroll div1">
+                                        <div class="table-wrap">
+                                            <table class="table table-bordered table-hover mb-0 text-dark align-middle TablePage" id="tblLateComing" style="width: 100%;">
+                                                <thead>
+                                                    <tr class="trheading">
+                                                        <th class="text-nowrap text-center"> Employee No</th>
+                                                        <th class="text-nowrap text-center"> Employee Card No</th>
+                                                        <th class="text-nowrap text-center">Employee Name</th>
+                                                        <th class="text-nowrap text-center">Branch Name</th>
+                                                        <th class="text-nowrap text-center">Shift Name</th>
+                                                        <th class="text-nowrap text-center">Leave Date </th>
+                                                        <th class="text-nowrap text-center">Day Type </th>
+                                                        <th class="text-nowrap text-center">Leave Type </th>
+                                                        <th class="text-nowrap text-center">Reason </th>
+                                                        <th class="text-nowrap text-center">Status </th>
+                                                        <th class="text-nowrap text-center">Approver Name </th>
+                                                        <th class="text-nowrap text-center">Approve Reject Date </th>
+                                                        <th class="text-nowrap text-center">Approve Reject Remark </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tblAbnormalReport">
+                                                    @foreach (var d in ViewBag.GetLeaveDetailsReport)
+                                                        {
+                                                            <tr>
+                                                                <td class="text-nowrap">@d.EmployeeNo</td>
+                                                                <td class="text-nowrap">@d.EmployeeCardNo</td>
+                                                                <td class="text-nowrap">@d.EmployeeName</td>
+                                                                <td class="text-nowrap">@d.BranchName</td>
+                                                                <td class="text-nowrap">@d.LeaveMasterShiftName</td>
+                                                                <td class="text-nowrap">@d.ForDate</td>
+                                                                <td class="text-nowrap">@d.LeaveMasterDayType</td>
+                                                                <td class="text-nowrap">@d.LeaveTypeShortName</td>
+                                                                <td class="text-nowrap">@d.Reason</td>
+                                                                <td class="text-nowrap">@d.Status</td>
+                                                                <td class="text-nowrap">@d.ApproverName</td>
+                                                                <td class="text-nowrap">@d.ApproveRejectDate</td>
+                                                                <td class="text-nowrap">@d.ApproveRejectRemark</td>
+                                                                
+
+                                                            </tr>
+                                                        }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>*@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+    $(document).ready(function () {
+        var FD = document.getElementById("txtFromDate").value;
+        var TD = document.getElementById("txtToDate").value;
+        //$('title').html("Leave Details Report");
+
+        var CheckEmptyDate = document.getElementById('txtFromDate').value;
+        if (CheckEmptyDate == "") {
+            document.getElementById('txtFromDate').value = SetTodaysDate;
+            document.getElementById('txtToDate').value = SetTodaysDate;
+        }
+
+
+                   
+        document.getElementById("txtFromDate").addEventListener("blur", function () {
+            debugger
+            var dateValue = this.value;
+
+            if (dateValue.includes("-")) {
+                var parts = dateValue.split("-"); 
+                dateValue = parts[2] + "-" + parts[1] + "-" + parts[0];
+            }
+            var regex = /^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-(19|20)\d\d$/;
+            if (!regex.test(dateValue)) {
+                $("#ErrortxtFromDate").html("Please enter valid date in DD-MM-YYYY format");
+                this.value = "";
+                this.focus();
+                return;
+            } else {
+                $("#ErrortxtFromDate").html("");
+            }
+        });
+
+        document.getElementById("txtToDate").addEventListener("blur", function () {
+            debugger
+            var dateValue = this.value;
+
+            if (dateValue.includes("-")) {
+                var parts = dateValue.split("-"); 
+                dateValue = parts[2] + "-" + parts[1] + "-" + parts[0];
+            }
+            var regex = /^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[0-2])-(19|20)\d\d$/;
+            if (!regex.test(dateValue)) {
+                $("#ErrortxtToDate").html("Please enter valid date in DD-MM-YYYY format");
+                this.value = "";
+                this.focus();
+                return;
+            } else {
+                $("#ErrortxtToDate").html("");
+            }
+        });
+
+        $("#ddlBranchId").select2();
+        $("#ddlCmpId").select2();
+        $("#ddlDepartmentId").select2();
+        $("#ddlSubDepartmentId").select2();
+        $("#ddlDesignationId").select2();
+        $("#ddlLineId").select2();
+        $("#ddlGradeId").select2();
+        $("#ddlEmployeeID").select2();
+        $("#ddlSubUnit").select2();
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                });
+            }
+        }
+
+      $("#ddlCmpId").on("change", function () {
+            debugger;
+            $("#ddlBranchId").find("option").remove();
+            $("#ddlEmployeeID").find("option").remove();
+            var CmpId = $("#ddlCmpId").val();
+            var GetFromDate = $("#txtFromDate").val();
+            var GetToDate = $("#txtToDate").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetBusinessUnit", "Report_Attendance_RptMenu")',
+                data: { CmpId: CmpId,GetFromDate:GetFromDate },
+                success: function (data) {
+                    debugger;
+                    if (data == false) {
+                        $("#ddlLineId").find("option").remove();
+                        $("#ddlEmployeeID").find("option").remove();
+                        $("#ddlSubUnit").find("option").remove();
+                        $("#ddlEmployeeID").append("<option value=''>All </option>");
+                        $("#ddlLineId").append("<option value=''>All </option>");
+                        $("#ddlSubUnit").append("<option value=''>All </option>");
+                    }
+                    else {
+                        var Branch = data.Branch;
+                        if (Branch != null) {
+                            $("#ddlBranchId").append("<option value=''>All </option>");
+                            $.each(Branch, function (i, p) {
+                                $("#ddlBranchId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+                        }
+                        var EmployeeName = data.EmployeeName;
+                        if (EmployeeName != null) {
+                            $("#ddlEmployeeID").append("<option value=''>All </option>");
+                            $.each(EmployeeName, function (i, p) {
+                                $("#ddlEmployeeID").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+                        }
+                        else {
+                            $('#ErrorESSPassword').html(" ");
+                        }
+                    }
+                }
+            })
+        });
+
+        $("#ddlDepartmentId").on("change", function () {
+            debugger;
+            $("#ddlSubDepartmentId").find("option").remove();
+            var DepartmentId = $("#ddlDepartmentId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetSubDepartment", "Reports_Leave_LeaveDetails")',
+                data: { DepartmentId: DepartmentId },
+                success: function (data) {
+                    debugger;
+                    if(data==false)
+                    {
+                        $("#ddlSubDepartmentId").append("<option value=''>All </option>");
+                    }
+                    else{
+                        if (data !=null) {
+                            $("#ddlSubDepartmentId").append("<option value=''>All </option>");
+                            $.each(data, function(i, p) {
+                                $("#ddlSubDepartmentId").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                            });
+                        }
+                    }
+                }
+            })
+        });
+
+         $("#ddlBranchId").on("change", function () {
+            debugger;
+            $("#ddlLineId").find("option").remove();
+            $("#ddlEmployeeID").find("option").remove();
+            $("#ddlSubUnit").find("option").remove();
+            var CmpId = $("#ddlCmpId").val();
+            var UnitBranchId = $("#ddlBranchId").val();
+            var GetFromDate = $("#txtFromDate").val();
+            var GetToDate = $("#txtToDate").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetUnit", "Report_Attendance_RptMenu")',
+                data: { CmpId: CmpId, UnitBranchId: UnitBranchId,GetFromDate:GetFromDate },
+                success: function (data) {
+                    debugger;
+                    if (data == false) {
+                        $("#ddlLineId").find("option").remove();
+                        $("#ddlEmployeeID").find("option").remove();
+                        $("#ddlSubUnit").find("option").remove();
+                        $("#ddlEmployeeID").append("<option value=''>All </option>");
+                        $("#ddlLineId").append("<option value=''>All </option>");
+                        $("#ddlSubUnit").append("<option value=''>All </option>");
+                    }
+                    else {
+                        var EmployeeName = data.EmployeeName;
+                        var LineMaster = data.List_LineMaster;
+                        var ListSubUnit = data.List_SubUnit;
+                        if (EmployeeName != null) {
+                            $("#ddlEmployeeID").append("<option value=''>All </option>");
+                            $.each(EmployeeName, function (i, p) {
+                                $("#ddlEmployeeID").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+                        }
+                        debugger;
+                        if (LineMaster != null) {
+                            $("#ddlLineId").append("<option value=''>All </option>");
+                            $.each(LineMaster, function (i, p) {
+                                $("#ddlLineId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+                        }
+                        debugger;
+                        if (ListSubUnit != null) {
+                            $("#ddlSubUnit").append("<option value=''>All </option>");
+                            $.each(ListSubUnit, function (i, p) {
+                                $("#ddlSubUnit").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+                        }
+                    }
+                }
+            })
+        });
+        $("#txtFromDate, #txtToDate").on("change", function () {
+            debugger;
+            var input = document.getElementById("txtFromDate").value;
+            var input1 = document.getElementById("txtToDate").value;
+            //define two date object variables with dates inside it
+            fromDateObj = new Date(input);
+            toDateObj = new Date(input1);
+            //calculate time difference
+            var time_difference = toDateObj.getTime() - fromDateObj.getTime();
+            //calculate days difference by dividing total milliseconds in a day
+            var days_differences = time_difference / (1000 * 60 * 60 * 24);
+            var days_difference = days_differences + 1;
+            // Check if toDate is greater than fromDate
+            var from = $("#txtFromDate").val();
+            var to = $("#txtToDate").val();
+            if (Date.parse(from) > Date.parse(to)) {
+
+                $("#ErrortxtFromDate").html("From date should not be greater than todate");
+                return false;
+            }
+            else {
+                $("#ErrortxtFromDate").html("");
+            }
+            if (days_difference > 31) {
+                $("#ErrortxtFromDate").html("You should not allow greter than 31 days");return false;
+            }
+            $("#ddlEmployeeID").find("option").remove();
+            var GetFromDate = $("#txtFromDate").val();
+            var GetToDate = $("#txtToDate").val();
+            var BranchId = $("#ddlBranchId").val();
+            var CmpId = $("#ddlCmpId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetEmployeeNameDateWise", "Report_Attendance_RptMenu")',
+                data: {CmpId:CmpId, BranchId: BranchId ,GetFromDate:GetFromDate },
+                success: function (data) {
+                    debugger;
+
+                    // $("#ddlEmployeeID").append("<option value=''>--Select-- </option>");
+                    if (data != null) {
+                        $("#ddlEmployeeID").find("option").remove();
+                        $("#ddlEmployeeID").append("<option value=''>All </option>");
+                        $.each(data, function (i, p) {
+                            $("#ddlEmployeeID").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                }
+            })
+        });
+
+        //$("#txtFromDate, #txtToDate").on("change", function () {
+        //    var input = document.getElementById("txtFromDate").value;
+        //    var input1 = document.getElementById("txtToDate").value;
+        //    //define two date object variables with dates inside it
+        //    fromDateObj = new Date(input);
+        //    toDateObj = new Date(input1);
+        //    //calculate time difference
+        //    var time_difference = toDateObj.getTime() - fromDateObj.getTime();
+        //    //calculate days difference by dividing total milliseconds in a day
+        //    var days_differences = time_difference / (1000 * 60 * 60 * 24);
+        //    var days_difference = days_differences + 1;
+        //    // Check if toDate is greater than fromDate
+        //    var from = $("#txtFromDate").val();
+        //    var to = $("#txtToDate").val();
+        //    if (Date.parse(from) > Date.parse(to)) {
+
+        //        $("#ErrortxtFromDate").html("From date should not be greater than todate");
+        //        return false;
+        //    }
+        //    else {
+        //        $("#ErrortxtFromDate").html("");
+        //    }
+        //    if (days_difference > 31) {
+        //        $("#ErrortxtFromDate").html("You should not allow greter than 31 days");
+        //    }
+        //});
+    });
+
+
+    function downloadExcelFile() {
+        debugger;
+
+
+        $(".Userloaderbg").css("display", "flex");
+        var CmpId = encodeURIComponent($("#ddlCmpId").val());
+        var BranchId = encodeURIComponent($("#ddlBranchId").val());
+        var DepartmentId = encodeURIComponent($("#ddlDepartmentId").val());
+        var SubDepartmentId = encodeURIComponent($("#ddlSubDepartmentId").val());
+        var DesignationId = encodeURIComponent($("#ddlDesignationId").val());
+        var GradeId = encodeURIComponent($("#ddlGradeId").val());
+        var LineId = encodeURIComponent($("#ddlLineId").val());
+        var SubUnitId = encodeURIComponent($("#ddlSubUnit").val());
+        var EmployeeID = encodeURIComponent($("#ddlEmployeeID").val());
+        var FromDate = encodeURIComponent($("#txtFromDate").val());
+        var ToDate= encodeURIComponent($("#txtToDate").val());
+        var url = `@Url.Action("DownloadExcelFile", "Reports_Leave_LeaveDetails")?BranchId=${BranchId}&FromDate=${FromDate}&CmpId=${CmpId}&DepartmentId=${DepartmentId}&SubDepartmentId=${SubDepartmentId}&DesignationId=${DesignationId}&GradeId=${GradeId}&LineId=${LineId}&SubUnitId=${SubUnitId}&EmployeeID=${EmployeeID}&ToDate=${ToDate}`;
+
+        $.ajax({
+            url: url,
+            method: 'GET',
+            xhrFields: {
+                responseType: 'blob' // Set the response type to blob
+            },
+            success: function(data) {
+                debugger;
+                if(data.size==0)
+                {
+                    Swal.fire({
+                        icon: 'error',
+                        text: 'Record Not Found',
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup()
+                            popup.classList.remove('swal2-show')
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake')
+                            })
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake')
+                            }, 500)
+                            return false
+                        }
+                    });
+                    $(".Userloaderbg").css("display", "none");
+                    return false;
+                }
+                var formattedDate = convertDateFormat(FromDate);
+                var ToformattedDate = convertDateFormat(ToDate);
+                // Create a Blob from the response data
+                var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                // Create a temporary anchor element to initiate the download
+                var anchorElement = document.createElement('a');
+                var url = window.URL.createObjectURL(blob);
+                anchorElement.href = url;
+                anchorElement.download = 'LeaveDetailsReport('+formattedDate +' - '+ ToformattedDate+').xlsx';
+                anchorElement.click();
+                // Clean up
+                window.URL.revokeObjectURL(url);
+                $(".Userloaderbg").css("display", "none");
+            },
+            error: function(xhr, status, error) {
+                console.error('Error downloading file:', error);
+                // Handle error scenarios here
+            }
+        });
+    }
+
+
+</script>
+

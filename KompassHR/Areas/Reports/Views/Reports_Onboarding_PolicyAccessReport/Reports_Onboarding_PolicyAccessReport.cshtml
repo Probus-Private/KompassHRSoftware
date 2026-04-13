@@ -1,0 +1,354 @@
+﻿@model KompassHR.Areas.Setting.Models.Setting_UserAccessPolicy.ReplicationUserRight
+@{
+    ViewBag.Title = "Reports_Onboarding_PolicyAccessReport";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<!-- Required library for validation -->
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+
+<style>
+    label.error, .Error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Policy Access Report
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Reports_Onboarding_Menu", "Reports_Onboarding_Menu", new {id = 41, ScreenId=275, area = "Reports" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+  
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">Policy Access Report<b></b> </h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                       
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action="/Reports/Reports_Onboarding_PolicyAccessReport/Reports_Onboarding_PolicyAccessReport" id="RPTEmployeeAccessReport" method="post">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Policy Access Name
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.PolicyId, new SelectList(ViewBag.UserAccessPolicyMaster, "Id", "Name"),"All", new { @class = "form-select", name = "PolicyId", id = "ddlPolicyId" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-10">
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="button" class="btn btn-success" id="btlExportToExcel" onclick="downloadExcelFile()">
+                                                            <i class="fa-regular fa-file-excel fa-xl"></i> Export To Excel
+                                                        </button>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        $('title').html("Policy Access Report");
+        
+        $("#ddlPolicyId").select2();
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                });
+            }
+        }
+
+        
+        $("#ddlCmpId").on("change", function () {
+            debugger;
+            $("#ddlBranchId").find("option").remove();
+            var CmpId = $("#ddlCmpId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: 'GetBusinessUnit',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    if (data !=null) {
+                        $("#ddlBranchId").append("<option value=''>All </option>");
+                        $.each(data, function(i, p) {
+                            $("#ddlBranchId").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                        });
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        });
+
+       @*$("#ddlCmpId").on("change", function () {
+            debugger;
+            $("#ddlBranchId").find("option").remove();
+            $("#ddlLineId").find("option").remove();
+            $("#ddlEmployeeID").find("option").remove();
+            $("#ddlSubUnit").find("option").remove();
+            $("#ddlLineId").append("<option value=''>All </option>");
+            $("#ddlSubUnit").append("<option value=''>All </option>");
+            var CmpId = $("#ddlCmpId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetBusinessUnit", "Report_Attendance_RptMenu")',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    debugger;
+                    if (data == false) {
+                        $("#ddlLineId").find("option").remove();
+                        $("#ddlEmployeeID").find("option").remove();
+                        $("#ddlSubUnit").find("option").remove();
+                        $("#ddlEmployeeID").append("<option value=''>All </option>");
+                        $("#ddlLineId").append("<option value=''>All </option>");
+                        $("#ddlSubUnit").append("<option value=''>All </option>");
+                    }
+                    else {
+                        var Branch = data.Branch;
+                        if (Branch != null) {
+                            $("#ddlBranchId").append("<option value=''>All </option>");
+                            $.each(Branch, function (i, p) {
+                                $("#ddlBranchId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+                        }
+                        var EmployeeName = data.EmployeeName;
+                        if (EmployeeName != null) {
+                            $("#ddlEmployeeID").append("<option value=''>All </option>");
+                            $.each(EmployeeName, function (i, p) {
+                                $("#ddlEmployeeID").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+                        }
+                        else {
+                            $('#ErrorESSPassword').html(" ");
+                        }
+                    }
+                }
+            })
+        });*@
+
+        @*$("#ddlDepartmentId").on("change", function () {
+            debugger;
+            $("#ddlSubDepartmentId").find("option").remove();
+            var DepartmentId = $("#ddlDepartmentId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetSubDepartment", "Rpt_LastDay")',
+                data: { DepartmentId: DepartmentId },
+                success: function (data) {
+                    debugger;
+                    if (data == false) {
+                        $("#ddlSubDepartmentId").find("option").remove();
+                        $("#ddlSubDepartmentId").append("<option value=''>All </option>");
+                    }
+                    else {
+                        if (data != null) {
+                            $("#ddlSubDepartmentId").append("<option value=''>All </option>");
+                            $.each(data, function (i, p) {
+                                $("#ddlSubDepartmentId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+                        }
+                    }
+                }
+            })
+        });*@
+
+        @*$("#ddlBranchId").on("change", function () {
+            debugger;
+            $("#ddlLineId").find("option").remove();
+            $("#ddlEmployeeID").find("option").remove();
+            $("#ddlSubUnit").find("option").remove();
+            var CmpId = $("#ddlCmpId").val();
+            var UnitBranchId = $("#ddlBranchId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetUnit", "Rpt_LastDay")',
+                data: { CmpId: CmpId, UnitBranchId: UnitBranchId },
+                success: function (data) {
+                    debugger;
+                    if (data == false) {
+                        $("#ddlLineId").find("option").remove();
+                        $("#ddlEmployeeID").find("option").remove();
+                        $("#ddlSubUnit").find("option").remove();
+                        $("#ddlEmployeeID").append("<option value=''>All </option>");
+                        $("#ddlLineId").append("<option value=''>All </option>");
+                        $("#ddlSubUnit").append("<option value=''>All </option>");
+                    }
+                    else {
+                        var EmployeeName = data.EmployeeName;
+                        var LineMaster = data.List_LineMaster;
+                        var ListSubUnit = data.List_SubUnit;
+                        if (EmployeeName != null) {
+                            $("#ddlEmployeeID").append("<option value=''>All </option>");
+                            $.each(EmployeeName, function (i, p) {
+                                $("#ddlEmployeeID").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+                        }
+                        debugger;
+                        if (LineMaster != null) {
+                            $("#ddlLineId").append("<option value=''>All </option>");
+                            $.each(LineMaster, function (i, p) {
+                                $("#ddlLineId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+                        }
+                        debugger;
+                        if (ListSubUnit != null) {
+                            $("#ddlSubUnit").append("<option value=''>All </option>");
+                            $.each(ListSubUnit, function (i, p) {
+                                $("#ddlSubUnit").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+                        }
+                    }
+                }
+            })
+        });*@
+
+     
+
+    });//Ready Function
+
+    function downloadExcelFile() {
+        debugger;
+        $(".Userloaderbg").css("display", "flex");
+        var PolicyId =encodeURIComponent( $("#ddlPolicyId").val());
+        var url = `@Url.Action("DownloadExcelFile", "Reports_Onboarding_PolicyAccessReport")?PolicyId=${PolicyId}`;
+	
+        $.ajax({
+            url: url,
+            method: 'GET',
+            xhrFields: {
+                responseType: 'blob' // Set the response type to blob
+            },
+            success: function(data) {
+                debugger;
+                if(data.size==0)
+                {
+                    Swal.fire({
+                        icon: 'error',
+                        text: 'Record Not Found',
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup()
+                            popup.classList.remove('swal2-show')
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake')
+                            })
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake')
+                            }, 500)
+                            return false
+                        }
+                    });
+                    $(".Userloaderbg").css("display", "none");
+                    return false;
+                }
+               
+                // Create a Blob from the response data
+                var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                // Create a temporary anchor element to initiate the download
+                var anchorElement = document.createElement('a');
+                var url = window.URL.createObjectURL(blob);
+                anchorElement.href = url;
+                anchorElement.download = 'PolicyAccessReport.xlsx';
+                anchorElement.click();
+                // Clean up
+                window.URL.revokeObjectURL(url);
+                $(".Userloaderbg").css("display", "none");
+            },
+            error: function(xhr, status, error) {
+                console.error('Error downloading file:', error);
+                // Handle error scenarios here
+            }
+        });
+    }
+</script>

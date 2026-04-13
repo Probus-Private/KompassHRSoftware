@@ -1,0 +1,586 @@
+﻿
+@{
+    ViewBag.Title = "ViewForLeaveRequestApprover";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var Item = ViewBag.LeaveApprovalList;
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+
+<style>
+    .note-toolbar {
+        display: none;
+    }
+
+    .note-editable {
+        height: 100% !important;
+        [contenteditable="false"];
+    }
+
+    /*.table, tr, td, th, .invoice, .smallFrom {
+        border: none;
+        font-size: 13px;
+        font-family: Arial;
+    }*/
+
+    .Error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+</style>
+
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Approval Request
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="#" id="backButton">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+
+    <!-- BEGIN invoice -->
+    <div class="invoice">
+        <!-- BEGIN invoice-company -->
+        <div class="invoice-company">
+            <input type="hidden" id="hdnEncryptedId" value="@Item.LeaveMasterId_Encrypted" />
+            <input type="hidden" id="hdnLeaveId" value="@Item.LeaveMasterId" />
+            <input type="hidden" id="hdnLeaveType" value="@Item.Type" />
+            <span class="float-end hidden-print">
+                <button type="button" class="btn  btn-primary" onclick="printDiv();" id="search"><i class="ace-icon fa fa-print align-top bigger-125"></i>&nbsp; Print</button>
+                <a href="#modal-dialogForApproval1" onclick="Approved('Approved')" type="button" class="btn btn-success" id="btnApproved" value="Approved"><i class="fa-solid fa-check-double"></i>Approve</a>
+                <button href="#modal-dialogForHoldReject1" onclick="OpenModule()" type="button" class="btn btn-danger" id="btnRejected" value="Rejected">Reject</button>
+            </span>
+            Leave Request For
+        </div>
+        <!-- END invoice-company -->
+        <form class="form">
+            <div class="card" style="padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.05); border-radius: 10px;">
+                <div id="card">
+                    <div class="invoice-header">
+                        <div class="invoice-from">
+                            <b><small class="smallFrom">From,</small></b>
+                            <address class="mt-5px mb-5px">
+                                <i class="fa-solid fa-user"> </i>&nbsp;&nbsp;   <strong class="text-dark"><b>@Item.employeename</b></strong><br />
+                                <i class="fa-solid fa-building"> </i>&nbsp;&nbsp;&nbsp;&nbsp;<b>Department&nbsp;:</b> &nbsp;@Item.DepartmentName<br />
+                                <i class="fa-regular fa-handshake"> </i>&nbsp;&nbsp;<b>Designation&nbsp;:</b> &nbsp;  @Item.DesignationName <b></b><br />
+
+                            </address>
+                        </div>
+                        <div class="invoice-to">
+                            <b><small class="smallFrom">For,</small></b>
+                            <address class="mt-5px mb-5px">
+                                <i class="fa-solid fa-building"> </i>&nbsp;&nbsp;  <b> Leave </b> &nbsp;:&nbsp;@Item.LeaveTypeShortName <br />
+                                <i class="fa-solid fa-desktop"> </i>&nbsp; <b>Reason</b> &nbsp;:&nbsp; @Item.Reason <br />
+                                <i class="fa-solid fa-building"> </i>&nbsp;&nbsp;  <b> Total days </b> &nbsp;:&nbsp;@Item.TotalDays <br />
+
+                            </address>
+                        </div>
+                    </div>
+
+                    <!-- END invoice-header -->
+                    <!-- BEGIN invoice-content -->
+                    <div class="invoice-content">
+                        <!-- BEGIN table-responsive -->
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table class="table">
+                                    <thead>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th><span class="text-dark">Employee Name :</span><br /></th>
+                                            <td>@Item.employeename</td>
+
+                                            <th><span class="text-dark">Leave Type :</span><br /></th>
+                                            <td>@Item.LeaveTypeShortName</td>
+                                        </tr>
+                                        <tr>
+                                            <th><span class="text-dark">Leave Group Name :</span><br /></th>
+                                            <td>@Item.LeaveGroupName</td>
+
+                                            <th><span class="text-dark">Leave Day Type :</span><br /></th>
+                                            <td>@Item.LeaveMasterDayType</td>
+                                        </tr>
+                                        <tr>
+                                            <th><span class="text-dark">Shift Name :</span><br /></th>
+                                            <td>@Item.LeaveMasterShiftName</td>
+
+                                            <th><span class="text-dark">Total Days :</span><br /></th>
+                                            <td>@Item.TotalDays</td>
+                                        </tr>
+                                        <tr>
+                                            <th><span class="text-dark">From Date :</span><br /></th>
+                                            <td>@Item.FromDate</td>
+
+                                            <th><span class="text-dark">To Date :</span><br /></th>
+                                            <td>@Item.ToDate</td>
+                                        </tr>
+                                        <tr>
+                                            <th><span class="text-dark">Document :</span><br /></th>
+                                            @if (Item.AttachFile == "File Not Found")
+                                            {
+                                                <td>File Not Found</td>
+                                            }
+                                            else
+                                            {
+                                                <td>
+                                                    <a id="btnshow" href="@Url.Action("DownloadFile", "ESS_TimeOffice_Leave", new { fileName = Item.AttachFile })" style="cursor:pointer;">
+                                                        <i class="fa-solid fa-download fa-lg text-primary"></i>
+                                                    </a>
+                                                </td>
+                                            }
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END invoice-content -->
+                </div>
+            </div>
+            <br />
+            <div class="row">
+                <div class="col-md-7">
+                    <div class="card" style="padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.05); border-radius: 10px;">
+
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fa fa-history text-primary me-2"></i>
+                            <h4 class="m-0">Leave History</h4>
+                            <h6 class="m-0 ms-auto text-muted">Top 10 Record</h6>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead class="bg-light">
+                                    <tr class="trheading">
+                                        <th class="text-nowrap text-center">Date</th>
+                                        <th class="text-nowrap text-center">Leave Type</th>
+                                        <th class="text-nowrap text-center">Day Type</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (ViewBag.LeaveAll != null)
+                                    {
+                                        foreach (var d in ViewBag.LeaveAll)
+                                        {
+                                            <tr>
+                                                <td class="text-nowrap">@d.ForDate</td>
+                                                <td class="text-nowrap">@d.LeaveTypeShortName</td>
+                                                <td class="text-nowrap">@d.DayType</td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-5">
+                    <div class="card" style="padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.05); border-radius: 10px;">
+                        <div class="d-flex align-items-center mb-3">
+                            <h4 class="m-0">Available Balance</h4>
+                        </div>
+                        <table class="table table-bordered align-middle" id="tblLeaveBalance">
+                            <thead>
+                                <tr style="background-color:#eee">
+                                    <th>Type</th>
+                                    <th>Opn. Bal.</th>
+                                    <th>Taken</th>
+                                    <th>Pending</th>
+                                    <th>Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (ViewBag.GetLeaveBalance != null)
+                                {
+                                    foreach (var d in ViewBag.GetLeaveBalance)
+                                    {
+                                        <tr>
+                                            <td class="text-nowrap">@d.LeaveTypeShortName</td>
+                                            <td class="text-nowrap text-end">@d.OpeningBalance</td>
+                                            <td class="text-nowrap text-end">@d.TakenLeave</td>
+                                            <td class="text-nowrap text-end">@d.PendingLeave</td>
+                                            <td class="text-nowrap text-end">@d.ClosingBalance</td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- #Start Appprove Reject Modal -dialog -->
+<div class="modal fade" id="myModalFinal" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header bg-black text-white">
+                <h4 class="modal-title"> Remark For Reject</h4>
+
+            </div>
+            <div class="modal-body">
+                <!-- BEGIN panel -->
+                <div class="modal-body-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <textarea id="txtApproveRejectRemark" class="form-control" rows="4"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- END panel -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="Approved('Rejected')" id="btnReject" class="btn btn-primary btn-sm">
+                    <i class="fa-solid fa-floppy-disk"> </i> Submit
+                </button>
+                <button type="button" id="btnCancel" class="btn btn-danger btnpress CloseModel" data-bs-dismiss="modal">
+                    <i class="fa-solid fa-share-from-square"></i> Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #End modal-dialog -->
+<script>
+    $(document).ready(function () {
+        debugger;
+        //ONE PAGE BACK WITH RELOAD BACKPAGE CODE
+        document.getElementById('backButton').addEventListener('click', function() {
+            if (window.history.length > 1) {
+                window.history.back();
+            }
+        });
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+
+
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+        debugger;
+
+        var LeaveApprovalStatus = @Html.Raw(Json.Encode(TempData["LeaveApprovalStatus"]));
+        if(LeaveApprovalStatus=="Pending")
+        {
+
+        }
+        else if (LeaveApprovalStatus=="L2- Approved")
+        {
+            $("#btnApproved").hide();
+
+        }
+        else if(LeaveApprovalStatus=="L1- Rejected" || LeaveApprovalStatus=="L2- Rejected")
+        {
+            $("#btnRejected").hide();
+        }
+
+    });
+</script>
+
+<script>
+    function printDiv() {
+
+        //Get the HTML of div
+        var divElements = document.getElementById('card').innerHTML;
+        //Get the HTML of whole page
+        var oldPage = document.body.innerHTML;
+        //Reset the page's HTML with div's HTML only
+        document.body.innerHTML =
+          "<html><head></head><body>    " +
+        divElements + "    </body>";
+        window.onafterprint = function(event) {
+            setTimeout(function() {
+                const backButton = document.getElementById('backButton');
+                if (backButton) {
+                    backButton.addEventListener('click', function() {
+                        if (window.history.length > 1) {
+                            window.history.back();
+                        }
+                    });
+                } else {
+                    console.log('Back button not found');
+                }
+            }, 0); // Add a slight delay to ensure the button is rendered
+        };
+        //Print Page
+        window.print();
+        //Restore orignal HTML
+        document.body.innerHTML = oldPage;
+    }
+    //var Resource="";
+    //var ResourceEncrypted="";
+    //var Status="";
+    function OpenModule()
+    {
+        debugger;
+        $("#myModalFinal").modal('show');
+    }
+    function Approved(Approver)
+    {
+        {
+            debugger
+            const Approved = Swal.mixin({
+                customClass: {
+                    cancelButton: ' btnpress',
+                    confirmButton: ' btnpress'
+                },
+                buttonsStyling: true
+            })
+            Approved.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                showCancelButton: true,
+                confirmButtonText: 'Yes submit!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: false,
+
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup()
+                    popup.classList.remove('swal2-show')
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                    })
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                    }, 500)
+                    return false
+                }
+
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    debugger;
+                    $(".Userloaderbg").css("display","flex");
+                    var DocId=$("#hdnLeaveId").val();
+                    var Encrypted=$("#hdnEncryptedId").val();
+                    var Origin="Leave";
+
+                    var Status="";
+                    var Remark="";
+                    if(Approver=="Rejected")
+                    {
+                        Remark = $("#txtApproveRejectRemark").val();
+                        Status="Rejected";
+                    }
+                    else{
+                        Status="Approved";
+                    }
+                    $("#myModalFinal").modal('hide');
+                    $.ajax({
+                        url: "@Url.Action("ApproveLeaveRequest", "ESS_Leave_Approval")",
+                        method:"get",
+                        data:{DocId:DocId,Encrypted:Encrypted,Status:Status,Remark:Remark,Origin:Origin},
+                        success:function(response){
+                            debugger;
+                            $(".Userloaderbg").css("display","none");
+                            var Message1 = response.Message;
+                            var Icon1 = response.Icon;
+                            var ApproverMode1 = response.ApproverMode;
+                            if (response.Icon=="error") {
+                                if (Message1 != null) {
+                                    if (Message1 != null) {
+                                        Swal.fire({
+                                            icon: Icon1,
+                                            text: Message1,
+                                            allowOutsideClick: false
+                                        });
+
+                                        $("#myModalFinal").modal('hide');
+                                        $("#txtApproveRejectRemark").val("")
+                                        .then((result) => {
+                                            if (result.isConfirmed) {
+                                                if(ApproverMode1=="Bulk")
+                                                {
+                                                    window.location.href = '@Url.Action("ESS_TimeOffice_BulkApproval", "ESS_TimeOffice_BulkApproval")';
+                                                }
+                                                else{
+                                                    window.location.href = '@Url.Action("ESS_Leave_Approval", "ESS_Leave_Approval")';
+                                                }
+                                            } else if (
+                                                /* Read more about handling dismissals below */
+                                                result.dismiss === Swal.DismissReason.cancel
+                                            ) {
+
+                                            }
+                                        })
+                                    }
+                                }
+                            }
+                            else{
+                                var Message1 = response.Message;
+                                var Icon1 = response.Icon;
+                                var ApproverMode1 = response.ApproverMode;
+                                //if (response.Icon=="success") {
+                                if (Message1 != null) {
+                                    if (Message1 != null) {
+                                        Swal.fire({
+                                            icon: Icon1,
+                                            text: Message1,
+                                            allowOutsideClick: () => {
+                                                const popup = Swal.getPopup()
+                                                popup.classList.remove('swal2-show')
+                                                setTimeout(() => {
+                                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                                })
+                                                setTimeout(() => {
+                                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                                }, 500)
+                                                return false
+                                            }
+                                        })
+                                        .then((result) => {
+                                            if (result.isConfirmed) {
+                                                if(ApproverMode1=="Bulk")
+                                                {
+                                                    window.location.href = '@Url.Action("ESS_TimeOffice_BulkApproval", "ESS_TimeOffice_BulkApproval")';
+                                                }
+                                                else{
+                                                    window.location.href = '@Url.Action("ESS_Leave_Approval", "ESS_Leave_Approval")';
+                                                }
+
+                                            } else if (
+                                                /* Read more about handling dismissals below */
+                                                result.dismiss === Swal.DismissReason.cancel
+                                            ) {
+                                            }
+                                        })
+                                        $("#myModalFinal").modal('hide');
+                                        $("#txtApproveRejectRemark").val("");
+                                    }
+                                }
+                                //}
+                            }
+                        }
+                    });
+
+                } else if (
+                    /* Read more about handling dismissals below */
+                        result.dismiss === Swal.DismissReason.cancel
+                ) {
+
+                }
+            })
+        }
+    }
+</script>

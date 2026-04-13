@@ -1,0 +1,694 @@
+﻿
+@{
+    ViewBag.Title = "ESS_TimeOffice_BulkApproval";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/additional-methods.min.js"></script>
+
+<style type="text/css">
+    /*.table {
+        background: -moz-linear-gradient(-90deg, #003471, #448CCB);
+        background: -webkit-gradient(linear, left top, left bottom, from(#003471), to(#448CCB));
+    }*/
+
+    table, th, td {
+        border-left: none;
+        border-right: none;
+        padding: 15PX 8PX !important;
+        cursor: pointer !important;
+    }
+
+    .email-user {
+        display: inline-flex;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        min-width: 30px;
+        overflow: hidden;
+        font-size: 18px;
+        line-height: 30px;
+        text-align: center;
+        color: #fff;
+        background: #adb5bd;
+        margin: -5px 0;
+        border-radius: 30px;
+        text-decoration: none;
+    }
+
+    .email-time {
+        display: block;
+        font-size: 11px;
+        font-weight: 600;
+        color: rgba(var(--app-component-color-rgb),.65);
+        width: 100px;
+        right: 0;
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        text-align: right;
+    }
+
+
+
+    @@media (min-width: 768px) {
+        .email-desc {
+            padding-left: 20px;
+        }
+    }
+
+    .email-desc {
+        display: block;
+        position: relative;
+        color: rgba(var(--app-component-color-rgb),.5);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        flex: 1;
+    }
+
+    .email-sender {
+        display: block;
+        width: 300px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-weight: 600;
+    }
+
+    @@media (min-width: 1200px) {
+        .email-title {
+            padding-left: 15px;
+        }
+    }
+
+    .email-title {
+        display: block;
+        line-height: 20px;
+        width: 200px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-weight: 600;
+    }
+
+    .sub {
+        display: block;
+        line-height: 20px;
+        width: 200px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-weight: 600;
+        color: rgba(var(--app-component-color-rgb),.5);
+    }
+
+    .table-bordered > :not(caption) > * > * {
+        border-width: 3px 1px;
+    }
+
+    .mailbox-sidebar {
+        height: auto;
+    }
+
+    .mailbox .nav-inbox > li > a:hover {
+        color: var(--app-component-color);
+    }
+
+    @@media(max-width : 517px) {
+        #myInput {
+            margin-top: 10px;
+        }
+    }
+
+    .icon2 {
+        position: relative;
+    }
+
+        .icon2 i {
+            font-size: 16px;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+    .badge2 {
+        position: absolute;
+        top: -8px;
+        display: block;
+        background: var(--app-theme);
+        line-height: 12px;
+        font-weight: 600;
+        color: var(--app-theme-color);
+        padding: 3px 6px;
+        font-size: 8px;
+        border-radius: 30px;
+        right: -5px;
+        z-index: 99;
+    }
+</style>
+
+<style>
+    /*THIS DATALIST FORM TBODY ADDED SCROLL*/
+    .scrollable-tbody {
+        display: block;
+        height: 480px; /* Set the desired height */
+        overflow-y: auto; /* Enable vertical scroll */
+    }
+    /*@@media(max-width : )
+
+    .pace-running {
+        overflow-x: hidden;
+        overflow-y: hidden;
+    }*/
+
+    #myInput {
+        height: 35px; /* Match the button's height */
+        width: 280px;
+        padding: 6px 12px;
+        font-size: 14px; /* Match the button's font size */
+        border-radius: 5px; /* Optional, if your button has rounded corners */
+        border: 1px solid #ccc;
+    }
+</style>
+
+
+<style>
+    /* Collapse sidebar on mobile screens */
+    @@media (max-width: 992px) {
+        #emailNav {
+            margin-bottom: 20px;
+        }
+    }
+
+    .icon2 {
+        display: flex;
+        align-items: center;
+    }
+</style>
+
+<div id="content" class="app-content p-0">
+    <div class="mailbox">
+        <div class="mailbox-sidebar">
+            @*<div class="mailbox-sidebar-header d-flex justify-content-center">
+                    <a href="#emailNav" data-bs-toggle="collapse" class="btn btn-dark btn-sm me-auto d-block d-lg-none">
+                        <i class="fa fa-cog"></i>
+                    </a>
+                    <a href="email_compose.html" class="btn btn-dark ps-40px pe-40px btn-sm">
+                        Requisition List
+                    </a>
+                </div>*@
+
+            <!-- Sidebar Toggle Button (Visible on Mobile) -->
+            <button class="btn btn-primary d-lg-none mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#emailNav" aria-expanded="false" aria-controls="emailNav">
+                ☰
+            </button>
+            <!-- Sidebar -->
+            <div class="mailbox-sidebar-content collapse d-lg-block" id="emailNav">
+                <div data-scrollbar="true" data-height="90%" data-skip-mobile="true">
+                    <div class="nav-title"><b>Requisition List</b></div>
+                    <ul class="nav nav-inbox">
+                        <li class="active"><a href="@Url.Action("ESS_TimeOffice_BulkApproval", "ESS_TimeOffice_BulkApproval", new { GetFilter = "All" })"> All <div class="ms-auto icon2" id="DivLeaveCount"><i class="fa fa-bell"></i><span class="badge2" id="LeaveCount">@(Session["LeaveCount"] != null ? Session["LeaveCount"] : "")</span></div></a></li>
+                        <li><a href="@Url.Action("ESS_TimeOffice_BulkApproval", "ESS_TimeOffice_BulkApproval", new { GetFilter = "Leave" })">Leave <div class="ms-auto icon2" id="DivTeamLeaveCount"><i class="fa fa-bell"></i><span class="badge2" id="TeamLeaveCount">@TempData["TeamLeaveCount"]</span></div></a></li>
+                        <li><a href="@Url.Action("ESS_TimeOffice_BulkApproval", "ESS_TimeOffice_BulkApproval", new { GetFilter = "SC" })">ShiftChange <div class="ms-auto icon2" id="DivTeamShiftChangeCount"><i class="fa fa-bell"></i><span class="badge2" id="TeamShiftChangeCount">@TempData["TeamShiftChangeCount"] </span></div></a></li>
+                        <li><a href="@Url.Action("ESS_TimeOffice_BulkApproval", "ESS_TimeOffice_BulkApproval", new { GetFilter = "OD" })"> Outdoor<div class="ms-auto icon2" id="DivTeamOutDoorCompanyCount"><i class="fa fa-bell"></i><span class="badge2" id="TeamOutDoorCompanyCount">@TempData["TeamOutDoorCompanyCount"]</span></div></a></li>
+                        <li><a href="@Url.Action("ESS_TimeOffice_BulkApproval", "ESS_TimeOffice_BulkApproval", new { GetFilter = "PM" })"> Punch Missing<div class="ms-auto icon2" id="DivTeamPunchMissingCount"><i class="fa fa-bell"></i><span class="badge2" id="TeamPunchMissingCount">@TempData["TeamPunchMissingCount"]</span></div></a></li>
+                        <li><a href="@Url.Action("ESS_TimeOffice_BulkApproval", "ESS_TimeOffice_BulkApproval", new { GetFilter = "WFH" })"> Work Form Home<div class="ms-auto icon2" id="DivTeamWorkFromHomeCount"><i class="fa fa-bell"></i><span class="badge2" id="TeamWorkFromHomeCount">@TempData["TeamWorkFromHomeCount"] </span></div></a></li>
+                        <li><a href="@Url.Action("ESS_TimeOffice_BulkApproval", "ESS_TimeOffice_BulkApproval", new { GetFilter = "CO" })"> Comp Off <div class="ms-auto icon2" id="DivTeamCoffCount"><i class="fa fa-bell"></i><span class="badge2" id="TeamCoffCount">@TempData["TeamCoffCount"]</span></div></a></li>
+                        <li><a href="@Url.Action("ESS_TimeOffice_BulkApproval", "ESS_TimeOffice_BulkApproval", new { GetFilter = "PG" })"> Personal Getpass <div class="ms-auto icon2" id="DivTeamPersonalGatepassCount"><i class="fa fa-bell"></i><span class="badge2" id="TeamPersonalGatepassCount">@TempData["TeamPersonalGatepassCount"]</span></div></a></li>
+                    </ul>
+                </div>
+            </div>
+
+
+            @*<div class="mailbox-sidebar-content collapse d-block" id="emailNav">
+                    <div data-scrollbar="true" data-height="90%" data-skip-mobile="true">
+                        <div class="nav-title"><b>Requisition List</b></div>
+                        <ul class="nav nav-inbox">
+                            <li class="active"><a href="@Url.Action("ESS_TimeOffice_BulkApproval", "ESS_TimeOffice_BulkApproval", new { GetFilter = "All" })"> All <div class="ms-auto icon2" id="DivLeaveCount"><i class="fa fa-bell"></i><span class="badge2" id="LeaveCount">@(Session["LeaveCount"] != null ? Session["LeaveCount"] : "")</span></div></a></li>
+                            <li><a href="@Url.Action("ESS_TimeOffice_BulkApproval", "ESS_TimeOffice_BulkApproval", new { GetFilter = "Leave" })">Leave <div class="ms-auto icon2" id="DivTeamLeaveCount"><i class="fa fa-bell"></i><span class="badge2" id="TeamLeaveCount">@ViewBag.RquisitionCount[0].TeamLeaveCount</span></div></a></li>
+                            <li><a href="@Url.Action("ESS_TimeOffice_BulkApproval", "ESS_TimeOffice_BulkApproval", new { GetFilter = "SC" })">ShiftChange <div class="ms-auto icon2" id="DivTeamShiftChangeCount"><i class="fa fa-bell"></i><span class="badge2" id="TeamShiftChangeCount">@ViewBag.RquisitionCount[0].TeamShiftChangeCount</span></div></a></li>
+                            <li><a href="@Url.Action("ESS_TimeOffice_BulkApproval", "ESS_TimeOffice_BulkApproval", new { GetFilter = "OD" })"> Outdoor<div class="ms-auto icon2" id="DivTeamOutDoorCompanyCount"><i class="fa fa-bell"></i><span class="badge2" id="TeamOutDoorCompanyCount">@ViewBag.RquisitionCount[0].TeamOutDoorCompanyCount</span></div></a></li>
+                            <li><a href="@Url.Action("ESS_TimeOffice_BulkApproval", "ESS_TimeOffice_BulkApproval", new { GetFilter = "PM" })"> Punch Missing<div class="ms-auto icon2" id="DivTeamPunchMissingCount"><i class="fa fa-bell"></i><span class="badge2" id="TeamPunchMissingCount">@ViewBag.RquisitionCount[0].TeamPunchMissingCount</span></div></a></li>
+                            <li><a href="@Url.Action("ESS_TimeOffice_BulkApproval", "ESS_TimeOffice_BulkApproval", new { GetFilter = "WFH" })"> Work Form Home<div class="ms-auto icon2" id="DivTeamWorkFromHomeCount"><i class="fa fa-bell"></i><span class="badge2" id="TeamWorkFromHomeCount">@ViewBag.RquisitionCount[0].TeamWorkFromHomeCount</span></div></a></li>
+                            <li><a href="@Url.Action("ESS_TimeOffice_BulkApproval", "ESS_TimeOffice_BulkApproval", new { GetFilter = "CO" })"> Comp Off <div class="ms-auto icon2" id="DivTeamCoffCount"><i class="fa fa-bell"></i><span class="badge2" id="TeamCoffCount">@ViewBag.RquisitionCount[0].TeamCoffCount</span></div></a></li>
+                            <li><a href="@Url.Action("ESS_TimeOffice_BulkApproval", "ESS_TimeOffice_BulkApproval", new { GetFilter = "PG" })"> Personal Getpass <div class="ms-auto icon2" id="DivTeamPersonalGatepassCount"><i class="fa fa-bell"></i><span class="badge2" id="TeamPersonalGatepassCount">@ViewBag.RquisitionCount[0].TeamPersonalGatepassCount</span></div></a></li>
+                        </ul>
+                    </div>
+                </div>*@
+        </div>
+
+        <div class="mailbox-content">
+            <div class="mailbox-content-header">
+                <div class="btn-toolbar align-items-center">
+                    <div class="form-check me-2">
+                        <input type="checkbox" class="form-check-input" data-checked="email-checkbox" id="emailSelectAll" onchange="checkAll(this)" value="" data-change="email-select-all" />
+                        <label class="form-check-label" for="emailSelectAll"></label>
+                    </div>
+                    <div class="dropdown me-2">
+                        <button id="btnApprove" onclick="AllApproveReject('Approved')" type="button" class="btn btn-success btn-sm"><i class="fa-solid fa-floppy-disk"> </i> <span class="d-none d-lg-inline">Approve</span></button> &nbsp; &nbsp;
+                        <button id="btnReject" onclick="OpenModel()" data-toggle="modal" data-target="#myModal" type="button" class="btn btn-danger btn-sm"><i class="fa-solid fa-share-from-square"></i> <span class="d-none d-lg-inline">Reject</span></button>
+                    </div>
+                    @*<button onclick="RefreshTable()" class="btn btn-sm btn-white me-2" id="tblReload"><i class="fa fa-redo"></i></button>*@
+                    <a class="btn btn-white btn-sm" href="@Url.Action("ESS_TimeOffice_Menu", "ESS_TimeOffice_Menu", new { id = 5, ScreenId = 150, area = "ESS" })"> <i class="fa fa-fw fa-reply"></i> <span class="d-none d-lg-inline">Back</span></a>
+                    &nbsp;&nbsp;
+                    <input type="text" id="myInput" onkeyup="funSearchbar()" placeholder="Search for names.." title="Type in a name">
+
+
+                    @*<button class="btn btn-sm btn-white" id="tblReload">
+                            <i class="fa fa-arrow-left"><a href="/ESS/ESS_Requisition_Menu/ESS_Requisition_Menu"> Back</a></i>
+                        </button>*@
+                    <div class="w-100 d-sm-none d-block mb-2 hide" data-email-action="divider"></div>
+                    <div class="btn-group">
+                        <button class="btn btn-sm btn-white hide" data-email-action="delete"><i class="fa fa-times me-1"></i> <span class="hidden-xs">Delete</span></button>
+                        <button class="btn btn-sm btn-white hide" data-email-action="archive"><i class="fa fa-folder me-1"></i> <span class="hidden-xs">Archive</span></button>
+                        <button class="btn btn-sm btn-white hide" data-email-action="archive"><i class="fa fa-trash me-1"></i> <span class="hidden-xs">Junk</span></button>
+                    </div>
+
+                    @*New and Preveius Button*@
+                    @*<div class="btn-group ms-auto">
+                            <button class="btn btn-white btn-sm">
+                                <i class="fa fa-chevron-left"></i>
+                            </button>
+                            <button class="btn btn-white btn-sm">
+                                <i class="fa fa-chevron-right"></i>
+                            </button>
+                        </div>*@
+                </div>
+            </div>
+            <div class="mailbox-content-body" id="tblDiv">
+                <div data-scrollbar="true" data-height="100%" data-skip-mobile="false">
+                    <!-- BEGIN list-email -->
+                    @* Table Code*@
+                    <table class="table table-bordered align-middle" id="tblApprojeRejectList" style="width: 100%;">
+                        <thead>
+                            <tr></tr>
+                        </thead>
+                        <tbody id="tbodyApproveReject">
+                            @if (@ViewBag.TimeOfficeApprovalList != null)
+                            {
+                                foreach (var d in ViewBag.TimeOfficeApprovalList)
+                                {
+                                    <tr>
+                                        <td hidden>@d.DocID</td>
+                                        <td hidden>@d.DocID_Encrypted</td>
+                                        <td hidden>@d.Origin</td>
+                                        <td style="width:10px;"><input type="checkbox" class="form-check-input" data-checked="email-checkbox" value="@d.DocID_Encrypted" id="tblCheckbox"></td>
+                                        <td style="width: 20px;">
+                                            <span class="email-userBx">
+                                                <a class="email-user bg-indigo" style="cursor: pointer">
+                                                    <span class="text-white">@d.FirstEmployeeName</span>
+                                                </a>
+                                            </span>
+                                        </td>
+                                        <td onclick="ViewForApprover('@d.DocID_Encrypted', '@d.Origin','Bulk')"><span class="email-sender">@d.EmployeeName</span></td>
+                                        <td onclick="ViewForApprover('@d.DocID_Encrypted', '@d.Origin','Bulk')"><span class="email-sender">@d.RequestDate</span></td>
+                                        <td onclick="ViewForApprover('@d.DocID_Encrypted', '@d.Origin','Bulk')"> <span class="email-title">@d.Reason</span></td>
+                                        @*<td onclick="ViewForApprover('@d.DocID_Encrypted', '@d.Origin','Bulk')"><span class="email-title sub">@d.TotalDuration</span></td>*@
+                                        <td onclick="ViewForApprover('@d.DocID_Encrypted', '@d.Origin','Bulk')"><span class="email-title sub">@d.Origin - @d.Status  - @d.PendingFrom</span></td>
+                                        <td onclick="ViewForApprover('@d.DocID_Encrypted', '@d.Origin','Bulk')"><span class="email-time">@d.PendingScience</span></td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                    @*Table Code End*@
+                </div>
+            </div>
+            @*<div class="mailbox-content-footer d-flex align-items-center">
+                    <div class="text-dark fw-bold">@TempData["LeaveCount"] &nbsp; messages</div>
+                    <div class="btn-group ms-auto">
+                        <button id="btnApprove" onclick="AllApproveReject('Approved')" type="button" class="btn btn-success btn-sm"><i class="fa-solid fa-floppy-disk"> </i> <span class="d-none d-lg-inline">Approve</span></button> &nbsp; &nbsp;
+                        <button id="btnReject" onclick="OpenModel()" data-toggle="modal" data-target="#myModal" type="button" class="btn btn-danger btn-sm"><i class="fa-solid fa-share-from-square"></i> <span class="d-none d-lg-inline">Reject</span></button>&nbsp; &nbsp;
+                    </div>
+                </div>*@
+        </div>
+    </div>
+</div>
+
+<!-- #Start Appprove Reject Modal -dialog -->
+<div class="modal fade" id="myModalFinal" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header bg-black text-white">
+                <h4 class="modal-title"> Remark For Reject</h4>
+                <div class="panel-heading-btn">
+                    <a href="javascript:;" class="btn btn-icon btn-danger btnClear" data-bs-dismiss="modal"
+                       aria-hidden="true">
+                        <i class="fa fa-xmark"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="modal-body">
+                <!-- BEGIN panel -->
+                <div class="modal-body-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <textarea id="txtApproveRejectRemark" class="form-control" rows="4"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- END panel -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success " id="btnAllApprove" onclick="AllApproveReject('Rejected')">
+                    <i class="fa-solid fa-floppy-disk"></i> Submit
+                </button>
+                @*<button type="button" onclick="Approved()" id="btnReject" class="btn btn-primary btn-sm">
+                        <i class="fa-solid fa-floppy-disk"> </i> Submit
+                    </button>*@
+                <button type="button" id="btnCancel" class="btn btn-danger btnpress btnClear" data-bs-dismiss="modal">
+                    <i class="fa-solid fa-share-from-square"></i> Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #End modal-dialog -->
+
+<script>
+    function checkAll(ele) {
+        var checkboxes = document.getElementsByTagName('input');
+        if (ele.checked) {
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].type == 'checkbox') {
+                    checkboxes[i].checked = true;
+                }
+            }
+        } else {
+            for (var i = 0; i < checkboxes.length; i++) {
+                console.log(i)
+                if (checkboxes[i].type == 'checkbox') {
+                    checkboxes[i].checked = false;
+                }
+            }
+        }
+    }
+
+    function OpenModel() {
+        debugger;
+        var RecordList = new Array();
+        $(':checkbox:checked').each(function (i) {
+            debugger;
+            var data = {};
+            data.DocID = $(this).val();
+            var currentRow = $(this).closest("tr");
+            data.Origin = currentRow.find("td:eq(1)").html();
+            RecordList.push(data);
+        });
+        debugger;
+        if (RecordList == "") {
+            debugger;
+            Swal.fire({
+                icon: "error",
+                text: "Select atleast one record",
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup()
+                    popup.classList.remove('swal2-show')
+                    return false;
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                    })
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                    }, 500)
+                    window.location.reload();
+                    return false
+                }
+            });
+            return false;
+        }
+        $("#myModalFinal").modal('show');
+    }
+</script>
+
+<script>
+    function AllApproveReject(Status) {
+        const Approved = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        Approved.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes Submit!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+
+            allowOutsideClick: () => {
+                const popup = Swal.getPopup()
+                popup.classList.remove('swal2-show')
+                setTimeout(() => {
+                    popup.classList.add('animate__animated', 'animate__headShake')
+                })
+                setTimeout(() => {
+                    popup.classList.remove('animate__animated', 'animate__headShake')
+                }, 500)
+                return false
+            }
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                debugger;
+                document.getElementById("myInput").value = "";
+
+                var RejectRemark = document.getElementById("txtApproveRejectRemark").value;
+                var RecordList = new Array();
+                $("#tbodyApproveReject").find(':checkbox:checked').each(function (i) {
+                    var data = {};
+                    var currentRow = $(this).closest("tr");
+                    data.DocID = currentRow[0].cells[0].innerText;
+                    data.DocID_Encrypted = currentRow.find("td:eq(1)").html();
+                    data.Origin = currentRow.find("td:eq(2)").html();
+                    data.Status = Status;
+                    data.RejectRemark = RejectRemark;
+                    RecordList.push(data);
+                });
+
+                if (RecordList == "") {
+                    debugger;
+                    $("#myModalFinal").modal('hide');
+                    document.getElementById("txtApproveRejectRemark").value = "";
+                    Swal.fire({
+                        icon: "error",
+                        text: "Select atleast one record",
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup()
+                            popup.classList.remove('swal2-show')
+                            return false;
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake')
+                            })
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake')
+                            }, 500)
+                            window.location.reload();
+                            return false
+                        }
+                    });
+                    return false;
+                }
+                //Clear Srarch bar all text using 'funSearchbar' this function
+                funSearchbar();
+                $("#myModalFinal").modal('hide');
+                $(".Userloaderbg").css("display", "flex");
+
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("MultipleApproveRejectRequest", "ESS_TimeOffice_BulkApproval")",
+                    data: JSON.stringify({ ObjRecordList: RecordList }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "text",
+                    success: function (data) {
+                        debugger;
+                        $(".Userloaderbg").css("display", "none");
+                        var datas = JSON.parse(data);
+                        if (datas != null) {
+                            //$('#tblInbox').load();
+                            Swal.fire({
+                                icon: datas.Icon,
+                                text: datas.Message,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    return false;
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    window.location.reload();
+                                    return false
+                                }
+                            }).then(function () {
+                                var url = '@Url.Action("ESS_TimeOffice_BulkApproval", "ESS_TimeOffice_BulkApproval")';
+                                window.location.href = url;
+                            });
+                        }
+                    }
+                });
+            }
+        })
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('ul.nav-inbox li').on('click', function () {
+            // Remove 'active' class from all <li> elements
+            $('ul.nav-inbox li').removeClass('active');
+
+            // Add 'active' class to the clicked <li> element
+            $(this).addClass('active');
+        });
+
+        var LeaveCount = $("#LeaveCount").html();
+        var TeamLeaveCount = $("#TeamLeaveCount").html();
+        var OutDoorCompanyCount = $("#TeamOutDoorCompanyCount").html();
+        var ShiftChangeCount = $("#TeamShiftChangeCount").html();
+        var PunchMissingCount = $("#TeamPunchMissingCount").html();
+        var ShortLeaveCount = $("#TeamShortLeaveCount").html();
+        var WorkFromHomeCount = $("#TeamWorkFromHomeCount").html();
+        var CoffCount = $("#TeamCoffCount").html();
+        var PersonalGatepassCount = $("#TeamPersonalGatepassCount").html();
+        var CoffCount = $("#TeamCoffCount").html();
+
+        if (CoffCount == 0) {
+            $("#DivTeamCoffCount").hide()
+        } else {
+            $("#DivTeamCoffCount").show()
+        }
+
+        if (LeaveCount == 0) {
+            $("#DivLeaveCount").hide()
+        } else {
+            $("#DivLeaveCount").show()
+        }
+        if (TeamLeaveCount == 0) {
+            $("#DivTeamLeaveCount").hide()
+        }
+        else {
+            $("#DivTeamLeaveCount").show()
+        }
+        if (ShiftChangeCount == 0) {
+            $("#DivTeamShiftChangeCount").hide()
+        }
+        else {
+            $("#DivTeamShiftChangeCount").show()
+        }
+        if (OutDoorCompanyCount == 0) {
+            $("#DivTeamOutDoorCompanyCount").hide()
+        }
+        else {
+            $("#DivTeamOutDoorCompanyCount").show()
+        }
+        if (PunchMissingCount == 0) {
+            $("#DivTeamPunchMissingCount").hide()
+        }
+        else {
+            $("#DivTeamPunchMissingCount").show()
+        }
+        if (ShortLeaveCount == 0) {
+            $("#DivTeamShortLeaveCount").hide()
+        }
+        else {
+            $("#DivTeamShortLeaveCount").show()
+        }
+        if (WorkFromHomeCount == 0) {
+            $("#DivTeamWorkFromHomeCount").hide()
+        }
+        else {
+            $("#DivTeamWorkFromHomeCount").show()
+        }
+        if (PersonalGatepassCount == 0) {
+            $("#DivTeamPersonalGatepassCount").hide()
+        }
+        else {
+            $("#DivTeamPersonalGatepassCount").show()
+        }
+    });
+</script>
+
+<script>
+    function ViewForApprover(DocID_Encrypted, Origin,ApproverMode) {
+        debugger
+        if (Origin == 'OD') {
+            var url = '@Url.Action("ViewForOutdoorRequestApprover", "ESS_TimeOffice_Approval")?DocId_Encrypted=' + DocID_Encrypted + '&Origin=' + Origin + '&ApproverMode=' + ApproverMode;
+            window.location.href = url;
+        }
+        if (Origin == 'PM') {
+            var url = '@Url.Action("ViewForPunchMissingRequestApprover", "ESS_TimeOffice_Approval")?DocId_Encrypted=' + DocID_Encrypted + '&Origin=' + Origin + '&ApproverMode=' + ApproverMode;
+            window.location.href = url;
+        }
+        if (Origin == 'PG') {
+            var url = '@Url.Action("ViewForPersonalGetpassRequestApprover", "ESS_TimeOffice_Approval")?DocId_Encrypted=' + DocID_Encrypted + '&Origin=' + Origin + '&ApproverMode=' + ApproverMode;
+            window.location.href = url;
+        }
+        if (Origin == 'WFH') {
+            var url = '@Url.Action("ViewForWorkFromHomeRequestApprover", "ESS_TimeOffice_Approval")?DocId_Encrypted=' + DocID_Encrypted + '&Origin=' + Origin + '&ApproverMode=' + ApproverMode;
+            window.location.href = url;
+        }
+        if (Origin == 'SL') {
+            var url = '@Url.Action("ViewForShortLeaveRequestApprover", "ESS_TimeOffice_Approval")?DocId_Encrypted=' + DocID_Encrypted + '&Origin=' + Origin + '&ApproverMode=' + ApproverMode;
+            window.location.href = url;
+        }
+        if (Origin == 'SC') {
+            var url = '@Url.Action("ViewForShiftChangeRequestApprover", "ESS_TimeOffice_Approval")?DocId_Encrypted=' + DocID_Encrypted + '&Origin=' + Origin + '&ApproverMode=' + ApproverMode;
+            window.location.href = url;
+        }
+
+        if (Origin == 'Leave') {
+            var url = '@Url.Action("ViewForLeaveRequestApprover", "ESS_Leave_Approval")?DocId_Encrypted=' + DocID_Encrypted + '&Type=' + Origin + '&ApproverMode=' + ApproverMode;
+            window.location.href = url;
+        }
+
+        if (Origin == 'CO') {
+            var url = '@Url.Action("ViewForCOFFRequestApprover", "ESS_Leave_Approval")?DocId_Encrypted=' + DocID_Encrypted + '&Type=' + Origin + '&ApproverMode=' + ApproverMode;
+            window.location.href = url;
+        }
+
+    }
+</script>
+
+<script>
+    function funSearchbar() {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("tblApprojeRejectList");
+        tr = table.getElementsByTagName("tr");
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[5];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>

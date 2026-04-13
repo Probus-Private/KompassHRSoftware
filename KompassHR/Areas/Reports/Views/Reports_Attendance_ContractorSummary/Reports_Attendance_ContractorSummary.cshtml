@@ -1,0 +1,292 @@
+﻿@model KompassHR.Areas.Reports.Models.DailyAttendanceReportFilter
+@{
+    ViewBag.Title = "Reports_Attendance_ContractorSummary";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Contractor Attendance Summary Report
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Report_MonthlyAttendance_RptSubMenu", "Report_MonthlyAttendance_RptSubMenu", new {id = 5, ScreenId=327, area = "Reports" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="panel panel-inverse" data-sortable-id="index-1">
+                    <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                        <h4 class="panel-title"> Contractor Attendance Summary Report</h4>
+                        <div class="panel-heading-btn">
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                        </div>
+                    </div>
+                    <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                        <p class="pb-0">
+                        </p>
+                    </div>
+                    <div class="panel-body" style="max-height: fit-content;">
+                        <div class="row justify-content-center">
+                            @*<hr class="mt-15px">*@
+                            <div class="row justify-content-center">
+                                <form role="form" action="/Reports/Rpt_Attendance_MusterRoll_WithOT/Rpt_Attendance_MusterRoll_WithOT" id="formAttendance_MusterRoll_WithOT" method="post">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Company
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.CmpId, new SelectList(ViewBag.CompanyName, "Id", "Name"), new { @class = "form-select", id = "ddlCmpId", type = "text", name = "CmpId", autocomplete = "Off" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Business Unit
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.BranchId, new SelectList(ViewBag.GetBranchName, "Id", "Name"), "All", new { @class = "form-select", id = "ddlBranchId", type = "text", name = "BranchId", autocomplete = "Off" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                   Contractor
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.DropDownListFor(model => model.ContractorId, new SelectList(ViewBag.GetContractor, "Id", "Name"), "All", new { @class = "form-select", id = "ddlContractorId", type = "text", name = "ContractorId", autocomplete = "Off" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Month/Year
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.FromDate, new { @class = "form-control", name = "Month", type = "month", id = "GetMonth" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="LastShortLeaveBx">
+                                            <div class="row">
+                                                <div class="col-md-10">
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="BtnBx">
+                                                        <div>
+                                                            <button type="button" class="btn btn-success" id="btlExportToExcel" onclick="downloadExcelFile()">
+                                                                <i class="fa-regular fa-file-excel fa-xl"></i> Export To Excel
+                                                            </button>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    $(document).ready(function () {
+        debugger;
+        $('title').html("Contractor Attendance Summary Report");
+        var today = new Date();
+        var yyyy = today.getFullYear();
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+        var defaultMonth = yyyy + '-' + mm;
+        // Set the value of the input element to the default month
+        var CheckEmptyDate = document.getElementById('GetMonth').value;
+        if (CheckEmptyDate == "") {
+            document.getElementById('GetMonth').value = defaultMonth;
+        }
+        $("#ddlCmpId").select2();
+        $("#ddlBranchId").select2();
+        $("#ddlContractorId").select2();
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                });
+            }
+        }
+
+        $("#ddlCmpId").on("change", function () {
+            debugger;
+            $("#ddlBranchId").find("option").remove();
+            var CmpId = $("#ddlCmpId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetBusinessUnit", "Reports_Attendance_ContractorSummary")',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    debugger;
+                    if (data !=null) {
+                        $("#ddlBranchId").append("<option value=''>All </option>");
+                        $.each(data, function(i, p) {
+                            $("#ddlBranchId").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                        });
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        });
+
+
+        $("#ddlBranchId").on("change", function () {
+            debugger;
+            $("#ddlContractorId").find("option").remove();
+            var BranchId = $("#ddlBranchId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetContractor", "Reports_Attendance_ContractorSummary")',
+                data: { BranchId: BranchId },
+                success: function (data) {
+                    debugger;
+                    if (data == false) {
+                        $("#ddlContractorId").find("option").remove();
+                        $("#ddlContractorId").append("<option value=''>All </option>");
+                    }
+                    else {
+                        if (data != null) {
+                            $("#ddlContractorId").append("<option value=''>All </option>");
+                            $.each(data, function (i, p) {
+                                $("#ddlContractorId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                            });
+                        }
+                    }
+                }
+            })
+        });
+    }); //Ready Function
+</script>
+
+<script>
+    function downloadExcelFile() {
+        debugger;
+        $(".Userloaderbg").css("display", "flex");
+        //var CmpID = $("#ddlCmpId").val();
+        //var BranchId = $("#ddlBranchId").val();
+        //var FromDate = $("#GetMonth").val();
+        //var GetContractorId = $("#ddlContractorId").val();
+
+
+        var BranchId = encodeURIComponent($("#ddlBranchId").val());
+        var FromDate = encodeURIComponent($("#GetMonth").val());
+        var CmpId = encodeURIComponent($("#ddlCmpId").val());
+        var ContractorId = encodeURIComponent($("#ddlContractorId").val());
+        var url = `@Url.Action("DownloadExcelFile", "Reports_Attendance_ContractorSummary")?BranchId=${BranchId}&FromDate=${FromDate}&CmpId=${CmpId}&ContractorId=${ContractorId}`;
+
+        // Create a full URL with query parameters
+       // var url = '/Reports_Attendance_ContractorSummary/DownloadExcelFile?BranchId=' + encodeURIComponent(BranchId) + '&FromDate=' + encodeURIComponent(FromDate)+'&CmpID='+encodeURIComponent(CmpID) +'&GetContractorId='+encodeURIComponent(GetContractorId);
+        $.ajax({
+            url: url,
+            method: 'GET',
+            xhrFields: {
+                responseType: 'blob' // Set the response type to blob
+            },
+            success: function(data) {
+                debugger;
+                $(".Userloaderbg").css("display", "none");
+                if(data.size==0)
+                {
+                    Swal.fire({
+                        icon: 'error',
+                        text: 'Record Not Found',
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup()
+                            popup.classList.remove('swal2-show')
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake')
+                            })
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake')
+                            }, 500)
+                            return false
+                        }
+                    });
+                    $(".Userloaderbg").css("display", "none");
+                    return false;
+                }
+                var formattedDate = convertMonthYearFormat(FromDate);
+                var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                var anchorElement = document.createElement('a');
+                var url = window.URL.createObjectURL(blob);
+                anchorElement.href = url;
+                anchorElement.download = 'ConctratorAttendanceSummeryReport('+formattedDate+').xlsx';
+                anchorElement.click();
+                window.URL.revokeObjectURL(url);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error downloading file:', error);
+            }
+        });
+    }
+</script>

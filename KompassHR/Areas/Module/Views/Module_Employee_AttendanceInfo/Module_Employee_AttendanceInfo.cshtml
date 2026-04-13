@@ -1,0 +1,1702 @@
+﻿@model KompassHR.Areas.Module.Models.Module_Employee.Mas_Employee_Attendance
+@{
+    ViewBag.Title = "Module_Employee_AttendanceInfo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+
+<style>
+    .table {
+        --bs-table-striped-bg: rgba(0, 0, 255, 0.02);
+    }
+
+    .text-nowrap {
+        font-size: 12px;
+    }
+
+    tbody tr td {
+        font-size: 12px;
+        padding: 4px !important;
+    }
+
+    .ListBtn {
+        background-color: transparent;
+        color: #000;
+        font-size: 15px !important;
+        padding: 5px 8px !important;
+        border: none;
+    }
+
+        .ListBtn:hover {
+            background-color: transparent;
+            color: #000;
+        }
+
+            .ListBtn:hover i {
+                transition: all 0.5s;
+                transform: scale(1.5);
+            }
+
+
+
+    .box2 {
+        text-align: center;
+        position: relative;
+        z-index: 0;
+        margin-bottom: 10px;
+    }
+
+        .box2 .info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .box2 .imgbx {
+            width: 80px;
+            height: 80px;
+            padding: 5px 0px;
+            font-family: Open Sans,sans-serif;
+            border: 1px solid #dedede;
+            border-radius: 20px;
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /*.box2:hover {
+            border: 2px solid #ff9c19;
+            border-radius: 10px;
+            cursor: pointer;
+            transform: translateY(-10px);
+
+        }*/
+        .box2 img {
+            width: 50px;
+            height: 50px;
+            filter: brightness(1.2);
+        }
+
+        .box2:hover .info i {
+            color: #ff9c19;
+        }
+
+
+        .box2 .info i {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 5px;
+            color: #007bff;
+        }
+
+        .box2 .info h7 {
+            position: relative;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            color: #000;
+            text-transform: capitalize;
+            margin-top: 5px;
+        }
+
+
+    .div1 td:nth-child(1) {
+        position: sticky;
+        left: 0;
+    }
+
+    /*.div1 td:nth-child(2) {
+        position: sticky;
+        left: 62px;
+    }*/
+
+    .fixed-side {
+        position: sticky;
+        left: 0px;
+    }
+
+    /*.fixed-side1 {
+        position: sticky;
+        left: 62px;
+    }*/
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    .card-row-title {
+        color: #e63c3c;
+        font-size: 18px;
+        font-weight: 600;
+        text-transform: capitalize;
+        border-bottom: #009ce7 1px solid;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .empbx h4 {
+        margin-bottom: 5px;
+    }
+
+    .empbx h6 i {
+        font-size: 1rem;
+        margin-right: 5px;
+    }
+
+    .empbx {
+        margin-bottom: 20px;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Attendance Information
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Module_Employee_EmployeeList", "Module_Employee_EmployeeList", new {id = 3, ScreenId=142, area = "Module" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">@*@i.SET_MODULES.FormName*@ Attendance Information - @ViewBag.AddUpdateTitle</h4>
+                    @*<div class="panel-heading-btn">
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                        </div>*@
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Define employee work schedules, including regular shifts, overtime shifts, night shifts, rotating schedules, and rest days. Configure the HRMS to accommodate different shift patterns, employee preferences, and scheduling requirements.
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "Module_Employee_AttendanceInfo", new { area = "Module" })' id="SaveAttendanceInformation" method="post">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="empbx">
+                                            <span>
+                                                <h4> <i class="fa-solid fa-user"></i> @Session["OnboardEmployeeName"] -  @Session["OnboardEmployeeNo"] </h4>
+                                            </span>
+                                            <span>
+                                                <h6> <i class="fa-solid fa-briefcase"></i>  @Session["OnboardEmpDepartment"] / @Session["OnboardEmpDesignation"] </h6>
+                                            </span>
+                                            <span>
+                                                <h6> <i class="fa-solid fa-calendar"></i> @Session["OnboardEmpDoj"] </h6>
+                                            </span>
+                                            <hr>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-10px">
+                                    <div class="col-md-12">
+                                        <div class="card-row-title">
+                                            OT Setup
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                OT Applicable
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EM_Atten_OT_Applicable, new List<SelectListItem> {
+                                                    new SelectListItem { Text = "Yes", Value = "true"},
+                                                    new SelectListItem { Text = "No", Value = "false"},
+                                                }, "--Select--", new { id = "ddlEM_Atten_OT_Applicable", @class = "form-select", autocomplete = "off", name = "EM_Atten_OT_Applicable" })
+                                                @Html.HiddenFor(model => model.AttendanceId_Encrypted)
+                                                @Html.HiddenFor(model => model.AttendanceEmployeeId)
+                                                @Html.ValidationMessageFor(model => model.EM_Atten_OT_Applicable, "", new { @class = "help-block", @id = "ErrorEM_Atten_OT_Applicable", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                OT Multiply By
+
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EM_Atten_OTMultiplyBy, new List<SelectListItem> {
+                                                    new SelectListItem { Text = "1", Value = "1"},
+                                                    new SelectListItem { Text = "1.5", Value = "1.5"},
+                                                     new SelectListItem { Text = "2", Value = "2"},
+                                                }, "--Select--", new { id = "ddlEM_Atten_OTMultiplyBy", @class = "form-select", autocomplete = "off", name = "EM_Atten_OTMultiplyBy" })
+                                                @Html.ValidationMessageFor(model => model.EM_Atten_OTMultiplyBy, "", new { @class = "help-block", @id = "ErrorEM_Atten_OTMultiplyBy", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Perday Shift Hrs.
+
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.EM_Atten_PerDayShiftHrs, new { id = "EM_Atten_OTMultiplyBy", name = "EM_Atten_OTMultiplyBy", @class = "form-control", autocomplete = "Off", onkeypress = " return numbervalidate(event)" })
+                                                @Html.ValidationMessageFor(model => model.EM_Atten_PerDayShiftHrs, "", new { @class = "help-block", @id = "ErrorEM_Atten_PerDayShiftHrs", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-10px">
+                                    <div class="col-md-12">
+                                        <div class="card-row-title">
+                                            Coff Setup
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Working Day OT and Weekoff Day Coff
+
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EM_Atten_WOPH_CoffApplicable, new List<SelectListItem> {
+                                                  new SelectListItem { Text = "No", Value = "false"},
+                                               new SelectListItem { Text = "Yes", Value = "true"},
+                                                }, new { id = "ddlEM_Atten_WOPH_CoffApplicable", @class = "form-select", autocomplete = "off", name = "EM_Atten_WOPH_CoffApplicable" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Coff Applicable
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EM_Atten_CoffApplicable, new List<SelectListItem> {
+                                                    new SelectListItem { Text = "Yes", Value = "true"},
+                                                    new SelectListItem { Text = "No", Value = "false"},
+                                                }, new { id = "ddlEM_Atten_CoffApplicable", @class = "form-select", autocomplete = "off", name = "EM_Atten_CoffApplicable" })
+                                                @Html.ValidationMessageFor(model => model.EM_Atten_CoffApplicable, "", new { @class = "help-block", @id = "ErrorEM_Atten_CoffApplicable", @style = "color:red" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-10px">
+                                    <div class="col-md-12">
+                                        <div class="card-row-title">
+                                            Week Off Setup
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @*<div class="row mb-10px">
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="col-form-label"> </label>
+                                                <div class="col-md-8">
+                                                    @Html.CheckBoxFor(model => model.EM_Atten_RotationalWeekOff)
+                                                    &nbsp; <label class="form-check-label form-label">
+                                                        Rotational Week off Applicable
+                                                    </label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>*@
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                I Weekly off
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EM_Atten_WOFF1, new List<SelectListItem> {
+                                                    new SelectListItem { Text = "Sunday", Value = "Sunday"},
+                                                    new SelectListItem { Text = "Monday", Value = "Monday"},
+                                                     new SelectListItem { Text = "Tuesday", Value = "Tuesday"},
+                                                      new SelectListItem { Text = "Wednesday", Value = "Wednesday"},
+                                                       new SelectListItem { Text = "Thursday", Value = "Thursday"},
+                                                        new SelectListItem { Text = "Friday", Value = "Friday"},
+                                                         new SelectListItem { Text = "Saturday", Value = "Saturday"},
+                                                          new SelectListItem { Text = "NA", Value = "NA"},
+                                                }, "--Select--", new { id = "ddlEM_Atten_WOFF1", @class = "form-select", autocomplete = "off", name = "EM_Atten_WOFF1" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                II Weekly off
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EM_Atten_WOFF2, new List<SelectListItem> {
+                                                new SelectListItem { Text = "NA", Value = "NA"},
+                                                    new SelectListItem { Text = "Sunday", Value = "Sunday"},
+                                                    new SelectListItem { Text = "Monday", Value = "Monday"},
+                                                     new SelectListItem { Text = "Tuesday", Value = "Tuesday"},
+                                                      new SelectListItem { Text = "Wednesday", Value = "Wednesday"},
+                                                       new SelectListItem { Text = "Thursday", Value = "Thursday"},
+                                                        new SelectListItem { Text = "Friday", Value = "Friday"},
+                                                         new SelectListItem { Text = "Saturday", Value = "Saturday"},
+                                                }, "--Select--", new { id = "ddlEM_Atten_WOFF2", @class = "form-select", autocomplete = "off", name = "EM_Atten_WOFF2" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-12px">
+                                    <div class="col-md-6">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-form-label"> </label>
+                                            <div class="col-md-8">
+                                                @Html.CheckBoxFor(model => model.EM_Atten_WOFF_Check1, new { @id = "EM_Atten_WOFF_Check1", @class = "chk" })
+                                                &nbsp; <label class="form-check-label form-label">
+                                                    Ist
+                                                </label> &nbsp;
+                                                @Html.CheckBoxFor(model => model.EM_Atten_WOFF_Check2, new { @id = "EM_Atten_WOFF_Check2", @class = "chk" })
+                                                &nbsp; <label class="form-check-label form-label">
+                                                    IInd
+                                                </label> &nbsp;
+                                                @Html.CheckBoxFor(model => model.EM_Atten_WOFF_Check3, new { id = "EM_Atten_WOFF_Check3", @class = "chk" })
+                                                &nbsp; <label class="form-check-label form-label">
+                                                    IIIrd
+                                                </label> &nbsp;
+                                                @Html.CheckBoxFor(model => model.EM_Atten_WOFF_Check4, new { id = "EM_Atten_WOFF_Check4", @class = "chk" })
+                                                &nbsp; <label class="form-check-label form-label">
+                                                    IVth
+                                                </label> &nbsp;
+                                                @Html.CheckBoxFor(model => model.EM_Atten_WOFF_Check5, new { id = "EM_Atten_WOFF_Check5", @class = "chk" })
+                                                &nbsp; <label class="form-check-label form-label">
+                                                    Vth
+                                                </label> &nbsp;
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Public Holiday Applicable
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.PHApplicable, new List<SelectListItem> {
+                                                   new SelectListItem { Text = "Yes", Value = "true"},
+                                               new SelectListItem { Text = "No", Value = "false"},
+                                                }, new { id = "ddlPHApplicable", @class = "form-select", autocomplete = "off", name = "PHApplicable" })
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-10px">
+                                    <div class="col-md-12">
+                                        <div class="card-row-title">
+                                            Shift Setup
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Shift Group
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EM_Atten_ShiftGroupId, new SelectList(ViewBag.GetShiftGroupsName, "Id", "Name"), "--Select--", new { id = "ddlEM_Atten_ShiftGroupId", @class = "form-select", autocomplete = "off", name = "EM_Atten_ShiftGroupId" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Shift Rule
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EM_Atten_ShiftRuleId, new SelectList(ViewBag.GetShiftRuleName, "Id", "Name"), "--Select--", new { id = "ddlEM_Atten_ShiftRuleId", @class = "form-select", autocomplete = "off", name = "EM_Atten_ShiftRuleId" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Flexible Shift Applicable
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EM_Atten_flexibleShiftApplicable, new List<SelectListItem> {
+                                                    new SelectListItem { Text = "No", Value = "false"},
+                                                       new SelectListItem { Text = "Yes", Value = "true"},
+                                                }, new { id = "EM_Atten_flexibleShiftApplicable", @class = "form-select", autocomplete = "off", name = "EM_Atten_flexibleShiftApplicable" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Short hrs Applicable (120 MIN)
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EM_Atten_ShortHRS_Applicable, new List<SelectListItem> {
+                                                new SelectListItem { Text = "Yes", Value = "true"},
+                                                    new SelectListItem { Text = "No", Value = "false"},
+                                                }, new { id = "ddlEM_Atten_ShortHRS_Applicable", @class = "form-select", autocomplete = "off", name = "EM_Atten_ShortHRS_Applicable" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Monthly Roster Applicable
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EM_Atten_MonthlyRosterApplicable, new List<SelectListItem> {
+                                                    new SelectListItem { Text = "No", Value = "false"},
+                                                     new SelectListItem { Text = "Yes", Value = "true"},
+                                                }, new { id = "EM_Atten_MonthlyRosterApplicable", @class = "form-select", autocomplete = "off", name = "EM_Atten_MonthlyRosterApplicable" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+
+                                    </div>
+
+                                </div>
+                                @*<div class="row mb-10px">
+                                        <div class="col-md-12">
+                                            <div class="card-row-title">
+                                                Short Leave
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-10px">
+                                                <label class="form-label col-form-label col-md-12">
+                                                    Short Leave Applicable
+
+                                                </label>
+                                                <div class="col-md-12">
+                                                    @Html.DropDownListFor(model => model.EM_Atten_ShortLeaveApplicable, new List<SelectListItem> {
+                                                        new SelectListItem { Text = "Yes", Value = "True"},
+                                                        new SelectListItem { Text = "No", Value = "False"},
+                                                    }, new { id = "ddlEM_Atten_ShortLeaveApplicable", @class = "form-select", autocomplete = "off", name = "EM_Atten_ShortLeaveApplicable" })
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-10px">
+                                                <label class="form-label col-form-label col-md-12">
+                                                    Short Leave Setting
+
+                                                </label>
+                                                <div class="col-md-12">
+                                                    @Html.DropDownListFor(model => model.EM_Atten_ShortLeaveSettingId, new SelectList(ViewBag.GetShortLeaveName, "Id", "Name"), "--Select--", new { id = "ddlEM_Atten_ShortLeaveSettingId", @class = "form-select", autocomplete = "off", name = "EM_Atten_ShortLeaveSettingId" })
+                                                    @Html.ValidationMessageFor(model => model.EM_Atten_ShortLeaveSettingId, "", new { @class = "help-block", @id = "ErrorEM_Atten_ShortLeaveSettingId", @style = "color:red" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>*@
+
+                                <div class="row mb-10px">
+                                    <div class="col-md-12">
+                                        <div class="card-row-title">
+                                            Punch Missing
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Punch Missing Applicable
+
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EM_Atten_PunchMissingApplicable, new List<SelectListItem> {
+                                                    new SelectListItem { Text = "Yes", Value = "True"},
+                                                    new SelectListItem { Text = "No", Value = "False"},
+                                                }, new { id = "ddlEM_Atten_PunchMissingApplicable", @class = "form-select", autocomplete = "off", name = "EM_Atten_PunchMissingApplicable" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Punch Missing Setting
+
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EM_Atten_Atten_PunchMissingSettingId, new SelectList(ViewBag.GetPunchMissingName, "Id", "Name"), "--Select--", new { id = "ddlEM_Atten_Atten_PunchMissingSettingId", @class = "form-select", autocomplete = "off", name = "EM_Atten_Atten_PunchMissingSettingId" })
+                                                @Html.ValidationMessageFor(model => model.EM_Atten_Atten_PunchMissingSettingId, "", new { @class = "help-block", @id = "ErrorEM_Atten_Atten_PunchMissingSettingId", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="row mb-10px">
+                                    <div class="col-md-12">
+                                        <div class="card-row-title">
+                                            Personal Gatepass
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Personal Gatepass Applicable
+
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EM_Atten_PersonalGatepassApplicable, new List<SelectListItem> {
+                                                    new SelectListItem { Text = "Yes", Value = "True"},
+                                                    new SelectListItem { Text = "No", Value = "False"},
+                                                }, new { id = "ddlEM_Atten_PersonalGatepassApplicable", @class = "form-select", autocomplete = "off", name = "EM_Atten_PersonalGatepassApplicable" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Personal Gatepass Setting
+
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EM_Atten_Atten_PersonalGatepassSettingId, new SelectList(ViewBag.GetPersonalGatepassName, "Id", "Name"), "--Select--", new { id = "ddlEM_Atten_Atten_PersonalGatepassSettingId", @class = "form-select", autocomplete = "off", name = "EM_Atten_Atten_PersonalGatepassSettingId" })
+                                                @Html.ValidationMessageFor(model => model.EM_Atten_Atten_PersonalGatepassSettingId, "", new { @class = "help-block", @id = "ErrorEM_Atten_Atten_PersonalGatepassSettingId", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-10px">
+                                    <div class="col-md-12">
+                                        <div class="card-row-title">
+                                            Leave Group
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Leave Group Setting
+
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EM_Atten_LeaveGroupId, new SelectList(ViewBag.GetLeaveGroupName, "Id", "Name"), "--Select--", new { id = "ddlEM_Atten_LeaveGroupId", @class = "form-select", autocomplete = "off", name = "EM_Atten_LeaveGroupId" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-10px">
+                                    <div class="col-md-12">
+                                        <div class="card-row-title">
+                                            OutDoor Setup
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                OutDoor Applicable
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EM_Atten_OutDoorCompanyApplicable, new List<SelectListItem> {
+                                                    new SelectListItem { Text = "Yes", Value = "True"},
+                                                    new SelectListItem { Text = "No", Value = "False"},
+                                                }, new { id = "ddlEM_Atten_OutDoorApplicable", @class = "form-select", autocomplete = "off", name = "EM_Atten_OutDoorApplicable" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                OutDoor Setting
+
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EM_Atten_Atten_OutDoorCompanySettingId, new SelectList(ViewBag.GetOutdoorSettingName, "Id", "Name"), "--Select--", new { id = "ddlEM_Atten_OutDoorSettingId", @class = "form-select", autocomplete = "off", name = "EM_Atten_OutDoorSettingId" })
+                                                @Html.ValidationMessageFor(model => model.EM_Atten_Atten_OutDoorCompanySettingId, "", new { @class = "help-block", @id = "ErrorEM_Atten_OutDoorSettingId", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @*<div class="row mb-10px">
+                                        <div class="col-md-12">
+                                            <div class="card-row-title">
+                                                Payroll Setup
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-10px">
+                                                <label class="form-label col-form-label col-md-12">
+                                                   Payable Type
+                                                </label>
+                                                <div class="col-md-12">
+                                                    @Html.DropDownListFor(model => model.EM_Atten_DailyMonthly, new List<SelectListItem> {
+                                                        new SelectListItem { Text = "Monthly", Value = "Monthly"},
+                                                        new SelectListItem { Text = "Daily", Value = "Daily"},
+                                                    }, new { id = "ddlEM_Atten_DailyMonthly", @class = "form-select", autocomplete = "off", name = "EM_Atten_DailyMonthly" })
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>*@
+
+                                <div class="row mb-10px">
+                                    <div class="col-md-12">
+                                        <div class="card-row-title">
+                                            Other Setup
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Salary Full Pay
+
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EM_Atten_IsSalaryFullPay, new List<SelectListItem> {
+                                               new SelectListItem { Text = "No", Value = "False"},
+                                                    new SelectListItem { Text = "Yes", Value = "True"},
+
+                                                }, new { id = "ddlEM_Atten_IsSalaryFullPay", @class = "form-select", name = "EM_Atten_IsSalaryFullPay" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Atten. Regula.
+                                                Required
+
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EM_Atten_Regularization_Required, new List<SelectListItem> {
+                                                    new SelectListItem { Text = "Yes", Value = "True"},
+                                                    new SelectListItem { Text = "No", Value = "False"},
+                                                }, new { id = "ddlEM_Atten_Regularization_Required", @class = "form-select", autocomplete = "off", name = "EM_Atten_DefaultAttenShow" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="col-form-label"> </label>
+                                            <div class="col-md-8">
+                                                @Html.CheckBoxFor(model => model.EM_Atten_SinglePunch_Present)
+                                                &nbsp; <label class="form-check-label form-label">
+                                                    Is Single Punch Present
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6" hidden>
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Default
+                                                Attendance Show
+
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EM_Atten_DefaultAttenShow, new List<SelectListItem> {
+                                                 new SelectListItem { Text = "No", Value = "False"},
+                                               new SelectListItem { Text = "Yes", Value = "True"},
+
+                                                }, new { id = "ddlEM_Atten_DefaultAttenShow", @class = "form-select", autocomplete = "off", name = "EM_Atten_DefaultAttenShow" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row mb-10px">
+                                    <div class="col-md-12">
+                                        <div class="card-row-title">
+                                            Location Mapping
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Location Group 
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EM_Atten_LocationRegistrationMappingIMasterId, new SelectList(ViewBag.GetLocationGroup, "Id", "Name"), "--Select--", new { id = "ddlEM_Atten_LocationRegistrationMappingIMasterId", @class = "form-select", autocomplete = "off", name = "EM_Atten_LocationRegistrationMappingIMasterId" })
+                                                @Html.ValidationMessageFor(model => model.EM_Atten_LocationRegistrationMappingIMasterId, "", new { @class = "help-block", @id = "ErrorEM_Atten_Atten_PersonalGatepassSettingId", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <div class="col-md-12 d-flex justify-content-between align-items-center">
+                                                <label class="form-label col-form-label">
+                                                    Location 
+                                                </label>
+                                                <div>
+                                                    <input type="checkbox" id="selectAllLocations" />
+                                                    <label for="selectAllLocations"><b>Select All</b></label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <select id="ddlEM_Atten_LocationRegistrationId" name="EM_Atten_LocationRegistrationId" class="form-control" multiple="multiple">
+                                                    @{
+                                                        var selectedLocations = ViewBag.SelectedLocationIds as List<string> ?? new List<string>();
+                                                    }
+                                                    @foreach (var Location in ViewBag.LocationList)
+                                                    {
+                                                        var selected = selectedLocations.Contains(Location.Id.ToString()) ? "selected" : "";
+                                                        <option value="@Location.Id" @selected>@Location.Name</option>
+                                                    }
+                                                </select>
+                                                <span class="help-block" id="ErrorLocationID" style="color:red"></span>
+                                                <input type="hidden" id="SelectedLocations" name="SelectedLocations" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12" hidden>
+                                    <div class="row">
+                                        <label class="form-label col-form-label col-md-12"></label>
+                                        <div class="col-md-8">
+                                            @Html.CheckBoxFor(model => model.EM_Atten_IsLocationRemarkCompulsory)
+                                            &nbsp; <label class="form-check-label form-label">
+                                                Is Location Remark Compulsory
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-10px">
+                                    <div class="col-md-12">
+                                        <div class="card-row-title">
+                                            Late Mark Setup
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Late Mark Applicable
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EM_Atten_LateMarkSettingApplicable, new List<SelectListItem> {
+                                                    new SelectListItem { Text = "No", Value = "False"},
+                                                    new SelectListItem { Text = "Yes", Value = "True"},
+                                                }, new { id = "ddlEM_Atten_LateMarkSettingApplicable", @class = "form-select", autocomplete = "off", name = "EM_Atten_LateMarkSettingApplicable" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Late Mark Setting
+
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.DropDownListFor(model => model.EM_Atten_LateMarkSettingId, new SelectList(ViewBag.GetLateMarkSettingName, "Id", "Name"), "--Select--", new { id = "ddlEM_Atten_LateMarkSettingId", @class = "form-select", autocomplete = "off", name = "EM_Atten_LateMarkSettingId" })
+                                                @Html.ValidationMessageFor(model => model.EM_Atten_LateMarkSettingId, "", new { @class = "help-block", @id = "ErrorEM_Atten_LateMarkSettingId", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                @{
+                                    var isAppApplicable = TempData["GetIsAppApplicable"] != null && Convert.ToBoolean(TempData["GetIsAppApplicable"]);
+                                }
+                                @{
+                                    var isCanteenApplicable = TempData["GetIsCanteenApplicable"] != null && Convert.ToBoolean(TempData["GetIsCanteenApplicable"]);
+                                }
+                                @if (isCanteenApplicable)
+                                {
+                                    <div class="row mb-15px">
+                                        <div class="col-md-12">
+                                            <div class="card-row-title">
+                                                Canteen Applicable
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-15px">
+                                        <div class="col-md-6">
+                                            <div class="row mb-10px">
+                                                <label class="form-label col-form-label col-md-12">
+                                                    Canteen Applicable
+                                                </label>
+                                                <div class="col-md-12">
+                                                    @Html.DropDownListFor(model => model.EM_Atten_CanteenApplicable, new List<SelectListItem> {
+                                                    new SelectListItem { Text = "No", Value = "False"},
+                                                    new SelectListItem { Text = "Yes", Value = "True"},
+                                                }, new { id = "ddlEM_Atten_CanteenApplicable", @class = "form-select", autocomplete = "off", name = "EM_Atten_CanteenApplicable" })
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+
+                                <div class="row mb-20px">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="button" data-bs-toggle="offcanvas"
+                                                                href="#offcanvasExample" id="btnActionList" onclick="EmployeeDetails(this)" class="btn  btnpress ListBtn">
+                                                            <i class="fa-solid fa-list"></i>
+                                                        </button>
+                                                        <button class="btn btn-primary btnpress save btn-sm" id="btnSubmit" type="button">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                        <a href="@Url.Action("Module_Employee_EmployeeList", "Module_Employee_EmployeeList", new { area = "Module" })">
+                                                            <button type="button"
+                                                                    class="btn btn-danger btn-sm" id="btnBack">
+                                                                <i class="fa-solid fa-share-from-square"></i>
+                                                                List
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    @Html.Action("Onboarding_SidebarMenu", "Module_Employee_PersonalInfo")
+</div>
+
+<script>
+
+    $(document).ready(function () {
+        $("#ddlEM_Atten_LocationRegistrationMappingIMasterId").select2();
+        //***********Multiselect Location******************//
+        $('#ddlEM_Atten_LocationRegistrationId').select2({
+            placeholder: "Select Location",
+            width: '100%'
+        });
+
+        // Handle "Select All" checkbox
+        $("#selectAllLocations").click(function () {
+            if (this.checked) {
+                $("#ddlEM_Atten_LocationRegistrationId > option").prop("selected", true).trigger("change");
+            } else {
+                $("#ddlEM_Atten_LocationRegistrationId > option").prop("selected", false).trigger("change");
+            }
+        });
+
+        $("#ddlEM_Atten_LocationRegistrationId").on("change", function () {
+            var total = $("#ddlEM_Atten_LocationRegistrationId option").length;
+            var selected = $("#ddlEM_Atten_LocationRegistrationId").val().length || 0;
+            $("#selectAllLocations").prop("checked", total === selected);
+        });
+
+        $("form").submit(function () { debugger
+            var selectedValues = $("#ddlEM_Atten_LocationRegistrationId").val();
+            $("#SelectedLocations").val(selectedValues ? selectedValues.join(",") : "");
+        });
+
+
+        $("#ddlEM_Atten_LocationRegistrationMappingIMasterId").on("change", function () {
+            debugger;
+            $("#ddlEM_Atten_LocationRegistrationId").find("option").remove();
+            var LocationGroupId = $("#ddlEM_Atten_LocationRegistrationMappingIMasterId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetLocation", "Module_Employee_AttendanceInfo")',
+                data: { LocationGroupId: LocationGroupId},
+                success: function (data) {
+                    debugger;
+                    if (data.Location !=null) {
+                        $.each(data.Location, function(i, p) {
+                            $("#ddlEM_Atten_LocationRegistrationId").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                        });
+                    }
+                    else {
+                    }
+                }
+            })
+        });
+        //***********Multiselect department******************//
+    });
+
+    //use for add regex function
+    jQuery.validator.addMethod(
+  "regex",
+   function(value, element, regexp) {
+       if (regexp.constructor != RegExp)
+           regexp = new RegExp(regexp);
+       else if (regexp.global)
+           regexp.lastIndex = 0;
+       return this.optional(element) || regexp.test(value);
+   },"erreur expression reguliere"
+);
+    $("#SaveAttendanceInformation").validate({
+        rules: {
+
+            EM_Atten_WOFF1: {
+                required: true,
+            },
+            EM_Atten_OT_Applicable: {
+                required: true,
+            },
+            //EM_Atten_CoffApplicable: {
+            //    required: true,
+            //},
+            //EM_Atten_ShortLeaveApplicable: {
+            //    required: true,
+            //},
+            //EM_Atten_PersonalGatepassApplicable: {
+            //    required: true,
+            //},
+            EM_Atten_WOFF2: {
+                required: true,
+            },
+            EM_Atten_ShiftGroupId: {
+                required: true,
+            },
+            EM_Atten_ShiftRuleId: {
+                required: true,
+            },
+
+            EM_Atten_ShortHRS_Applicable: {
+                required: true,
+            },
+            //EM_Atten_IsSalaryFullPay: {
+            //    required: true,
+            //},
+            //EM_Atten_DefaultAttenShow: {
+            //    required: true,
+            //},
+            //EM_Atten_Regularization_Required: {
+            //    required: true,
+            //},
+        },
+        messages: {
+
+            EM_Atten_WOFF1: {
+                required: "I weekly off is required",
+            },
+            EM_Atten_OT_Applicable: {
+                required: "OT aplicable is required",
+            },
+            EM_Atten_ShortHRS_Applicable: {
+                required: "Short hrs applicable is required",
+            },
+            //EM_Atten_ShortLeaveApplicable: {
+            //    required: "Short leave applicable is required",
+            //},
+            //EM_Atten_PersonalGatepassApplicable: {
+            //    required: "Personal gatepass applicable is required",
+            //},
+            EM_Atten_WOFF2: {
+                required: "II weekly off is required",
+            },
+            EM_Atten_ShiftGroupId: {
+                required: "Shift group is required",
+            },
+            EM_Atten_ShiftRuleId: {
+                required: "Shift rule is required",
+            },
+
+            //EM_Atten_LeaveGroupId: {
+            //    required: "Leave group setting address is required",
+            //},
+            //EM_Atten_IsSalaryFullPay: {
+            //    required: "Salary full day is required",
+            //},
+            //EM_Atten_DefaultAttenShow: {
+            //    required: "Default attendance show  is required",
+            //},
+            //EM_Atten_Regularization_Required: {
+            //    required: "Atten. regula. required is required",
+            //},
+        }
+    });
+</script>
+
+
+<script>
+    $("#ddlEM_Atten_CoffApplicable").change(function(){
+        debugger;
+        var CoffApplicable=$("#ddlEM_Atten_CoffApplicable").val();
+        var Atten_OT_Applicable=$("#ddlEM_Atten_OT_Applicable").val();
+
+        if(CoffApplicable=="true")
+        {
+
+            if(Atten_OT_Applicable=="true")
+            {
+                $('#ErrorEM_Atten_CoffApplicable').html("Coff Cannot Applicable if OT Applicable"); $("#ErrorEM_Atten_CoffApplicable").focus();  return false;
+            }
+            else
+            {
+                $("#ddlEM_Atten_CoffSettingId").removeAttr("disabled");
+                $('#ErrorEM_Atten_CoffApplicable').html("");
+            }
+
+        }
+        else
+        {
+            $('#ErrorEM_Atten_CoffApplicable').html("");
+            $("#ddlEM_Atten_CoffSettingId").val("");
+            $("#ddlEM_Atten_CoffSettingId").attr("disabled", "disabled");
+        }
+    });
+
+    $("#ddlEM_Atten_ShortLeaveApplicable").change(function(){
+        debugger;
+        var ShortLeaveApplicable=$("#ddlEM_Atten_ShortLeaveApplicable").val();
+
+        if (ShortLeaveApplicable == "True")
+        {
+            $("#ddlEM_Atten_ShortLeaveSettingId").removeAttr("disabled");
+        }
+        else
+        {
+            $("#ddlEM_Atten_ShortLeaveSettingId").val("");
+            $("#ddlEM_Atten_ShortLeaveSettingId").attr("disabled", "disabled");
+        }
+    });
+
+    $("#ddlEM_Atten_PersonalGatepassApplicable").change(function(){
+        debugger;
+        var PersonalGatepassApplicable=$("#ddlEM_Atten_PersonalGatepassApplicable").val();
+
+        if (PersonalGatepassApplicable == "True")
+        {
+            $("#ddlEM_Atten_Atten_PersonalGatepassSettingId").removeAttr("disabled");
+        }
+        else
+        {
+            $("#ddlEM_Atten_Atten_PersonalGatepassSettingId").val("");
+            $("#ddlEM_Atten_Atten_PersonalGatepassSettingId").attr("disabled", "disabled");
+        }
+    });
+
+    $("#ddlEM_Atten_OT_Applicable").change(function(){
+        debugger;
+        var OT_Applicable=$("#ddlEM_Atten_OT_Applicable").val();
+
+        if (OT_Applicable == "true")
+        {
+
+            $("#ddlEM_Atten_OTMultiplyBy").removeAttr("disabled");
+            $("#EM_Atten_OTMultiplyBy").removeAttr("disabled");
+            $("#ddlEM_Atten_CoffApplicable").val("false");
+            $("#ddlEM_Atten_WOPH_CoffApplicable").val("false");
+            $("#ddlEM_Atten_WOPH_CoffApplicable").removeAttr("disabled");
+            $("#ddlEM_Atten_OTMultiplyBy").val(1);
+            $("#EM_Atten_OTMultiplyBy").val(8.5);
+            $("#ddlEM_Atten_CoffSettingId").attr("disabled", "disabled");
+            $("#ddlEM_Atten_CoffSettingId").val(null);
+        }
+        else
+        {
+            $("#ddlEM_Atten_OTMultiplyBy").val("");
+            $("#EM_Atten_OTMultiplyBy").val("");
+            $("#ddlEM_Atten_OTMultiplyBy").attr("disabled", "disabled");
+            $("#EM_Atten_OTMultiplyBy").attr("disabled", "disabled");
+            $("#ddlEM_Atten_WOPH_CoffApplicable").prop("disabled", true);
+            // document.querySelector('#ddlEM_Atten_WOPH_CoffApplicable').style.backgroundColor = '#e9ecef';
+            //$("#ddlEM_Atten_CoffApplicable").attr("readonly", "readonly");
+            $("#ddlEM_Atten_CoffApplicable").removeAttr("disabled");
+            $("#ddlEM_Atten_CoffApplicable").val("false");
+            $("#ddlEM_Atten_WOPH_CoffApplicable").val("false");
+            $('#ErrorEM_Atten_CoffApplicable').html("");
+
+        }
+    });
+
+    $("#ddlEM_Atten_WOPH_CoffApplicable").change(function(){
+        debugger;
+        var WOPH_CoffApplicable=$("#ddlEM_Atten_WOPH_CoffApplicable").val();
+
+        if (WOPH_CoffApplicable == "true")
+        {
+            $("#ddlEM_Atten_CoffApplicable").val("false");
+            $("#ddlEM_Atten_CoffApplicable").attr("disabled", "disabled");
+            $("#ddlEM_Atten_CoffSettingId").removeAttr("disabled");
+            $('#ErrorEM_Atten_CoffApplicable').html("");
+        }
+        else
+        {
+            $("#ddlEM_Atten_CoffApplicable").removeAttr("disabled");
+            $("#ddlEM_Atten_CoffSettingId").attr("disabled", "disabled");
+            $("#ddlEM_Atten_CoffSettingId").val(null);
+        }
+    });
+
+
+
+    $("#ddlEM_Atten_PunchMissingApplicable").change(function(){
+        debugger;
+        var PunchMissingApplicable=$("#ddlEM_Atten_PunchMissingApplicable").val();
+
+        if (PunchMissingApplicable == "True")
+        {
+            $("#ddlEM_Atten_Atten_PunchMissingSettingId").removeAttr("disabled");
+        }
+        else
+        {
+            $("#ddlEM_Atten_Atten_PunchMissingSettingId").val("");
+            $("#ddlEM_Atten_Atten_PunchMissingSettingId").attr("disabled", "disabled");
+        }
+    });
+
+
+
+    $("#btnSubmit").click(function (e) {
+        debugger;
+        var WOPH_CoffApplicable=$("#ddlEM_Atten_WOPH_CoffApplicable").val();
+        var LateMarkSettingApplicable=$("#ddlEM_Atten_LateMarkSettingApplicable").val();
+
+        var CoffSettingId=$("#ddlEM_Atten_CoffSettingId").val();
+        if(WOPH_CoffApplicable=="true")
+        {
+            if(CoffSettingId=="")
+            {$('#ErrorEM_Atten_CoffSettingId').html("Coff setting is required"); $("#ErrorEM_Atten_CoffSettingId").focus();  return false;
+
+            }
+            else{ $('#ErrorEM_Atten_CoffSettingId').html("");
+            }
+        }
+        else{ $('#ErrorEM_Atten_CoffSettingId').html("");  }
+
+        var OT_Applicable=$("#ddlEM_Atten_OT_Applicable").val();
+        if(OT_Applicable == "true")
+        {
+            var OTMultiplyBy=$("#ddlEM_Atten_OTMultiplyBy").val();
+            if(OTMultiplyBy=="")
+            {$('#ErrorEM_Atten_OTMultiplyBy').html("OT multiply by is required"); $("#ErrorEM_Atten_OTMultiplyBy").focus();  return false;
+
+            }
+            else{ $('#ErrorEM_Atten_OTMultiplyBy').html("");
+            }
+
+            var PerDayShiftHrs=$("#EM_Atten_OTMultiplyBy").val();
+            if(PerDayShiftHrs=="")
+            {$('#ErrorEM_Atten_PerDayShiftHrs').html("Perday shift hrs is required"); $("#ErrorEM_Atten_PerDayShiftHrs").focus();  return false;
+
+            }
+            else{ $('#ErrorEM_Atten_PerDayShiftHrs').html("");
+            }
+        }
+        else
+        {
+            $('#ErrorEM_Atten_OTMultiplyBy').html("");
+            $('#ErrorEM_Atten_PerDayShiftHrs').html("");
+        }
+        var CoffApplicable=$("#ddlEM_Atten_CoffApplicable").val();
+        var Atten_OT_Applicable=$("#ddlEM_Atten_OT_Applicable").val();
+
+        if(CoffApplicable=="true")
+        {
+
+            if(Atten_OT_Applicable=="true")
+            {
+                $('#ErrorEM_Atten_CoffApplicable').html("Coff Cannot Applicable if OT Applicable"); $("#ErrorEM_Atten_CoffApplicable").focus();  return false;
+            }
+            else
+            {
+                $("#ddlEM_Atten_CoffSettingId").removeAttr("disabled");
+                $('#ErrorEM_Atten_CoffApplicable').html("");
+            }
+
+        }
+        else
+        {
+            $('#ErrorEM_Atten_CoffApplicable').html("");
+            $("#ddlEM_Atten_CoffSettingId").val("");
+            $("#ddlEM_Atten_CoffSettingId").attr("disabled", "disabled");
+        }
+
+
+
+
+
+        //var CoffApplicable=$("#ddlEM_Atten_CoffApplicable").val();
+        //if(CoffApplicable == "true")
+        //{
+        //    var CoffSettingId=$("#ddlEM_Atten_CoffSettingId").val();
+        //    if(CoffSettingId=="")
+        //    {$('#ErrorEM_Atten_CoffSettingId').html("Coff setting is required"); $("#ErrorEM_Atten_CoffSettingId").focus();  return false;
+
+        //    }
+        //    else{ $('#ErrorEM_Atten_CoffSettingId').html("");
+        //    }
+        //}
+        //else
+        //{
+        //    $('#ErrorEM_Atten_CoffSettingId').html("");
+        //}
+
+        var ShortLeaveApplicable=$("#ddlEM_Atten_ShortLeaveApplicable").val();
+        if(ShortLeaveApplicable == "True")
+        {
+            var ShortLeaveSettingId=$("#ddlEM_Atten_ShortLeaveSettingId").val();
+            if(ShortLeaveSettingId=="")
+            {$('#ErrorEM_Atten_ShortLeaveSettingId').html("Short leave setting is required"); $("#ErrorEM_Atten_ShortLeaveSettingId").focus();  return false;
+
+            }
+            else{ $('#ErrorEM_Atten_ShortLeaveSettingId').html("");
+            }
+        }
+        else
+        {
+            $('#ErrorEM_Atten_ShortLeaveSettingId').html("");
+        }
+
+        var PersonalGatepassApplicable=$("#ddlEM_Atten_PersonalGatepassApplicable").val();
+        if(PersonalGatepassApplicable == "True")
+        {
+            var PersonalGatepassSettingId=$("#ddlEM_Atten_Atten_PersonalGatepassSettingId").val();
+            if(PersonalGatepassSettingId=="")
+            {$('#ErrorEM_Atten_Atten_PersonalGatepassSettingId').html("Personal gatepass setting is required"); $("#ErrorEM_Atten_Atten_PersonalGatepassSettingId").focus();  return false;
+
+            }
+            else{ $('#ErrorEM_Atten_Atten_PersonalGatepassSettingId').html("");
+            }
+        }
+        else
+        {
+            $('#ErrorEM_Atten_Atten_PersonalGatepassSettingId').html("");
+        }
+
+        var PunchMissingApplicable=$("#ddlEM_Atten_PunchMissingApplicable").val();
+        if(PunchMissingApplicable == "True")
+        {
+            var PersonalGatepassSettingId=$("#ddlEM_Atten_Atten_PunchMissingSettingId").val();
+            if(PersonalGatepassSettingId=="")
+            {$('#ErrorEM_Atten_Atten_PunchMissingSettingId').html("Punch missing setting is required"); $("#ddlEM_Atten_Atten_PunchMissingSettingId").focus();  return false;
+
+            }
+            else{ $('#ErrorEM_Atten_Atten_PunchMissingSettingId').html("");
+            }
+        }
+        else
+        {
+            $('#ErrorEM_Atten_Atten_PunchMissingSettingId').html("");
+        }
+
+
+        var EM_Atten_OutDoorApplicable=$("#ddlEM_Atten_OutDoorApplicable").val();
+        if(EM_Atten_OutDoorApplicable == "True")
+        {
+            var EM_Atten_OutDoorSettingId=$("#ddlEM_Atten_OutDoorSettingId").val();
+            if(EM_Atten_OutDoorSettingId=="")
+            {$('#ErrorEM_Atten_OutDoorSettingId').html("OutDoor setting is required"); $("#ddlEM_Atten_OutDoorSettingId").focus();  return false;
+
+            }
+            else{ $('#ErrorEM_Atten_OutDoorSettingId').html("");
+            }
+        }
+        else
+        {
+            $('#ErrorEM_Atten_OutDoorSettingId').html("");
+        }
+
+        var EM_Atten_LateMarkSettingApplicable=$("#ddlEM_Atten_LateMarkSettingApplicable").val();
+        if(EM_Atten_LateMarkSettingApplicable == "True")
+        {
+            var EM_Atten_LateMarkSettingId=$("#ddlEM_Atten_LateMarkSettingId").val();
+            if(EM_Atten_LateMarkSettingId=="")
+            {$('#ErrorEM_Atten_LateMarkSettingId').html("Late Mark setting is required"); $("#ddlEM_Atten_LateMarkSettingId").focus();  return false;
+
+            }
+            else{ $('#ErrorEM_Atten_LateMarkSettingId').html("");
+            }
+        }
+        else
+        {
+            $('#ErrorEM_Atten_LateMarkSettingId').html("");
+        }
+
+        debugger;
+        var OT_Applicable=$("#ddlEM_Atten_OT_Applicable").val();
+        var CoffApplicable=$("#ddlEM_Atten_CoffApplicable").val();
+        if (OT_Applicable== "true" && CoffApplicable == "true")
+        {
+            $('#ErrorEM_Atten_CoffApplicable').html("Coff and OT Applicable cannot be selected as Yes."); $("#ErrorEM_Atten_CoffApplicable").focus();  return false;
+        }
+
+        $("#SaveAttendanceInformation").submit();
+    })
+
+
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        debugger;
+
+        var TransferOrigin = localStorage.getItem('TransferOrigin');
+        if (TransferOrigin!="")
+        {
+            $("#btnActionList").hide();
+        }
+        debugger;
+        $("#ddlEM_Atten_ShiftGroupId").select2();
+        $("#ddlEM_Atten_LeaveGroupId").select2();
+        $("#ddlEM_Atten_OTMultiplyBy").attr("disabled", "disabled");
+        $("#EM_Atten_OTMultiplyBy").attr("disabled", "disabled");
+
+        var GetEmployeeAttendance = @Html.Raw(Json.Encode(ViewBag.GetAttendance));
+        if (GetEmployeeAttendance!=null)
+        {
+            var Atten_WOPH_CoffApplicable=GetEmployeeAttendance.EM_Atten_WOPH_CoffApplicable;
+            var Atten_CoffApplicable=GetEmployeeAttendance.EM_Atten_CoffApplicable;
+            var Atten_OT_Applicable=GetEmployeeAttendance.EM_Atten_OT_Applicable;
+            if(Atten_WOPH_CoffApplicable==true)
+            {
+                $("#ddlEM_Atten_CoffApplicable").attr("disabled", "disabled");
+                $("#ddlEM_Atten_CoffSettingId").removeAttr("disabled");
+            }
+            else if(Atten_CoffApplicable==true){
+
+                $("#ddlEM_Atten_CoffApplicable").removeAttr("disabled");
+                $("#ddlEM_Atten_CoffSettingId").removeAttr("disabled", "disabled");
+            }
+            else{
+                $("#ddlEM_Atten_CoffApplicable").removeAttr("disabled");
+                $("#ddlEM_Atten_CoffSettingId").attr("disabled", "disabled");
+            }
+            if(Atten_OT_Applicable==false)
+            {
+                $("#ddlEM_Atten_WOPH_CoffApplicable").attr("disabled", "disabled");
+            }
+            else{
+                $("#ddlEM_Atten_WOPH_CoffApplicable").removeAttr("disabled");
+            }
+
+            var Atten_PersonalGatepassSettingId=GetEmployeeAttendance.EM_Atten_PersonalGatepassApplicable;
+            if (Atten_PersonalGatepassSettingId == true)
+            {
+                $("#ddlEM_Atten_Atten_PersonalGatepassSettingId").removeAttr("disabled");
+            }
+            else
+            {
+                $("#ddlEM_Atten_Atten_PersonalGatepassSettingId").attr("disabled", "disabled");
+            }
+
+            var Atten_ShortLeaveSettingId=GetEmployeeAttendance.EM_Atten_ShortLeaveApplicable;
+            if (Atten_ShortLeaveSettingId == true)
+            {
+                $("#ddlEM_Atten_ShortLeaveSettingId").removeAttr("disabled");
+            }
+            else
+            {
+                $("#ddlEM_Atten_ShortLeaveSettingId").attr("disabled", "disabled");
+            }
+
+            var OT_Applicable=GetEmployeeAttendance.EM_Atten_OT_Applicable;
+            if (OT_Applicable == true)
+            {
+                $("#ddlEM_Atten_OTMultiplyBy").removeAttr("disabled");
+                $("#EM_Atten_OTMultiplyBy").removeAttr("disabled");
+            }
+            else
+            {
+                $("#ddlEM_Atten_OTMultiplyBy").attr("disabled", "disabled");
+                $("#EM_Atten_OTMultiplyBy").attr("disabled", "disabled");
+            }
+
+            var Atten_PunchMissingApplicable=GetEmployeeAttendance.EM_Atten_PunchMissingApplicable;
+            if (Atten_PunchMissingApplicable == true)
+            {
+                $("#ddlEM_Atten_Atten_PunchMissingSettingId").removeAttr("disabled");
+
+            }
+            else
+            {
+                $("#ddlEM_Atten_Atten_PunchMissingSettingId").attr("disabled", "disabled");
+
+            }
+        }
+
+
+
+        //$("#chkEM_Atten_IsOTCOFFApplicable").change(function () {
+        //    debugger;
+        //    alert("Goddd");
+        //    if ($(this).is(':checked')) {
+        //        alert("checked");
+        //        var OT_Applicable=$("#ddlEM_Atten_OT_Applicable").val();
+        //        if(OT_Applicable=="false")
+        //        {$('#ErrorEM_Atten_OT_Applicable').html("OT Applicable should be Yes"); $("#ErrorEM_Atten_OT_Applicable").focus();  return false;
+        //        }
+        //        //$('#AllCheckBox').prop('checked', true);
+        //    } else {
+        //        alert("unchecked");
+        //        $('#AllCheckBox').prop('checked', false);
+        //    }
+        //});
+
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message && Icon) {
+            Swal.fire({
+                icon: Icon,
+                text: Message,
+                allowOutsideClick: false // Disable outside clicks
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var TransferOrigin = localStorage.getItem('TransferOrigin');
+                    if (TransferOrigin=="Trans_BU")
+                    {
+                        window.location.href = '@Url.Action("Module_Employee_StatutoryInfo", "Module_Employee_StatutoryInfo", new { area= "Module" })';
+                    }
+                    else{
+                        window.location.href = '@Url.Action("Module_Employee_AttendanceInfo", "Module_Employee_AttendanceInfo", new { area= "Module" })';
+                    }
+                }
+            });
+        }
+
+        $("#formReset").click(function () {
+            $("#SaveAttendanceInformation")[0].reset()
+        });
+
+
+
+        var IsAdmin = @Html.Raw(Json.Encode(Session["IsAdmin"]));
+        //alert(IsAdmin);
+        if (IsAdmin==false || IsAdmin==null )
+        {
+            $("#ddlEM_Atten_IsSalaryFullPay").prop("disabled", true);
+            $("#ddlEM_Atten_Regularization_Required").prop("disabled", true);
+            $("#ddlEM_Atten_DefaultAttenShow").prop("disabled", true);
+            $("#EM_Atten_SinglePunch_Present").prop("disabled", true);
+        }
+        else{
+            $("#ddlEM_Atten_IsSalaryFullPay").prop("disabled", false);
+            $("#ddlEM_Atten_Regularization_Required").prop("disabled", false);
+            $("#ddlEM_Atten_DefaultAttenShow").prop("disabled", false);
+            $("#EM_Atten_SinglePunch_Present").prop("disabled", false);
+        }
+
+    });// Ready Function End
+
+
+    function numbervalidate(key) {
+        var presskeys = (key.which) ? key.which : key.presskeys;
+        if (!(presskeys == 8 || presskeys == 46) && (presskeys < 48 || presskeys > 57)) {
+            return false;
+        }
+    }
+</script>
+

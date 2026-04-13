@@ -1,0 +1,408 @@
+﻿@model KompassHR.Areas.Setting.Models.Setting_Statutory.Payroll_ESICExemptedAllowances_Master
+@{
+    ViewBag.Title = "Setting_Statutory_ESICExemptedAllowances";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+
+<style>
+    .width-45 {
+        width: 45px !important;
+    }
+
+    .table {
+        --bs-table-striped-bg: rgba(0, 0, 255, 0.02);
+    }
+
+    .text-nowrap {
+        font-size: 12px;
+    }
+
+    tbody tr td {
+        font-size: 12px;
+        padding: 4px !important;
+    }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .lbl {
+        border: none;
+        outline: none;
+        text-align: center;
+    }
+
+    /*.table td:nth-child(1) {
+        display: none;
+    }
+
+    .table td:nth-child(2) {
+        display: none;
+    }
+
+    .table td:nth-child(4) {
+        display: none;
+    }*/
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    th:nth-child(1), td:nth-child(1) {
+        width: 80px; /* Set the width for the first column */
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                ESIC Exempted Allowances
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("ESS_AdminDashboard_Dashboard", "ESS_AdminDashboard_Dashboard", new { id = 32, ScreenId = 121, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Setting_Statutory_Menu", "Setting_Statutory_Menu", new { id =15 ,ScreenId =93, area = "Setting" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Settings">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                 <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> ESIC Exempted Allowances <Span>-  @ViewBag.AddUpdateTitle</Span></h4>
+                  
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Define ESIC Exempted Allowances here!
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "Setting_Statutory_ESICExemptedAllowances", new { area = "Setting" })' id="SaveStatutoryESICExemptedAllowances" method="post">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Company Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-10">
+                                                @Html.DropDownListFor(model => model.CmpID, new SelectList(ViewBag.GetCompanyname, "Id", "Name"), "--Select--", new { id = "ddlCmpID", @class = "form-select", autocomplete = "off", name = "CmpID", })
+                                                @Html.ValidationMessageFor(model => model.CmpID, "", new { @class = "help-block", id = "ErrorCmpID", @style = "color:red" })
+                                                @Html.HiddenFor(model => model.ESICExemptedallowancesMasterId, new { @class = "form-control", id = "ESICExemptedallowancesMasterId" })
+                                                @Html.HiddenFor(model => model.ESICExemptedallowancesMasterId_Encrypted, new { @class = "form-control", id = "ESICExemptedallowancesMasterId_Encrypted" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <div class="panel-body">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <!-- BEGIN table-responsive -->
+                                        <div class="table-scroll">
+                                            <div class="table-wrap">
+                                                <table class="table table-bordered align-middle" id="tblCTCHead"
+                                                       style="width: 100%;">
+                                                    <thead class="text-center" style="background-color: rgba(233, 236, 239, 1) !important;">
+                                                        <tr>
+                                                            <th class="text-nowrap">Select</th>
+                                                            <th class="text-nowrap">Heads</th>
+                                                            <th hidden class="text-nowrap">ESICExemptedallowancesName</th>
+                                                            <th hidden class="text-nowrap">TempTableESICExemptedallowancesName</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="tblCTCBody">
+                                                        @foreach (var d in ViewBag.GetCTCHead)
+                                                        {
+                                                            <tr>
+                                                                <td class="text-center">
+                                                                    @*<input type="checkbox" id="txtCTCHeadId" class="chk chkCTCHeadId" />*@
+                                                                
+                                                                    @{
+                                                                        var check = d.IsActive ? "checked" : "";
+                                                                    }
+                                                                    <input type="checkbox" id="txtCTCHeadId" @check style="cursor:pointer" />
+                                                                
+                                                                </td>
+                                                              
+                                                                <td>@d.Heads</td>
+                                                                <td hidden>@d.ESICExemptedallowancesName</td>
+                                                                <td hidden>@d.TempTableESICExemptedallowancesName</td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="LastShortLeaveBx">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="BtnBx">
+                                                <div>
+                                                    <button type="button" id="btnSubmit"
+                                                            class="btn btn-primary btn-sm">
+                                                        <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                    </button>
+                                                    <a href="@Url.Action("GetList", "Setting_Statutory_ESICExemptedAllowances", new { area = "Setting" })">
+                                                        <button type="button" class="btn btn-danger btn-sm" id="btnGetStatutoryESICCodeList">
+                                                            <i class="fa-solid fa-share-from-square"></i> List
+                                                        </button>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END panel -->
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        debugger;
+        $("#ddlCmpID").select2();
+        $("#ddlESICCodeBranchId").select2();
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+
+                        return false
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+        $("#ddlCmpID").on("change", function () {
+            var CmpId =encodeURIComponent($("#ddlCmpID").val());
+            var url = '@Url.Action("Setting_Statutory_ESICExemptedAllowances", "Setting_Statutory_ESICExemptedAllowances")?CmpId=' + CmpId;
+            window.location.href = url;
+        });
+        $('#tblCTCHead').DataTable({
+            scrollY: 300,
+            scrollCollapse: true,
+            paging: false,
+            scrollX: true,
+            searching: true, // Enable searching
+            stripeClasses: [] // Disable alternating row colors
+        });
+
+        @*var GetCTCHead = @Html.Raw(Json.Encode(ViewBag.GetCTCHead));
+        debugger;
+        if (GetCTCHead != "") {
+            var table = document.getElementById("tblCTCBody");
+            var rows = table.getElementsByTagName("tr"); // Get all rows of the table body
+            for (var i = 0; i < rows.length; i++) {
+                var TableDepartmentId = rows[i].cells[1].innerText.trim(); // Use innerText and trim for consistent comparison
+                var UpdatedepartmentId = GetCTCHead[i][4].Value.trim(); // Access correct property
+                var CheckboxValue = GetCTCHead[i][5].Value; // Access correct property
+
+                //if (TableDepartmentId === UpdatedepartmentId && CheckboxValue === true) {
+                if (TableDepartmentId.trim() === UpdatedepartmentId.trim() && CheckboxValue === true)
+                    {
+                    // Ensure this is a valid checkbox
+                    var checkbox = rows[i].querySelector('.chk');
+                    if (checkbox) {
+                        checkbox.checked = true;
+                    }
+                }
+            }
+        }*@
+
+    });//Ready Function End
+</script>
+
+<script>
+    $("#btnSubmit").click(function () {
+        debugger;
+        var CmpID = $("#ddlCmpID").val();
+        if(CmpID=="")
+        {
+            $("#ErrorCmpID").html("Select Company name");return false;
+        }else{$("#ErrorCmpID").html("");}
+        var Task = new Array();
+        $(':checkbox:checked').each(function (i) {
+            debugger;
+            var row = $(this).closest('tr'); // Find the closest <tr> for the checkbox
+            var data1 = {};
+
+            // Extract values from the hidden <td> elements in the row
+            data1.ESICExemptedallowancesName = row.find('td:eq(2)').text().trim();
+            data1.TempTableESICExemptedallowancesName = row.find('td:eq(3)').text().trim();
+            Task.push(data1);
+        });
+        debugger;
+        if (Task == "") {
+            debugger;
+            Swal.fire({
+                icon: "error",
+                text: "Select atleast one head",
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup()
+                    popup.classList.remove('swal2-show')
+                    return false;
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                    })
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                    }, 500)
+                    window.location.reload();
+                    return false
+                }
+            });
+            return false;
+        }
+        $(".Userloaderbg").css("display", "flex");
+        var CmpID = $("#ddlCmpID").val();
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("SaveUpdate", "Setting_Statutory_ESICExemptedAllowances")',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify({CmpID: CmpID,Task: Task  }),
+            success: function (response) {
+                debugger;
+                //   $(".Userloaderbg").css("display", "none");
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (Message1 != null) {
+                    Swal.fire({
+                        icon: Icon1,
+                        text: Message1,
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup()
+                            popup.classList.remove('swal2-show')
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake')
+                            })
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake')
+                            }, 500)
+                            return false
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+
+                            window.location.href = '@Url.Action("Setting_Statutory_ESICExemptedAllowances", "Setting_Statutory_ESICExemptedAllowances")';
+                        } else if (
+                            /* Read more about handling dismissals below */
+                            result.dismiss === Swal.DismissReason.cancel
+                        ) {
+
+                        }
+                    })
+                }
+            }
+        });
+
+        @*$.ajax({
+            url: "@Url.Action("IsESICExemptedExists", "Setting_Statutory_ESICExemptedAllowances")",
+            method:"get",
+            data:{CmpID:CmpID,ESICExemptedallowancesMasterId_Encrypted:ESICExemptedallowancesMasterId_Encrypted},
+            success:function(response){
+                debugger;
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon=="error") {
+                    $(".Userloaderbg").css("display", "none");
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                        }
+                    }
+                }
+                else{
+                    var Task = new Array();
+                    $(':checkbox:checked').each(function (i) {
+                        debugger;
+                        var row = $(this).closest('tr'); // Find the closest <tr> for the checkbox
+                        var data1 = {};
+
+                        // Extract values from the hidden <td> elements in the row
+                        data1.ESICExemptedallowancesName = row.find('td:eq(2)').text().trim();
+                        data1.TempTableESICExemptedallowancesName = row.find('td:eq(3)').text().trim();
+                        Task.push(data1);
+                    });
+                   
+                }
+            }
+        });*@
+    });
+</script>

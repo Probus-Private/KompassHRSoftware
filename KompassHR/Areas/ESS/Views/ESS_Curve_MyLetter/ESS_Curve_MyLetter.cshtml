@@ -1,0 +1,288 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_HRSpace.HRSpace_LetterDetails
+@{
+    ViewBag.Title = "ESS_Curve_MyLetter";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+
+<link href="~/assets/plugins/summernote/dist/summernote-lite.css" rel="stylesheet" />
+<script src="~/assets/plugins/summernote/dist/summernote-lite.min.js"></script>
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+
+
+<style>
+    /* Common styling */
+    .letter-box {
+        border: 2px solid #ccc;
+        background: #fff;
+        padding: 50px 40px;
+        border-radius: 12px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.08);
+        font-family: 'Georgia', serif;
+        font-size: 16px;
+        line-height: 1.8;
+        color: #333;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    .formBx {
+        border: 1px solid #ced4da;
+        padding: 0.5rem 0.5rem;
+        margin-bottom: 15px;
+        padding-top: 15px;
+    }
+
+    h6 {
+        margin-top: -20px;
+        padding: 0 10px;
+    }
+
+    mark {
+        background-color: #fff;
+        font-size: 15px;
+        padding: 0 5px;
+    }
+
+    .table {
+        --bs-table-striped-bg: rgba(0, 0, 255, 0.02);
+    }
+
+    .text-nowrap {
+        font-size: 12px;
+    }
+
+    tbody tr td {
+        font-size: 12px;
+        padding: 4px !important;
+    }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Responsive adjustments */
+    @@media (max-width: 768px) {
+        .letter-box {
+            padding: 30px 20px;
+        }
+
+        .letter-box h2 {
+            font-size: 20px;
+        }
+
+        .letter-box p {
+            font-size: 15px;
+        }
+    }
+
+    /* Print-only rules */
+    @@media print {
+        body * {
+            visibility: hidden !important;
+        }
+
+        .letter-box, .letter-box * {
+            visibility: visible !important;
+        }
+
+        .letter-box {
+            position: absolute !important;
+            left: 0;
+            top: 0;
+            width: 100% !important;
+            padding: 50px 40px !important;
+            box-shadow: none !important;
+            border: 2px solid #ccc !important;
+            background: #fff !important;
+        }
+
+        .btn, button, nav, header, .breadcrumb, .row:first-child {
+            display: none !important;
+        }
+    }
+</style>
+
+
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12 d-flex justify-content-between align-items-center">
+            <h1 style="font-size: 18px; font-family: Roboto, sans-serif; transform: translateY(4px); margin: 0;">
+                Letters
+            </h1>
+            <ol class="breadcrumb" style="margin: 0; padding: 0; display: flex; list-style: none;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("ESS_AdminDashboard_Dashboard", "ESS_AdminDashboard_Dashboard", new { id = 32, ScreenId = 121, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Home.png" alt="Home" style="height: 24px;">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_Curve_MyLetter", "ESS_Curve_MyLetter", new { id = 20, ScreenId =678, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" alt="Back" style="height: 24px;">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12 text-end mb-2">
+            <!-- Confirm (Green) -->
+            <button type="button" onclick="confirm()" class="btn btn-info me-2">
+                <i class="fa fa-check-circle"></i> Confirm 
+            </button>
+
+            <!-- Print (Blue) -->
+            <button type="button" onclick="window.print()" class="btn btn-primary me-2">
+                <i class="fa fa-print"></i> Print
+            </button>
+
+            <!-- Download (Green) -->
+            <button type="button" class="btn btn-success" onclick="downloadPDF()">
+                <i class="fa fa-download"></i> Download
+            </button>
+
+        </div>
+    </div>
+    
+                    <div class="row justify-content-center">
+                        <div class="col-lg-10 col-md-11 col-sm-12">
+                            <div class="letter-box" style="
+                                 border 2px solid #ccc;
+                                 background #fff;
+                                 padding 50px 40px;
+                                 border-radius 12px;
+                                 box-shadow 0 0 20px rgba(0, 0, 0, 0.08);
+                                 font-family 'Georgia' , serif;
+                                 font-size 16px;
+                                 line-height 1.8;
+                                 color #333;
+                                 position relative;
+                                 ">
+
+
+
+                                <!-- Letter Content -->
+                                <div id="SomeDivWithLetter">
+                                    @Html.Raw(ViewBag.Description)
+                                    <textarea name="LetterTemplate" id="LetterTemplate" style="display: none;"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+          
+</div>
+
+
+@*<script>
+    $(".summernote").summernote({
+        placeholder: '',
+        height: "300"
+    });
+</script>*@
+
+
+
+@*<script>
+    var LetterName=@Html.Raw(Json.Encode(ViewBag.LetterName))
+
+    function downloadLetter() {
+        var content = document.getElementById("SomeDivWithLetter").innerHTML;
+
+        // Add basic HTML structure for download
+        var htmlContent = `
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>Letter</title>
+                <style>
+                    body { font-family: Georgia, serif; font-size: 16px; line-height: 1.8; color: #333; padding: 40px; }
+                </style>
+            </head>
+            <body>
+                ${content}
+            </body>
+            </html>
+        `;
+
+        var blob = new Blob([htmlContent], { type: "text/html" });
+        var url = URL.createObjectURL(blob);
+        var link = document.createElement("a");
+        link.href = url;
+        link.download = LetterName + ".pdf";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+</script>*@
+
+
+
+
+
+
+
+
+
+<!-- Include html2pdf.js from CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<script>
+    var LetterName=@Html.Raw(Json.Encode(ViewBag.LetterName));
+    function downloadPDF() {
+        // Select the entire letter content
+        const element = document.querySelector(".letter-box");
+
+        // Dynamic file name (optional)
+        const employee = "EmployeeName"; // Replace or fetch dynamically
+        const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
+        const fileName = `Letter_${employee}_${today}.pdf`;
+
+        // PDF options
+        const options = {
+            margin: 0.5,
+            filename: LetterName,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+        };
+
+        // Convert to PDF and save
+        html2pdf().set(options).from(element).save();
+    }
+
+
+    function confirm(){
+        debugger
+
+        var Letter_DetailId_Encrypeted=@Html.Raw(Json.Encode(ViewBag.Letter_DetailId_Encrypeted));
+        var url = '@Url.Action("LetterConfirmation", "ESS_Curve_MyLetter")' + '?Letter_DetailId_Encrypeted=' + Letter_DetailId_Encrypeted;
+    window.location.href = url;
+    }
+</script>
+

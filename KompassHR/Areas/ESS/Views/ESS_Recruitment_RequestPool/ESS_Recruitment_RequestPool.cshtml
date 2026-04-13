@@ -1,0 +1,449 @@
+﻿
+@{
+    ViewBag.Title = "ESS_Recruitment_RequestPool";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+
+<style>
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Request Pool
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_Recruitment_Menu", "ESS_Recruitment_Menu", new {id = 1, ScreenId=126, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Request Pool - List</h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        This is the list of approved resource requests against which resumes would be scouted and shared by the HR.
+                    </p>
+                </div>
+                <div class="row">
+                    <div class="LastShortLeaveBx">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="BtnBx">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel-body" data-scrollbar="true">
+                    <div class="row">
+                        <div class="col-md-12">
+                            @*<a href="/ESS/ESS_Recruitment_CandidateData/ESS_Recruitment_CandidateData">
+                                    <button type="submit" id="btnManualUpload"
+                                            class="btn btn-primary btn-sm">
+                                        <i class="fa-solid fa-floppy-disk"></i> Manual Upload Candidate
+                                    </button>
+                                </a>   &nbsp;
+
+                                <br />
+                                &nbsp;*@
+                            <!-- BEGIN table-responsive -->
+                            <div class="table-scroll div1">
+                                <div class="table-wrap">
+                                    <table class="table table-bordered table-hover mb-0 text-dark align-middle TablePage" id="data-table-combine"
+                                           style="width: 100%;">
+                                        <thead>
+                                            <tr class="trheading">
+                                                <th class="text-nowrap">View</th>
+                                                <th class="text-nowrap">Assign</th>
+                                                <th class="text-nowrap">Agency</th>
+                                                <th class="text-nowrap">Candidate Upload</th>
+                                                <th class="text-nowrap text-center">Requisition No </th>
+                                                <th class="text-nowrap text-center"> Requisition Date</th>
+                                                <th class="text-nowrap text-center">Requisition Status</th>
+                                                <th class="text-nowrap text-center">Company Name </th>
+                                                <th class="text-nowrap text-center">Business Unit</th>
+                                                <th class="text-nowrap text-center">Department Name </th>
+                                                <th class="text-nowrap text-center">Designation Name</th>
+                                                <th class="text-nowrap text-center">Grade Name</th>
+                                                <th class="text-nowrap text-center">Priority  </th>
+                                                <th class="text-nowrap text-center"> Confidential</th>
+                                                <th class="text-nowrap text-center">Total Position</th>
+                                                <th class="text-nowrap text-center">Position Type</th>
+                                                <th class="text-nowrap text-center">Work Type</th>
+                                                <th class="text-nowrap text-center">Closing Date</th>
+                                                <th class="text-nowrap text-center">Resource Request Assign By</th>
+                                                <th class="text-nowrap text-center">Resource Request Raised By</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var d in ViewBag.RequestPool)
+                                            {
+                                                <tr>
+                                                    <td class="text-center">
+                                                        <button type="button" id="btnDelete" onclick="UploadCandidate('@d.ResourceId','@d.ResourceId_Encrypted')"
+                                                                class="btn btn-sm btn-icon btn-warning">
+                                                            <i class="fa fa-eye"></i>
+                                                        </button>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <button type="button" id="btnSendNotification" onclick="AssignForShortlist('@d.ResourceId','@d.ResourceId_Encrypted')"
+                                                                class="btn  btnpress ListBtn" style="background-color:#fff;">
+                                                            <i class="fa-solid fa-paper-plane text-dark"></i>
+                                                        </button>
+                                                    </td>
+                                                    @*<td class="text-center">
+                                                            <button type="button" id="btnSendNotification"
+                                                                    class="btn  btnpress ListBtn" style="background-color:#fff;">
+                                                                <i class="fa-solid fa-paper-plane text-dark"></i>
+                                                            </button>
+                                                        </td>*@
+                                                    <td class="text-center">
+                                                        <a id="btnshow" onclick="GetInvoice('@d.ResourceId','@d.ResourceId_Encrypted')" style="cursor:pointer;">
+                                                            <i class="fas fa-file-invoice fa-xl" style="color: #4CAF50;"></i>
+                                                            @*<i class="fa-solid fa-solid fa-eye fa-lg text-danger"></i>*@
+                                                        </a>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <a href="@Url.Action("UploadedCandidateDetails", "ESS_Recruitment_RequestPool",
+        new { ResourceId = d.ResourceId, ResourceId_Encrypted = d.ResourceId_Encrypted })"
+                                                           style="font-weight:bold; color:#007bff; cursor:pointer;">
+                                                            @d.CandidateCount
+                                                        </a>
+                                                    </td>
+                                                    <td class="text-nowrap">@d.DocNo</td>
+                                                    <td class="text-nowrap">@d.DocDate</td>
+                                                    <td class="text-nowrap">@d.ResourceRequestStatus</td>
+                                                    <td class="text-nowrap">@d.CompanyName</td>
+                                                    <td class="text-nowrap">@d.BranchName</td>
+                                                    <td class="text-nowrap">@d.DepartmentName</td>
+                                                    <td class="text-nowrap">@d.DesignationName</td>
+                                                    <td class="text-nowrap">@d.GradeName</td>
+                                                    <td class="text-nowrap">@d.Priority </td>
+                                                    <td class="text-nowrap">@d.Confidential</td>
+                                                    <td class="text-nowrap">@d.TotalPositions</td>
+                                                    <td class="text-nowrap">@d.PositionType</td>
+                                                    <td class="text-nowrap">@d.WorkType</td>
+                                                    <td class="text-nowrap">@d.ClosingDate</td>
+                                                    <td class="text-nowrap">@d.RequestAssignBy</td>
+                                                    <td class="text-nowrap">@d.RequestRaisedBy</td>
+
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END panel -->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function UploadCandidate(ResourceId, ResourceId_Encrypted) {
+        debugger
+        var url = '@Url.Action("ViewForRequestPool", "ESS_Recruitment_RequestPool")?ResourceId_Encrypted=' + ResourceId_Encrypted + '&ResourceId=' + ResourceId;
+        window.location.href = url;
+    }
+    function AssignForShortlist(ResourceId, ResourceId_Encrypted) {
+        debugger
+        var url = '@Url.Action("CandidateAssignForShortlist", "ESS_Recruitment_RequestPool")?ResourceId_Encrypted=' + ResourceId_Encrypted + '&ResourceId=' + ResourceId;
+        window.location.href = url;
+    }
+    function GetInvoice(ResourceId, ResourceId_Encrypted) {
+
+        var url = '@Url.Action("GetInvoice", "ESS_Recruitment_RequestPool")?ResourceId_Encrypted=' + ResourceId_Encrypted + '&ResourceId=' + ResourceId;
+        window.location.href = url;
+    }
+</script>
+
+@*<script>
+        function ExportToTable() {
+            debugger;
+            var regex = /^([a-zA-Z0-9\s_\\.\-:])+(.xlsx|.xls)$/;
+            /*Checks whether the file is a valid excel file*/
+            if (regex.test($("#excelfile").val().toLowerCase())) {
+                var xlsxflag = false; /*Flag for checking whether excel is .xls format or .xlsx format*/
+                if ($("#excelfile").val().toLowerCase().indexOf(".xlsx") > 0) {
+                    xlsxflag = true;
+                }
+                /*Checks whether the browser supports HTML5*/
+                if (typeof (FileReader) != "undefined") {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        var data = e.target.result;
+                        /*Converts the excel data in to object*/
+                        if (xlsxflag) {
+                            var workbook = XLSX.read(data, { type: 'binary' });
+                        }
+                        else {
+                            var workbook = XLS.read(data, { type: 'binary' });
+                        }
+                        /*Gets all the sheetnames of excel in to a variable*/
+                        var sheet_name_list = workbook.SheetNames;
+
+                        var cnt = 0; /*This is used for restricting the script to consider only first sheet of excel*/
+                        sheet_name_list.forEach(function (y) { /*Iterate through all sheets*/
+                            /*Convert the cell value to Json*/
+                            if (xlsxflag) {
+                                var exceljson = XLSX.utils.sheet_to_json(workbook.Sheets[y]);
+                            }
+                            else {
+                                var exceljson = XLS.utils.sheet_to_row_object_array(workbook.Sheets[y]);
+                            }
+                            if (exceljson.length > 0 && cnt == 0) {
+                                BindTable(exceljson, '#exceltable');
+                                cnt++;
+                            }
+                        });
+                        $('#exceltable').show();
+                    }
+                    if (xlsxflag) {/*If excel file is .xlsx extension than creates a Array Buffer from excel*/
+                        reader.readAsArrayBuffer($("#excelfile")[0].files[0]);
+                    }
+                    else {
+                        reader.readAsBinaryString($("#excelfile")[0].files[0]);
+                    }
+                }
+                else {
+                    alert("Sorry! Your browser does not support HTML5!");
+                }
+            }
+            else {
+                alert("Please upload a valid Excel file!");
+            }
+        }
+
+
+
+        function BindTable(jsondata, tableid) {/*Function used to convert the JSON array to Html Table*/
+            var columns = BindTableHeader(jsondata, tableid); /*Gets all the column headings of Excel*/
+            for (var i = 0; i < jsondata.length; i++) {
+                var row$ = $('<tr/>');
+                for (var colIndex = 0; colIndex < columns.length; colIndex++) {
+                    var cellValue = jsondata[i][columns[colIndex]];
+                    if (cellValue == null)
+                        cellValue = "";
+                    row$.append($('<td/>').html('<input type="text" class="form-control" value="' + cellValue + '"/>'));
+
+                }
+                $(tableid).append(row$);
+            }
+        }
+        function BindTableHeader(jsondata, tableid) {/*Function used to get all column names from JSON and bind the html table header*/
+            var columnSet = [];
+            var headerTr$ = $('<tr/>');
+            for (var i = 0; i < jsondata.length; i++) {
+                var rowHash = jsondata[i];
+                for (var key in rowHash) {
+                    if (rowHash.hasOwnProperty(key)) {
+                        if ($.inArray(key, columnSet) == -1) {/*Adding each unique column names to a variable array*/
+                            columnSet.push(key);
+                            headerTr$.append($('<th/>').html(key));
+                        }
+                    }
+                }
+            }
+            $(tableid).append(headerTr$);
+            return columnSet;
+        }
+    </script>*@
+
+
+
+
+
+
+@*<!-- #Start Appprove Reject Modal -dialog -->
+    <div class="modal fade" id="BulkUploadCandidateName" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header bg-black text-white">
+                    <h4 class="modal-title">Bulk Upload</h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-icon btn-danger btnClear" data-bs-dismiss="modal"
+                           aria-hidden="true">
+                            <i class="fa fa-xmark"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <!-- BEGIN panel -->
+                    <div class="modal-body-content">
+                        <form action="/ESS/ESS_Recruitment_RequestPool/BulkUploadCandidateList" id="SaveCandidateData" method="post" enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <a href="~/assets/BulkUpload/Candidate_Bulk_Upload.xlsx" type="button" class="btn btn-primary btn-sm">
+                                        <i class="fa-solid fa-download"></i> Download
+                                    </a>
+                                </div>
+                                <div class="col-md-6">
+                                    <input type="file" name="ResumePath" onchange="ResetFile()" class="form-control" id="txtEcxelfilePath" />
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="submit" id="btnOpenExcelFile" class="btn btn-primary btn-sm" onclick="OpenExcelFile()">
+                                    <i class="fa-solid fa-floppy-disk"> </i> Open File
+                                </button>
+                                <button type="button" id="btnCancel" class="btn btn-danger btnpress btnClear" data-bs-dismiss="modal">
+                                    <i class="fa-solid fa-share-from-square"></i> Close
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- #End modal-dialog -->*@
+
+

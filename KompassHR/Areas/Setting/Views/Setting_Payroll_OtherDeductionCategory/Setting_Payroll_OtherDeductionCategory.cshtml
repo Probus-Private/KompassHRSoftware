@@ -1,0 +1,292 @@
+﻿@model KompassHR.Areas.Setting.Models.Setting_Payroll.Payroll_OtherDeduction
+@{
+    ViewBag.Title = "Setting_Payroll_OtherDeductionCategory";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<!-- Required library for validation -->
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+<style>
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+</style>
+
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Other Deduction Category
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("ESS_AdminDashboard_Dashboard", "ESS_AdminDashboard_Dashboard", new { id = 32, ScreenId = 121, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Setting_Payroll_Menu", "Setting_Payroll_Menu", new { id = 6, ScreenId = 287, area = "Setting" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Settings">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                 <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Other Deduction Category - @ViewBag.AddUpdateTitle </h4>
+                   
+                </div>
+
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Add other deduction category here!
+                    </p>
+                </div>
+                <div class="panel-body" data-scrollbar="true">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "Setting_Payroll_OtherDeductionCategory", new { area = "Setting" })' id="SaveDeductionCategory" method="post">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Company Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.CmpId, new SelectList(ViewBag.GetComapnyName, "Id", "Name"), "--Select--", new { id = "ddlCmpId", @class = "form-select", name = "CmpId", autocomplete = "off" })
+                                                @Html.HiddenFor(model => model.OtherDeductionId_Encrypted,new { id= "OtherDeductionId_Encrypted" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                              Variable Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.VariableName, new SelectList(ViewBag.GetVariableName, "Id", "Name"), "--Select--", new { id = "ddlVariableName", @class = "form-select", name = "VariableName", autocomplete = "off" })
+                                                @Html.HiddenFor(model => model.OtherDeductionId_Encrypted, new { id = "OtherDeductionId_Encrypted" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                              Deduction Category
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.DeductionCategory ,new { id = "ddlDeductionCategory", @class = "form-control", name = "DeductionCategory", autocomplete = "off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="button" id="btnSubmit"
+                                                                class="btn btn-primary btn-sm">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                        <a href="@Url.Action("GetList", "Setting_Payroll_OtherDeductionCategory", new { area = "Setting" })">
+                                                            <button type="button" class="btn btn-danger btn-sm" id="btnLocation">
+                                                                <i class="fa-solid fa-share-from-square"></i> List
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#ddlCmpId").select2();
+        $("#ddlVariableName").select2();
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        // return false
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+
+
+        $("#ddlCmpId").on("change", function () {
+            debugger;
+            $("#ddlVariableName").find("option").remove();
+            var CmpId = $("#ddlCmpId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetVariableName", "Setting_Payroll_OtherDeductionCategory")',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    if (data !=null) {
+                        $("#ddlVariableName").append("<option value=0>--Select-- </option>");
+                        $.each(data, function(i, p) {
+                            $("#ddlVariableName").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                        });
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        });
+
+    });//radayFuncation
+</script>
+
+<script>
+    //use for add regex function
+    jQuery.validator.addMethod(
+    "regex",
+     function(value, element, regexp) {
+         if (regexp.constructor != RegExp)
+             regexp = new RegExp(regexp);
+         else if (regexp.global)
+             regexp.lastIndex = 0;
+         return this.optional(element) || regexp.test(value);
+     },"erreur expression reguliere"
+  );
+
+
+    $('#SaveDeductionCategory').validate({
+        rules: {
+            CmpId: {
+                required: true,
+
+            },
+            VariableName: {
+                required: true,
+
+            },
+            DeductionCategory: {
+                required: true,
+            },
+
+        },
+        messages: {
+            CmpId: {
+                required: "Company name is required",
+
+            },
+            VariableName: {
+                required: "Variable name is required",
+
+            },
+            DeductionCategory: {
+                required: "Deduction category is required",
+            },
+        },
+    });
+    var form = $("#SaveDeductionCategory");
+    form.validate();
+    $("#btnSubmit").click(function () {
+        debugger;
+        form.valid();
+        if(form.valid()==false)
+        {
+            return false;
+        }
+        var CmpId=$("#ddlCmpId").val();
+        var VariableName=$("#ddlVariableName").val();
+        var DeductionCategory=$("#ddlDeductionCategory").val();
+        var OtherDeductionId_Encrypted=$("#OtherDeductionId_Encrypted").val();
+        $(".Userloaderbg").css("display", "flex");
+        $.ajax({
+            method:"get",
+            dataType: 'JSON',
+            contentType: "application/json; charset=utf-8",
+            url: '@Url.Action("IsOtherDeductionCategoryExists", "Setting_Payroll_OtherDeductionCategory")',
+            data:{CmpId:CmpId,VariableName:VariableName,DeductionCategory:DeductionCategory,OtherDeductionId_Encrypted:OtherDeductionId_Encrypted},
+            success: function (response) {
+                debugger;
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon=="error") {
+                    $(".Userloaderbg").css("display", "none");
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                        }
+                    }
+                }
+                else{
+                    $("#SaveDeductionCategory").submit();
+                }
+            }
+        })
+
+    });
+</script>

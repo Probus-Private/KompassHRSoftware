@@ -1,0 +1,544 @@
+﻿
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+
+@{
+    var shadowClasses = new[] { "blue-shadow", "yellow-shadow", "green-shadow", "red-shadow" };
+    var rnd = new Random();
+}
+
+
+<style>
+    .blue-shadow {
+        box-shadow: 0px 0px 10px #63b0f7 !important;
+    }
+
+    .yellow-shadow {
+        box-shadow: 0px 0px 10px #f6f763 !important;
+    }
+
+    .green-shadow {
+        box-shadow: 0px 0px 10px #b2fd9d !important;
+    }
+
+    .red-shadow {
+        box-shadow: 0px 0px 10px #fd9d9d !important;
+    }
+
+ 
+</style>
+
+<!-- Start panel -->
+<div class="row">
+    <div class="offcanvas offcanvas-end" id="offcanvasExample" data-bs-backdrop="false"
+         data-bs-scroll=true>
+        <div class="offcanvas-header" style="border-bottom: 1px solid #d3d3d38a;">
+            <h6 class="offcanvas-title text-center" id="EmpName1"
+                style="width: 100%;">
+                <span id="EmpName">@Session["OnboardEmployeeName"]</span>
+            </h6>
+            <button type="button" class="btn-close text-reset"
+                    data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="row">
+                @foreach (var item in ViewBag.GetUserMenuList)
+                {
+                    var shadowClass = shadowClasses[rnd.Next(shadowClasses.Length)];
+
+                    <div class="col-md-4 col-6 d-flex justify-content-center">
+                        <a href="@Url.Action(item.ViewName.ToString(), item.ControllerName.ToString(), new { area = item.AreaName.ToString(), id = item.ModuleID, ScreenId = item.ScreenId })" style="text-decoration:none !important;">
+                            <div class="box2">
+                                <div class="info">
+                                    @*<i class="@item.Icon"></i>*@
+                                    <div class="imgbx @shadowClass">
+                                        <img src="~/assets/MenuImages/@item.Icon" />
+                                    </div>
+
+                                    <div class="d-flex flex-column  justify-center">
+                                        <h7>@item.ScreenDisplayMenuName</h7>
+                                        <span class="box2Checkmark">
+                                            <i class="fa-regular fa-circle-check text-green" id="@($"{item.ScreenSourceMenuName}_Submit")"></i>
+                                            <i class="fa-regular fa-circle-xmark text-red" id="@($"{item.ScreenSourceMenuName}_NotSubmit")"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                }
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        var List = @Html.Raw(Json.Encode(ViewBag.GetStatusCheckList));
+        debugger;
+        if(List.length==0)
+        {
+            $("#Admin_NotSubmit").show();
+            $("#Admin_Submit").hide();
+
+            $("#Personal_NotSubmit").show();
+            $("#Personal_Submit").hide();
+
+            $("#Reporting_NotSubmit").show();
+            $("#Reporting_Submit").hide();
+
+            $("#Attendance_NotSubmit").show();
+            $("#Attendance_Submit").hide();
+
+            $("#CTC_NotSubmit").show();
+            $("#CTC_Submit").hide();
+
+            $("#ESS_NotSubmit").show();
+            $("#ESS_Submit").hide();
+
+            $("#JobDescription_NotSubmit").show();
+            $("#JobDescription_Submit").hide();
+
+            $("#Verfication_NotSubmit").show();
+            $("#Verfication_Submit").hide();
+
+            $("#VMS_NotSubmit").show();
+            $("#VMS_Submit").hide();
+
+            $("#Checklist_NotSubmit").show();
+            $("#Checklist_Submit").hide();
+
+            $("#Policy_NotSubmit").show();
+            $("#Policy_Submit").hide();
+
+            $("#Assets_NotSubmit").show();
+            $("#Assets_Submit").hide();
+
+            $("#Insurance_NotSubmit").show();
+            $("#Insurance_Submit").hide();
+
+            $("#MedicalHistory_NotSubmit").show();
+            $("#MedicalHistory_Submit").hide();
+
+            $("#Address_NotSubmit").show();
+            $("#Address_Submit").hide();
+
+            $("#Bank_NotSubmit").show();
+            $("#Bank_Submit").hide();
+
+            $("#Reference_NotSubmit").show();
+            $("#Reference_Submit").hide();
+
+            $("#Family_NotSubmit").show();
+            $("#Family_Submit").hide();
+
+            $("#Statutory_NotSubmit").show();
+            $("#Statutory_Submit").hide();
+
+            $("#PreEmployeer_NotSubmit").show();
+            $("#PreEmployeer_Submit").hide();
+
+            $("#Qualifications_NotSubmit").show();
+            $("#Qualifications_Submit").hide();
+
+            $("#Skill_NotSubmit").show();
+            $("#Skill_Submit").hide();
+
+            $("#Language_NotSubmit").show();
+            $("#Language_Submit").hide();
+
+            $("#Signature_NotSubmit").show();
+            $("#Signature_Submit").hide();
+
+            $("#Documents_NotSubmit").show();
+            $("#Documents_Submit").hide();
+
+            $("#UploadPhoto_NotSubmit").show();
+            $("#UploadPhoto_Submit").hide();
+
+            $("#Bond_NotSubmit").show();
+            $("#Bond_Submit").hide();
+
+            $("#UploadDocument_NotSubmit").show();
+            $("#UploadDocument_Submit").hide();
+
+            $("#GeneralReporting_NotSubmit").show();
+            $("#GeneralReporting_Submit").hide();
+
+            $("#ChartTypeAssign_NotSubmit").show();
+            $("#ChartTypeAssign_Submit").hide();
+
+            $("#Category_Group_Assign_NotSubmit").show();
+            $("#Category_Group_Assign_Submit").hide();
+
+            $("#Employee_Asset_NotSubmit").show();
+            $("#Employee_Asset_Submit").hide();
+        }
+        else{
+            var ListLength=List[0].length;
+            for (var i = 0; i < ListLength; i++) {
+                var SetUpValue = List[0][i].Value;
+                var SetUpkey = List[0][i].Key;
+                if (SetUpkey=="SetupAdmin") {
+                    if (SetUpValue == true)
+                    {
+                        $("#Admin_Submit").show();
+                        $("#Admin_NotSubmit").hide();
+                    }
+                    else
+                    {
+                        $("#Admin_NotSubmit").show();
+                        $("#Admin_Submit").hide();
+                    }
+                }
+                if (SetUpkey=="SetupPersonal") {
+                    if (SetUpValue == true) {
+                        $("#Personal_Submit").show();
+                        $("#Personal_NotSubmit").hide();
+                    }
+                    else {
+                        $("#Personal_NotSubmit").show();
+                        $("#Personal_Submit").hide();
+                    }
+                }
+                if (SetUpkey=="SetupReporting") {
+                    if (SetUpValue == true) {
+                        $("#Reporting_Submit").show();
+                        $("#Reporting_NotSubmit").hide();
+                    }
+                    else {
+                        $("#Reporting_NotSubmit").show();
+                        $("#Reporting_Submit").hide();
+                    }
+                }
+                if (SetUpkey=="SetupAttendance") {
+                    if (SetUpValue == true) {
+                        $("#Attendance_Submit").show();
+                        $("#Attendance_NotSubmit").hide();
+                    }
+                    else {
+                        $("#Attendance_NotSubmit").show();
+                        $("#Attendance_Submit").hide();
+                    }
+                }
+                if (SetUpkey=="SetupCTC") {
+                    if (SetUpValue == true) {
+                        $("#CTC_Submit").show();
+                        $("#CTC_NotSubmit").hide();
+                    }
+                    else {
+                        $("#CTC_NotSubmit").show();
+                        $("#CTC_Submit").hide();
+                    }
+
+                }
+                if (SetUpkey=="SetupESS") {
+                    if (SetUpValue == true) {
+                        $("#ESS_Submit").show();
+                        $("#ESS_NotSubmit").hide();
+                    }
+                    else {
+                        $("#ESS_NotSubmit").show();
+                        $("#ESS_Submit").hide();
+                    }
+                }
+                if (SetUpkey=="SetupJobdiscription") {
+                    if (SetUpValue == true) {
+                        $("#JobDescription_Submit").show();
+                        $("#JobDescription_NotSubmit").hide();
+                    }
+                    else {
+                        $("#JobDescription_NotSubmit").show();
+                        $("#JobDescription_Submit").hide();
+                    }
+                }
+                if (SetUpkey=="SetupVerification") {
+                    if (SetUpValue == true) {
+                        $("#Verfication_Submit").show();
+                        $("#Verfication_NotSubmit").hide();
+                    }
+                    else {
+                        $("#Verfication_NotSubmit").show();
+                        $("#Verfication_Submit").hide();
+                    }
+                }
+                if (SetUpkey=="SetupVms") {
+                    if (SetUpValue == true) {
+                        $("#VMS_Submit").show();
+                        $("#VMS_NotSubmit").hide();
+                    }
+                    else {
+                        $("#VMS_NotSubmit").show();
+                        $("#VMS_Submit").hide();
+                    }
+                }
+                if (SetUpkey=="SetupChecklist") {
+                    if (SetUpValue == true) {
+                        $("#Checklist_Submit").show();
+                        $("#Checklist_NotSubmit").hide();
+                    }
+                    else {
+                        $("#Checklist_NotSubmit").show();
+                        $("#Checklist_Submit").hide();
+                    }
+                }
+                if (SetUpkey=="SetupPolicy") {
+                    if (SetUpValue == true) {
+                        $("#Policy_Submit").show();
+                        $("#Policy_NotSubmit").hide();
+                    }
+                    else {
+                        $("#Policy_NotSubmit").show();
+                        $("#Policy_Submit").hide();
+                    }
+                }
+                if (SetUpkey=="SetupAssets") {
+                    if (SetUpValue == true) {
+                        $("#Assets_Submit").show();
+                        $("#Assets_NotSubmit").hide();
+                    }
+                    else {
+                        $("#Assets_NotSubmit").show();
+                        $("#Assets_Submit").hide();
+                    }
+                }
+
+                if (SetUpkey=="SetupInsurance") {
+                    if (SetUpValue == true) {
+                        $("#Insurance_Submit").show();
+                        $("#Insurance_NotSubmit").hide();
+                    }
+                    else {
+                        $("#Insurance_NotSubmit").show();
+                        $("#Insurance_Submit").hide();
+                    }
+                }
+                if (SetUpkey=="SetupMedicalHistory") {
+                    if (SetUpValue == true) {
+                        $("#MedicalHistory_Submit").show();
+                        $("#MedicalHistory_NotSubmit").hide();
+                    }
+                    else {
+                        $("#MedicalHistory_NotSubmit").show();
+                        $("#MedicalHistory_Submit").hide();
+                    }
+                }
+                if (SetUpkey=="SetupAddress") {
+                    if (SetUpValue == true) {
+                        $("#Address_Submit").show();
+                        $("#Address_NotSubmit").hide();
+                    }
+                    else {
+                        $("#Address_NotSubmit").show();
+                        $("#Address_Submit").hide();
+                    }
+                }
+
+                if (SetUpkey=="SetupRefernce") {
+                    if (SetUpValue == true) {
+                        $("#Reference_Submit").show();
+                        $("#Reference_NotSubmit").hide();
+                    }
+                    else {
+                        $("#Reference_NotSubmit").show();
+                        $("#Reference_Submit").hide();
+                    }
+                }
+
+                if (SetUpkey=="SetupBank") {
+                    if (SetUpValue == true) {
+                        $("#Bank_Submit").show();
+                        $("#Bank_NotSubmit").hide();
+                    }
+                    else {
+                        $("#Bank_NotSubmit").show();
+                        $("#Bank_Submit").hide();
+                    }
+                }
+                if (SetUpkey=="SetupStatutory") {
+                    if (SetUpValue == true) {
+                        $("#Statutory_Submit").show();
+                        $("#Statutory_NotSubmit").hide();
+                    }
+                    else {
+                        $("#Statutory_NotSubmit").show();
+                        $("#Statutory_Submit").hide();
+                    }
+                }
+                if (SetUpkey=="SetupFamily") {
+                    if (SetUpValue == true) {
+                        $("#Family_Submit").show();
+                        $("#Family_NotSubmit").hide();
+                    }
+                    else {
+                        $("#Family_NotSubmit").show();
+                        $("#Family_Submit").hide();
+                    }
+                }
+
+                if (SetUpkey=="SetupQualification") {
+                    if (SetUpValue == true) {
+                        $("#Qualifications_Submit").show();
+                        $("#Qualifications_NotSubmit").hide();
+                    }
+                    else {
+                        $("#Qualifications_NotSubmit").show();
+                        $("#Qualifications_Submit").hide();
+                    }
+                }
+
+                if (SetUpkey=="SetupPreEmployee") {
+                    if (SetUpValue == true) {
+                        $("#PreEmployeer_Submit").show();
+                        $("#PreEmployeer_NotSubmit").hide();
+                    }
+                    else {
+                        $("#PreEmployeer_NotSubmit").show();
+                        $("#PreEmployeer_Submit").hide();
+                    }
+                }
+                if (SetUpkey=="SetupSkills") {
+                    if (SetUpValue == true) {
+                        $("#Skill_Submit").show();
+                        $("#Skill_NotSubmit").hide();
+                    }
+                    else {
+                        $("#Skill_NotSubmit").show();
+                        $("#Skill_Submit").hide();
+                    }
+                }
+                if (SetUpkey=="SetupLanguage") {
+                    if (SetUpValue == true) {
+                        $("#Language_Submit").show();
+                        $("#Language_NotSubmit").hide();
+                    }
+                    else {
+                        $("#Language_NotSubmit").show();
+                        $("#Language_Submit").hide();
+                    }
+                }
+
+
+                if (SetUpkey=="SetupUploadSignature") {
+                    if (SetUpValue == true) {
+                        $("#Signature_Submit").show();
+                        $("#Signature_NotSubmit").hide();
+                    }
+                    else {
+                        $("#Signature_NotSubmit").show();
+                        $("#Signature_Submit").hide();
+
+                    }
+                }
+                //Ask
+                if (SetUpkey=="SetupBond") {
+
+                    if (SetUpValue == true) {
+                        $("#Bond_Submit").show();
+                        $("#Bond_NotSubmit").hide();
+                    }
+                    else {
+                        $("#Bond_NotSubmit").show();
+                        $("#Bond_Submit").hide();
+                    }
+                }
+                if (SetUpkey=="SetupUploadPhoto") {
+                    if (SetUpValue == true) {
+                        $("#UploadPhoto_Submit").show();
+                        $("#UploadPhoto_NotSubmit").hide();
+                    }
+                    else {
+                        $("#UploadPhoto_NotSubmit").show();
+                        $("#UploadPhoto_Submit").hide();
+                    }
+                }
+
+                if (SetUpkey=="SetupUploadDocument") {
+                    if (SetUpValue == true) {
+                        $("#UploadDocument_Submit").show();
+                        $("#UploadDocument_NotSubmit").hide();
+                    }
+                    else {
+                        $("#UploadDocument_NotSubmit").show();
+                        $("#UploadDocument_Submit").hide();
+                    }
+                }
+                if (SetUpkey=="SetupGeneralReporting") {
+                    if (SetUpValue == true) {
+                        $("#GeneralReporting_Submit").show();
+                        $("#GeneralReporting_NotSubmit").hide();
+                    }
+                    else {
+                        $("#GeneralReporting_NotSubmit").show();
+                        $("#GeneralReporting_Submit").hide();
+                    }
+                }
+                if (SetUpkey=="SetupChartTypeAssign") {
+                    if (SetUpValue == true) {
+                        $("#ChartTypeAssign_Submit").show();
+                        $("#ChartTypeAssign_NotSubmit").hide();
+                    }
+                    else {
+                        $("#ChartTypeAssign_NotSubmit").show();
+                        $("#ChartTypeAssign_Submit").hide();
+                    }
+                }
+
+                if (SetUpkey=="SetupLMSGroupAssign") {
+                    if (SetUpValue == true) {
+                        $("#Category_Group_Assign_NotSubmit").hide();
+                        $("#Category_Group_Assign_Submit").show();
+                    }
+                    else {
+                        $("#Category_Group_Assign_NotSubmit").show();
+                        $("#Category_Group_Assign_Submit").hide();
+                    }
+                }
+
+                if (SetUpkey=="SetupEmployeeAsset") {
+                    if (SetUpValue == true) {
+                        $("#Employee_Asset_NotSubmit").hide();
+                        $("#Employee_Asset_Submit").show();
+                    }
+                    else {
+                        $("#Employee_Asset_NotSubmit").show();
+                        $("#Employee_Asset_Submit").hide();
+                    }
+                }
+            }
+
+        }
+
+        @*var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                });
+            }
+        }*@
+    });
+</script>

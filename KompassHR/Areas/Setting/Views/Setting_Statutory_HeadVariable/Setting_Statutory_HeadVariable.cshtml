@@ -1,0 +1,443 @@
+﻿@model KompassHR.Areas.Setting.Models.Setting_Statutory.Payroll_Head_Variable
+@{
+    ViewBag.Title = "Setting_Statutory_HeadVariable";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+<style>
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+    .chkerror{
+        text-align: center;
+        height: 35px;
+        color: red;
+        font-size:larger
+    }
+    #tblDynamic input[type="text"] {
+        height: 25px; /* Adjust the height as needed */
+    }
+</style>
+
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    /*body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f4f4f4;
+    }*/
+
+    .container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+        gap: 20px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 2px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f0f0f0;
+        text-align: center;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    input[type="checkbox"] {
+        display: block;
+        margin: 0 auto;
+        vertical-align: middle;
+    }
+
+    /*.app-content {
+        padding: 0px 0px;
+    }*/
+
+    #tblPartA input[type="text"],
+    #tblPartB input[type="text"] {
+        height: 25px;
+    }
+
+    @@media (max-width: 600px) {
+        .container {
+            flex-direction: column;
+            align-items: center;
+        }
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+        color: red;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Head Variable
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("ESS_AdminDashboard_Dashboard", "ESS_AdminDashboard_Dashboard", new { id = 32, ScreenId = 121, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Setting_Payroll_Menu", "Setting_Payroll_Menu", new { id = 6, ScreenId = 287, area = "Setting" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Settings">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                 <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">Head Variable - <b>@ViewBag.AddUpdateTitle</b> </h4>
+                  
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        A Head Variable Form is used to define and manage key categories or heads for organizing data and processes.
+                    </p>
+                </div>
+                <div class="panel-body" data-scrollbar="false">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "Setting_Statutory_HeadVariable", new { area = "Setting" })' id="FormHeadVariable" method="post">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Company Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.CmpID, new SelectList(ViewBag.GetCompanyname ?? new List<SelectListItem>(), "Id", "Name"), "--Select--", new { id = "ddlCompanyName", @class = "form-select", autocomplete = "off", name = "CmpID" })
+                                                <span class="error" id="ErrorddlCompanyName" style="display:none"></span>
+                                            </div>
+                                            @Html.HiddenFor(model => model.PayrollHeadVariableId_Encrypted, new { id = "PayrollHeadVariableId_Encrypted", name = "PayrollHeadVariableId_Encrypted" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <span id="ErrorcheckboxSeq" class="chkerror" style="display:none"></span>
+                                    <div class="col-md-6">
+                                        <table id="tblPartA">
+                                            <thead>
+                                                <tr>
+                                                    <th colspan="3">Part (A) (Variable Earning)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>@Html.CheckBoxFor(model => model.SalaryEarn_RatePart_LeaveEncashment_IsApplicable, new { id = "chkLeaveEncashment", name = "LeaveEncashment_IsApplicable" })</td>
+                                                    <td>LeaveEncashment</td>
+                                                    <td>@Html.TextBoxFor(model => model.SalaryEarn_RatePart_LeaveEncashment, new { id = "txtLeaveEncashment", name = "LeaveEncashment" })</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>@Html.CheckBoxFor(model => model.SalaryEarn_RatePart_Arrears_IsApplicable, new { id = "chkArrears", name = "Arrearst_IsApplicable" })</td>
+                                                    <td>Arrears</td>
+                                                    <td>@Html.TextBoxFor(model => model.SalaryEarn_RatePart_Arrears, new { id = "txtArrears", name = "Arrears" })</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>@Html.CheckBoxFor(model => model.SalaryEarn_RatePart_OverTime_IsApplicable, new { id = "chkOverTime", name = "OverTime_IsApplicable" })</td>
+                                                    <td>OverTime</td>
+                                                    <td>@Html.TextBoxFor(model => model.SalaryEarn_RatePart_OverTime, new { id = "txtOverTime", name = "OverTime" })</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>@Html.CheckBoxFor(model => model.SalaryEarn_RatePart_Incentive_IsApplicable, new { id = "chkIncentive", name = "Incentive_IsApplicable" })</td>
+                                                    <td>Incentive</td>
+                                                    <td>@Html.TextBoxFor(model => model.SalaryEarn_RatePart_Incentive, new { id = "txtIncentive", name = "Incentive" })</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>@Html.CheckBoxFor(model => model.SalaryEarn_RatePartM_A_IsApplicable, new { id = "chkA_IsApplicable", name = "A_IsApplicable" })</td>
+                                                    <td>M_A</td>
+                                                    <td>@Html.TextBoxFor(model => model.SalaryEarn_RatePartM_A, new { id = "txtM_A", name = "M_A" })</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>@Html.CheckBoxFor(model => model.SalaryEarn_RatePartM_B_IsApplicable, new { id = "chkM_B_IsApplicable", name = "M_B_IsApplicable" })</td>
+                                                    <td>M_B</td>
+                                                    <td>@Html.TextBoxFor(model => model.SalaryEarn_RatePartM_B, new { id = "txtM_B", name = "M_B" })</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>@Html.CheckBoxFor(model => model.SalaryEarn_RatePartM_C_IsApplicable, new { id = "chkM_C_IsApplicable", name = "M_C_IsApplicable" })</td>
+                                                    <td>M_C</td>
+                                                    <td>@Html.TextBoxFor(model => model.SalaryEarn_RatePartM_C, new { id = "txtM_C", name = "M_C" })</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>@Html.CheckBoxFor(model => model.SalaryEarn_RatePartM_D_IsApplicable, new { id = "chkM_D_IsApplicable", name = "M_D_IsApplicable" })</td>
+                                                    <td>M_D</td>
+                                                    <td>@Html.TextBoxFor(model => model.SalaryEarn_RatePartM_D, new { id = "txtM_D", name = "M_D" })</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>@Html.CheckBoxFor(model => model.SalaryEarn_RatePartM_E_IsApplicable, new { id = "chkHead2", name = "IsApplicableHead2" })</td>
+                                                    <td>M_E</td>
+                                                    <td>@Html.TextBoxFor(model => model.SalaryEarn_RatePartM_E, new { id = "txtM_E", name = "M_E" })</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>@Html.CheckBoxFor(model => model.SalaryEarn_RatePartM_F_IsApplicable, new { id = "chkHead2", name = "IsApplicableHead2" })</td>
+                                                    <td>M_F</td>
+                                                    <td>@Html.TextBoxFor(model => model.SalaryEarn_RatePartM_F, new { id = "txtM_F", name = "M_F" })</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>@Html.CheckBoxFor(model => model.SalaryEarn_RatePartM_G_IsApplicable, new { id = "chkHead2", name = "IsApplicableHead2" })</td>
+                                                    <td>M_G</td>
+                                                    <td>@Html.TextBoxFor(model => model.SalaryEarn_RatePartM_G, new { id = "txtM_G", name = "M_G" })</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>@Html.CheckBoxFor(model => model.SalaryEarn_RatePartM_H_IsApplicable, new { id = "chkHead2", name = "IsApplicableHead2" })</td>
+                                                    <td>M_H</td>
+                                                    <td>@Html.TextBoxFor(model => model.SalaryEarn_RatePartM_H, new { id = "txtM_H", name = "M_H" })</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>@Html.CheckBoxFor(model => model.SalaryEarn_RatePartM_I_IsApplicable, new { id = "chkHead2", name = "IsApplicableHead2" })</td>
+                                                    <td>M_I</td>
+                                                    <td>@Html.TextBoxFor(model => model.SalaryEarn_RatePartM_I, new { id = "txtM_I", name = "M_I" })</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>@Html.CheckBoxFor(model => model.SalaryEarn_RatePartM_J_IsApplicable, new { id = "chkHead2", name = "IsApplicableHead2" })</td>
+                                                    <td>M_J</td>
+                                                    <td>@Html.TextBoxFor(model => model.SalaryEarn_RatePartM_J, new { id = "txtM_J", name = "M_J" })</td>
+                                                </tr>
+                                        </table>
+                                    </div>
+                                    <!-- Part B -->
+                                    <div class="col-md-6">
+                                        <table id="tblPartB">
+                                            <thead>
+                                                <tr>
+                                                    <th colspan="3">Part (B) (Variable Deduction)</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>@Html.CheckBoxFor(model => model.SalaryDed_RatePart_Medical_IsApplicable, new { id = "chkSalaryDed_RatePart_Medical_IsApplicable", name = "SalaryDed_RatePart_Medical_IsApplicable" })</td>
+                                                    <td>Medical</td>
+                                                    <td>@Html.TextBoxFor(model => model.SalaryDed_RatePart_Medical, new { id = "txtSalaryDed_RatePart_Medical", name = "SalaryDed_RatePart_Medical" })</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>@Html.CheckBoxFor(model => model.SalaryDed_RatePart_FinePenalty_IsApplicable, new { id = "chkSalaryDed_RatePart_FinePenalty_IsApplicable", name = "SalaryDed_RatePart_FinePenalty_IsApplicable" })</td>
+                                                    <td>Fine Penalty</td>
+                                                    <td>@Html.TextBoxFor(model => model.SalaryDed_RatePart_FinePenalty, new { id = "txtSalaryDed_RatePart_FinePenalty", name = "SalaryDed_RatePart_FinePenalty" })</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>@Html.CheckBoxFor(model => model.SalaryDed_RatePart_Damages_IsApplicable, new { id = "chkSalaryDed_RatePart_Damages_IsApplicable", name = "SalaryDed_RatePart_Damages_IsApplicable" })</td>
+                                                    <td>Damages</td>
+                                                    <td>@Html.TextBoxFor(model => model.SalaryDed_RatePart_Damages, new { id = "txtSalaryDed_RatePart_Damages", name = "SalaryDed_RatePart_Damages" })</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>@Html.CheckBoxFor(model => model.SalaryDed_RatePart_TDS_IsApplicable, new { id = "chkSalaryDed_RatePart_TDS_IsApplicable", name = "SalaryDed_RatePart_TDS_IsApplicable" })</td>
+                                                    <td>TDS</td>
+                                                    <td>@Html.TextBoxFor(model => model.SalaryDed_RatePart_TDS, new { id = "txtSalaryDed_RatePart_TDS", name = "SalaryDed_RatePart_TDS" })</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>@Html.CheckBoxFor(model => model.SalaryDed_RatePart_Advance_IsApplicable, new { id = "chkSalaryDed_RatePart_Advance_IsApplicable", name = "SalaryDed_RatePart_Advance_IsApplicable" })</td>
+                                                    <td>Advance</td>
+                                                    <td>@Html.TextBoxFor(model => model.SalaryDed_RatePart_Advance, new { id = "txtSalaryDed_RatePart_Advance", name = "SalaryDed_RatePart_Advance" })</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>@Html.CheckBoxFor(model => model.SalaryDed_RatePart_Loan_IsApplicable, new { id = "chkSalaryDed_RatePart_Loan_IsApplicable", name = "SalaryDed_RatePart_Loan_IsApplicable" })</td>
+                                                    <td>Loan</td>
+                                                    <td>@Html.TextBoxFor(model => model.SalaryDed_RatePart_Loan, new { id = "txtSalaryDed_RatePart_Loan", name = "SalaryDed_RatePart_Loan" })</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>@Html.CheckBoxFor(model => model.SalaryDed_RatePart_Canteen_IsApplicable, new { id = "chkSalaryDed_RatePart_Canteen_IsApplicable", name = "SalaryDed_RatePart_Canteen_IsApplicable" })</td>
+                                                    <td>Canteen</td>
+                                                    <td>@Html.TextBoxFor(model => model.SalaryDed_RatePart_Canteen, new { id = "txtSalaryDed_RatePart_Canteen", name = "SalaryDed_RatePart_Canteen" })</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>@Html.CheckBoxFor(model => model.SalaryDed_RatePartM_A_IsApplicable, new { id = "chkSalaryDed_RatePartM_A_IsApplicable", name = "SalaryDed_RatePartM_A_IsApplicable" })</td>
+                                                    <td>Part M A</td>
+                                                    <td>@Html.TextBoxFor(model => model.SalaryDed_RatePartM_A, new { id = "txtSalaryDed_RatePartM_A", name = "SalaryDed_RatePartM_A" })</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>@Html.CheckBoxFor(model => model.SalaryDed_RatePartM_B_IsApplicable, new { id = "chkSalaryDed_RatePartM_B_IsApplicable", name = "SalaryDed_RatePartM_B_IsApplicable" })</td>
+                                                    <td>Part M B</td>
+                                                    <td>@Html.TextBoxFor(model => model.SalaryDed_RatePartM_B, new { id = "txtSalaryDed_RatePartM_B", name = "SalaryDed_RatePartM_B" })</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>@Html.CheckBoxFor(model => model.SalaryDed_RatePartM_C_IsApplicable, new { id = "chkSalaryDed_RatePartM_C_IsApplicable", name = "SalaryDed_RatePartM_C_IsApplicable" })</td>
+                                                    <td>Part M C</td>
+                                                    <td>@Html.TextBoxFor(model => model.SalaryDed_RatePartM_C, new { id = "txtSalaryDed_RatePartM_C", name = "SalaryDed_RatePartM_C" })</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>@Html.CheckBoxFor(model => model.SalaryDed_RatePartM_D_IsApplicable, new { id = "chkSalaryDed_RatePartM_D_IsApplicable", name = "SalaryDed_RatePartM_D_IsApplicable" })</td>
+                                                    <td>Part M D</td>
+                                                    <td>@Html.TextBoxFor(model => model.SalaryDed_RatePartM_D, new { id = "txtSalaryDed_RatePartM_D", name = "SalaryDed_RatePartM_D" })</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>@Html.CheckBoxFor(model => model.SalaryDed_RatePartM_E_IsApplicable, new { id = "chkSalaryDed_RatePartM_E_IsApplicable", name = "SalaryDed_RatePartM_E_IsApplicable" })</td>
+                                                    <td>Part M E</td>
+                                                    <td>@Html.TextBoxFor(model => model.SalaryDed_RatePartM_E, new { id = "txtSalaryDed_RatePartM_E", name = "SalaryDed_RatePartM_E" })</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>@Html.CheckBoxFor(model => model.SalaryDed_RatePartM_F_IsApplicable, new { id = "chkSalaryDed_RatePartM_F_IsApplicable", name = "SalaryDed_RatePartM_F_IsApplicable" })</td>
+                                                    <td>Part M F</td>
+                                                    <td>@Html.TextBoxFor(model => model.SalaryDed_RatePartM_F, new { id = "txtSalaryDed_RatePartM_F", name = "SalaryDed_RatePartM_F" })</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>@Html.CheckBoxFor(model => model.SalaryDed_RatePartM_G_IsApplicable, new { id = "chkSalaryDed_RatePartM_G_IsApplicable", name = "SalaryDed_RatePartM_G_IsApplicable" })</td>
+                                                    <td>Part M G</td>
+                                                    <td>@Html.TextBoxFor(model => model.SalaryDed_RatePartM_G, new { id = "txtSalaryDed_RatePartM_G", name = "SalaryDed_RatePartM_G" })</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>@Html.CheckBoxFor(model => model.SalaryDed_RatePartM_H_IsApplicable, new { id = "chkSalaryDed_RatePartM_H_IsApplicable", name = "SalaryDed_RatePartM_H_IsApplicable" })</td>
+                                                    <td>Part M H</td>
+                                                    <td>@Html.TextBoxFor(model => model.SalaryDed_RatePartM_H, new { id = "txtSalaryDed_RatePartM_H", name = "SalaryDed_RatePartM_H" })</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>@Html.CheckBoxFor(model => model.SalaryDed_RatePartM_I_IsApplicable, new { id = "chkSalaryDed_RatePartM_I_IsApplicable", name = "SalaryDed_RatePartM_I_IsApplicable" })</td>
+                                                    <td>Part M I</td>
+                                                    <td>@Html.TextBoxFor(model => model.SalaryDed_RatePartM_I, new { id = "txtSalaryDed_RatePartM_I", name = "SalaryDed_RatePartM_I" })</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>@Html.CheckBoxFor(model => model.SalaryDed_RatePartM_J_IsApplicable, new { id = "chkSalaryDed_RatePartM_J_IsApplicable", name = "SalaryDed_RatePartM_J_IsApplicable" })</td>
+                                                    <td>Part M J</td>
+                                                    <td>@Html.TextBoxFor(model => model.SalaryDed_RatePartM_J, new { id = "txtSalaryDed_RatePartM_J", name = "SalaryDed_RatePartM_J" })</td>
+                                                </tr>
+
+                                               
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <!-- Extra Section -->
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="button" class="btn btn-primary btn-sm" id="btnSubmit">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                        <button type="button" class="btn btn-danger btn-sm" id="btnGetList" 
+                                                                onclick="window.location.href='@Url.Action("GetList", "Setting_Statutory_HeadVariable")'">
+                                                            <i class="fa-solid fa-share-from-square"></i> List
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        $("#ddlCompanyName").select2();
+        debugger;
+        if (Message != null) {
+            Swal.fire({
+                icon: Icon,
+                text: Message,
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup()
+                    popup.classList.remove('swal2-show')
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                    })
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                    }, 500)
+                    return false
+                }
+            }).then(function() {
+                window.location.reload();
+            });
+        }
+       
+        ['tblPartA', 'tblPartB'].forEach(tableId => {
+            const table = document.getElementById(tableId);
+            const checkboxes = table.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach((checkbox, index) => {
+                checkbox.addEventListener('change', function () {
+                    if (this.checked && index > 0 && !checkboxes[index - 1].checked) {
+                        this.checked = false;
+                        const errorSpanChkSuq = document.getElementById("ErrorcheckboxSeq");
+                        document.getElementById("ErrorcheckboxSeq").innerText = "You must check the previous checkbox first."
+                        errorSpanChkSuq.style.display = "block";
+                        return;
+                    }
+                    document.getElementById("ErrorcheckboxSeq").innerText ="";
+                    const row = $(this).closest('tr');
+                    const columnValue = row.find('td:eq(1)').text().trim();
+                    const textbox = row.find('input[type="text"]');
+                    textbox.val(this.checked ? columnValue : '');
+                });
+            });
+        });
+    });
+</script>
+
+
+<script>
+    document.getElementById("btnSubmit").addEventListener("click", function () {
+        if (validateForm()) {
+            document.getElementById("FormHeadVariable").submit();
+        }
+    });
+
+    function validateForm() {
+        const ddlCompanyName = document.getElementById("ddlCompanyName");
+        const errorSpan = document.getElementById("ErrorddlCompanyName");
+        const selectedValue = ddlCompanyName.value;
+        if (selectedValue === "" || selectedValue === "--Select--") {
+            errorSpan.innerHTML = "Select company name";
+            errorSpan.style.display = "block";
+            ddlCompanyName.focus();
+            return false; 
+        } else {
+            errorSpan.innerHTML = "";
+            errorSpan.style.display = "none";
+        }
+        return true; // Validation passed
+    }
+</script>

@@ -1,0 +1,782 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_TimeOffice.Leave_Master
+
+@{
+    ViewBag.Title = "GetList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<style>
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+            background-color: rgba(233, 236, 239, 0.5) !important;
+        }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    /*.dataTables_filter {
+       float: left !important;
+       position:sticky;
+    }*/
+
+    /*.div1 td:nth-child(1) {
+            position: sticky;
+            left: 0;
+        }
+
+        .div1 td:nth-child(2) {
+            position: sticky;
+            left: 63px;
+        }
+
+        .fixed-side {
+            position: sticky;
+            left: 0;
+        }
+
+        .fixed-side1 {
+            position: sticky;
+            left: 63px;
+        }*/
+</style>
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                HR Space Leave
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_ContractorAttendance_Menu", "ESS_ContractorAttendance_Menu",  new { id = 27,ScreenId=333, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> HR Space Leave - List</h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        This is the list of current leave balances, past leave history and submit new leave requests.
+                    </p>
+                </div>
+                <div class="panel-body" data-scrollbar="true">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <a href="@Url.Action("ESS_HRSpace_Leave", "ESS_HRSpace_Leave", new { area = "ESS" })">
+                                <button type="button" class="btn btn-primary btn-sm  mb-10px">
+                                    <i class="fa-solid fa-plus"></i> &nbsp; Add
+                                </button>
+                            </a>
+                        </div>
+                        <!-- BEGIN table-responsive -->
+                        <div class="table-scroll div1">
+                            <div class="table-wrap">
+                                <table class="table table-bordered align-middle TablePage" id="TablePage" style="width: 100%;">
+                                    <thead>
+                                        <tr class="trheading">
+                                            <th hidden>LeaveMasterId_Encrypted</th>
+                                            <th hidden>DocNo</th>
+                                            <th class="fixed-side">Cancel</th>
+                                            <th class="fixed-side1">Delete</th>
+                                            <th class="fixed-side1">Status</th>
+
+                                            <th class="text-nowrap text-center">Doc No </th>
+                                            <th class="text-nowrap text-center">Doc Date </th>
+                                            <th class="text-nowrap text-center">Day Type</th>
+                                            <th class="text-nowrap text-center">Leave Type</th>
+                                            <th class="text-nowrap text-center">Employee Name</th>
+                                            <th class="text-nowrap text-center">For Date</th>
+                                            <th class="text-nowrap text-center">Reason</th>
+                                            <th class="text-nowrap text-center">Approve/Rejected by</th>
+                                            <th class="text-nowrap text-center">Approve/Rejected Date</th>
+                                            <th class="text-nowrap text-center">Rejected Reason</th>
+                                            <th class="text-nowrap text-center">Auto/Manually</th>
+                                            <th class="text-nowrap text-center">Document</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var d in ViewBag.LeaveAll)
+                                        {
+                                            <tr>
+                                                <td hidden>@d.LeaveMasterId_Encrypted</td>
+                                                <td hidden>@d.DocNo</td>
+                                                @if (@d.CancelStatus == "Requested" || @d.CancelStatus == "Canceled")
+                                                {
+                                                    <td class="text-center"> @d.CancelStatus</td>
+                                                }
+                                                else
+                                                {
+                                                    <td class="text-center">
+                                                        <a href="#modal-dialogForHoldReject1" onclick="CancelRequestFun(@d.LeaveMasterId,'@d.Status')" type="button" id="btnmodal-dialog1">
+                                                            <i class="fa-solid fa-xmark fa-xl text-dark" style="color:black"></i>
+                                                        </a>
+                                                    </td>
+                                                }
+                                                <td class="text-center">
+                                                    <a id="btnDelete" onclick="DeleteLeave('@d.LeaveMasterId_Encrypted','@d.Status')">
+                                                        <i class="fa-solid fa-trash-alt text-danger fa-lg"></i>
+                                                    </a>
+                                                </td>
+                                                @*<td class="text-nowrap">@d.ApprovedDay</td>*@
+                                                <td class="text-nowrap">
+                                                    <span onclick="ApproveStatus('@d.LeaveMasterId')" style="cursor:pointer;">
+                                                        <i class="fa-solid fa-circle-info text-success fa-lg"></i>
+                                                    </span>
+                                                    &nbsp;&nbsp; @d.ApprovedDay
+                                                </td>
+                                                <td class="text-nowrap text-center">@d.DocNo</td>
+                                                <td class="text-nowrap">@d.DocDate</td>
+                                                <td class="text-nowrap">@d.LeaveMasterDayType</td>
+                                                <td class="text-nowrap">@d.LeaveTypeShortName</td>
+                                                <td class="text-nowrap">@d.EmployeeName</td>
+                                                <td class="text-nowrap">@d.ForDate</td>
+                                                <td class="text-nowrap">@d.Reason</td>
+                                                <td class="text-nowrap">@d.ApproverName</td>
+                                                <td class="text-nowrap">@d.ApproveRejectDate</td>
+                                                <td class="text-nowrap">@d.ApproveRejectRemark</td>
+                                                <td class="text-nowrap">@d.ApprovedAutoManually</td>
+                                                @if (@d.AttachFile == "File Not Found")
+                                                {
+                                                    <td class="text-center"> @d.AttachFile</td>
+                                                }
+                                                else
+                                                {
+                                                    <td class="text-center">
+                                                        <a id="btnshow" href="@Url.Action("DownloadFile", "ESS_HRSpace_Leave", new { fileName = d.AttachFile })" style="cursor:pointer;">
+                                                            <i class="fa-solid fa-download fa-lg text-primary"></i>
+                                                        </a>
+                                                        @*<a id="btnshow" href="@d.AttachFile"
+                                                               style="cursor:pointer;">
+                                                                <i class="fa-solid fa-download fa-lg text-primary"></i>
+
+                                                            </a>*@
+                                                    </td>
+                                                }
+                                                @*<td class="text-nowrap">@d.AttachFile</td>*@
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END panel -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- #Start Cancel Request dialog -->
+<div class="modal fade" id="CancelModal" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header bg-black text-white">
+                <h4 class="modal-title"> Remark For Cancel</h4>
+
+            </div>
+            <div class="modal-body">
+                <div class="modal-body-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px" hidden>
+                                            @* @Html.DropDownListFor(model => model.PunchMissingEmployeeID, new SelectList(ViewBag.GetAdditionalList, "Id", "Name"), new { id = "LeaveMasterLeaveYearId", name = "LeaveMasterLeaveYearId", @class = "form-select", autocomplete = "off" })*@
+                                            <h6> Select Approver Name</h6>
+
+                                            @*@Html.DropDownList("Id", new SelectList(ViewBag.GetManagerEmployee, "Id", "Name"), "--Select--", new { @class = "form-control", Id = "ddlManagerName" })*@
+                                            <h1></h1>
+                                            <span id="ErrorMessage" class="Error" style="color:red"></span>
+                                            <h6> Enter Remark </h6>
+                                            <textarea id="txtApproveRejectRemark" class="form-control" rows="4"></textarea>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="SendCancelRequest()" id="btnReject" class="btn btn-primary btn-sm">
+                    <i class="fa-solid fa-floppy-disk"> </i> Submit
+                </button>
+                <button type="button" id="btnCancel" class="btn btn-danger btnpress btn-sm CloseModel" data-bs-dismiss="modal">
+                    <i class="fa-solid fa-share-from-square"></i> Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #End Cancel Request dialog -->
+
+
+<style>
+    .timeline {
+        max-width: 400px;
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+        .timeline:before {
+            left: 32px;
+        }
+
+    .timeline-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+
+    .iconGreen {
+        width: 24px;
+        height: 24px;
+        background-color: green;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        margin-right: 15px;
+    }
+
+    .iconRed {
+        width: 24px;
+        height: 24px;
+        background-color: #ff5b57;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        margin-right: 15px;
+    }
+
+    .text {
+        flex-grow: 1;
+    }
+
+        .text p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .text small {
+            color: gray;
+            font-size: 12px;
+        }
+
+    .button {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+        .button button {
+            background-color: #a8d935;
+            border: none;
+            padding: 10px 20px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+            .button button:hover {
+                background-color: #8cc62f;
+            }
+</style>
+
+<div class="modal fade" id="RequestInfoModal" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-body-content" style="position: relative;">
+                <div class="timeline">
+                    <div class="panel-heading-btn" style="margin-top: -13px; position: absolute; right: 8px;" data-bs-dismiss="modal">
+                        <a href="javascript:;" class="btn btn-icon btn-danger btnClear"
+                           aria-hidden="true" id="CloseModel">
+                            <i class="fa fa-xmark"></i>
+                        </a>
+                        @*<a href="javascript:;" class="btn btn-icon btn-danger btnClear" data-bs-dismiss="modal" aria-hidden="true">
+                                <i class="fa fa-xmark"></i>
+                            </a>*@
+                    </div>
+                    <div id="timelineMainDiv">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+
+        debugger;
+
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+    });
+</script>
+<script>
+    function DeleteLeave(LeaveMasterId_Encrypted,Status) {
+        debugger;
+        if(Status!="Pending")
+        {
+            Swal.fire({
+                icon: "error",
+                text: "Approved/Rejected request can't delete",
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup()
+                    popup.classList.remove('swal2-show')
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                    })
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                    }, 500)
+                    return false
+                }
+            });
+            return false;
+        }
+        const DeleteButtons = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        DeleteButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+            allowOutsideClick: () => {
+                const popup = Swal.getPopup()
+                popup.classList.remove('swal2-show')
+                setTimeout(() => {
+                    popup.classList.add('animate__animated', 'animate__headShake')
+                })
+                setTimeout(() => {
+                    popup.classList.remove('animate__animated', 'animate__headShake')
+                }, 500)
+                return false
+            }
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '@Url.Action("LeaveDelete", "ESS_HRSpace_Leave")?LeaveMasterId_Encrypted=' + LeaveMasterId_Encrypted;
+
+            } else if (
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+
+            }
+        })
+    }
+
+
+
+</script>
+
+<script>
+    function CancelRequestFun(LeaveMasterId,Status) {
+        debugger;
+        if(Status=="Pending" || Status=="Cancel")
+        {
+            if(Status=="Pending")
+            {
+                var Message="Pending request can't cancel";
+                var Icon="error";
+            }
+            else{
+                var Message="Request already cancel";
+                var Icon="error";
+            }
+
+            Swal.fire({
+                icon: Icon,
+                text: Message,
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup()
+                    popup.classList.remove('swal2-show')
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                    })
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                    }, 500)
+                    return false
+                }
+            });
+            return false;
+        }
+        localStorage.setItem('LeaveMasterId', LeaveMasterId);
+        $("#CancelModal").modal('show');
+    }
+
+    function SendCancelRequest()
+    {
+        //$("#CancelModal").modal('show');
+        var ddlManagerName = $('select#ddlManagerName option:selected').val();
+        if(ddlManagerName=="")
+        {
+            $("#ErrorMessage").html("Please select approver name");
+            $("#ddlManagerName").focus();
+            return false;
+        }
+        else
+        {
+            $("#ErrorMessage").html("");
+        }
+
+        const Approved = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        Approved.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes Submit!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+
+            allowOutsideClick: () => {
+                const popup = Swal.getPopup()
+                popup.classList.remove('swal2-show')
+                setTimeout(() => {
+                    popup.classList.add('animate__animated', 'animate__headShake')
+                })
+                setTimeout(() => {
+                    popup.classList.remove('animate__animated', 'animate__headShake')
+                }, 500)
+                return false
+            }
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                debugger;
+                $("#CancelModal").modal('hide');
+                $(".Userloaderbg").css("display","flex");
+                var GetLeaveId = localStorage.getItem('LeaveMasterId');
+
+                var ddlManagerId = $("#ddlManagerName").val();
+                var Origin="Leave";
+                Remark = $("#txtApproveRejectRemark").val();
+                $("#CancelModal").modal('hide');
+                $(".Userloaderbg").css("display", "flex");
+                $.ajax({
+                    url: "@Url.Action("CancelRequest", "ESS_HRSpace_Leave")",
+                    method:"get",
+                    data: { LeaveMasterId: GetLeaveId, ddlManagerId: ddlManagerId, Remark: Remark, Origin: Origin },
+                    success:function(response){
+                        debugger;
+                        var Message1 = response.Message;
+                        var Icon1 = response.Icon;
+                        if (response.Icon=="error") {
+                            if (Message1 != null) {
+                                if (Message1 != null) {
+                                    Swal.fire({
+                                        icon: Icon1,
+                                        text: Message1,
+                                        allowOutsideClick: () => {
+                                            const popup = Swal.getPopup()
+                                            popup.classList.remove('swal2-show')
+                                            setTimeout(() => {
+                                                popup.classList.add('animate__animated', 'animate__headShake')
+                                            })
+                                            setTimeout(() => {
+                                                popup.classList.remove('animate__animated', 'animate__headShake')
+                                            }, 500)
+                                            return false
+                                        }
+                                    })
+                                    .then((result) => {
+                                        if (result.isConfirmed) {
+                                            $("#CancelModal").modal('hide');
+                                            $("#txtApproveRejectRemark").val("")
+                                            window.location.href = '@Url.Action("GetList", "ESS_HRSpace_Leave")';
+                                        } else if (
+                                            /* Read more about handling dismissals below */
+                                            result.dismiss === Swal.DismissReason.cancel
+                                        ) {
+
+                                        }
+                                    })
+                                }
+                            }
+                        }
+                        else{
+                            var Message1 = response.Message;
+                            var Icon1 = response.Icon;
+                            if (response.Icon=="success") {
+                                if (Message1 != null) {
+                                    if (Message1 != null) {
+                                        Swal.fire({
+                                            icon: Icon1,
+                                            text: Message1,
+                                            allowOutsideClick: () => {
+                                                const popup = Swal.getPopup()
+                                                popup.classList.remove('swal2-show')
+                                                setTimeout(() => {
+                                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                                })
+                                                setTimeout(() => {
+                                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                                }, 500)
+                                                return false
+                                            }
+                                        })
+                                        .then((result) => {
+                                            if (result.isConfirmed) {
+                                                window.location.href = '@Url.Action("GetList", "ESS_HRSpace_Leave")';
+                                            } else if (
+                                                /* Read more about handling dismissals below */
+                                                result.dismiss === Swal.DismissReason.cancel
+                                            ) {
+
+                                            }
+                                        })
+
+                                        $("#CancelModal").modal('hide');
+                                        $("#txtApproveRejectRemark").val("");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+            } else if (
+                /* Read more about handling dismissals below */
+                            result.dismiss === Swal.DismissReason.cancel
+                        ) {
+                $("#CancelModal").modal('hide');
+                $("#ddlManagerName").val(null);
+                $("#txtApproveRejectRemark").val("");
+            }
+        })
+    }
+</script>
+
+<script>
+    function ApproveStatus(DocId) {
+        $.ajax({
+            url: '@Url.Action("RequestStatus", "ESS_HRSpace_Leave")',
+            method: "GET",
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            data: { DocId: DocId },
+            success: function (response) {
+                debugger
+                $('#RequestInfoModal').modal('show');
+                var data = JSON.parse(response);
+                var timelineHtml = '';
+                for (var i = 0; i < data.length; i++) {
+                    var icon = '';
+                    var iconColor='';
+                    var textColor = '';
+                    if (data[i][5].Value === 'success') {
+                        icon = '✔';
+                        iconColor ="iconGreen";
+                        textColor = 'Green';
+                    } else if (data[i][5].Value === 'error') {
+                        icon = '✘';
+                        iconColor ="iconRed";
+                        textColor = 'Red';
+                    } else {
+                        icon = '⏳';
+                        iconColor ="iconRed";
+                        textColor = 'Black';
+                    }
+
+                    timelineHtml += '<div class="timeline-item">' +
+                                '<div class="' + iconColor + '"><span class="timelineIcon">' + icon + '</span></div>' +
+                                '<div class="text">' +
+                                '<b><p class="timelineRemark" style="color:' + textColor + ';">' + data[i][2].Value + '</p></b>' +
+                                '<small class="timelineEmployeeName" style="color:Black;">' + data[i][3].Value + '</small><br />' +
+                                 '<small class="timelineDate" style="color:Black;">' + data[i][1].Value + '</small>' +
+                                '</div>' +
+                                '</div>';
+                }
+                $('#timelineMainDiv').html(timelineHtml);
+            }
+        });
+    }
+
+</script>

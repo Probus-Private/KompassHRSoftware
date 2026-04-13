@@ -1,0 +1,574 @@
+﻿
+@{
+    ViewBag.Title = "GetList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+
+<style>
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    /*.div1 td:nth-child(1) {
+        position: sticky;
+        left: 0;
+    }
+
+    .div1 td:nth-child(2) {
+        position: sticky !important;
+        left: 82px !important;
+    }
+     .div1 td:nth-child(3) {
+        position: sticky;
+        left:159px !important;
+    }
+
+    .div1 td:nth-child(4) {
+        position: sticky !important;
+        left: 237px !important;
+    }
+     .div1 td:nth-child(5) {
+        position: sticky !important;
+        left: 321px !important;
+    }*/
+
+
+    /*.fixed-side {
+        position: sticky !important;
+        left: 0;
+        z-index:1;
+    }
+
+    .fixed-side1 {
+        position: sticky !important;
+        left: 82px !important;
+        z-index:1;
+    }
+     .fixed-side2 {
+        position: sticky !important;
+        left:159px !important;
+        z-index:1;
+    }
+
+    .fixed-side3 {
+        position: sticky !important;
+        left: 237px !important;
+        z-index:1;
+    }
+     .fixed-side4 {
+        position: sticky !important;
+        left: 321px !important;
+        z-index:1;
+    }*/
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Preboarding Create Link
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Module_Preboarding_Menu", "Module_Preboarding_Menu", new {id = 2, ScreenId=137, area = "Module" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">Preboarding Create Link - List</h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                    </p>
+                </div>
+                <div class="panel-body" data-scrollbar="false">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <a href="@Url.Action("Module_Preboarding_CreateLink", "Module_Preboarding_CreateLink", new { area = "Module" })">
+
+                                <button type="button" class="btn btn-primary btn-sm  mb-10px">
+                                    <i class="fa-solid fa-plus"></i> &nbsp; Add
+                                </button>
+                            </a>
+                            <!-- BEGIN table-responsive -->
+                            <div class="table-scroll div1">
+                                <div class="table-wrap">
+                                    <table class="table table-bordered align-middle TablePage" id="data-table-combine"
+                                           style="width: 100%;">
+
+                                        <thead>
+                                            <tr class="text-center">
+                                                <th class="text-nowrap width-45 fixed-side">Update</th>
+                                                <th class="text-nowrap width-45 fixed-side1">Delete</th>
+                                                <th class="text-nowrap width-45 fixed-side2">Cancel</th>
+                                                <th class="text-nowrap width-45 fixed-side3">Reopen</th>
+                                                <th class="text-nowrap width-45 fixed-side4">Send Mail</th>
+                                                <th class="text-nowrap">DocNo</th>
+                                                <th class="text-nowrap">DocDate</th>
+                                                <th class="text-nowrap">Company Name</th>
+                                                <th class="text-nowrap">Business Unit</th>
+                                                <th class="text-nowrap">Candidate Name</th>
+                                                <th class="text-nowrap">PersonalEmailID/Username</th>
+                                                @*<th class="text-nowrap">Username</th>*@
+                                                <th class="text-nowrap">Department Name</th>
+                                                <th class="text-nowrap">Desgination Name</th>
+                                                <th class="text-nowrap">Grade Name</th>
+                                                <th class="text-nowrap">PF</th>
+                                                <th class="text-nowrap">Type</th>
+                                                <th class="text-nowrap">Reporting HR</th>
+                                                <th class="text-nowrap">Reporting Date</th>
+                                                <th class="text-nowrap">Link Expiry Date</th>
+
+
+                                                <th class="text-nowrap">Due Days</th>
+                                                <th class="text-nowrap">Pending Since</th>
+                                                <th class="text-nowrap">Candidate Submit Status</th>
+                                                <th class="text-nowrap">Candidate Submit Date</th>
+                                                <th class="text-nowrap">Final Submit Status</th>
+                                                <th class="text-nowrap">Final Submit Date</th>
+                                                <th class="text-nowrap">Final Approved By</th>
+                                                <th class="text-nowrap">Final Reject Remark</th>
+                                                <th class="text-nowrap">Personal</th>
+                                                <th class="text-nowrap">Address</th>
+                                                <th class="text-nowrap">Reference</th>
+                                                <th class="text-nowrap">Bank</th>
+                                                <th class="text-nowrap">Statutory</th>
+                                                <th class="text-nowrap">Family</th>
+                                                <th class="text-nowrap">Qualification</th>
+                                                <th class="text-nowrap">PreEmployer</th>
+                                                <th class="text-nowrap">Skill</th>
+                                                <th class="text-nowrap">Language</th>
+                                                @*<th class="text-nowrap">Document</th>*@
+                                                <th class="text-nowrap">Photo</th>
+                                                <th class="text-nowrap">Signature</th>
+                                                <th class="text-nowrap">Other</th>
+
+                                                <th class="text-nowrap">CreatedBy </th>
+                                                <th class="text-nowrap">Created Date</th>
+                                                <th class="text-nowrap">ModifiedBy</th>
+                                                <th class="text-nowrap">Modified Date </th>
+                                                <th class="text-nowrap">Machine Name</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var d in ViewBag.GetPreboardingCreateLinkList)
+                                            {
+                                                <tr>
+                                                    <td class="text-center">
+                                                        <button type="button" onclick="UpdatePreboarding('@d.FID_Encrypted','@d.Verify_FinalApproval_Status','@d.BranchID','@d.CmpId')" id="btnUpdate"
+                                                                class="btn btn-success btnpress ListBtn">
+                                                            <i class="fa-solid fa-pencil-alt"></i>
+                                                        </button>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <button type="button" onclick="DeletePreboarding('@d.FID_Encrypted')" id="btnDelete" class="btn btn-danger ListBtn btnpress">
+                                                            <i class="fa-solid fa-trash-alt"></i>
+                                                        </button>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <button type="button" onclick="CancelPreboarding('@d.FID_Encrypted')" id="btnCancel" class="btn btn-danger btnpress ListBtn">
+                                                            <i class="fa fa-times"></i>
+                                                        </button>
+                                                    </td>
+                                                    <td class="text-center">
+                                                        <button type="button" onclick="ReopenPreboarding('@d.FID_Encrypted','@d.FID')" id="btnReopen" class="btn btn-success ListBtn btnpress">
+                                                            <i class="fa fa-redo"></i>
+                                                        </button>
+                                                    </td>
+                                                    <td class="text-center">
+
+                                                        <button type="button" onclick="SendMailPreboarding('@d.FID')" id="btnSendMail"
+                                                                style="background-color:#fff;" class="btn  btnpress ListBtn">
+                                                            <i class="fa-solid fa-paper-plane text-dark"></i>
+                                                        </button>
+
+                                                    </td>
+                                                    <td>@d.DocNo</td>
+                                                    <td>@d.DocDate</td>
+                                                    <td>@d.CompanyName</td>
+                                                    <td>@d.branchname</td>
+                                                    <td>@d.CandidateName</td>
+                                                    <td>@d.PersonalEmailID</td>
+                                                    <td>@d.DepartmentName</td>
+                                                    <td>@d.DesignationName</td>
+                                                    <td>@d.GradeName</td>
+                                                    <td>@d.PF</td>
+                                                    <td>@d.Insurance</td>
+                                                    <td>@d.ReportingPerson</td>
+                                                    <td>@d.JoiningDate</td>
+                                                    <td>@d.LinkExpiryDate</td>
+                                                    <td>@d.DueDays</td>
+                                                    <td>@d.PendingSince</td>
+                                                    <td>@d.OnboardSubmit</td>
+                                                    <td>@d.PreboardSubmitDate</td>
+                                                    <td>@d.Verify_FinalApproval_Status</td>
+                                                    <td>@d.Verify_FinalApproval_Date</td>
+                                                    <td>@d.FinalApprovalVerifierName</td>
+                                                    <td>@d.Verify_FinalApproval_RejectRemark</td>
+                                                    <td>@d.IsPersonalInfo</td>
+                                                    <td>@d.IsAddress</td>
+                                                    <td>@d.IsReference</td>
+                                                    <td>@d.IsBankpanaadhar</td>
+                                                    <td>@d.IsStatutory</td>
+                                                    <td>@d.IsFamilyInfo</td>
+                                                    <td>@d.IsQualification</td>
+                                                    <td>@d.IsPreviousEmployer</td>
+                                                    <td>@d.IsSkills</td>
+                                                    <td>@d.IsLanguage</td>
+                                                    <td>@d.IsPhoto</td>
+                                                    <td>@d.IsSignature</td>
+                                                    <td>@d.IsOther</td>
+                                                    <td>@d.CreatedBy</td>
+                                                    <td>@d.CreatedDate</td>
+                                                    <td>@d.ModifiedBy</td>
+                                                    <td>@d.ModifiedDate</td>
+                                                    <td>@d.MachineName</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- END panel -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- #Start Appprove Reject Modal -dialog -->
+<div class="modal fade" id="myModal" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header bg-black text-white">
+                <h4 class="modal-title">Send Prebording Message</h4>
+                <div class="panel-heading-btn">
+                    <a href="javascript:;" class="btn btn-icon btn-danger btnClear" data-bs-dismiss="modal"
+                       aria-hidden="true">
+                        <i class="fa fa-xmark"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="modal-body">
+                <!-- BEGIN panel -->
+                <div class="modal-body-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <button type="button" id="btnReject" onclick="SendMail()" class="btn btn-primary btn-sm">
+                                        <i class="fa-solid fa-floppy-disk"> </i> Send Mail
+                                    </button>
+                                </div>
+                                <div class="col-md-1">
+                                </div><div class="col-md-3">
+                                    <div class="row">
+                                        <button type="button" id="btnReject" class="btn btn-primary btn-sm">
+                                            <i class="fa-solid fa-floppy-disk"> </i> Send SMS
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="row">
+                                        <button type="button" id="btnReject" class="btn btn-primary btn-sm">
+                                            <i class="fa-solid fa-floppy-disk"> </i>   Whatapp No
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END panel -->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #End modal-dialog -->
+
+
+<script>
+    var EmailFID="";
+    function SendMailPreboarding(FID)
+    {
+        debugger;
+        EmailFID=FID;
+        $("#myModal").modal('show');
+    }
+
+    function SendMail() {
+        $.ajax({
+            url: '@Url.Action("SendMail", "Module_Preboarding_CreateLink")',
+            //url:"SendMail",
+            method:"get",
+            data:{ EmailFID : EmailFID },
+            success:function(response){
+                debugger;
+                var data1=JSON.stringify(response);
+                var data=JSON.parse(data1);
+                var Message1=data.Message;
+                var Icon1=data.Icon;
+
+                //if(response==true)
+                //{
+                    //var Message1 = "Mail has been Send"
+                    //var Icon1 = "success";
+                        if (Message1 != null) {
+                            if (Icon1 != null) {
+                                Swal.fire({
+                                    icon: Icon1,
+                                    text: Message1,
+                                    allowOutsideClick: () => {
+                                        const popup = Swal.getPopup()
+                                        popup.classList.remove('swal2-show')
+                                        setTimeout(() => {
+                                            popup.classList.add('animate__animated', 'animate__headShake')
+                                        })
+                                        setTimeout(() => {
+                                            popup.classList.remove('animate__animated', 'animate__headShake')
+                                        }, 500)
+                                        return false
+                                    }
+                                });
+                                $("#myModal").modal('hide');
+                            }
+                        }
+
+
+                //else
+                //{
+                //    var Message1 = "Mail is not Send"
+                //    var Icon1 = "error";
+                //    if (Message1 != null) {
+                //        if (Icon1 != null) {
+                //            Swal.fire({
+                //                icon: Icon1,
+                //                text: Message1,
+                //                allowOutsideClick: () => {
+                //                    const popup = Swal.getPopup()
+                //                    popup.classList.remove('swal2-show')
+                //                    setTimeout(() => {
+                //                        popup.classList.add('animate__animated', 'animate__headShake')
+                //                    })
+                //                    setTimeout(() => {
+                //                        popup.classList.remove('animate__animated', 'animate__headShake')
+                //                    }, 500)
+                //                    return false
+                //                }
+                //            });
+                //            $("#myModal").modal('hide');
+                //        }
+                //    }
+
+                //}
+
+            }
+
+        })
+    }
+</script>
+
+
+
+<script>
+    $(document).ready(function () {
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                });
+            }
+        }
+    });
+
+
+</script>
+
+<script>
+    function UpdatePreboarding(FID_Encrypted,Status,BranchID,CmpId) {
+        if(Status=="Cancel")
+        {
+            var Message="This preboarding link is already cancel";
+            var Icon="error";
+            if (Message != null) {
+                if (Icon != null) {
+                    Swal.fire({
+                        icon: Icon,
+                        text: Message,
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup()
+                            popup.classList.remove('swal2-show')
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake')
+                            })
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake')
+                            }, 500)
+                            return false
+                        }
+                    });
+                }
+            }
+        }
+        else{
+            var url = '@Url.Action("Module_Preboarding_CreateLink", "Module_Preboarding_CreateLink")?FID_Encrypted=' + FID_Encrypted + '&BranchID=' + BranchID + '&CmpId=' + CmpId;
+            window.location.href = url;
+        }
+
+    }
+
+    function DeletePreboarding(FID_Encrypted) {
+        const DeleteButtons = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        DeleteButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+            allowOutsideClick: () => {
+                const popup = Swal.getPopup()
+                popup.classList.remove('swal2-show')
+                setTimeout(() => {
+                    popup.classList.add('animate__animated', 'animate__headShake')
+                })
+                setTimeout(() => {
+                    popup.classList.remove('animate__animated', 'animate__headShake')
+                }, 500)
+                return false
+            }
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '@Url.Action("Delete", "Module_Preboarding_CreateLink")?FID_Encrypted=' + FID_Encrypted;
+
+            } else if (
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+
+            }
+        })
+    }
+
+    function CancelPreboarding(FID_Encrypted) {
+        var url = '@Url.Action("CancelCandidate", "Module_Preboarding_CreateLink")?FID_Encrypted=' + FID_Encrypted;
+        window.location.href = url;
+    }
+
+    function ReopenPreboarding(FID_Encrypted,FID) {
+        var url = '@Url.Action("ReopenLinkCandidate", "Module_Preboarding_CreateLink")?FID_Encrypted=' + FID_Encrypted+ '&FID=' + FID;
+        window.location.href = url;
+    }
+</script>
+

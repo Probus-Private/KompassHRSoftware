@@ -1,0 +1,775 @@
+﻿
+@{
+    ViewBag.Title = "ActiveWorkerList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+
+
+<style>
+    .text-nowrap {
+        font-size: 12px;
+    }
+
+    tbody tr td {
+        font-size: 12px;
+        padding: 4px !important;
+    }
+
+    .ListBtn {
+        background-color: transparent;
+        color: #000;
+        font-size: 15px !important;
+        padding: 5px 8px !important;
+        border: none;
+    }
+
+        .ListBtn:hover {
+            background-color: transparent;
+            color: #000;
+        }
+
+            .ListBtn:hover i {
+                transition: all 0.5s;
+                transform: scale(1.5);
+            }
+
+
+
+    .box2 {
+        width: 100px;
+        height: 100px;
+        padding: 15px 0px;
+        font-family: 'Montserrat', sans-serif;
+        position: relative;
+        z-index: 0;
+        margin-bottom: 10px;
+    }
+
+        .box2:hover {
+            border: 2px solid #ff9c19;
+            border-radius: 10px;
+            cursor: pointer;
+            transform: translateY(-10px);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.03), 0px -15px 25px rgba(0, 0, 0, 0.03), 0 15px 25px rgba(0, 0, 0, 0.05);
+        }
+
+            .box2:hover .info i {
+                color: #ff9c19;
+            }
+
+
+        .box2 .info i {
+            font-size: 20px;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 5px;
+            color: #007bff;
+        }
+
+        .box2 .info h7 {
+            position: relative;
+            font-size: 12px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            font-weight: 900 !important;
+            text-transform: capitalize;
+            margin-bottom: 2px;
+            padding: 0 10px;
+            color: #444;
+        }
+
+    .FS-12PX {
+        font-size: 12px !important;
+    }
+
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    .width-45 {
+        width: 45px !important;
+    }
+
+    .table {
+        --bs-table-striped-bg: rgba(0, 0, 255, 0.02);
+    }
+
+    .text-nowrap {
+        font-size: 12px;
+    }
+
+    tbody tr td {
+        font-size: 12px;
+        padding: 4px !important;
+    }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+    }
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Active Worker
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_Contractor_Menu", "ESS_Contractor_Menu",  new { id = 27,ScreenId=307, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Active Worker - List</h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Below is a list of all active worker employees.
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <a href="@Url.Action("Module_Employee_AddWorkers", "Module_Employee_AddWorkers", new { area = "Module" })">
+                        <button type="button" class="btn btn-primary btn-sm  mb-10px">
+                            <i class="fa-solid fa-plus"></i> &nbsp; Add
+                        </button>
+                    </a>
+                    <!-- BEGIN table-responsive -->
+                    <div class="table-scroll div1">
+                        <div class="table-wrap">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <!-- BEGIN table-responsive -->
+                                    <table class="table table-bordered table-hover mb-0 text-dark align-middle TablePage EmployeeDetails" id="tblEmployeeDetails"
+                                           style="width: 100%;">
+                                        <thead>
+                                            <tr class="text-center">
+                                                <th class="fixed-side">Action</th>
+
+                                                <th class="text-nowrap width-45">Employee Name</th>
+                                                <th class="fixed-side">Employee No.</th>
+                                                <th class="text-nowrap width-45">Employee Card No.</th>
+                                                <th class="text-nowrap width-45">Business Unit</th>
+                                                <th class="text-nowrap width-45">Contractor Name</th>
+                                                <th class="text-nowrap width-45">Department Name</th>
+                                                <th class="text-nowrap width-45">Designation Name</th>
+                                                <th class="text-nowrap width-45">Joining Date</th>
+
+                                                <th hidden class="text-nowrap width-45">EmployeeId</th>
+                                                <th hidden class="text-nowrap width-45">CmpID</th>
+                                                <th hidden class="text-nowrap width-45">EmployeeBranchId</th>
+                                                <th hidden class="text-nowrap width-45">EmployeeDepartmentID</th>
+                                                <th hidden class="text-nowrap width-45">EmployeeDesignationID</th>
+                                                <th hidden class="text-nowrap width-45">FirstName</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var d in ViewBag.GetActiveWorkerList)
+                                            {
+                                                <tr>
+                                                    @*<td class="text-center">
+                                                            <button type="button" onclick="UpdateActiveWorker('@d.EmployeeId','@d.EmployeeId_Encrypted','Update')" id="btnUpdate"
+                                                                    class="btn btn-success btnpress ListBtn">
+                                                                <i class="fa-solid fa-pencil-alt"></i>
+                                                            </button>
+                                                        </td>*@
+                                                    <td class="text-center">
+                                                        <button type="button" data-bs-toggle="offcanvas"
+                                                                href="#offcanvasExample" id="btnActionList" onclick="EmployeeDetails(this)" class="btn  btnpress ListBtn">
+                                                            <i class="fa-solid fa-list"></i>
+                                                        </button>
+                                                    </td>
+                                                    <td class="text-nowrap 1">@d.employeename</td>
+                                                    <td class="text-nowrap 2">@d.employeeno</td>
+                                                    <td class="text-nowrap 6">@d.employeecardno</td>
+                                                    <td class="text-nowrap 8">@d.BusinessUnit</td>
+                                                    <td class="text-nowrap 9">@d.ContractorName</td>
+                                                    <td class="text-nowrap 10">@d.departmentname</td>
+                                                    <td class="text-nowrap 11">@d.designationname</td>
+                                                    <td class="text-nowrap 15">@d.joiningdate</td>
+
+                                                    <td hidden class="text-nowrap 15">@d.EmployeeId</td>
+                                                    <td hidden class="text-nowrap 15">@d.CmpID</td>
+                                                    <td hidden class="text-nowrap 15">@d.EmployeeBranchId</td>
+                                                    <td hidden class="text-nowrap 15">@d.EmployeeDepartmentID</td>
+                                                    <td hidden class="text-nowrap 15">@d.EmployeeDesignationID</td>
+                                                    <td hidden class="text-nowrap 15">@d.FirstName</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Start panel -->
+<div class="row">
+    <div class="offcanvas offcanvas-end" id="offcanvasExample" data-bs-backdrop="false" data-bs-scroll=true style="width:210px">
+        <div class="offcanvas-header" style="border-bottom: 1px solid #d3d3d38a;">
+            <h6 class="offcanvas-title text-center" id="EmpName1"
+                style="width: 100%;">
+                <span id="EmpName">@Session["WorkerFirstName"]</span>
+            </h6>
+            <button type="button" class="btn-close text-reset"
+                    data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="row">
+                @foreach (var item in ViewBag.GetUserMenuList)
+                {
+                    <div class="col-md-12 d-flex justify-content-center">
+                        <a href="@Url.Action(item.ViewName.ToString(), item.ControllerName.ToString(), new { area = item.AreaName.ToString(), id = item.ModuleID, ScreenId = item.ScreenId })" style="text-decoration:none !important;">
+                            <div class="box2">
+                                <div class="info">
+                                    <i class="@item.Icon"></i>
+                                    <h7><b>@item.ScreenDisplayMenuName</b></h7>
+                                    <div class="box2Checkmark">
+                                        <i class="fa-regular fa-circle-check text-green FS-12PX" id="@($"{item.ScreenSourceMenuName}_Submit")"></i>
+                                        <i class="fa-regular fa-circle-xmark text-red FS-12PX" id="@($"{item.ScreenSourceMenuName}_NotSubmit")"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END panel -->
+@*<!-- Start panel -->
+    <div class="row">
+        <div class="offcanvas offcanvas-end" id="offcanvasExample" data-bs-backdrop="false" data-bs-scroll=true style="width:210px">
+            <div class="offcanvas-header" style="border-bottom: 1px solid #d3d3d38a;">
+                <h6 class="offcanvas-title text-center" id="EmpName1"
+                    style="width: 100%;">
+                    <span id="EmpName">@Session["WorkerFirstName"]</span>
+                </h6>
+                <button type="button" class="btn-close text-reset"
+                        data-bs-dismiss="offcanvas"></button>
+            </div>
+            <div class="offcanvas-body">
+                <div class="row">
+                    <div class="col-md-12 d-flex justify-content-center">
+                        <div class="box2">
+                            <a href="@Url.Action("Module_Employee_AddWorkers", "Module_Employee_AddWorkers", new { area = "Module" })" class="menu-link" style="text-decoration: none; color: #000;">
+                                <div class="info">
+                                    <i class="fa-solid fa-user-tie"></i>
+                                    <h7>
+                                        <b>Update Worker</b>
+                                    </h7>
+                                    <div class="box2Checkmark">
+                                        <i class="fa-regular fa-circle-check text-green FS-12PX" id="Admin_Submit"></i>
+                                        <i class="fa-regular fa-circle-xmark text-red FS-12PX" id="Admin_NotSubmit"></i>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-12  d-flex justify-content-center">
+                        <div class="box2">
+                            <a href="@Url.Action("Module_Employee_WorkerESSDetails", "Module_Employee_WorkerDetails", new { area = "Module" })" class="menu-link"
+                               style="text-decoration: none; color: #000;">
+                                <div class="info">
+                                    <i class="fa-regular fa-address-card"></i>
+                                    <h7><b>ESS </b></h7>
+                                    <div class="box2Checkmark">
+                                        <i class="fa-regular fa-circle-check text-green FS-12PX" id="ESS_Submit"></i>
+                                        <i class="fa-regular fa-circle-xmark text-red FS-12PX" id="ESS_NotSubmit"></i>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 col-6 d-flex justify-content-center">
+                        <div class="box2">
+                            <a href="@Url.Action("Module_Employee_PersonalInfo", "Module_Employee_PersonalInfo", new { area = "Module" })" class="menu-link"
+                               style="text-decoration: none; color: #000;">
+                                <div class="info">
+                                    <i class="fa-solid fa-user"></i>
+                                    <h7><b>Personal</b> </h7>
+                                    <div class="box2Checkmark">
+                                        <i class="fa-regular fa-circle-check text-green FS-12PX" id="Personal_Submit"></i>
+                                        <i class="fa-regular fa-circle-xmark text-red FS-12PX" id="Personal_NotSubmit"></i>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 col-6 d-flex justify-content-center">
+                        <div class="box2">
+                            <a href="@Url.Action("Module_Employee_AttendanceInfo", "Module_Employee_AttendanceInfo", new { area = "Module" })" class="menu-link"
+                               style="text-decoration: none; color: #000;">
+                                <div class="info">
+                                    <i class="fa-solid fa-user-check"></i>
+                                    <h7>
+                                        <b>Attendance </b>
+
+                                    </h7>
+                                    <div class="box2Checkmark">
+                                        <i class="fa-regular fa-circle-check text-green FS-12PX" id="Attendance_Submit"></i>
+                                        <i class="fa-regular fa-circle-xmark text-red FS-12PX" id="Attendance_NotSubmit"></i>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 d-flex justify-content-center">
+                        <div class="box2">
+                            <a href="@Url.Action("Module_Employee_WorkerStatutoryDetails", "Module_Employee_WorkerDetails", new { area = "Module" })" class="menu-link"
+                               style="text-decoration: none; color: #000;">
+                                <div class="info">
+                                    <i class="fa-solid fa-money-bill-1-wave"></i>
+                                    <h7><b>Statutory </b></h7>
+                                    <div class="box2Checkmark">
+                                        <i class="fa-regular fa-circle-check text-green FS-12PX" id="Statutory_Submit"></i>
+                                        <i class="fa-regular fa-circle-xmark text-red FS-12PX" id="Statutory_NotSubmit"></i>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                   <div class="col-md-12 d-flex justify-content-center">
+                        <div class="box2">
+                            <a href="@Url.Action("Module_Employee_WorkerDocumentsDetails", "Module_Employee_WorkerDetails", new { area = "Module" })" class="menu-link"
+                               style="text-decoration: none; color: #000;">
+                                <div class="info">
+                                    <i class="fa-solid fa-file-pdf"></i>
+                                    <h7><b>Upload Documents </b></h7>
+                                    <div class="box2Checkmark">
+                                        <i class="fa-regular fa-circle-check text-green FS-12PX" id="UploadDocument_Submit"></i>
+                                        <i class="fa-regular fa-circle-xmark text-red FS-12PX" id="UploadDocument_NotSubmit"></i>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-12 d-flex justify-content-center">
+                        <div class="box2">
+                            <a href="@Url.Action("Module_Employee_WorkerFamilyDetails", "Module_Employee_WorkerDetails", new { area = "Module" })" class="menu-link"
+                               style="text-decoration: none; color: #000;">
+                                <div class="info">
+                                    <i class="fa-solid fa-people-roof"></i>
+                                    <h7><b>Family </b></h7>
+                                    <div class="box2Checkmark">
+                                        <i class="fa-regular fa-circle-check text-green FS-12PX" id="Family_Submit"></i>
+                                        <i class="fa-regular fa-circle-xmark text-red FS-12PX" id="Family_NotSubmit"></i>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-12 d-flex justify-content-center">
+                        <div class="box2">
+                            <a href="@Url.Action("Module_Employee_WorkerBankDetails", "Module_Employee_WorkerDetails", new { area = "Module" })" class="menu-link"
+                               style="text-decoration: none; color: #000;">
+                                <div class="info">
+                                    <i class="fa-solid fa-building"></i>
+                                    <h7><b>Bank</b></h7>
+                                    <div class="box2Checkmark">
+                                        <i class="fa-regular fa-circle-check text-green FS-12PX" id="Bank_Submit"></i>
+                                        <i class="fa-regular fa-circle-xmark text-red FS-12PX" id="Bank_NotSubmit"></i>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END panel -->*@
+<script>
+    $(document).ready(function () {
+        $('title').html("Active Worker List");
+        var table = $('#tblEmployeeDetails').DataTable();
+        table.search('').draw();
+        });
+
+    function UpdateActiveWorker(EmployeeId, EmployeeId_Encrypted,GetUpdate) {
+        var url = '@Url.Action("Module_Employee_AddWorkers", "Module_Employee_AddWorkers")?EmployeeId_Encrypted=' + EmployeeId_Encrypted + '&EmployeeId=' + EmployeeId + '&GetUpdate=' + GetUpdate;
+        window.location.href = url;
+    }
+
+</script>
+
+
+<script>
+    function EmployeeDetails(tblRow) {
+        debugger;
+        var currentRow = $(tblRow).closest("tr");
+        var EmpId = currentRow.find("td:eq(9)").html();
+        var CmpId = currentRow.find("td:eq(10)").html();
+        var BranchId = currentRow.find("td:eq(11)").html();
+        var EmpName = currentRow.find("td:eq(1)").html();
+        var EmployeeNo = currentRow.find("td:eq(2)").html();
+        var EmpDepartment = currentRow.find("td:eq(6)").html();
+        var EmpDesignation = currentRow.find("td:eq(7)").html();
+        var EmpDoj = currentRow.find("td:eq(8)").html();
+        var EmpDepartmentId = currentRow.find("td:eq(12)").html();
+        var FirstName = currentRow.find("td:eq(14)").html();
+        var ContractorName = currentRow.find("td:eq(5)").html();
+        $("#EmpName").html(FirstName);
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("WorkerOnboardingForm", "Module_Employee_AddWorkers")',
+            data: { EmpId: EmpId, CmpId: CmpId, BranchId: BranchId, EmpName: EmpName, EmpDoj: EmpDoj, EmpDepartment: EmpDepartment, EmpDesignation: EmpDesignation, EmployeeNo: EmployeeNo, EmpDepartmentId: EmpDepartmentId, FirstName: FirstName, ContractorName: ContractorName },
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            success: function (response) {
+                debugger;
+                var data = JSON.parse(response);
+                if (data == 0) {
+                    $("#Admin_NotSubmit").show();
+                    $("#Admin_Submit").hide();
+
+                    $("#Personal_NotSubmit").show();
+                    $("#Personal_Submit").hide();
+
+                    $("#Reporting_NotSubmit").show();
+                    $("#Reporting_Submit").hide();
+
+                    $("#Attendance_NotSubmit").show();
+                    $("#Attendance_Submit").hide();
+
+                    $("#CTC_NotSubmit").show();
+                    $("#CTC_Submit").hide();
+
+                    $("#ESS_NotSubmit").show();
+                    $("#ESS_Submit").hide();
+
+                    $("#JobDescription_NotSubmit").show();
+                    $("#JobDescription_Submit").hide();
+
+                    $("#Verfication_NotSubmit").show();
+                    $("#Verfication_Submit").hide();
+
+                    $("#VMS_NotSubmit").show();
+                    $("#VMS_Submit").hide();
+
+                    $("#Checklist_NotSubmit").show();
+                    $("#Checklist_Submit").hide();
+
+                    $("#Policy_NotSubmit").show();
+                    $("#Policy_Submit").hide();
+
+                    $("#Assets_NotSubmit").show();
+                    $("#Assets_Submit").hide();
+
+                    $("#Insurance_NotSubmit").show();
+                    $("#Insurance_Submit").hide();
+
+                    $("#MedicalHistory_NotSubmit").show();
+                    $("#MedicalHistory_Submit").hide();
+
+                    $("#Address_NotSubmit").show();
+                    $("#Address_Submit").hide();
+
+                    $("#Bank_NotSubmit").show();
+                    $("#Bank_Submit").hide();
+
+                    $("#Reference_NotSubmit").show();
+                    $("#Reference_Submit").hide();
+
+                    $("#Family_NotSubmit").show();
+                    $("#Family_Submit").hide();
+
+                    $("#Statutory_NotSubmit").show();
+                    $("#Statutory_Submit").hide();
+
+                    $("#PreEmployeer_NotSubmit").show();
+                    $("#PreEmployeer_Submit").hide();
+
+                    $("#Qualifications_NotSubmit").show();
+                    $("#Qualifications_Submit").hide();
+
+                    $("#Skill_NotSubmit").show();
+                    $("#Skill_Submit").hide();
+
+                    $("#Language_NotSubmit").show();
+                    $("#Language_Submit").hide();
+
+                    $("#Signature_NotSubmit").show();
+                    $("#Signature_Submit").hide();
+
+                    $("#Documents_NotSubmit").show();
+                    $("#Documents_Submit").hide();
+
+                    $("#UploadPhoto_NotSubmit").show();
+                    $("#UploadPhoto_Submit").hide();
+
+                    $("#Bond_NotSubmit").show();
+                    $("#Bond_Submit").hide();
+
+                    $("#UploadDocument_NotSubmit").show();
+                    $("#UploadDocument_Submit").hide();
+
+                    $("#GeneralReporting_NotSubmit").show();
+                    $("#GeneralReporting_Submit").hide();
+                }
+                else {
+                    var data = JSON.parse(response);
+                    var SetUpAdmin = data[0][1].Value;
+                    if (SetUpAdmin == true) {
+                        $("#Admin_Submit").show();
+                        $("#Admin_NotSubmit").hide();
+                    }
+                    else {
+                        $("#Admin_NotSubmit").show();
+                        $("#Admin_Submit").hide();
+                    }
+
+                    var SetUpPersonal = data[0][0].Value;
+                    if (SetUpPersonal == true) {
+                        $("#Personal_Submit").show();
+                        $("#Personal_NotSubmit").hide();
+                    }
+                    else {
+                        $("#Personal_NotSubmit").show();
+                        $("#Personal_Submit").hide();
+                    }
+
+                    var SetUpAttendence = data[0][5].Value;
+                    if (SetUpAttendence == true) {
+                        $("#Attendance_Submit").show();
+                        $("#Attendance_NotSubmit").hide();
+                    }
+                    else {
+                        $("#Attendance_NotSubmit").show();
+                        $("#Attendance_Submit").hide();
+                    }
+
+                    var SetUpESS = data[0][7].Value;
+                    if (SetUpESS == true) {
+                        $("#ESS_Submit").show();
+                        $("#ESS_NotSubmit").hide();
+                    }
+                    else {
+                        $("#ESS_NotSubmit").show();
+                        $("#ESS_Submit").hide();
+                    }
+
+                    var SetUpAddress = data[0][15].Value;
+                    if (SetUpAddress == true) {
+                        $("#Address_Submit").show();
+                        $("#Address_NotSubmit").hide();
+                    }
+                    else {
+                        $("#Address_NotSubmit").show();
+                        $("#Address_Submit").hide();
+                    }
+
+
+
+                    var SetUpBank = data[0][17].Value;
+                    if (SetUpBank == true) {
+                        $("#Bank_Submit").show();
+                        $("#Bank_NotSubmit").hide();
+                    }
+                    else {
+                        $("#Bank_NotSubmit").show();
+                        $("#Bank_Submit").hide();
+                    }
+
+                    var SetUpStatutory = data[0][18].Value;
+                    if (SetUpStatutory == true) {
+                        $("#Statutory_Submit").show();
+                        $("#Statutory_NotSubmit").hide();
+                    }
+                    else {
+                        $("#Statutory_NotSubmit").show();
+                        $("#Statutory_Submit").hide();
+                    }
+
+                    var SetUpFamily = data[0][19].Value;
+                    if (SetUpFamily == true) {
+                        $("#Family_Submit").show();
+                        $("#Family_NotSubmit").hide();
+                    }
+                    else {
+                        $("#Family_NotSubmit").show();
+                        $("#Family_Submit").hide();
+                    }
+
+
+
+
+
+
+                    var SetUpPhoto = data[0][27].Value;
+                    if (SetUpPhoto == true) {
+                        $("#UploadPhoto_Submit").show();
+                        $("#UploadPhoto_NotSubmit").hide();
+                    }
+                    else {
+                        $("#UploadPhoto_NotSubmit").show();
+                        $("#UploadPhoto_Submit").hide();
+                    }
+
+                    var SetUpSignature = data[0][21].Value;
+                    if (SetUpSignature == true) {
+                        $("#Signature_Submit").show();
+                        $("#Signature_NotSubmit").hide();
+                    }
+                    else {
+                        $("#Signature_NotSubmit").show();
+                        $("#Signature_Submit").hide();
+                    }
+
+                    var SetUpUploadDocument = data[0][28].Value;
+                    if (SetUpUploadDocument == true) {
+                        $("#UploadDocument_Submit").show();
+                        $("#UploadDocument_NotSubmit").hide();
+                    }
+                    else {
+                        $("#UploadDocument_NotSubmit").show();
+                        $("#UploadDocument_Submit").hide();
+                    }
+                }
+            }
+        });
+    }
+
+</script>
+
+

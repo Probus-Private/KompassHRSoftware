@@ -1,0 +1,1608 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_Recruitment.Recruitment_Resume
+@{
+    ViewBag.Title = "ESS_Recruitment_CandidateData";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+
+<style>
+    .card-row-title {
+        color: #e63c3c;
+        font-size: 18px;
+        font-weight: 600;
+        text-transform: capitalize;
+        border-bottom: #009ce7 1px solid;
+    }
+
+
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .Error {
+        color: red;
+    }
+
+    select[readonly].select2-hidden-accessible + .select2-container .select2-selection {
+        background: #eee;
+        box-shadow: none;
+    }
+</style>
+
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Candidate Data
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("ESS_EmployeePosting", "ESS_EmployeePosting", new {id = 1, ScreenId=126, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+
+                </li>
+
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Candidate Data - @ViewBag.AddUpdateTitle </h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Add candidate data here !
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "ESS_EmployeePosting", new { area = "ESS" })' id="SaveCandidateData" method="post" enctype="multipart/form-data">
+                                @*<form action="/ESS/ESS_Recruitment_CandidateData/SaveUpdate" id="SaveCandidateData" method="post" enctype="multipart/form-data">*@
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Doc No.
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.DocNo, new { @class = "form-control", id = "DocNo", type = "text", autocomplete = "Off", Value = @ViewBag.DocNo.DocNo, @readonly = "readonly", Style = "background-color: #eee;" })
+                                                @Html.HiddenFor(model => model.ResumeId_Encrypted, new { id = "ResumeId_Encrypted" })
+                                                @Html.HiddenFor(model => model.ResumeId)
+                                                @Html.HiddenFor(model => model.Resume_ResourceId, new { id = "Resume_ResourceId", Value= @ViewBag.Resume_ResourceId })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Doc Date.
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.DocDate, new { @class = "form-control", id = "txtDocDate", type = "date", name = "DocDate", autocomplete = "Off", @readonly = "readonly", Style = "background-color: #e9ecef;" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <hr class="mt-0">
+                                <div class="row mb-10px">
+                                    <div class="col-md-12">
+                                        <div class="card-row-title">
+                                            Candidate Information
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Salutation
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.Salutation, new List<SelectListItem>{
+                                                new SelectListItem {Text ="Mr.", Value="Mr."},
+                                                new SelectListItem {Text ="Ms.", Value="Ms."},
+                                                 new SelectListItem {Text ="Mrs.", Value="Mrs."},
+                                              }, "--Select--", new { @class = "form-select", name = "Salutation", @id = "txtSalutationName" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row mb-10px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Candidate Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.CandidateName, new { @class = "form-control", id = "txtCandidateName", type = "text", name = "CandidateName", autocomplete = "Off" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Mobile No
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.MobileNo, new { @class = "form-control", id = "txtMobileNo", type = "text", name = "MobileNo", autocomplete = "Off", Maxlength = 10, onkeypress = " return numbervalidate(event)" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+
+                                            <label class="form-label col-form-label col-md-4">
+                                                Alternate Mobile No
+
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.AlternateMobileNo, new { @class = "form-control", id = "txtAlternateMobileNo", type = "text", name = "AlternateMobileNo", autocomplete = "Off", Maxlength = 10, onkeypress = " return numbervalidate(event)" })
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Email Id
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.EmailId, new { @class = "form-control", id = "txtEmailId", type = "text", name = "EmailId", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Gender
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.Gender, new List<SelectListItem>{
+                                                                          new SelectListItem {Text ="Male", Value="Male"},
+                                                                          new SelectListItem {Text ="Female", Value="Female"},
+                                                                           new SelectListItem {Text ="Any", Value="Any"},
+                                                                        }, "--Select--", new { @class = "form-select", id = "txtGender", type = "text", name = "Gender", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Date Of Birth
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.DOB, new { @class = "form-control", id = "txtDOB", type = "date", name = "DOB", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Age
+
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.Age, new { @class = "form-control", id = "txtAge", type = "number", name = "Age", autocomplete = "Off", onkeypress = "return event.charCode >=48", @readonly = "readonly", style = "background-color:#eee;" })
+                                                <span id="ErrortxtAge" class="Error">
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Current City
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.CurrentCity, new { @class = "form-control", id = "txtCurrentCity", type = "text", name = "CurrentCity", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Marital Status
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.MaritalStatus,
+                                               new List<SelectListItem>{new SelectListItem {Text ="Unmarried", Value="Unmarried"},
+                                                                        new SelectListItem {Text ="Married ", Value="Married "},
+                                                                           new SelectListItem {Text ="Widow", Value="Widow"},
+                                                                        }, "--Select--", new { @class = "form-select", id = "txtMaritalStatus", type = "text", name = "MaritalStatus", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Highest Qualification <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.HighestQualification, new SelectList(ViewBag.GetQualificationName, "Id", "Name"), "--Select--", new { id = "txtHighestQualification", @class = "form-select", autocomplete = "off", name = "HighestQualification" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Specific Qualification <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.QualificationRemark, new { @class = "form-control", id = "txtQualificationRemark", type = "text", name = "QualificationRemark", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Nationality
+
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.Nationality, new SelectList(ViewBag.GetNationalityName, "Name", "Name"), new { id = "txtNationality", @class = "form-select", autocomplete = "off", name = "Nationality" })
+                                                @*@Html.TextBoxFor(model => model.Nationality, new { @class = "form-control", id = "txtNationality", type = "text", name = "Nationality", autocomplete = "Off" })*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Family Info
+
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextAreaFor(model => model.FamilyDetails, new { @class = "form-control", id = "txtFamilyDetails", type = "text", name = "FamilyDetails", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <hr class="mt-0">
+                                <div class="row mb-10px">
+                                    <div class="col-md-12">
+                                        <div class="card-row-title">
+                                            Candidate Experince
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Candidate Type
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.CandidateType,
+                                                   new List<SelectListItem>{new SelectListItem {Text ="Fresher", Value="Fresher"},
+                                                   new SelectListItem {Text ="Intern", Value="Intern"},
+                                                   new SelectListItem {Text ="Experience", Value="Experience"},
+                                                  }, "--Select--", new { @class = "form-select", id = "txtCandidateType", type = "text", name = "CandidateType", autocomplete = "Off" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Currently Working
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.CurrentlyWorking,
+                                                new List<SelectListItem>{new SelectListItem {Text ="Yes ", Value="true"},
+                                                   new SelectListItem {Text ="No", Value="false"},
+                                                  }, "--Select--", new { @class = "form-select", id = "txtCurrentlyWorking", type = "text", name = "CurrentlyWorking", autocomplete = "Off" })
+                                                @Html.ValidationMessageFor(model => model.CurrentlyWorking, "", new { @class = "help-block", @id = "ErrorCurrentlyWorking", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Current Company Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.LastCompanyName, new { @class = "form-control", id = "txtLastCompanyName", type = "text", name = "LastCompanyName", autocomplete = "Off" })
+                                                @Html.ValidationMessageFor(model => model.LastCompanyName, "", new { @class = "help-block", @id = "ErrorLastCompanyName", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Total Experience<span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.TotalExperience, new { @class = "form-control", id = "txtTotalExperience", type = "text", name = "TotalExperience", autocomplete = "Off", Maxlength = 2, onkeypress = " return numbervalidate(event)" })
+                                                @Html.ValidationMessageFor(model => model.TotalExperience, "", new { @class = "help-block", @id = "ErrorTotalExperience", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Relevant Experience<span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.RelevantExperience, new { @class = "form-control", id = "txtRelevantExperience", type = "text", name = "RelevantExperience", autocomplete = "Off", Maxlength = 2, onkeypress = " return numbervalidate(event)" })
+                                                @Html.ValidationMessageFor(model => model.RelevantExperience, "", new { @class = "help-block", @id = "ErrorRelevantExperience", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Current Designation
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.LastDesignation, new { @class = "form-control", id = "txtLastDesignation", type = "text", name = "LastDesignation", autocomplete = "Off" })
+                                                @Html.ValidationMessageFor(model => model.LastDesignation, "", new { @class = "help-block", @id = "ErrorLastDesignation", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Suitable For Designation<span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.SutableForDesignation, new SelectList(ViewBag.Designation, "Id", "Name"), "--Select--", new { @class = "form-select", id = "txtSutableForDesignation", type = "text", name = "SutableForDesignation", autocomplete = "Off" })
+                                                @Html.ValidationMessageFor(model => model.SutableForDesignation, "", new { @class = "help-block", @id = "ErrorSutableForDesignation", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Technical Details
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.TechnicalDetails, new { @class = "form-control", id = "txtTechnicalDetails", type = "text", name = "TechnicalDetails", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Communication Skill<span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.CommunicationSkill, new { @class = "form-control", id = "txtCommunicationSkill", type = "text", name = "CommunicationSkill", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Relevant Skill
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.RelevantSkill, new { @class = "form-control", id = "txtSkill", type = "text", name = "Skill", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Ready To Travel
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.ReadyToTraval,
+                            new List<SelectListItem>{new SelectListItem {Text ="Yes", Value="Yes"},
+                                                   new SelectListItem {Text ="No", Value="No"},
+                                                  }, "--Select--", new { @class = "form-select", id = "txtReadyToTraval", type = "text", name = "ReadyToTraval", autocomplete = "Off" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Current CTC
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.CTC, new { @class = "form-control", id = "txtCTC", type = "text", name = "CTC", autocomplete = "Off", onkeypress = " return numbervalidate(event)", Maxlength = 8 })
+                                                @Html.ValidationMessageFor(model => model.ExpectedCTC, "", new { @class = "help-block", @id = "ErrorExpectedCTC", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Expected CTC
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.ExpectedCTC, new { @class = "form-control", id = "txtExpectedCTC", type = "text", name = "ExpectedCTC", autocomplete = "Off", onkeypress = " return numbervalidate(event)", Maxlength = 8 })
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Expat/Local
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.ExpatLocal,
+                            new List<SelectListItem>{
+
+                                                new SelectListItem {Text ="Local", Value="Local"},
+                                                  new SelectListItem {Text ="Expat", Value="Expat"},
+                                                  }, new { @class = "form-select", id = "txtExpatLocal", type = "text", name = "ExpatLocal", autocomplete = "Off" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Job Descriptions
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextAreaFor(model => model.JobDescription, new { @class = "form-control", id = "txtJobDescription", type = "text", name = "JobDescription", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                @*<div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Reference
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.Refreance, new { @class = "form-control", id = "txtReference", type = "text", name = "Reference", autocomplete = "Off" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Resume Category<span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBoxFor(model => model.ResumeCategory, new { @class = "form-control", id = "txtResumeCategory", type = "text", name = "ResumeCategory", autocomplete = "Off" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>*@
+
+
+
+                                <hr class="mt-0">
+                                <div class="row mb-10px">
+                                    <div class="col-md-12">
+                                        <div class="card-row-title">
+                                            Hr Information
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Serving Notice Period
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.ServingNoticePeriod,
+                                                new List<SelectListItem>{new SelectListItem {Text ="Yes", Value="Yes"},
+                                                                         new SelectListItem {Text ="No", Value="No"},
+                                                                        }, "--Select--", new { @class = "form-select", id = "txtServingNoticePeriod", type = "text", name = "ServingNoticePeriod", autocomplete = "Off" })
+                                                @Html.ValidationMessageFor(model => model.ServingNoticePeriod, "", new { @class = "help-block", @id = "ErrorServingNoticePeriod", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Notice Period days<span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.NoticePeriodDays, new SelectList(ViewBag.NoticePeriod, "Id", "Name"), "--Select--", new { @class = "form-select", id = "txtNoticePeriodDays", type = "text", name = "NoticePeriodDays", autocomplete = "Off" })
+                                                @Html.ValidationMessageFor(model => model.NoticePeriodDays, "", new { @class = "help-block", @id = "ErrorNoticePeriodDays", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row LastWorkingDay">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Last working Day
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.LastWorkingDay, new { @class = "form-control", id = "txtLastWorkingDay", type = "date", name = "LastWorkingDay", autocomplete = "Off" })
+                                                @Html.ValidationMessageFor(model => model.ServingNoticePeriod, "", new { @class = "help-block", @id = "ErrorServingNoticePeriod", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Legal Bond<span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.LeaglBoand,
+                                                   new List<SelectListItem>{new SelectListItem {Text ="Yes", Value="Yes"},
+                                                   new SelectListItem {Text ="No", Value="No"},
+                                                  }, "--Select--", new { @class = "form-select", id = "txtLeaglBoand", type = "text", name = "LeaglBoand", autocomplete = "Off" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Legal Bond Month
+
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.BondMonth, new { @class = "form-control", id = "txtBondMonth", type = "text", name = "BondMonth", autocomplete = "Off", onkeypress = " return numbervalidate(event)" })
+                                                @Html.ValidationMessageFor(model => model.BondMonth, "", new { @class = "help-block", @id = "ErrorBondMonth", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Holding Any Offer
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.HoldingAnyOffer,
+                                                               new List<SelectListItem>{new SelectListItem {Text ="Yes", Value="Yes"},
+                                                                new SelectListItem {Text ="No", Value="No"},
+                                                               }, "--Select--", new { @class = "form-select", id = "txtHoldingAnyOffer", type = "text", name = "HoldingAnyOffer", autocomplete = "Off" })
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Offer Remark
+
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.OfferRemark, new { @class = "form-control", id = "txtOfferRemark", type = "text", name = "OfferRemark", autocomplete = "Off" })
+                                                @Html.ValidationMessageFor(model => model.OfferRemark, "", new { @class = "help-block", @id = "ErrorOfferRemark", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Resume Uplaod
+                                            </label>
+                                            <div class="col-md-8">
+                                                <input type="file" name="ResumePath" onchange="ResetFile()" class="form-control" id="txtResumePath" />
+                                                <label class="form-label col-form-label col-md-8" id="lblFileName">@TempData["FileName"]</label>
+                                                @if (TempData["FileName"] == null)
+                                                {
+
+                                                }
+                                                else
+                                                {
+                                                    <a type="button" class="btn btn-success ListBtn btnpress" href="~/ESS/ESS_Recruitment_CandidateData/DownloadFile?FilePath=@TempData["FilePath"]" download>
+                                                        <i class="fa-solid fa-download"></i>
+                                                    </a>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Resume Source
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.ResumeSource, new SelectList(ViewBag.ResumeSource, "Id", "Name"), new { @class = "form-control", id = "txtResumeSource", type = "text", name = "ResumeSource", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6" style="display:none;">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                HR Selection<span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.HrSelection,
+                                                  new List<SelectListItem>{new SelectListItem {Text ="Selected ", Value="Selected"},
+                                                                        }, new { @class = "form-select", id = "txtHrSelection", type = "text", name = "HrSelection", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6" style="display:none;">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                HR Ranking
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.HrRanking,
+                                                 new List<SelectListItem>{new SelectListItem {Text ="Excellent", Value="Excellent"},
+                                                                        }, new { @class = "form-select", id = "txtHrRanking", type = "text", name = "HrRanking", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Referer Employee Name
+                                                @*<span class="important">*</span>*@
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.ResumeReferEmployeeId, new SelectList(ViewBag.ReferEmployee, "Id", "Name"), new { @class = "form-control", id = "txtResumeReferEmployeeId", type = "text", name = "ResumeReferEmployeeId", autocomplete = "Off" })
+                                                @Html.ValidationMessageFor(model => model.ResumeReferEmployeeId, "", new { @class = "help-block", @id = "ErrorResumeReferEmployeeId", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6" style="display:none;">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                HR Comment
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.HRComment, new { @class = "form-control", id = "txtHRComment", type = "text", name = "HRComment", autocomplete = "Off", Value = "Refer Candidate" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Candidate Comment
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextAreaFor(model => model.CandidateComment, new { @class = "form-control", id = "txtCandidateComment", type = "text", name = "CandidateComment", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                              
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-10">
+                                            </div>
+                                            <div class="col-md-2">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="button" id="btnSubmit"
+                                                                class="btn btn-primary btn-sm">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                        
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END panel -->
+    </div>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+        debugger;
+        var LeaglBond = @Html.Raw(Json.Encode(TempData["LeaglBoand"]));
+        var HoldingOffer = @Html.Raw(Json.Encode(TempData["HoldingAnyOffer"]));
+        var ResumeSource = @Html.Raw(Json.Encode(TempData["ResumeSource"]));
+        if(ResumeSource!=null)
+        {
+            $("#txtResumeSource").val(ResumeSource).select2();
+        }
+
+        if(HoldingOffer=="No")
+        {
+            $("#txtOfferRemark").attr("disabled", "disabled");
+        }
+        else{
+            $("#txtOfferRemark").removeAttr("disabled");
+        }
+        if(LeaglBond=="No")
+        {
+            $("#txtBondMonth").attr("disabled", "disabled");
+        }
+        else{
+            $("#txtBondMonth").removeAttr("disabled");
+        }
+
+        //var ServingNoticePeriod = $("#txtServingNoticePeriod").val();
+        //if(ServingNoticePeriod=="No")
+        //{
+        //    $("#txtNoticePeriodDays").attr("disabled", "disabled");
+
+        //}
+        //else{
+        //    $("#txtLastWorkingDay").attr("disabled", false);
+        //}
+
+        var GetCandidateType = $("#txtCandidateType").val();
+        debugger;
+        if(GetCandidateType=="Experience")
+        {
+            $("#txtBondMonth").removeAttr("disabled");
+            $("#txtCurrentlyWorking").removeAttr("disabled");
+            $("#txtLastCompanyName").removeAttr("disabled");
+            $("#txtTotalExperience").removeAttr("disabled");
+            $("#txtRelevantExperience").removeAttr("disabled");
+            $("#txtLastDesignation").removeAttr("disabled");
+            $("#txtSutableForDesignation").removeAttr("disabled");
+
+            $("#txtOfferRemark").removeAttr("disabled");
+        }
+        if(GetCandidateType=="Intern")
+        {
+            $("#txtLastDesignation").attr("disabled", "disabled");
+
+            $("#txtServingNoticePeriod").attr("disabled", "disabled");
+            $("#txtNoticePeriodDays").attr("disabled", "disabled");
+        }
+        if(GetCandidateType=="Fresher")
+        {
+            $("#txtCurrentlyWorking").attr("disabled", "disabled");
+            $("#txtLastCompanyName").attr("disabled", "disabled");
+            $("#txtTotalExperience").attr("disabled", "disabled");
+            $("#txtRelevantExperience").attr("disabled", "disabled");
+            $("#txtServingNoticePeriod").attr("disabled", "disabled");
+            $("#txtNoticePeriodDays").attr("disabled", "disabled");
+            $("#txtLastDesignation").attr("disabled", "disabled");
+
+        }
+
+        $("#txtSutableForDesignation").select2();
+        $("#txtHrSelection").select2();
+        $("#txtHrRanking").select2();
+        $("#txtResumeSource").select2();
+        $("#txtHighestQualification").select2();
+        $("#txtResumeReferEmployeeId").select2();
+        $(".LastWorkingDay").hide();
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        // return false
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+
+        var date = new Date();
+        var dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().split("T")[0];
+        $("#txtDocDate").val(dateString);
+
+
+        var Doc = @Html.Raw(Json.Encode(TempData["DocDate"]));
+        var DOB = @Html.Raw(Json.Encode(TempData["DOB"]));
+        if(DOB =="" || Doc == "" ||DOB ==null|| Doc == null)
+        {
+
+        }
+        else
+        {
+            var Doc =  convertDate(Doc);
+            var DOB =  convertDate(DOB);
+
+            $("#txtDocDate").val(Doc);
+            $("#txtDOB").val(DOB);
+        }
+
+
+       
+
+    });//ready Function
+
+
+
+
+
+
+
+
+    function ResetFile()
+    {
+        let allowedExtension = ['image/jpeg', 'image/jpg', 'image/png','application/pdf','application/docx','application/doc'];
+        let type = document.getElementById('txtResumePath').files[0].type;
+
+        if(allowedExtension.indexOf(type)>-1)
+        {
+        }
+        else
+        {
+            Swal.fire({
+                icon: "error",
+                text: "File type should be jpeg/jpg/png/pdf/docx/doc",
+            })
+            //alert('File type should be jpeg/jpg/png/pdf/docx/doc')
+            document.getElementById("txtResumePath").value = null;
+        }
+        $("#lblFileName").text('');
+    }
+
+</script>
+<script>
+    //use for add regex function
+    jQuery.validator.addMethod(
+    "regex",
+     function(value, element, regexp) {
+         if (regexp.constructor != RegExp)
+             regexp = new RegExp(regexp);
+         else if (regexp.global)
+             regexp.lastIndex = 0;
+         return this.optional(element) || regexp.test(value);
+     },"erreur expression reguliere"
+  );
+
+    $('#SaveCandidateData').validate({
+        rules: {
+            CandidateName: {
+                required: true,
+            },
+            HighestQualification: {
+                required: true,
+            },
+            MaritalStatus: {
+                required: true,
+            },
+            EmailId: {
+                required: true,
+                email:true
+            },
+
+            MobileNo: {
+                required: true,
+
+            },
+            Gender: {
+                required: true,
+            },
+            Skill: {
+                required: true,
+            },
+
+            //CTC: {
+            //    required: true,
+            //},
+
+            ResumeStatus: {
+                required: true,
+            },
+            Nationality:{
+                required: true,
+            },
+
+            Age:{
+                required: true,
+            },
+
+            HoldingAnyOffer:{
+                required: true,
+            },
+            TechnicalDetails:{
+                required: true,
+            },
+            CommunicationSkill:{
+                required: true,
+            },
+            TechnicalDetails:{
+                required: true,
+            },
+
+            ExpatLocal:{
+                required: true,
+            },
+
+            ResumeSource:{
+                required: true,
+            },
+            HrSelection:{
+                required: true,
+            },
+            HrRanking:{
+                required: true,
+            },
+            //ExpectedCTC:{
+            //    required: true,
+            //},
+            RelevantSkill:{
+                required: true,
+            },
+            ReadyToTraval:{
+                required: true,
+            },
+            CurrentCity:{
+                required: true,
+            },
+            QualificationRemark:{
+                required: true,
+            },
+            DOB:{
+                required: true,
+            },
+            Salutation:{
+                required: true,
+            },
+            HRComment:{
+                required: true,
+            },
+            CandidateComment:{
+                required: true,
+            },
+
+        },
+        messages: {
+            CandidateName: {
+                required: "Candidate name is required",
+            },
+            HighestQualification: {
+                required: "Highest Qualification is required",
+            },
+            MaritalStatus: {
+                required: "Marital Status is required",
+            },
+            EmailId: {
+                required: "Email Id is required",
+                email: "please enter valid EmailId",
+            },
+
+            MobileNo: {
+                required: "Mobile No is required",
+
+            },
+            Gender: {
+                required: "Gender is required",
+            },
+            Skill: {
+                required: "Skill is required",
+            },
+
+            //CTC: {
+            //    required:"CTC is required",
+            //},
+            ResumeStatus: {
+                required:"Remark is required",
+            },
+            Nationality: {
+                required:"Nationality is required",
+            },
+            Age: {
+                required:"Age is required",
+            },
+
+            HoldingAnyOffer: {
+                required:"Holding any Offer is required",
+            },
+            TechnicalDetails: {
+                required:"Technical Details is required",
+            },
+            CommunicationSkill: {
+                required:"Communication Skill is required",
+            },
+
+            ExpatLocal: {
+                required:"ExpatLocal is required",
+            },
+            ReadyToTraval: {
+                required:"Ready to traval is required",
+            },
+            ResumeSource: {
+                required:"Resume Source is required",
+            },
+            HrSelection: {
+                required:"Hr Selection  is required",
+            },
+            HrRanking: {
+                required:"Hr Ranking is required",
+            },
+            //ExpectedCTC: {
+            //    required:"Expected CTC is required",
+            //},
+            RelevantSkill: {
+                required:"Relevant skill is required",
+            },
+            CurrentCity: {
+                required:"Current city is required",
+            },
+            QualificationRemark: {
+                required:"Specific qualification is required",
+            },
+            DOB: {
+                required:"Date of birth is required",
+            },
+            Salutation: {
+                required:"Salutation is required",
+            },
+            HRComment: {
+                required:"HR comment is required",
+            },
+            CandidateComment: {
+                required:"Candidate comment is required",
+            },
+
+        },
+
+    });
+    var form = $("#SaveCandidateData");
+    form.validate();
+    $("#btnSubmit").click(function () {
+        const Approved = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        Approved.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes submit!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+
+            allowOutsideClick: () => {
+                const popup = Swal.getPopup()
+                popup.classList.remove('swal2-show')
+                setTimeout(() => {
+                    popup.classList.add('animate__animated', 'animate__headShake')
+                })
+                setTimeout(() => {
+                    popup.classList.remove('animate__animated', 'animate__headShake')
+                }, 500)
+                return false
+            }
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                debugger;
+                debugger;
+                form.valid();
+                if(form.valid()==false)
+                {
+                    $("#txtDOB").removeClass("error");
+                    $("#txtGender").removeClass("error");
+                    return false;
+                }
+
+                var txtServingNoticePeriod=$("#txtServingNoticePeriod").val();
+                if(txtServingNoticePeriod=="Yes")
+                {
+                    var txtNoticePeriodDays=$("#txtNoticePeriodDays").val();
+                    var txtLastWorkingDay=$("#txtLastWorkingDay").val();
+                    if(txtNoticePeriodDays==""  && txtLastWorkingDay=="" )
+                    {$('#ErrorNoticePeriodDays').html("Notice period days is required");return false;
+                        $('#ErrorLastWorkingDay').html("Last working days is required");return false}
+                }
+                else{ $('#ErrorNoticePeriodDays').html("");
+                    $('#ErrorLastWorkingDay').html("");}
+
+
+                var HoldingAnyOffer=$("#txtHoldingAnyOffer").val();
+                if(HoldingAnyOffer=="Yes")
+                {
+                    var OfferRemark=$("#txtOfferRemark").val();
+                    if(OfferRemark=="")
+                    {$('#ErrorOfferRemark').html("Offer remark is required");return false}
+                }
+
+                else{ $('#ErrorOfferRemark').html("");}
+
+                var LeaglBoand=$("#txtLeaglBoand").val();
+                if(LeaglBoand=="Yes")
+                {
+                    var OfferRemark=$("#txtBondMonth").val();
+                    if(OfferRemark=="")
+                    {$('#ErrorBondMonth').html("Bond month is required");return false}
+                }
+
+                else{ $('#ErrorBondMonth').html("");}
+
+                var CandidateType=$("#txtCandidateType").val();
+                if(CandidateType=="Intern")
+                {
+                    var LastDesignation=$("#txtLastDesignation").val();
+                    if(LastDesignation=="")
+                    {$('#ErrorLastDesignation').html("Current designation is required");return false}
+                }
+
+                else{ $('#ErrorLastDesignation').html("");}
+
+                if(CandidateType=="Experience")
+                {
+                    var LastDesignation=$("#txtLastDesignation").val();
+                    var CurrentlyWorking=$("#txtCurrentlyWorking").val();
+                    var LastCompanyName=$("#txtLastCompanyName").val();
+                    var TotalExperience=$("#txtTotalExperience").val();
+                    var ServingNoticePeriod=$("#txtServingNoticePeriod").val();
+                    var NoticePeriodDays=$("#txtNoticePeriodDays").val();
+                    if(LastDesignation=="")
+                    {$('#ErrorLastDesignation').html("Current designation is required");return false}
+                    if(CurrentlyWorking=="")
+                    {$('#ErrorCurrentlyWorking').html("Currently working is required");return false}
+                    if(LastCompanyName=="")
+                    {$('#ErrorLastCompanyName').html("Last company name is required");return false}
+                    if(TotalExperience=="")
+                    {$('#ErrorTotalExperience').html("Total experience is required");return false}
+                    if(ServingNoticePeriod=="")
+                    {$('#ErrorServingNoticePeriod').html("Serving notice period is required");return false}
+
+                }
+
+                else{ $('#ErrorLastDesignation').html("");
+                    $('#ErrorCurrentlyWorking').html("");
+                    $('#ErrorLastCompanyName').html("");
+                    $('#ErrorTotalExperience').html("");
+                    $('#ErrorServingNoticePeriod').html("");
+                    $('#ErrorNoticePeriodDays').html("");
+                }
+
+                var ResumeSource = $("#txtResumeSource option:selected").text().toLowerCase();
+                var ResumeReferEmployeeId = $("#txtResumeReferEmployeeId option:selected").val();
+                if(ResumeSource=="staff")
+                {
+                    if(ResumeReferEmployeeId!="")
+                    {
+                        $("#ErrorResumeReferEmployeeId").html("");
+                    }
+                    else{
+                        $("#ErrorResumeReferEmployeeId").html("Referer Employee Name");return false;
+                    }
+
+                }
+                else{
+                    $("#ErrorResumeReferEmployeeId").html("");
+                }
+
+                $(".Userloaderbg").css("display", "flex");
+                $("#SaveCandidateData").submit();
+
+            } else if (
+                /* Read more about handling dismissals below */
+                    result.dismiss === Swal.DismissReason.cancel
+                    ) {
+
+            }
+        })
+    });
+</script>
+
+
+
+<script>
+
+    function millisecTodate(milliDate) {
+        var date = new Date(milliDate);
+        var mnth = ("0" + (date.getMonth() + 1)).slice(-2);
+        var day = ("0" + date.getDate()).slice(-2);
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        hours = hours < 10 ? '0'+hours : hours;
+        minutes = minutes < 10 ? '0'+minutes : minutes;
+        var ddmmyyyy = [date.getFullYear(), mnth,day].join("-");
+        return ddmmyyyy;
+    }
+
+    function convertDate(data) {
+        var getdate = parseInt(data.replace("/Date(", "").replace(")/", ""));
+        var date = millisecTodate(getdate);
+        return date;
+    }
+
+
+
+
+
+    $("#txtCandidateType").change(function()
+    {
+        $("#txtCurrentlyWorking").val("");
+        $("#txtLastCompanyName").val("");
+        $("#txtRelevantExperience").val("");
+        $("#txtLastDesignation").val("");
+        $("#txtSutableForDesignation").val("").select2();
+        $("#txtServingNoticePeriod").val("");
+        $("#txtNoticePeriodDays").val("");
+        $("#txtTotalExperience").val("");
+
+        debugger;
+        var CandidateType= $("#txtCandidateType").val();
+        if(CandidateType=="Fresher")
+        {
+            $("#txtCurrentlyWorking").attr("disabled", "disabled");
+            $("#txtLastCompanyName").attr("disabled", "disabled");
+            $("#txtTotalExperience").attr("disabled", "disabled");
+            $("#txtRelevantExperience").attr("disabled", "disabled");
+            $("#txtLastDesignation").attr("disabled", "disabled");
+
+            $("#txtServingNoticePeriod").attr("disabled", "disabled");
+            $("#txtNoticePeriodDays").attr("disabled", "disabled");
+
+
+        }
+        if(CandidateType=="Intern")
+        {
+
+            $("#txtLastDesignation").removeAttr("disabled")
+
+
+        }
+
+        if(CandidateType=="Experience")
+        {
+            $("#txtCurrentlyWorking").removeAttr("disabled");
+            $("#txtLastCompanyName").removeAttr("disabled")
+            $("#txtTotalExperience").removeAttr("disabled");
+            $("#txtRelevantExperience").removeAttr("disabled")
+            $("#txtLastDesignation").removeAttr("disabled")
+            $("#txtServingNoticePeriod").removeAttr("disabled")
+            $("#txtNoticePeriodDays").removeAttr("disabled")
+
+        }
+    })
+
+    $("#txtLeaglBoand").change(function()
+    {
+        $("#txtBondMonth").val("");
+        var LeaglBoand=$("#txtLeaglBoand").val();
+        if(LeaglBoand=="Yes")
+        {
+            $("#txtBondMonth").removeAttr("disabled")
+        }
+        else{
+            $("#txtBondMonth").attr("disabled", "disabled");
+        }
+
+    })
+
+    $("#txtHoldingAnyOffer").change(function()
+    {
+        $("#txtOfferRemark").val("");
+        var HoldingAnyOffer=$("#txtHoldingAnyOffer").val();
+
+        if(HoldingAnyOffer=="Yes")
+        {
+            $("#txtOfferRemark").removeAttr("disabled")
+
+        }
+        else{
+            $("#txtOfferRemark").attr("disabled", "disabled");
+        }
+
+    })
+
+    $("#txtDOB").on("change", function(e) {
+        debugger;
+        var start = new Date(document.getElementById('txtDOB').value);
+
+        dob = new Date(start);
+        var today = new Date();
+        var age = Math.floor((today-dob) / (365.25 * 24 * 60 * 60 * 1000));
+        $('#txtAge').val(age);
+
+        var Checkage=$('#txtAge').val();
+        if(Checkage<18)
+        {
+            $('#ErrortxtAge').html("Age should not be less than 18");
+            $('#txtDOB').val("");
+            return false;
+        }
+        else{
+            $('#ErrortxtAge').html("");
+        }
+    })
+
+    $("#txtRelevantExperience").keyup(function()
+    {
+        var RelevantExperience= $("#txtRelevantExperience").val();
+        var TotalExperience= $("#txtTotalExperience").val();
+        if(RelevantExperience>TotalExperience)
+        {
+            $('#ErrorRelevantExperience').html("Relevant experience should not be greater than total experience");
+            return false;
+        }
+        else{
+            $('#ErrorRelevantExperience').html("");
+        }
+
+        RelevantExperience>30 ?
+       $("#ErrorRelevantExperience").html("Not allow greater than 30 month of experience") : $("#ErrorRelevantExperience").html(""); return false;
+    })
+    $("#txtServingNoticePeriod").on("change", function() {
+        debugger;
+        var ServingNoticePeriod=$("#txtServingNoticePeriod").val();
+        if(ServingNoticePeriod=="Yes")
+        {
+            $(".LastWorkingDay").show();
+            $("#txtLastWorkingDay").attr("disabled", false);
+
+            $("#txtNoticePeriodDays").removeAttr("disabled")
+
+        }
+        else{
+            $(".LastWorkingDay").hide();
+            $("#txtNoticePeriodDays").attr("disabled", "disabled");
+        }
+
+    })
+
+    $("#txtTotalExperience").keyup(function() {
+
+        var TotalExperience=  $("#txtTotalExperience").val();
+        TotalExperience>30 ?
+        $("#ErrorTotalExperience").html("Not allow greater than 30 month of experience") : $("#ErrorTotalExperience").html(""); return false;
+    });
+
+
+    $("#txtBondMonth").keyup(function() {
+
+        var LegalboandMonth=  $("#txtBondMonth").val();
+        LegalboandMonth>60 ?
+        $("#ErrorBondMonth").html("Not allow greter than 60 month") : $("#ErrorBondMonth").html(""); return false;
+    });
+
+
+    $("#txtCTC,#txtExpectedCTC").keyup(function() {
+        debugger;
+        var txtCTC= Number($("#txtCTC").val());
+        var txtExpectedCTC= Number($("#txtExpectedCTC").val());
+        if(txtCTC>txtExpectedCTC)
+        { $("#ErrorExpectedCTC").html("Current ctc should less than expected ctc");return false; }
+        else{
+            $("#ErrorExpectedCTC").html("");
+        }
+    });
+
+
+    function numbervalidate(key) {
+        var presskeys = (key.which) ? key.which : key.presskeys;
+        if (!(presskeys == 8 || presskeys == 46) && (presskeys < 48 || presskeys > 57)) {
+            return false;
+        }
+    }
+
+</script>

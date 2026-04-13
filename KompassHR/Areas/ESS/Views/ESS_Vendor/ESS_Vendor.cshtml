@@ -1,0 +1,617 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_Vendor.Mas_Vendor
+@{
+    ViewBag.Title = "ESS_Vendor";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+
+    .form-check-input {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+#divHireLinkCode {
+    margin-top: 2px;
+}
+
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    .trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .dataTables_scrollBody::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .dataTables_scrollBody::-webkit-scrollbar {
+        width: 6px;
+        height: 3px;
+        background-color: #F5F5F5;
+    }
+
+    .dataTables_scrollBody::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .Error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    .card-row-title {
+        color: #e63c3c;
+        font-size: 18px;
+        font-weight: 600;
+        text-transform: capitalize;
+        border-bottom: #009ce7 1px solid;
+    }
+    /* Custom large modal */
+    .modal-xl {
+        max-width: 90%; /* Adjust this value for larger size */
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Create Vendor
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("GetList", "ESS_Vendor",  new { id = 41,ScreenId=693, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">
+                        <i class="fas fa-file-signature"></i> Vendor Details - @ViewBag.AddUpdateTitle
+                    </h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand">
+                            <i class="fa fa-expand"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="alert alert-info rounded-0 d-flex align-items-center mb-0">
+                    <div class="flex-shrink-0 me-3">
+                        <i class="fas fa-info-circle fa-2x"></i>
+                    </div>
+                    <div>
+                        <h5 class="alert-heading mb-1">Vendor Information</h5>
+                        <p class="mb-0">This form is for creating and managing vendor information system.</p>
+                    </div>
+                </div>
+
+                <div class="panel-body">
+                    <form role="form" action="@Url.Action("SaveUpdate", "ESS_Vendor", new { area = "ESS" })" id="SaveVendorMaster" method="post" enctype="multipart/form-data">
+                        @Html.HiddenFor(model => model.VendorId_Encrypted, new { id = "txtVendorId_Encrypted" })
+
+                        <!-- Basic Information Card -->
+                        <div class="card mb-4">
+                            <div class="card-header bg-light">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-id-card me-2"></i>Basic Information
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <!-- Company Name -->
+                                    <div class="col-md-6">
+                                        <label class="form-label">Company Name <span class="text-danger">*</span></label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-building"></i></span>
+                                            @Html.TextBoxFor(model => model.CompanyName, new { @class = "form-control", autocomplete = "off", placeholder = "Enter company name",id= "txtCompanyName" })
+                                        </div>
+                                    </div>
+
+                                    <!-- Trade Name -->
+                                    <div class="col-md-6">
+                                        <label class="form-label">Trade Name</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-trademark"></i></span>
+                                            @Html.TextBoxFor(model => model.TradeName, new { @class = "form-control", placeholder = "Enter trade name if different" })
+                                        </div>
+                                    </div>
+
+                                    <!-- Nature of Business Dropdown -->
+                                    <div class="col-md-6">
+                                        <label class="form-label">Nature of Business</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-industry"></i></span>
+                                            @Html.DropDownListFor(model => model.NatureOfBusiness, new SelectList(
+                                    new List<SelectListItem>
+                                    {
+                                        new SelectListItem { Text = "Manufacturing", Value = "Manufacturing" },
+                                        new SelectListItem { Text = "Services", Value = "Services" },
+                                        new SelectListItem { Text = "IT & Software", Value = "IT & Software" },
+                                        new SelectListItem { Text = "Construction", Value = "Construction" },
+                                        new SelectListItem { Text = "Healthcare", Value = "Healthcare" },
+                                        new SelectListItem { Text = "Education", Value = "Education" },
+                                        new SelectListItem { Text = "Retail", Value = "Retail" },
+                                        new SelectListItem { Text = "Logistics", Value = "Logistics" },
+                                        new SelectListItem { Text = "Consulting", Value = "Consulting" },
+                                        new SelectListItem { Text = "Other", Value = "Other" }
+                                    }, "Value", "Text"), "-- Select Nature of Business --", new { @class = "form-select" })
+                                        </div>
+                                    </div>
+
+                                    <!-- Date of Establishment -->
+                                    <div class="col-md-6">
+                                        <label class="form-label">Date of Establishment</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                                            @Html.TextBoxFor(model => model.DateOfEstablishment, "{0:yyyy-MM-dd}", new { type = "date", @class = "form-control" })
+                                        </div>
+                                    </div>
+
+                                    <!-- Vendor Type Dropdown -->
+                                    <div class="col-md-6">
+                                        <label class="form-label">Vendor Type</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-tags"></i></span>
+                                            @Html.DropDownListFor(model => model.VendorType, new SelectList(
+                                    new List<SelectListItem>
+                                    {
+                                        new SelectListItem { Text = "Manpower Supply", Value = "Manpower Supply" },
+                                        new SelectListItem { Text = "Candidate Supply", Value = "Candidate Supply" },
+                                        new SelectListItem { Text = "Both", Value = "Both" }
+                                    }, "Value", "Text"), "-- Select Vendor Type --", new { @class = "form-select" })
+                                        </div>
+                                    </div>
+
+                                    <!-- Description -->
+                                    <div class="col-md-12">
+                                        <label class="form-label">Description</label>
+                                        @Html.TextAreaFor(model => model.Description, new { @class = "form-control summernote", rows = 3, placeholder = "Detailed description about the vendor" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Address Information Card -->
+                        <div class="card mb-4">
+                            <div class="card-header bg-light">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-map-marker-alt me-2"></i>Address Information
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <!-- Registered Address -->
+                                    <div class="col-md-6">
+                                        <label class="form-label">Registered Address</label>
+                                        @Html.TextAreaFor(model => model.RegisteredAddress, new { @class = "form-control", rows = 3, placeholder = "Legal registered address of the company" })
+                                    </div>
+
+                                    <!-- Operation Address -->
+                                    <div class="col-md-6">
+                                        <label class="form-label">Operation Address</label>
+                                        @Html.TextAreaFor(model => model.OperationAddress, new { @class = "form-control", rows = 3, placeholder = "Primary operational address if different" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Legal & Compliance Card -->
+                        <div class="card mb-4">
+                            <div class="card-header bg-light">
+                                <h5 class="card-title mb-0">
+                                    <i class="fas fa-file-contract me-2"></i>Legal & Compliance
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <!-- GSTIN -->
+                                    <div class="col-md-4">
+                                        <label class="form-label">GSTIN</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-receipt"></i></span>
+                                            @Html.TextBoxFor(model => model.GSTIN, new { @class = "form-control", placeholder = "15-character GST number" })
+                                        </div>
+                                    </div>
+
+                                    <!-- PAN -->
+                                    <div class="col-md-4">
+                                        <label class="form-label">PAN</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                                            @Html.TextBoxFor(model => model.PAN, new { @class = "form-control", placeholder = "10-character PAN number" })
+                                        </div>
+                                    </div>
+
+                                    <!-- TAN -->
+                                    <div class="col-md-4">
+                                        <label class="form-label">TAN</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-file-invoice"></i></span>
+                                            @Html.TextBoxFor(model => model.TAN, new { @class = "form-control", placeholder = "Tax deduction account number" })
+                                        </div>
+                                    </div>
+
+                                    <!-- UDYAM/MSME -->
+                                    <div class="col-md-4">
+                                        <label class="form-label">UDYAM / MSME No.</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-certificate"></i></span>
+                                            @Html.TextBoxFor(model => model.UDYAMorMSME, new { @class = "form-control", placeholder = "MSME registration number" })
+                                        </div>
+                                    </div>
+
+                                    <!-- EPFO Number -->
+                                    <div class="col-md-4">
+                                        <label class="form-label">EPFO Number</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-users"></i></span>
+                                            @Html.TextBoxFor(model => model.EPFONumber, new { @class = "form-control", placeholder = "EPF registration number" })
+                                        </div>
+                                    </div>
+
+                                    <!-- Labour License -->
+                                    <div class="col-md-4">
+                                        <label class="form-label">Labour License No.</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-hard-hat"></i></span>
+                                            @Html.TextBoxFor(model => model.LabourLicenseNumber, new { @class = "form-control", placeholder = "Labor license number" })
+                                        </div>
+                                    </div>
+
+                                    <!-- ISO/Quality Certificate File Upload -->
+                                    <div class="col-md-12">
+                                        <label class="form-label">ISO / Quality Certificate</label>
+                                        <div class="input-group">
+                                            <input type="file" class="form-control" id="CertificateFile" name="CertificateFile" accept=".pdf">
+                                         
+                                        </div>
+                                        <small class="text-muted">Accepted formats: PDF(Max 5MB)</small>
+
+                                        @if (Model != null && !string.IsNullOrEmpty(Model.VendorId_Encrypted))
+                                        {
+                                            <div class="mt-2">
+                                                <span class="badge bg-info">
+                                                    <i class="fas fa-paperclip me-1"></i>
+                                                </span>
+                                                <a href="@Url.Action("DownloadCertificate", "ESS_PMS_CreateVendorMaster", new { area = "ESS", id = Model.VendorId_Encrypted })"
+                                                   class="btn btn-sm btn-link">
+                                                    <i class="fas fa-download"></i> Download
+                                                </a>
+                                            </div>
+                                        }
+                                    </div>
+
+                                    <!-- HireLink Software -->
+                                    <!-- HireLink Software -->
+                                    <div class="col-md-12">
+                                        <label class="form-label mb-2">Do you use HireLink software?</label>
+
+                                        <div class="row align-items-center">
+                                            <!-- Checkbox -->
+                                            <div class="col-md-1">
+                                                <div class="form-check mt-1">
+                                                    @Html.CheckBoxFor(
+        model => model.IsHavingHirelink,
+        new { @class = "form-check-input", id = "chkHireLink" }
+    )
+                                                    <label class="form-check-label" for="chkHireLink">
+                                                        Yes
+                                                    </label>
+                                                </div>
+                                            </div>
+
+                                            <!-- Customer Code -->
+                                            <div class="col-md-5 d-none" id="divHireLinkCode">
+                                                @*<input type="text"
+                                                       class="form-control"
+                                                       id="HireLinkCustomerCode"
+                                                       name="HireLinkCustomerCode"
+                                                       placeholder="Enter HireLink customer code" />*@
+
+                                                @Html.TextBoxFor(model => model.CustomerCode, new { @class = "form-control", id = "txtCustomerCode", name= "CustomerCode", placeholder = "Enter HireLink customer code" })
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="d-flex justify-content-end">
+                                    <button type="submit" id="btnSubmit" class="btn btn-primary me-2">
+                                        <i class="fa-solid fa-floppy-disk me-1"></i> Submit
+                                    </button>
+                                    <button type="button" id="btnGetList" class="btn btn-danger">
+                                        <i class="fa-solid fa-share-from-square me-1"></i> List
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>        </div>
+    </div>
+</div>
+
+    <script>
+
+        $("#btnGetList").click(function () {
+            window.location.href = '@Url.Action("GetList", "ESS_Vendor", new { area = "ESS" })';
+        });
+
+        $.validator.addMethod("requiredIfHireLink", function (value, element) {
+            if ($("#chkHireLink").is(":checked")) {
+                return $.trim(value).length > 0;
+            }
+            return true;
+        }, "Please enter HireLink customer code");
+
+        $("#SaveVendorMaster").validate({
+            rules: {
+                CompanyName: {
+                    required: true,
+                },
+                NatureOfBusiness: {
+                    required: true,
+                },
+                DateOfEstablishment: {
+                    required: true,
+                },
+                VendorType: {
+                    required: true,
+                },
+                Description: {
+                    required: true,
+                },
+                RegisteredAddress: {
+                    required: true,
+                },
+                GSTIN: {
+                    required: true,
+                },
+                PAN: {
+                    required: true,
+                },
+                TAN: {
+                    required: true,
+                },
+                EPFONumber: {
+                    required: true,
+                },
+                LabourLicenseNumber: {
+                    required: true,
+                },
+                CustomerCode: {
+                    requiredIfHireLink: true
+                }
+            },
+            messages: {
+                CompanyName: {
+                    required: "Please enter the company name",
+                },
+                NatureOfBusiness: {
+                    required: "Please select nature of business",
+                },
+                DateOfEstablishment: {
+                    required: "Please select date of establishment",
+                },
+                VendorType: {
+                    required: "Please select vendor type",
+                },
+                Description: {
+                    required: "Please enter description",
+                },
+                RegisteredAddress: {
+                    required: "Please enter registered address",
+                },
+                GSTIN: {
+                    required: "Please enter GSTIN",
+                },
+                PAN: {
+                    required: "Please enter PAN",
+                },
+                TAN: {
+                    required: "Please enter TAN",
+                },
+                EPFONumber: {
+                    required: "Please enter EPFO number",
+                },
+                LabourLicenseNumber: {
+                    required: "Please enter labour license number",
+                },
+                CustomerCode: {
+                    requiredIfHireLink: "HireLink customer code is required"
+                }
+            },
+            errorElement: "span",
+            errorPlacement: function (error, element) {
+                error.addClass("invalid-feedback");
+                if (element.parent('.input-group').length) {
+                    error.insertAfter(element.parent());
+                }
+                else {
+                    error.insertAfter(element);
+                }
+            },
+            highlight: function (element, errorClass, validClass) {
+                $(element).addClass("is-invalid").removeClass("is-valid");
+            },
+            unhighlight: function (element, errorClass, validClass) {
+                $(element).removeClass("is-invalid").addClass("is-valid");
+            },
+            submitHandler: function (form) {
+                form.submit();
+            }
+        });
+
+        $("#chkHireLink").change(function () {
+            if ($(this).is(":checked")) {
+                $("#divHireLinkCode").removeClass("d-none");
+            } else {
+                $("#divHireLinkCode").addClass("d-none");
+                $("#txtCustomerCode").val("");
+            }
+        });
+
+
+        $(document).ready(function () {
+
+                var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+                var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+                debugger;
+                if (Message != null) {
+                    if (Message != null) {
+                        Swal.fire({
+                            icon: Icon,
+                            text: Message,
+                            allowOutsideClick: () => {
+                                const popup = Swal.getPopup()
+                                popup.classList.remove('swal2-show')
+                                setTimeout(() => {
+                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                })
+                                setTimeout(() => {
+                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                }, 500)
+                                return false
+                            }
+                        });
+                    }
+                }
+
+
+
+
+            var form = $("#SaveVendorMaster");
+            form.validate();
+            $("#btnSubmit").click(function () {
+                debugger
+                if (!form.valid()) {
+                    return false;
+                }
+                var CompanyName = $('#txtCompanyName').val();
+                var VendorId_Encrypted = $('#txtVendorId_Encrypted').val();
+                $.ajax({
+                    url: '@Url.Action("IsVendorExist", "ESS_Vendor")',
+                    method: "get",
+                    data: {CompanyName: CompanyName,VendorId_Encrypted: VendorId_Encrypted},
+                    success: function (response) {
+                        if (response.Icon === "success") {
+                            $.ajax({
+                                url: '@Url.Action("Is_LogSettingExists", "Setting_TimeOffice_LogSetting")',
+                                method: "get",
+                                data: {CompanyName: CompanyName, VendorId_Encrypted: VendorId_Encrypted },
+                                success: function (response) {
+                                    debugger
+                                    if (response.Icon == "error") {
+                                        showAlert(response.Icon, response.Message);
+                                    } else {
+                                        $("#SaveVendorMaster").submit();
+
+                                    }
+                                }
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: response.Icon,
+                                text: response.Message
+                            });
+                        }
+                    }
+                });
+            });
+
+
+
+
+        });
+    </script>

@@ -1,0 +1,716 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_Recruitment.Recruitment_ResourceRequest_Update
+@{
+    ViewBag.Title = "ViewForRequestAssign";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+
+<link href="~/assets/plugins/summernote/dist/summernote-lite.css" rel="stylesheet" />
+<script src="~/assets/plugins/summernote/dist/summernote-lite.min.js"></script>
+
+
+<style>
+    .note-toolbar {
+        display: none;
+    }
+
+    .note-editable {
+        height: 100% !important;
+        [contenteditable="false"];
+    }
+
+    .help-block {
+        font-size: 12px;
+    }
+
+    .table, tr, td, th, .invoice, .smallFrom {
+        border: none;
+        font-size: 13px;
+        font-family: Arial;
+    }
+
+    .lblsize {
+        font-size: 15px;
+    }
+
+    p {
+        font-size: 15px;
+    }
+     label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .Error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+</style>
+
+
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Recruitment Assign
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_Recruitment_Menu", "ESS_Recruitment_Menu", new {id = 1, ScreenId=126, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <hr>
+    <div class="invoice">
+        <form role="form" action='@Url.Action("UpdateEployee", "ESS_Recruitment_RecruitmentAssign", new { area = "ESS" })' id="UpdateResourcesRecruitment" method="post" enctype="multipart/form-data">
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="row mb-15px">
+                        <label class="form-label col-form-label col-md-4">
+                            Responsible For Recruitment <span class="important">*</span>
+                        </label>
+                        <div class="col-md-8">
+                            @Html.DropDownListFor(model => model.ResponsibleRecruitmentEmployeeId, new SelectList(ViewBag.ResponsibleRecruitment, "Id", "Name"), "--Select--", new { id = "ddlResponsibleRecruitmentEmployeeId", @class = "form-control select", name = "ResponsibleRecruitmentEmployeeId" })
+                            @Html.ValidationMessage("Employee", new { id = "ErrorEmployee", @class = "help-block", @style = "color:red" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="row mb-15px">
+                        <label class="form-label col-form-label col-md-4">
+                            Closing Date For Assigning <span class="important">*</span>
+                        </label>
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(model => model.ClosingDate, ViewBag.ResourceApprovalList.ClosingDate as string, new { @class = "form-control", @id = "txtdate", type = "date",name= "ClosingDate" })
+                            @Html.ValidationMessage("Date", new { id = "ErrorDate", @class = "help-block", @style = "color:red" })
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="row mb-15px">
+                        <label class="form-label col-form-label col-md-4">
+                            Legal Bond@*<span class="important">*</span>*@
+                        </label>
+                        <div class="col-md-8">
+                            @Html.DropDownListFor(model => model.LegalBondApplicable, new List<SelectListItem>{
+                                               new SelectListItem {Text ="No", Value="false"},
+                                               new SelectListItem {Text ="Yes", Value="true"},
+
+                                                                      }, "--Select--",
+                                               new { @class = "form-control", id = "txtLegalBondApplicable", name = "LegalBond", autocomplete = "Off" })
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="row mb-15px">
+                        <label class="form-label col-form-label col-md-4">
+                            Legal Bond(Month)
+                            @*<span class="important">*</span>*@
+                        </label>
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(model => model.LegalBondDuration, ViewBag.ResourceApprovalList.LegalBondDuration as string, new { @class = "form-control", id = "txtLegalBondDuration", type = "text", name = "LegalBondDuration", autocomplete = "Off", onkeypress = " return numbervalidate(event)", Maxlength = 2 })
+                            @Html.ValidationMessageFor(model => model.LegalBondDuration, "", new { @class = "help-block", id = "ErrortxtLegalBondDuration", @style = "color:red" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="row mb-15px">
+                        <label class="form-label col-form-label col-md-4">
+                            Position Budgeted
+                            @*<span class="important">*</span>*@
+                        </label>
+                        <div class="col-md-8">
+                            @Html.DropDownListFor(model => model.BudgetApproved, new List<SelectListItem>{
+                                               new SelectListItem {Text ="No", Value="false"},
+                                               new SelectListItem {Text ="Yes", Value="true"},
+
+                                                                      }, "--Select--",
+                                               new { @class = "form-control", id = "txtBudgetApproved", name = "BudgetApproved", autocomplete = "Off" })
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="row mb-15px">
+                        <label class="form-label col-form-label col-md-4">
+                            Max. Budget (in Lakh)@*<span class="important">*</span>*@
+                        </label>
+                        <div class="col-md-8">
+                            @Html.TextBoxFor(model => model.MaxBudget, new { @class = "form-control", id = "txtMaxBudget", type = "text", name = "MaxBudget", autocomplete = "Off", onkeypress = "return event.charCode >=48" })
+                            @Html.ValidationMessageFor(model => model.MaxBudget, "", new { id = "ErrorMaxBudget", @style = "color:red", @class = "help-block" })
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="LastShortLeaveBx">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="BtnBx">
+                                <div>
+                                    <button type="button" class="btn btn-primary btn-sm" id="btnSubmit">Submit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </form>
+            <hr />
+            <!-- BEGIN invoice-company -->
+            @*<div class="col-md-12">
+                <div class="row mb-15px">
+                    <label class="form-label col-form-label col-md-2 lblsize">Responsible For Recruitment <span class="important">*</span></label>
+                    <div class="col-md-4">
+                        @Html.DropDownList("Employee", new SelectList(ViewBag.EmployeeName, "Id", "Name"), "--Select--", new { @class = "form-control", @id = "txtEmployee" })
+                        @Html.ValidationMessage("Employee", new { id = "ErrorEmployee", @class = "help-block", @style = "color:red" })
+
+                    </div>
+                    <label class="form-label col-form-label col-md-1 lblsize"> Date <span class="important">*</span></label>
+                    <div class="col-md-2">
+                        @Html.TextBox("Date", null, new { @class = "form-control", @id = "txtdate", type = "date" })
+                        @Html.ValidationMessage("Date", new { id = "ErrorDate", @class = "help-block", @style = "color:red" })
+                    </div>
+                    <div class="col-md-1">
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-primary btn-sm" id="btnSubmit"><i class="fa-solid fa-floppy-disk"> </i> &nbsp;Submit</button>
+                    </div>
+                </div>
+            </div>*@
+            <!-- END invoice-company -->
+
+            <form class="form">
+                <div class="card">
+                    <div id="card">
+                        <div class="invoice-header">
+                            <div class="invoice-from">
+                                <b><small class="smallFrom">From,</small></b>
+                                <address class="mt-5px mb-5px">
+                                    <i class="fa-solid fa-user"> </i>&nbsp;&nbsp;   <strong class="text-dark"><b>@ViewBag.ResourceApprovalList.EmployeeName</b></strong><br />
+                                    <i class="fa-solid fa-building"> </i>&nbsp;&nbsp;&nbsp;&nbsp;<b>Department&nbsp;:</b> &nbsp;@ViewBag.ResourceApprovalList.EmpDepartmentName<br />
+                                    <i class="fa-regular fa-handshake"> </i>&nbsp;&nbsp;<b>Designation&nbsp;:</b> &nbsp; @ViewBag.ResourceApprovalList.EmpDesignationName  <b></b><br />
+                                    <i class="fa-solid fa-phone-volume"> </i>&nbsp;&nbsp; <b>Phone&nbsp;:</b>  &nbsp;  +91 @ViewBag.ResourceApprovalList.companymobileno <b></b><br />
+                                    <i class="fa-solid fa-envelope"> </i>&nbsp;&nbsp; <b>Email &nbsp;:</b> &nbsp;  @ViewBag.ResourceApprovalList.CompanyMailID
+                                </address>
+                            </div>
+
+                            <div class="invoice-to">
+                                <b><small class="smallFrom">For,</small></b>
+                                <address class="mt-5px mb-5px">
+                                    <i class="fa-solid fa-building"> </i>&nbsp;&nbsp;  <b> Department&nbsp;:</b> &nbsp;@ViewBag.ResourceApprovalList.DepartmentName <br />
+                                    <i class="fa-solid fa-desktop"> </i>&nbsp; <b>Job Title&nbsp;:</b> &nbsp; @ViewBag.ResourceApprovalList.DesignationName <br />
+                                    <i class="fa-solid fa-briefcase"> </i>&nbsp;&nbsp; <b>No. of Positions&nbsp;:</b>&nbsp; @ViewBag.ResourceApprovalList.TotalPositions<br />
+
+                                </address>
+                            </div>
+
+                            <div class="invoice-date">
+                                <small> </small><br />
+                                <div class="date text-dark mt-5px"></div><br />
+                                <div class="date text-dark mt-5px"></div>
+                                <div class="invoice-detail">
+                                    <i class="fa-solid fa-calendar-days"></i>  <b>Opening Date&nbsp;: </b>&nbsp; @ViewBag.ResourceApprovalList.DocDate<br />
+                                    <i class="fa-solid fa-calendar-days"></i>  <b> Closing Date&nbsp;:</b> &nbsp; @ViewBag.ResourceApprovalList.ClosingDate
+                                </div>
+                            </div>
+                        </div>
+                        <!-- BEGIN invoice-content -->
+                        <div class="invoice-content">
+                            <!-- BEGIN table-responsive -->
+                            <div class="table-responsive row">
+                                <div class="col-md-6">
+                                    <table class="table">
+                                        <thead>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <th>
+                                                    <span class="text-dark">Company Name</span><br />
+                                                </th>
+                                                <td>@ViewBag.ResourceApprovalList.CompanyName</td>
+                                            </tr>
+                                            <tr>
+                                                <th>
+                                                    <span class="text-dark">Department</span><br />
+                                                </th>
+                                                <td>@ViewBag.ResourceApprovalList.DepartmentName</td>
+                                            </tr>
+                                            <tr>
+                                                <th>
+                                                    <span class="text-dark">Position Type</span><br />
+                                                </th>
+                                                <td>@ViewBag.ResourceApprovalList.PositionType</td>
+                                            </tr>
+                                            <tr>
+                                                <th>
+                                                    <span class="text-dark">Closing Date</span><br />
+                                                </th>
+                                                <td>@ViewBag.ResourceApprovalList.ClosingDate</td>
+                                            </tr>
+                                            <tr>
+                                                <th>
+                                                    <span class="text-dark">Legal Bond</span><br />
+                                                </th>
+                                                <td>@ViewBag.ResourceApprovalList.LegalBond</td>
+                                            </tr>
+                                            <tr>
+                                                <th>
+                                                    <span class="text-dark">Priority</span><br />
+                                                </th>
+                                                <td>@ViewBag.ResourceApprovalList.Priority</td>
+                                            </tr>
+                                            <tr>
+                                                <th>
+                                                    <span class="text-dark">Minimum Experience</span><br />
+                                                </th>
+                                                <td>@ViewBag.ResourceApprovalList.MinExperience</td>
+                                            </tr>
+                                            <tr></tr>
+                                            <tr>
+                                                <th>
+                                                    <span class="text-dark">Preferred Technical Skills</span><br />
+                                                </th>
+                                                <td>@ViewBag.ResourceApprovalList.PreferredTechnicalSkills</td>
+                                            </tr>
+                                            <tr>
+                                                <th>
+                                                    <span class="text-dark">Qualification</span><br />
+                                                </th>
+                                                <td>@ViewBag.ResourceApprovalList.Qualification</td>
+                                            </tr>
+                                            <tr>
+                                                <th>
+                                                    <span class="text-dark">Position Budgeted</span><br />
+                                                </th>
+                                                <td>@ViewBag.ResourceApprovalList.PositionBudgeted</td>
+                                            </tr>
+                                            <tr>
+                                                <th>
+                                                    <span class="text-dark">Minimum Budget</span><br />
+                                                </th>
+                                                <td>@ViewBag.ResourceApprovalList.MinBudget</td>
+                                            </tr>
+                                            <tr>
+                                                <th>
+                                                    <span class="text-dark">Minimum Age</span><br />
+                                                </th>
+                                                <td>@ViewBag.ResourceApprovalList.MinAge</td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>
+                                                    <span class="text-dark">Language</span><br />
+                                                </th>
+                                                <td>@ViewBag.ResourceApprovalList.PreferredLanguage</td>
+                                            </tr>
+                                            <tr>
+                                                <th>
+                                                    <span class="text-dark">Gender</span><br />
+                                                </th>
+                                                <td>@ViewBag.ResourceApprovalList.PreferredGender</td>
+                                            </tr>
+                                            <tr>
+                                                <th>
+                                                    <span class="text-dark">Competencies</span><br />
+                                                </th>
+                                                <td>@ViewBag.ResourceApprovalList.Competencies</td>
+                                            </tr>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <table class="table ">
+                                        <thead>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <th>
+                                                    <span class="text-dark">Business Unit</span><br />
+                                                </th>
+                                                <td>@ViewBag.ResourceApprovalList.BranchName</td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>
+                                                    <span class="text-dark">Designation Name</span><br />
+                                                </th>
+                                                <td>@ViewBag.ResourceApprovalList.DesignationName</td>
+                                            </tr>
+                                            <tr>
+                                                <th>
+                                                    <span class="text-dark">Total Position</span><br />
+                                                </th>
+                                                <td>@ViewBag.ResourceApprovalList.TotalPositions</td>
+                                            </tr>
+                                            <tr>
+                                                <th>
+                                                    <span class="text-dark"> Replacement For</span><br />
+                                                </th>
+                                                <td>@ViewBag.ResourceApprovalList.EmployeeifReplacement</td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>
+                                                    <span class="text-dark">Work Type</span><br />
+                                                </th>
+                                                <td>@ViewBag.ResourceApprovalList.WorkType</td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>
+                                                    <span class="text-dark">Legal Bond Duration</span><br />
+                                                </th>
+                                                <td>@ViewBag.ResourceApprovalList.LegalBondDuration</td>
+                                            </tr>
+                                            <tr>
+                                                <th>
+                                                    <span class="text-dark">Maximum Experience</span><br />
+                                                </th>
+                                                <td>@ViewBag.ResourceApprovalList.MaxExperience</td>
+                                            </tr>
+                                            <tr>
+                                                <th>
+                                                    <span class="text-dark">Must have Technical Skills</span><br />
+                                                </th>
+                                                <td>@ViewBag.ResourceApprovalList.MusthaveTechnicalSkills</td>
+                                            </tr>
+                                            <tr>
+                                                <th>
+                                                    <span class="text-dark">Residence</span><br />
+                                                </th>
+                                                <td>@ViewBag.ResourceApprovalList.Residence</td>
+                                            </tr>
+                                            <tr>
+                                                <th>
+                                                    <span class="text-dark">Currency</span><br />
+                                                </th>
+                                                <td>@ViewBag.ResourceApprovalList.Currency</td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>
+                                                    <span class="text-dark">Maximum Budget</span><br />
+                                                </th>
+                                                <td>@ViewBag.ResourceApprovalList.MaxBudget</td>
+                                            </tr>
+
+                                            <tr>
+                                                <th>
+                                                    <span class="text-dark">Maximum Age</span><br />
+                                                </th>
+                                                <td>@ViewBag.ResourceApprovalList.MaxAge</td>
+                                            </tr>
+                                            <tr>
+                                                <th>
+                                                    <span class="text-dark">Marital Status</span><br />
+                                                </th>
+                                                <td>@ViewBag.ResourceApprovalList.PreferredMaritalStatus</td>
+                                            </tr>
+                                            <tr>
+                                                <th>
+                                                    <span class="text-dark">Shift Timimg</span><br />
+                                                </th>
+                                                <td>@ViewBag.ResourceApprovalList.PreferredShiftTiming</td>
+                                            </tr>
+
+
+                                            <tr></tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- END table-responsive -->
+                            <hr />
+                            @if (ViewBag.ApprovalRemarkList.Count != 0)
+                        {
+                        <table class="table table-bordered table-hover mb-0 text-dark align-middle" id="data-table-combine"
+                               style="width: 100%;">
+                            <thead>
+                                <tr class="trheading">
+                                    <th class="text-nowrap">Approved By</th>
+                                    <th class="text-nowrap">Remark</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var d in ViewBag.ApprovalRemarkList)
+                                    {
+                                    <tr>
+                                        <td class="text-nowrap">@d.EmployeeName</td>
+                                        <td class="text-nowrap">@d.ApproveRejectRemark</td>
+                                    </tr>
+                                    }
+                            </tbody>
+                        </table>
+                        }
+                            <hr />
+
+                            <!-- BEGIN invoice-price -->
+                            <h6>&nbsp;<b>Job Description:</b></h6>
+                            <div class="invoice-price ">
+                                <div class="invoice-price-left ">
+                                    <div class="invoice-price-row col-md-12">
+                                        <div class="col-12">
+                                            <textarea autocomplete="Off" class="form-control summernote" cols="20" height="auto" id="summernote" name="JobDescription" rows="2" style="font-size:16px" Value="" disabled>@ViewBag.ResourceApprovalList.Remark</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END invoice-price -->
+                        </div>
+                        <!-- END invoice-content -->
+                    </div>
+                </div>
+            </form>
+</div>
+</div>
+<script>
+
+    var resourceData = @Html.Raw(Json.Encode(ViewBag.ResourceApprovalList));
+
+    function printDiv() {
+        var divElements = document.getElementById('card').innerHTML;
+        var oldPage = document.body.innerHTML;
+        document.body.innerHTML =
+          "<html><head></head><body>    " +
+        divElements + "    </body>";
+        window.print();
+        document.body.innerHTML = oldPage;
+    }
+
+    $('#UpdateResourcesRecruitment').validate({
+        rules: {
+            ResponsibleRecruitmentEmployeeId: {
+                required: true,
+            },
+            ClosingDate:{
+                required: true,
+            },
+        },
+        messages: {
+            ResponsibleRecruitmentEmployeeId:{
+                required: "Responsible Recruitment Employee is required",
+            },
+            ClosingDate:{
+                required: "Closing date is required",
+            },
+
+        },
+    });
+
+    var form = $("#UpdateResourcesRecruitment");
+    form.validate();
+
+    $("#btnSubmit").click(function () {
+        debugger
+        form.valid();
+        if (form.valid() == false) {
+
+            return false;
+        }
+
+        const Approved = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        Approved.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes submit!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+
+            allowOutsideClick: () => {
+                const popup = Swal.getPopup()
+                popup.classList.remove('swal2-show')
+                setTimeout(() => {
+                    popup.classList.add('animate__animated', 'animate__headShake')
+                })
+                setTimeout(() => {
+                    popup.classList.remove('animate__animated', 'animate__headShake')
+                }, 500)
+                return false
+            }
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                debugger;
+
+                debugger;
+                var EmpolyeeId = $("#ddlResponsibleRecruitmentEmployeeId").val();
+                var BudgetApproved = $("#txtBudgetApproved").val();
+                var MaxBudget = $("#txtMaxBudget").val();
+                var LegalBondApplicable = $("#txtLegalBondApplicable").val();
+                var LegalBondDuration = $("#txtLegalBondDuration").val();
+                if (EmpolyeeId == "")
+                {
+                    $('#ErrorEmployee').html("EmpoloyeeName is required");
+                }
+                var date = $("#txtdate").val();
+                if (date == "")
+                {
+                    $('#ErrorDate').html("Date is required");
+                }
+                $(".Userloaderbg").css("display", "flex");
+                $.ajax({
+                    url: '@Url.Action("UpdateEployee", "ESS_Recruitment_RecruitmentAssign")',
+                
+                    method: "get",
+                    data: { EmpolyeeId: EmpolyeeId, date: date,BudgetApproved:BudgetApproved,MaxBudget:MaxBudget,LegalBondApplicable:LegalBondApplicable,LegalBondDuration:LegalBondDuration },
+                    success: function (response) {
+                        debugger;
+                        //if (response.Icon == "success") {
+                        if (response == true) {
+                            Swal.fire({
+                                icon: "success",
+                                text: "Record Save Successfully",
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            })
+                            .then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location.href = '@Url.Action("ESS_Recruitment_RecruitmentAssign", "ESS_Recruitment_RecruitmentAssign")';
+                                } else if (
+                                    /* Read more about handling dismissals below */
+                                    result.dismiss === Swal.DismissReason.cancel
+                                ) {
+
+                                }
+                            })
+
+                            //}
+                        }
+                    }
+                });
+            }
+        })
+    });
+
+
+    $("#ddlResponsibleRecruitmentEmployeeId").change(function () {
+        $('#ErrorEmployee').html("");
+    })
+
+
+    $(document).ready(function () {
+        debugger;
+        $("#ddlResponsibleRecruitmentEmployeeId").select2();
+        $("#ddlResponsibleRecruitmentEmployeeId").select2();
+        var List=   @Html.Raw(Json.Encode(ViewBag.ResourceApprovalList));
+        var closingDate=List[19].Value;
+        var date1=new Date(closingDate);
+        var date = new Date();
+        var date1 = new Date(closingDate);
+        if (isNaN(date1.getTime())) {
+            console.error('Invalid date:', closingDate);
+        } else {
+            var dateString = new Date(date1.getTime() - (date1.getTimezoneOffset() * 60000)).toISOString().split("T")[0];
+            $("#txtdate").val(dateString);
+        }        $("#txtdate").val(dateString);
+        var today = new Date().toISOString().split('T')[0];
+        document.getElementById("txtdate").setAttribute("min", today);
+        debugger;
+        var ApproverList = @Html.Raw(Json.Encode(ViewBag.ApproverList));
+        $("#txtBudgetApproved").select2();
+        $("#txtLegalBondApplicable").select2();
+        debugger
+        $("#txtLegalBondApplicable").val(ApproverList[0].LegalBondApplicable).select2();
+        $("#txtBudgetApproved").val(ApproverList[0].BudgetApproved).select2();
+        $("#txtMaxBudget").val(ApproverList[0].MaxBudget).select2();
+        $("#txtLegalBondDuration").val(ApproverList[0].LegalBondDuration).select2();
+
+
+        $("#txtdate").change(function () {
+            debugger;
+            var Dates = $("#txtdate").val();
+            var d = new Date(Dates),
+            month = '' + (d.getMonth() + 1),
+            day = '' + d.getDate(),
+            year = d.getFullYear();
+            var GetDate = '' + day + '/' + month + '/' + year;
+            var dateObjFrom = getDateObj(GetDate)
+            if( dateObjFrom<=dateObjTo)
+            {
+                $('#ErrorDate').html("Please select Proper");
+            }
+            $('#ErrorDate').html("");
+        })
+    })
+
+    $(".summernote").summernote({
+        placeholder: '',
+        height: "300"
+    });
+    $('#summernote').summernote('disable');
+
+    function millisecTodate(milliDate) {
+        var date = new Date(milliDate);
+        var mnth = ("0" + (date.getMonth() + 1)).slice(-2);
+        var day = ("0" + date.getDate()).slice(-2);
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        hours = hours < 10 ? '0'+hours : hours;
+        minutes = minutes < 10 ? '0'+minutes : minutes;
+        var ddmmyyyy = [date.getFullYear(), mnth,day].join("-");
+        return ddmmyyyy;
+    }
+
+    function convertDate(data) {
+        var getdate = parseInt(data.replace("/Date(", "").replace(")/", ""));
+        var date = millisecTodate(getdate);
+        return date;
+    }
+</script>
+
+

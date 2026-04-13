@@ -1,0 +1,2390 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_FNF.SM_FNFCalculations
+
+@{
+    ViewBag.Title = "ESS_FNF_SM_FNFCalculationStatement";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+<link href="~/assets/plugins/summernote/dist/summernote-lite.css" rel="stylesheet" />
+<script src="~/assets/plugins/summernote/dist/summernote-lite.min.js"></script>
+
+<style>
+    .table {
+        --bs-table-striped-bg: rgba(0, 0, 255, 0.02);
+    }
+
+    .text-nowrap {
+        font-size: 12px;
+    }
+
+    tbody tr td {
+        font-size: 12px;
+        padding: 4px !important;
+    }
+
+    .ListBtn {
+        background-color: transparent;
+        color: #000;
+        font-size: 15px !important;
+        padding: 5px 8px !important;
+        border: none;
+    }
+
+        .ListBtn:hover {
+            background-color: transparent;
+            color: #000;
+        }
+
+            .ListBtn:hover i {
+                transition: all 0.5s;
+                transform: scale(1.5);
+            }
+
+
+
+    .box2 {
+        width: 100px;
+        height: 100px;
+        padding: 15px 0px;
+        font-family: 'Montserrat', sans-serif;
+        position: relative;
+        z-index: 0;
+        margin-bottom: 10px;
+    }
+
+        .box2:hover {
+            border: 2px solid #ff9c19;
+            border-radius: 10px;
+            cursor: pointer;
+            transform: translateY(-10px);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.03), 0px -15px 25px rgba(0, 0, 0, 0.03), 0 15px 25px rgba(0, 0, 0, 0.05);
+        }
+
+            .box2:hover .info i {
+                color: #ff9c19;
+            }
+
+
+        .box2 .info i {
+            font-size: 20px;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 5px;
+            color: #007bff;
+        }
+
+        .box2 .info h7 {
+            position: relative;
+            font-size: 12px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            font-weight: 900 !important;
+            text-transform: capitalize;
+            margin-bottom: 2px;
+            padding: 0 10px;
+            color: #444;
+        }
+
+    .FS-12PX {
+        font-size: 12px !important;
+    }
+
+    .div1 td:nth-child(1) {
+        position: sticky;
+        left: 0;
+    }
+
+
+    .fixed-side {
+        position: sticky;
+        left: 0px;
+    }
+
+    /*.fixed-side1 {
+        position: sticky;
+        left: 62px;
+    }*/
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    .card-row-title {
+        color: #448bcd;
+        font-size: 18px;
+        font-weight: 600;
+        text-transform: capitalize;
+        border-bottom: #448bcd 1px solid;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .empbx h4 {
+        margin-bottom: 5px;
+    }
+
+    .empbx h6 i {
+        font-size: 1rem;
+        margin-right: 5px;
+    }
+
+    .empbx {
+        margin-bottom: 20px;
+    }
+
+    .note-editable {
+        border: groove;
+        font-size: 16px;
+    }
+
+    .employee-details {
+        padding-top: 10px;
+        margin-bottom: 20px;
+        border-bottom: #448bcd 1px solid;
+    }
+
+    .detail-row {
+        display: flex;
+        margin-bottom: 5px;
+    }
+
+    /*.detail-label {
+        width: 200px;
+        font-weight: bold;
+    }*/
+
+    .label-icon {
+        font-size: 14px;
+        display: block;
+        margin-bottom: 3px;
+        width: 24px;
+        color: #007bff; /* change color if needed */
+    }
+
+    .detail-label {
+        font-weight: 600;
+        display: flex;
+        width: 200px;
+        // flex-direction: column;
+    }
+
+
+    .section-header h6 {
+        color: #495057;
+        font-weight: 600;
+    }
+
+    /*.detail-row {
+        display: flex;
+        align-items: center;
+        padding: 8px 0;
+    }
+
+    .detail-label {
+        min-width: 200px;
+        font-weight: 500;
+    }*/
+
+    .detail-value {
+        flex: 1;
+        font-weight: 400;
+        color: #212529;
+    }
+
+    .input-group-text {
+        background-color: #f8f9fa;
+        border-right: none;
+    }
+
+    .form-control:readonly {
+        background-color: #f8f9fa;
+    }
+
+    .border-primary {
+        border-color: #0d6efd !important;
+    }
+
+    .border-success {
+        border-color: #198754 !important;
+    }
+
+    .border-danger {
+        border-color: #dc3545 !important;
+    }
+
+    /*.numeric {
+        font-family: 'Courier New', monospace;
+    }*/
+
+    .card-header {
+        border-radius: 0.375rem 0.375rem 0 0 !important;
+    }
+</style>
+<style>
+    #BonusdetailsSidebar .table thead {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    #BonusdetailsSidebar .table td,
+    #BonusdetailsSidebar .table th {
+        vertical-align: middle;
+        padding: 8px;
+    }
+
+    /*#BonusdetailsSidebar .table tbody tr:nth-child(even) {
+        background-color: #f8f9fa;
+    }*/
+
+    #BonusdetailsSidebar .table tbody tr:hover {
+        background-color: #eaf3ff;
+        transition: 0.2s;
+    }
+
+    #LeaveEncashmentSidebar .table thead {
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    #LeaveEncashmentSidebar .table td,
+    #LeaveEncashmentSidebar .table th {
+        vertical-align: middle;
+        padding: 8px;
+    }
+
+    /*#LeaveEncashmentSidebar .table tbody tr:nth-child(even) {
+        background-color: #f8f9fa;
+    }*/
+
+    #LeaveEncashmentSidebar .table tbody tr:hover {
+        background-color: #eaf3ff;
+        transition: 0.2s;
+    }
+</style>
+<div id="content" class="app-content">
+    <!-- BEGIN breadcrumb -->
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                FNF Calculation 
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_FNF_Menu", "ESS_FNF_Menu",  new { id = 7,ScreenId=168, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> FNF Calculation  - <b>@ViewBag.AddUpdateTitle</b></h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        FNF Calculation Form.
+                    </p>
+                </div>
+                <div class="panel-body combined-table-border table-container">
+                    <form role="form" action='@Url.Action("SaveUpdate", "ESS_FNF_SM_FNFCalculationStatement", new { area = "ESS" })' id="SaveFNFCalculation" method="post" data-parsley-validate="">
+
+                        <!-- Employee Selection -->
+                        <div class="card shadow-sm mb-4" hidden>
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-md-8">
+                                        <div class="row mb-3">
+                                            <label class="form-label col-form-label col-md-3 fw-semibold">
+                                                Employee Name <span class="text-danger">*</span>
+                                            </label>
+                                            <div class="col-md-6">
+                                                @Html.DropDownListFor(model => model.FNFCal_EmployeeId, new SelectList(ViewBag.AllEmployeeName, "Id", "Name")
+                                               , new { id = "ddlFnfEmployee", @class = "form-select form-select-sm", autocomplete = "off", name = "FNFCal_EmployeeId" })
+                                                @Html.HiddenFor(model => model.FNFCal_Encrypted, new { @class = "form-control", id = "FnfCalId_Encrypted" })
+                                                @Html.HiddenFor(model => model.ResignationId, new { @class = "form-control", id = "ResignId" })
+                                                @Html.HiddenFor(model => model.FNFCald, new { @class = "form-control", id = "FNFCald" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Employee Details Card -->
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0" style="color: #348fe2;"><i class="fa fa-id-card me-2"></i>Employee Details</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <!-- Left Column -->
+                                    <div class="col-md-6">
+                                        <div class="detail-row">
+                                            <div class="detail-label fw-medium">
+                                                <span class="label-icon text-primary me-2"><i class="fa fa-user fa-sm"></i></span>
+                                                Employee Name :
+                                            </div>
+                                            <div class="detail-value">
+                                                @ViewBag.EmployeeDetails.SM_EmployeeName
+                                                @Html.HiddenFor(model => model.EmployeeName, new { @id = "hdnEmployeeName" })
+                                            </div>
+                                        </div>
+
+                                        <div class="detail-row">
+                                            <div class="detail-label fw-medium">
+                                                <span class="label-icon text-primary me-2"><i class="fa fa-building fa-sm"></i></span>
+                                                Department :
+                                            </div>
+                                            <div class="detail-value">
+                                                @ViewBag.EmployeeDetails.SM_Department
+                                                @Html.HiddenFor(model => Model.Department, new { @id = "hdnDepartment" })
+                                            </div>
+                                        </div>
+
+                                        <div class="detail-row">
+                                            <div class="detail-label fw-medium">
+                                                <span class="label-icon text-primary me-2"><i class="fa fa-star fa-sm"></i></span>
+                                                Grade :
+                                            </div>
+                                            <div class="detail-value">
+                                                @ViewBag.EmployeeDetails.SM_Grade
+                                                @Html.HiddenFor(model => Model.Grade, new { @id = "hdnGrade" })
+                                            </div>
+                                        </div>
+
+                                        <div class="detail-row">
+                                            <div class="detail-label fw-medium">
+                                                <span class="label-icon text-primary me-2"><i class="fa fa-chart-bar fa-sm"></i></span>
+                                                Daily/Monthly :
+                                            </div>
+                                            <div class="detail-value">
+                                                @ViewBag.EmployeeDetails.SM_DailyMonthly
+                                                @Html.HiddenFor(model => Model.DailyMonthly, new { @id = "hdnDailyMonthly" })
+                                            </div>
+                                        </div>
+
+                                        <div class="detail-row">
+                                            <div class="detail-label fw-medium">
+                                                <span class="label-icon text-primary me-2"><i class="fa fa-calendar-xmark fa-sm"></i></span>
+                                                Resignation Date :
+                                            </div>
+                                            <div class="detail-value">
+                                                @ViewBag.EmployeeDetails.SM_ReginationDate
+                                                @Html.HiddenFor(model => Model.ReginationDate, new { @id = "hdnResignationDate" })
+                                            </div>
+                                        </div>
+                                        <div class="detail-row">
+                                            <div class="detail-label fw-medium">
+                                                <span class="label-icon text-primary me-2"><i class="fa fa-bell fa-sm"></i></span>
+                                                Notice Period :
+                                            </div>
+                                            <div class="detail-value">
+                                                @ViewBag.EmployeeDetails.SM_NoticePeriod
+                                            </div>
+                                        </div>
+                                        <div class="detail-row">
+                                            <div class="detail-label fw-medium">
+                                                <span class="label-icon text-primary me-2"><i class="fa fa-bell fa-sm"></i></span>
+                                                End Of Notice Period :
+                                            </div>
+                                            <div class="detail-value">
+                                                @ViewBag.EmployeeDetails.SM_NoticePeriodEndDate
+                                                @Html.HiddenFor(model => Model.NoticePeriodEndDate, new { @id = "hdnEndNoticePeriod" })
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <!-- Right Column -->
+                                    <div class="col-md-6">
+                                        <div class="detail-row">
+                                            <div class="detail-label fw-medium">
+                                                <span class="label-icon text-primary me-2"><i class="fa fa-id-card fa-sm"></i></span>
+                                                Employee No :
+                                            </div>
+                                            <div class="detail-value">
+                                                @ViewBag.EmployeeDetails.SM_EmployeeNo
+                                                @Html.HiddenFor(model => Model.EmployeeNo, new { @id = "hdnEmployeeNo" })
+                                            </div>
+                                        </div>
+
+                                        <div class="detail-row">
+                                            <div class="detail-label fw-medium">
+                                                <span class="label-icon text-primary me-2"><i class="fa fa-briefcase fa-sm"></i></span>
+                                                Designation :
+                                            </div>
+                                            <div class="detail-value">
+                                                @ViewBag.EmployeeDetails.SM_Desination
+                                                @Html.HiddenFor(model => Model.Desination, new { @id = "hdnDesignation" })
+                                            </div>
+                                        </div>
+
+                                        <div class="detail-row">
+                                            <div class="detail-label fw-medium">
+                                                <span class="label-icon text-primary me-2"><i class="fa fa-industry fa-sm"></i></span>
+                                                Business Unit :
+                                            </div>
+                                            <div class="detail-value">
+                                                @ViewBag.EmployeeDetails.SM_BusinessUnit
+                                                @Html.HiddenFor(model => Model.BusinessUnit, new { @id = "hdnBranch" })
+                                            </div>
+                                        </div>
+
+                                        <div class="detail-row">
+                                            <div class="detail-label fw-medium">
+                                                <span class="label-icon text-primary me-2"><i class="fa fa-calendar-check fa-sm"></i></span>
+                                                Joining Date :
+                                            </div>
+                                            <div class="detail-value">
+                                                @ViewBag.EmployeeDetails.SM_JoiningDate
+                                                @Html.HiddenFor(model => Model.JoiningDate, new { @id = "hdnDOJ" })
+                                            </div>
+                                        </div>
+
+                                        <div class="detail-row">
+                                            <div class="detail-label fw-medium">
+                                                <span class="label-icon text-primary me-2"><i class="fa fa-hourglass-end fa-sm"></i></span>
+                                                Last Working Date :
+                                            </div>
+                                            <div class="detail-value">
+                                                @ViewBag.EmployeeDetails.SM_LastWorkingDate
+                                                @Html.HiddenFor(model => Model.LastWorkingDate, new { @id = "hdnLastWorkingDate" })
+                                            </div>
+                                        </div>
+
+                                        <div class="detail-row">
+                                            <div class="detail-label fw-medium">
+                                                <span class="label-icon text-primary me-2"><i class="fa fa-hourglass-end fa-sm"></i></span>
+                                                Relieving Date :
+                                            </div>
+                                            <div class="detail-value">
+                                                @ViewBag.EmployeeDetails.SM_RelievingDate
+                                                @Html.HiddenFor(model => Model.RelievingDate, new { @id = "hdnRelievingDate" })
+                                            </div>
+                                        </div>
+
+                                        <div class="detail-row">
+                                            <div class="detail-label fw-medium">
+                                                <span class="label-icon text-primary me-2"><i class="fa fa-lock fa-sm"></i></span>
+                                                Service Bond Applicable :
+                                            </div>
+                                            <div class="detail-value">
+                                                @ViewBag.EmployeeDetails.SM_Bond_Applicable
+                                                @Html.HiddenFor(model => Model.Bond_Applicable, new { @id = "hdnServiceBondApplicable" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Input Parameters Card -->
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <div class="col-md-4">
+                                    <button type="button" class="btn btn-success btn-sm" id="btnGetDetails">
+                                        <i class="fa-solid fa-floppy-disk"></i>  Get Details
+                                    </button>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-3">
+                                            <label class="form-label col-form-label col-md-5">
+                                                1. Unpaid Salary Month
+                                            </label>
+                                            <div class="col-md-3">
+                                                @Html.DropDownListFor(model => model.A_Salary_Applicable,
+                                                    new SelectList(new List<SelectListItem>
+                                                    {
+                                                    new SelectListItem { Value = "Yes", Text = "Yes" },
+                                                    new SelectListItem { Value = "No", Text = "No" , Selected = true}
+                                                    }, "Value", "Text"), "--Select--",
+                                                    new { id = "ddlA_Salary_Applicable", name = "A_Salary_Applicable", @class = "form-select form-select-sm", autocomplete = "off", @required = "required" })
+                                            </div>
+                                            <div class="col-md-4">
+                                                @Html.TextBoxFor(model => model.A_SalaryDate, new { @class = "form-control form-control-sm", name = "A_SalaryDate", type = "Month", id = "txtA_SalaryDate" })
+                                                <span class="text-danger small" id="errorA_SalaryDate"></span>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="form-label col-form-label col-md-5">
+                                                2. Unpaid Salary Month
+                                            </label>
+                                            <div class="col-md-3">
+                                                @Html.DropDownListFor(model => model.B_Salary_Applicable,
+                                                    new SelectList(new List<SelectListItem>
+                                                    {
+                                                    new SelectListItem { Value = "Yes", Text = "Yes" },
+                                                    new SelectListItem { Value = "No", Text = "No", Selected = true }
+                                                    }, "Value", "Text"), "--Select--",
+                                                    new { id = "ddlB_Salary_Applicable", name = "B_Salary_Applicable", @class = "form-select form-select-sm", autocomplete = "off", @required = "required" })
+                                            </div>
+                                            <div class="col-md-4">
+                                                @Html.TextBoxFor(model => model.B_SalaryDate, new { @class = "form-control form-control-sm", name = "B_SalaryDate", type = "Month", id = "txtB_SalaryDate" })
+                                                <span class="text-danger small" id="errorB_SalaryDate"></span>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="form-label col-form-label col-md-5">
+                                                3. Unpaid Salary Month
+                                            </label>
+                                            <div class="col-md-3">
+                                                @Html.DropDownListFor(model => model.C_Salary_Applicable,
+                                                new SelectList(new List<SelectListItem>
+                                                {
+                                                new SelectListItem { Value = "Yes", Text = "Yes" },
+                                                new SelectListItem { Value = "No", Text = "No" , Selected = true}
+                                                }, "Value", "Text"), "--Select--",
+                                                new { id = "ddlC_Salary_Applicable", name = "C_Salary_Applicable", @class = "form-select form-select-sm", autocomplete = "off", @required = "required" })
+                                            </div>
+                                            <div class="col-md-4">
+                                                @Html.TextBoxFor(model => model.C_SalaryDate, new { @class = "form-control form-control-sm", name = "C_SalaryDate", type = "Month", id = "txtC_SalaryDate" })
+                                                <span class="text-danger small" id="errorC_SalaryDate"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row mb-3">
+                                            <label class="form-label col-form-label col-md-5">
+                                                Bonus Previous Year
+                                            </label>
+                                            <div class="col-md-3">
+                                                @Html.DropDownListFor(model => model.FY_Preivous_Bonus_Year_Applicable,
+                                                    new SelectList(new List<SelectListItem>
+                                                    {
+                                                    new SelectListItem { Value = "Yes", Text = "Yes" },
+                                                    new SelectListItem { Value = "No", Text = "No", Selected = true }
+                                                    }, "Value", "Text"), "--Select--",
+                                                    new { id = "ddlFY_Preivous_Bonus_Year_Applicable", name = "FY_Preivous_Bonus_Year_Applicable", @class = "form-select form-select-sm", autocomplete = "off", @required = "required" })
+                                            </div>
+                                            <div class="col-md-4">
+                                                @Html.DropDownListFor(model => model.FY_Preivous_Bonus_Year, new SelectList(ViewBag.GetBonusYear, "Id", "Name"), "--Select--", new { id = "ddlFY_Preivous_Bonus_Year", name = "FY_Preivous_Bonus_Year", @class = "form-select form-select-sm", autocomplete = "off" })
+                                                <span class="text-danger small" id="errorFY_Preivous_Bonus_Year"></span>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="form-label col-form-label col-md-5">
+                                                Bonus Current Year
+                                            </label>
+                                            <div class="col-md-3">
+                                                @Html.DropDownListFor(model => model.FY_Current_Bonus_Year_Applicable,
+                                                    new SelectList(new List<SelectListItem>
+                                                    {
+                                                    new SelectListItem { Value = "Yes", Text = "Yes", Selected = true },
+                                                    new SelectListItem { Value = "No", Text = "No" }
+                                                    }, "Value", "Text"), "--Select--",
+                                                    new { id = "ddlFY_Current_Bonus_Year_Applicable", name = "FY_Current_Bonus_Year_Applicable", @class = "form-select form-select-sm", autocomplete = "off", @required = "required" })
+                                            </div>
+                                            <div class="col-md-4">
+                                                @Html.DropDownListFor(model => model.FY_Current_Bonus_Year, new SelectList(ViewBag.GetBonusYear, "Id", "Name"), "--Select--", new { id = "ddlFY_Current_Bonus_Year", name = "FY_Current_Bonus_Year", @class = "form-select form-select-sm", autocomplete = "off" })
+                                                <span class="text-danger small" id="errorFY_Current_Bonus_Year"></span>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="form-label col-form-label col-md-5">
+                                                Leave Year
+                                            </label>
+                                            <div class="col-md-3">
+                                                @Html.DropDownListFor(model => model.LeaveYear_Applicable,
+                                                    new SelectList(new List<SelectListItem>
+                                                    {
+                                                    new SelectListItem { Value = "Yes", Text = "Yes", Selected = true },
+                                                    new SelectListItem { Value = "No", Text = "No" }
+                                                    }, "Value", "Text"), "--Select--",
+                                                    new { id = "ddlLeaveYear_Applicable", name = "LeaveYear_Applicable", @class = "form-select form-select-sm", autocomplete = "off", @required = "required" })
+                                            </div>
+                                            <div class="col-md-4">
+                                                @Html.DropDownListFor(model => model.LeaveMasterLeaveYearId, new SelectList(ViewBag.GetLeaveYear, "Id", "Name"), "--Not Applicable--", new { id = "ddlLeaveMasterLeaveYearId", name = "LeaveMasterLeaveYearId", @class = "form-select form-select-sm", autocomplete = "off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Action Buttons -->
+                                <div class="row mt-4">
+                                    <div class="col-md-4">
+                                        <button type="button" id="btnSalaryDetailsList" class="btn btn-outline-primary btn-sm"
+                                                data-bs-toggle="offcanvas" data-bs-target="#SalaryDetailsSidebar">
+                                            <i class="fa-solid fa-eye me-1"></i> Show Salary
+                                        </button>
+                                    </div>
+                                    <div class="col-md-8 text-end">
+                                        <button type="button" class="btn btn-primary btn-sm me-2 px-4" id="btnLoad">
+                                            <i class="fa fa-calculator me-1"></i> Calculate
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Earning Section -->
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0"><i class="fa fa-arrow-up me-2"></i>Earnings (A)</h5>
+                            </div>
+                            <div class="card-body">
+                                <!-- Basic Salary Info -->
+                                <div class="row mb-4">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4 fw-medium">
+                                                Gross Salary
+                                            </label>
+                                            <div class="col-md-8">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">₹</span>
+                                                    @Html.TextBoxFor(model => Model.GrossSalary, new { @class = "form-control text-end fw-semibold", @id = "txtGrossSalary", @readonly = "readonly" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4 fw-medium">
+                                                Basic Salary
+                                            </label>
+                                            <div class="col-md-8">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">₹</span>
+                                                    @Html.TextBoxFor(model => Model.BasicSalary, new { @class = "form-control text-end fw-semibold", @id = "txtBasicSalary", @readonly = "readonly" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Unpaid Salary -->
+                                <div class="section-header mb-3">
+                                    <h5 class="border-bottom pb-2" style="color: #348fe2;"><i class="fa fa-calendar-days me-2"></i>Unpaid Salary</h5>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <div class="row mb-3">
+                                            <label class="form-label col-form-label col-md-4">
+                                                1. Unpaid Salary Month
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.UnpaidSalaryA_Date, new { @class = "form-control", name = "UnpaidSalaryA_Date", type = "text", id = "txtUnpaidA_SalaryDate", @readonly = "readonly" })
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="form-label col-form-label col-md-4">
+                                                2. Unpaid Salary Month
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.UnpaidSalaryB_Date, new { @class = "form-control", name = "UnpaidSalaryB_Date", type = "text", id = "txtUnpaidB_SalaryDate", @readonly = "readonly" })
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                3. Unpaid Salary Month
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.UnpaidSalaryC_Date, new { @class = "form-control", name = "UnpaidSalaryC_Date", type = "text", id = "txtUnpaidC_SalaryDate", @readonly = "readonly" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-3">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Amount
+                                            </label>
+                                            <div class="col-md-8">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">₹</span>
+                                                    @Html.TextBoxFor(model => Model.UnpaidSalaryA_Amount, new { @class = "form-control text-end", @id = "txtUnpaidSalaryA_Amount", @readonly = "readonly" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Amount
+                                            </label>
+                                            <div class="col-md-8">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">₹</span>
+                                                    @Html.TextBoxFor(model => Model.UnpaidSalaryB_Amount, new { @class = "form-control text-end", @id = "txtUnpaidSalaryB_Amount", @readonly = "readonly" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Amount
+                                            </label>
+                                            <div class="col-md-8">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">₹</span>
+                                                    @Html.TextBoxFor(model => Model.UnpaidSalaryC_Amount, new { @class = "form-control text-end", @id = "txtUnpaidSalaryC_Amount", @readonly = "readonly" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Total Unpaid Salary -->
+                                <div class="row mt-3">
+                                    <div class="col-md-8 text-end">
+                                        <label class="form-label col-form-label text-end fw-bold">
+                                            <b>Total Unpaid Salary</b>
+                                        </label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light fw-bold">₹</span>
+                                            @Html.TextBoxFor(model => Model.TotalUnpaidSalaryAmount, new { @class = "form-control text-end fw-bold border-primary", @id = "txtTotalUnpaidSalaryAmount", @readonly = "readonly" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="section-header mb-3 mt-4 d-flex justify-content-between align-items-center border-bottom pb-2">
+                                    <h5 class="m-0" style="color: #348fe2;">
+                                        <i class="fa fa-plane me-2"></i>Bonus Details
+                                    </h5>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <div class="row mb-3">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Previous Year
+                                            </label>
+                                            <div class="col-md-7">
+                                                @Html.TextBoxFor(model => model.PreivousBonus_Remark, new { @class = "form-control", name = "PreivousBonus_Remark", id = "txtPreivousBonus_Remark", @readonly = "readonly" })
+                                            </div>
+                                            <div class="col-md-1">
+                                                <button type="button" id="btnPYBonusList" class="btn btn-outline-primary btn-sm bonus-btn" data-year="PY"
+                                                        data-bs-toggle="offcanvas" data-bs-target="#BonusdetailsSidebar">
+                                                    <i class="fa-solid fa-eye me-1"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Current Year
+                                            </label>
+
+                                            <div class="col-md-7">
+                                                @Html.TextBoxFor(model => model.CurrentBonus_Remark, new { @class = "form-control", name = "BonusCurrentYear", id = "txtCurrentBonus_Remark", @readonly = "readonly" })
+                                            </div>
+                                            <div class="col-md-1">
+                                                <button type="button" id="btnCYBonusList" class="btn btn-outline-primary btn-sm bonus-btn" data-year="CY"
+                                                        data-bs-toggle="offcanvas" data-bs-target="#BonusdetailsSidebar">
+                                                    <i class="fa-solid fa-eye me-1"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-3">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Amount
+                                            </label>
+                                            <div class="col-md-8">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">₹</span>
+                                                    @Html.TextBoxFor(model => model.BonusPreviousYearAmount, new { @class = "form-control text-end", name = "BonusPreviousYearAmount", id = "txtBonusPreviousYearAmount", @readonly = "readonly" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Amount
+                                            </label>
+                                            <div class="col-md-8">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">₹</span>
+                                                    @Html.TextBoxFor(model => Model.BonusCurrentYearAmount, new { @class = "form-control text-end", @id = "txtBonusCurrentYearAmount", @readonly = "readonly" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Total Bonus -->
+                                <div class="row">
+                                    <div class="col-md-8 text-end">
+                                        <label class="form-label col-form-label text-end fw-bold">
+                                            <b>Total Bonus Amount</b>
+                                        </label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light fw-bold">₹</span>
+                                            @Html.TextBoxFor(model => Model.TotalBonus_Amount, new { @class = "form-control text-end fw-bold border-primary", @id = "txtTotalBonus_Amount", @readonly = "readonly" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Leave Encashment -->
+                                <div class="section-header mb-3 mt-4 d-flex justify-content-between align-items-center border-bottom pb-2">
+                                    <h5 class="m-0" style="color: #348fe2;">
+                                        <i class="fa fa-money-bill-wave me-2"></i>Leave Encashment
+                                    </h5>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <div class="row mb-3">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Previous Year
+                                            </label>
+
+                                            <div class="col-md-7">
+                                                @Html.TextBoxFor(model => model.LeavePreviousYear, new { @class = "form-control", name = "LeavePreviousYear", id = "txtLeavePreviousYear", @readonly = "readonly" })
+                                            </div>
+                                            <div class="col-md-1">
+                                                <button type="button" id="btnPYLeaveEncashmentList" class="btn btn-outline-primary btn-sm leave-btn" data-year="PY" data-bs-toggle="offcanvas" data-bs-target="#LeaveEncashmentSidebar">
+                                                    <i class="fa-solid fa-eye me-1"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Current Year
+                                            </label>
+
+                                            <div class="col-md-7">
+                                                @Html.TextBoxFor(model => model.LeaveCurrentYear, new { @class = "form-control", name = "LeaveCurrentYear", id = "txtLeaveCurrentYear", @readonly = "readonly" })
+                                            </div>
+                                            <div class="col-md-1">
+                                                <button type="button" id="btnCYLeaveEncashmentList" class="btn btn-outline-primary btn-sm leave-btn" data-year="CY" data-bs-toggle="offcanvas" data-bs-target="#LeaveEncashmentSidebar">
+                                                    <i class="fa-solid fa-eye me-1"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-3">
+                                            <div class="col-md-4">
+                                                <label class="form-label">Days/Amount</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="row g-2">
+                                                    <div class="col-6">
+                                                        @Html.TextBoxFor(model => model.PreivousLeave_Days, new { @class = "form-control text-end", name = "PreivousLeave_Days", id = "txtPreivousLeave_Days", @readonly = "readonly", placeholder = "Days" })
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text">₹</span>
+                                                            @Html.TextBoxFor(model => model.LeavePreviousYearAmount, new { @class = "form-control text-end", name = "LeavePreviousYearAmount", id = "txtLeavePreviousYearAmount", @readonly = "readonly" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <label class="form-label">Days/Amount</label>
+                                            </div>
+                                            <div class="col-md-8">
+                                                <div class="row g-2">
+                                                    <div class="col-6">
+                                                        @Html.TextBoxFor(model => model.CurrentLeave_Days, new { @class = "form-control text-end", name = "CurrentLeave_Days", id = "txtCurrentLeave_Days", @readonly = "readonly", placeholder = "Days" })
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <div class="input-group">
+                                                            <span class="input-group-text">₹</span>
+                                                            @Html.TextBoxFor(model => Model.LeaveCurrentYearAmount, new { @class = "form-control text-end", @id = "txtLeaveCurrentYearAmount", @readonly = "readonly" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Total Leave Encashment -->
+                                <div class="row">
+                                    <div class="col-md-8 text-end">
+                                        <label class="form-label col-form-label text-end fw-bold">
+                                            <b>Total Leave Encashment</b>
+                                        </label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light fw-bold">₹</span>
+                                            @Html.TextBoxFor(model => model.TotalLeaveEncashmentAmount, new { @class = "form-control text-end fw-bold border-primary", name = "TotalLeaveEncashmentAmount", id = "txtTotalLeaveEncashmentAmount", @readonly = "readonly" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Other Earning -->
+                                <div class="section-header mb-3 mt-4">
+                                    <h5 class="border-bottom pb-2" style="color: #348fe2;"><i class="fa fa-plus-circle me-2"></i>Other Earnings</h5>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <div class="row mb-3">
+                                            <label class="form-label col-form-label col-md-4">
+                                                A. Other Earning
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => Model.OtherEarningA_Remark, new { @class = "form-control", @id = "txtOtherEarningA_Remark", placeholder = "Enter remark" })
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                B. Other Earning
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => Model.OtherEarningB_Remark, new { @class = "form-control", @id = "txtOtherEarningB_Remark", placeholder = "Enter remark" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-3">
+                                            <div class="col-md-4"></div>
+                                            <div class="col-md-8">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">₹</span>
+                                                    @Html.TextBoxFor(model => Model.OtherEarningA_Amount, new { @class = "form-control text-end numeric", @id = "txtOtherEarningA_Amount" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4"></div>
+                                            <div class="col-md-8">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">₹</span>
+                                                    @Html.TextBoxFor(model => Model.OtherEarningB_Amount, new { @class = "form-control text-end numeric", @id = "txtOtherEarningB_Amount" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Total Other Earning -->
+                                <div class="row">
+                                    <div class="col-md-8 text-end">
+                                        <label class="form-label col-form-label text-end fw-bold">
+                                            <b> Total Other Earnings</b>
+                                        </label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-light fw-bold">₹</span>
+                                            @Html.TextBoxFor(model => Model.TotalOtherEarning, new { @class = "form-control text-end fw-bold border-primary", @id = "txtTotalOtherEarning", @readonly = "readonly" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Total Amount Payable (A) -->
+                                <div class="row mt-4 pt-3 border-top">
+                                    <div class="col-md-8 text-end">
+                                        <label class="form-label col-form-label text-end fw-bold">
+                                            <b>TOTAL AMOUNT PAYABLE (A)</b>
+                                        </label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-success text-white fw-bold">₹</span>
+                                            @Html.TextBoxFor(model => Model.TotalAmountPayable, new { @class = "form-control text-end fw-bold border-success", @id = "txtTotalAmountPayable", @readonly = "readonly" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Deduction Section -->
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header bg-danger text-white">
+                                <h5 class="mb-0"><i class="fa fa-arrow-down me-2"></i>Deductions (B)</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row mb-3">
+                                    <div class="col-md-8">
+                                        <label class="form-label col-form-label">
+                                            Advance to be Recovered
+                                        </label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="input-group">
+                                            <span class="input-group-text">₹</span>
+                                            @Html.TextBoxFor(model => Model.AdvanceRecovered, new { @class = "form-control text-end", @id = "txtAdvanceRecovered", @readonly = "readonly" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-8">
+                                        <label class="form-label col-form-label">
+                                            Salary TDS
+                                        </label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="input-group">
+                                            <span class="input-group-text">₹</span>
+                                            @Html.TextBoxFor(model => Model.SalaryTDS, new { @class = "form-control text-end numeric", @id = "txtSalaryTDS" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Short Fall Notice (Days)
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => Model.NoticePeriodDays, new { @class = "form-control text-end", @id = "txtNoticePeriodDays", @readonly = "readonly" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Short Fall Notice (Amount)
+                                            </label>
+                                            <div class="col-md-8">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">₹</span>
+                                                    @Html.TextBoxFor(model => Model.NoticePeriodDayAmount, new { @class = "form-control text-end numeric", @id = "txtNoticePeriodDayAmount" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Remark -->
+                                <div class="row mb-4">
+                                    <label class="form-label col-form-label col-md-2 fw-medium">
+                                        Remark
+                                    </label>
+                                    <div class="col-md-10">
+                                        @Html.TextBoxFor(model => Model.NoticePeriodRemark, new { @class = "form-control", @id = "txtNoticePeriodRemark" })
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Service Bond Deduction
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => Model.BondRemark, new { @class = "form-control text-end numeric", @id = "txtBondRemark", @readonly = "readonly" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Amount
+                                            </label>
+                                            <div class="col-md-8">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">₹</span>
+                                                    @Html.TextBoxFor(model => Model.MinServiceBondDeduction, new { @class = "form-control text-end numeric", @id = "txtMinServiceBondDeduction" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-8">
+                                        <label class="form-label col-form-label">
+                                            Other if any (Specify): GST
+                                        </label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="input-group">
+                                            <span class="input-group-text">₹</span>
+                                            @Html.TextBoxFor(model => Model.OtherAmount, new { @class = "form-control text-end numeric", @id = "txtOtherAmount" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Other Deductions -->
+                                <div class="section-header mb-3 mt-4">
+                                    <h6 class="border-bottom pb-2"><i class="fa fa-minus-circle me-2"></i>Other Deductions</h6>
+                                </div>
+
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <div class="row mb-3">
+                                            <label class="form-label col-form-label col-md-4">
+                                                1. Other Deduction
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => Model.OtherDeductionA_Remark, new { @class = "form-control", @id = "txtOtherDeductionA_Remark", placeholder = "Enter remark" })
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                2. Other Deduction
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => Model.OtherDeductionB_Remark, new { @class = "form-control", @id = "txtOtherDeductionB_Remark", placeholder = "Enter remark" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-3">
+                                            <div class="col-md-4"></div>
+                                            <div class="col-md-8">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">₹</span>
+                                                    @Html.TextBoxFor(model => Model.OtherDeductionA_Amount, new { @class = "form-control text-end numeric", @id = "txtOtherDeductionA_Amount" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-4"></div>
+                                            <div class="col-md-8">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">₹</span>
+                                                    @Html.TextBoxFor(model => Model.OtherDeductionB_Amount, new { @class = "form-control text-end numeric", @id = "txtOtherDeductionB_Amount" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Total Deductions (B) -->
+                                <div class="row mt-4 pt-3 border-top">
+                                    <div class="col-md-8 text-end">
+                                        <label class="form-label col-form-label text-end fw-bold">
+                                            <b>TOTAL DEDUCTIONS (B)</b>
+                                        </label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-danger text-white fw-bold">₹</span>
+                                            @Html.TextBoxFor(model => Model.TotalAmountDeduction, new { @class = "form-control text-end fw-bold border-danger", @id = "txtTotalAmountDeduction", @readonly = "readonly" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Final Calculation & Submission -->
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0"><i class="fa fa-calculator me-2"></i>Final Settlement</h5>
+                            </div>
+                            <div class="card-body">
+                                <!-- Net Amount Payable -->
+                                <div class="row mb-4">
+                                    <div class="col-md-8">
+                                        <label class="form-label col-form-label text-end fw-bold">
+                                            <b>NET AMOUNT PAYABLE (A - B)</b>
+                                        </label>
+                                    </div>
+                                    <div class="col-md-4 text-end">
+                                        <div class="input-group">
+                                            <span class="input-group-text bg-primary text-white fw-bold">₹</span>
+                                            @Html.TextBoxFor(model => Model.NetAmountPayable, new { @class = "form-control text-end fw-bold border-primary", @id = "txtNetAmountPayable", @readonly = "readonly" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Gratuity Details -->
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <div class="row mb-3">
+                                            <label class="form-label col-form-label col-md-4 fw-medium">
+                                                Gratuity Applicable
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => Model.Gratuity_Applicable, new { @class = "form-control", @id = "txtGratuity_Applicable", @readonly = "readonly" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-3">
+                                            <label class="form-label col-form-label col-md-4 fw-medium">
+                                                Total Service
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => Model.Gratuity_Service, new { @class = "form-control", @id = "txtGratuity_Service", @readonly = "readonly" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Remark -->
+                                <div class="row mb-4">
+                                    <label class="form-label col-form-label col-md-2 fw-medium">
+                                        Other Remark
+                                    </label>
+                                    <div class="col-md-10">
+                                        @Html.TextBoxFor(model => Model.Remark, new { @class = "form-control", @id = "txtRemark", placeholder = "Enter any additional remarks..." })
+                                    </div>
+                                </div>
+
+                                <!-- Action Buttons -->
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="button" id="btnsubmit" class="btn btn-primary btn-sm">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                        <a href="@Url.Action("GetList", "ESS_FNF_SM_FNFCalculationStatement", new { area = "ESS" })">
+                                                            <button type="button" class="btn btn-danger btn-sm" id="btnTrainingAgency">
+                                                                <i class="fa-solid fa-share-from-square"></i> List
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    th:nth-child(1), td:nth-child(1) {
+        width: 40px; /* Set the width for the first column */
+    }
+
+    th:nth-child(2), td:nth-child(2) {
+        width: 40px; /* Set the width for the first column */
+    }
+
+
+    .dataTables_scrollBody::-webkit-scrollbar {
+        width: 10px !important;
+        background-color: #F5F5F5;
+    }
+    /* Horizontal scrollbar */
+    .dataTables_scrollBody::-webkit-scrollbar {
+        height: 10px;
+    }
+
+    #SalaryDetailsTableBody tr:last-child {
+        background-color: #e6f2ff; /* faint blue */
+        font-weight: bold; /* optional, make total row bold */
+    }
+
+    #BonusTableBody tr:last-child {
+        background-color: #e6f2ff; /* faint blue */
+        font-weight: bold; /* optional, make total row bold */
+    }
+
+    #LeaveTableBody tr:last-child {
+        background-color: #e6f2ff; /* faint blue */
+        font-weight: bold; /* optional, make total row bold */
+    }
+</style>
+<!-- Sidebar (Offcanvas) -->
+<div class="offcanvas offcanvas-end shadow-lg" tabindex="-1" id="SalaryDetailsSidebar" aria-labelledby="SalaryDetailsLabel">
+    <div class="offcanvas-header border-bottom" style="background-color: #49b6d6;">
+        <center>
+            <h5 id="SalaryDetailsLabel" class="mb-0">
+                <i class="fas fa-receipt me-2 text-white"></i> Salary Details
+            </h5>
+        </center>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body p-0">
+        <div class="table-responsive" style="max-height:65vh; overflow-y:auto;">
+            <table class="table table-bordered align-middle">
+                <thead class="table-primary text-center">
+                    <tr>
+                        <th style="width:20%">Month</th>
+                        <th style="width:30%;text-align:right;">Payable Days</th>
+                        <th style="width:30%;text-align:right;">Net Pay</th>
+                        <th style="width:20%">Hold</th>
+                    </tr>
+                </thead>
+                <tbody id="SalaryDetailsTableBody" class="text-center small"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Sidebar (Offcanvas) -->
+<div class="offcanvas offcanvas-end shadow-lg" tabindex="-1" id="BonusdetailsSidebar" aria-labelledby="BonusdetailsLabel">
+    <div class="offcanvas-header border-bottom" style="background-color: #49b6d6;">
+        <center>
+            <h5 id="BonusdetailsLabel" class="mb-0">
+                <i class="fas fa-receipt me-2 text-white"></i> Bonus Details
+            </h5>
+        </center>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body p-0">
+        <div class="table-responsive" style="max-height:65vh; overflow-y:auto;">
+            <table class="table table-bordered align-middle">
+                <thead class="table-primary text-center">
+                    <tr>
+                        <th style="width:10%">Month</th>
+                        <th style="width:30%;text-align:right;">Payable Days</th>
+                        <th style="width:30%;text-align:right;">Actual Bonus</th>
+                        <th style="width:30%">Earn Bonus</th>
+                    </tr>
+                </thead>
+                <tbody id="BonusTableBody" class="text-center small">
+                    <!-- JS will inject rows here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<!-- Sidebar (Offcanvas) -->
+<div class="offcanvas offcanvas-end shadow-lg" tabindex="-1" id="LeaveEncashmentSidebar" aria-labelledby="LeaveEncashmentLabel">
+    <div class="offcanvas-header border-bottom" style="background-color: #49b6d6;">
+        <h5 id="LeaveEncashmentLabel" style="text-align:center"></h5>
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"></button>
+    </div>
+    <div class="offcanvas-body p-0">
+        <div class="table-responsive" style="max-height:65vh; overflow-y:auto;">
+            <table class="table table-bordered align-middle">
+                <thead class="table-primary text-center">
+                    <tr>
+                        <th>Month</th>
+                        <th>AB</th>
+                        <th>PP</th>
+                        <th>WO</th>
+                        <th>PH</th>
+                        <th>CO</th>
+                        <th>CL</th>
+                        <th>SL</th>
+                        <th>EL</th>
+                        <th>ML</th>
+                        <th>ESIC</th>
+                        <th>LWP</th>
+                        <th>LL</th>
+                        <th>Payable Days</th>
+                    </tr>
+                </thead>
+                <tbody id="LeaveTableBody" class="text-center small">
+                    <!-- JS will inject rows here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        debugger;
+        var A_SalaryDate = @Html.Raw(Json.Encode(TempData["A_SalaryDate"]));
+        $("#txtA_SalaryDate").val(A_SalaryDate);
+
+        var B_SalaryDate = @Html.Raw(Json.Encode(TempData["B_SalaryDate"]));
+        $("#txtB_SalaryDate").val(B_SalaryDate);
+
+        var C_SalaryDate = @Html.Raw(Json.Encode(TempData["C_SalaryDate"]));
+        $("#txtC_SalaryDate").val(C_SalaryDate);
+
+
+
+        toggleSalaryDate("#ddlA_Salary_Applicable", "#txtA_SalaryDate");
+        toggleSalaryDate("#ddlB_Salary_Applicable", "#txtB_SalaryDate");
+        toggleSalaryDate("#ddlC_Salary_Applicable", "#txtC_SalaryDate");
+        // Run toggle for Bonus Year Applicable dropdowns
+        toggledropdown("#ddlFY_Preivous_Bonus_Year_Applicable", "#ddlFY_Preivous_Bonus_Year");
+        toggledropdown("#ddlFY_Current_Bonus_Year_Applicable", "#ddlFY_Current_Bonus_Year");
+        toggledropdown("#ddlLeaveYear_Applicable", "#ddlLeaveMasterLeaveYearId");
+
+
+        $("#ddlA_Salary_Applicable").change(function () {
+            toggleSalaryDate("#ddlA_Salary_Applicable", "#txtA_SalaryDate");
+        });
+
+        $("#ddlB_Salary_Applicable").change(function () {
+            toggleSalaryDate("#ddlB_Salary_Applicable", "#txtB_SalaryDate");
+        });
+
+        $("#ddlC_Salary_Applicable").change(function () {
+            toggleSalaryDate("#ddlC_Salary_Applicable", "#txtC_SalaryDate");
+        });
+
+        $("#ddlFY_Preivous_Bonus_Year_Applicable").change(function () {debugger
+            toggledropdown("#ddlFY_Preivous_Bonus_Year_Applicable", "#ddlFY_Preivous_Bonus_Year");
+        });
+
+        $("#ddlFY_Current_Bonus_Year_Applicable").change(function () {
+            toggledropdown("#ddlFY_Current_Bonus_Year_Applicable", "#ddlFY_Current_Bonus_Year");
+        });
+
+        $("#ddlLeaveYear_Applicable").change(function () {
+            toggledropdown("#ddlLeaveYear_Applicable", "#ddlLeaveMasterLeaveYearId");
+        });
+
+        
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+
+        $("#ddlFY_Preivous_Bonus_Year_Applicable").on("change", function () {
+            debugger;
+            var FY_Preivous_Bonus_Year_Applicable = $("#ddlFY_Preivous_Bonus_Year_Applicable").val();
+            if(FY_Preivous_Bonus_Year_Applicable == 'Yes')
+            {
+                FY_Preivous_Bonus_Year_Applicable=true;
+            }
+            else
+            {
+                FY_Preivous_Bonus_Year_Applicable=false;
+            }
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetBonusPreviousYear", "ESS_FNF_SM_FNFCalculationStatement")',
+                data: { FY_Preivous_Bonus_Year_Applicable: FY_Preivous_Bonus_Year_Applicable},
+                success: function (data) {
+                    debugger;
+                    if (data.BonusPreviousYear !=null) {
+                        $("#ddlFY_Preivous_Bonus_Year").empty();
+                        if(FY_Preivous_Bonus_Year_Applicable ==true)
+                        {
+                            $.each(data.BonusPreviousYear, function(i, p) {
+                                $("#ddlFY_Preivous_Bonus_Year").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                            });
+                        }
+                        else{
+                            $("#ddlFY_Preivous_Bonus_Year").append("<option value=''>--Select---</option>");
+                        }
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        });
+
+
+        $("#ddlFY_Current_Bonus_Year_Applicable").on("change", function () {
+            debugger;
+            var FY_Current_Bonus_Year_Applicable = $("#ddlFY_Current_Bonus_Year_Applicable").val();
+            if(FY_Current_Bonus_Year_Applicable == 'Yes')
+            {
+                FY_Current_Bonus_Year_Applicable=true;
+            }
+            else
+            {
+                FY_Current_Bonus_Year_Applicable=false;
+            }
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetBonusCurrentYear", "ESS_FNF_SM_FNFCalculationStatement")',
+                data: { FY_Current_Bonus_Year_Applicable: FY_Current_Bonus_Year_Applicable},
+                success: function (data) {
+                    debugger;
+                    if (data.BonusCurrentYear !=null) {
+                        $("#ddlFY_Current_Bonus_Year").empty();
+                        if(FY_Current_Bonus_Year_Applicable ==true)
+                        {
+                            $.each(data.BonusCurrentYear, function(i, p) {
+                                $("#ddlFY_Current_Bonus_Year").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                            });
+                        }
+                        else{
+                            $("#ddlFY_Current_Bonus_Year").append("<option value=''>--Select---</option>");
+                        }
+
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        });
+
+        $("#ddlLeaveYear_Applicable").on("change", function () {
+            debugger;
+            var LeaveYear_Applicable = $("#ddlLeaveYear_Applicable").val();
+            var EmployeeId = $("#ddlFnfEmployee").val();
+            if(LeaveYear_Applicable == 'Yes')
+            {
+                LeaveYear_Applicable=true;
+            }
+            else
+            {
+                LeaveYear_Applicable=false;
+            }
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetLeaveYear", "ESS_FNF_SM_FNFCalculationStatement")',
+                data: { LeaveYear_Applicable: LeaveYear_Applicable,EmployeeId:EmployeeId},
+                success: function (data) {
+                    debugger;
+                    if (data.LeaveYear !=null) {
+                        $("#ddlLeaveMasterLeaveYearId").empty();
+                        if(LeaveYear_Applicable ==true)
+                        {
+                            $.each(data.LeaveYear, function(i, p) {
+                                $("#ddlLeaveMasterLeaveYearId").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                            });
+                        }
+                        else{
+                            $("#ddlLeaveMasterLeaveYearId").append("<option value=''>--Not Applicable---</option>");
+                        }
+
+                    }
+                }
+            })
+        });
+    });
+
+</script>
+<script>
+    $("#btnGetDetails").click(function () {debugger
+        var FNFCal_EmployeeId = $("#ddlFnfEmployee").val();
+        $.ajax({
+            type: 'GET',
+            dataType: 'JSON',
+            contentType: "application/json; charset=utf-8",
+            url:"GetUnpaidSalaryDetails",
+            data:{
+                FNFCal_EmployeeId:FNFCal_EmployeeId
+            },
+            success:function(data){debugger
+                $(".Userloaderbg").css("display", "none");
+                debugger;
+                if (data && data.GetUnpaidSalary && data.GetUnpaidSalary.length > 0) {
+
+                    var arr = data.GetUnpaidSalary;
+                    var obj = {};
+
+                    // Convert Key/Value array → normal object
+                    arr.forEach(function (item) {
+                        obj[item.Key] = item.Value;
+                    });
+                    debugger
+                    $("#ddlA_Salary_Applicable").val(obj.SM_UnpaidSalaryA_YesNo);
+                    $("#ddlB_Salary_Applicable").val(obj.SM_UnpaidSalaryB_YesNo);
+                    $("#ddlC_Salary_Applicable").val(obj.SM_UnpaidSalaryC_YesNo);
+
+                    if (obj.SM_UnpaidSalaryA_Date) {
+                        var dateObj = new Date(obj.SM_UnpaidSalaryA_Date);
+                        var yyyy = dateObj.getFullYear();
+                        var MM = ("0" + (dateObj.getMonth() + 1)).slice(-2);
+                        $("#txtA_SalaryDate").val(yyyy + "-" + MM);
+                    }
+                    if (obj.SM_UnpaidSalaryB_Date) {
+                        var dateObj = new Date(obj.SM_UnpaidSalaryB_Date);
+                        var yyyy = dateObj.getFullYear();
+                        var MM = ("0" + (dateObj.getMonth() + 1)).slice(-2);
+                        $("#txtB_SalaryDate").val(yyyy + "-" + MM);
+                    }
+
+
+                    if (obj.SM_UnpaidSalaryC_Date) {
+                        var dateObj = new Date(obj.SM_UnpaidSalaryC_Date);
+                        var yyyy = dateObj.getFullYear();
+                        var MM = ("0" + (dateObj.getMonth() + 1)).slice(-2);
+                        $("#txtC_SalaryDate").val(yyyy + "-" + MM);
+                    }
+
+                    $("#ddlFY_Preivous_Bonus_Year_Applicable").val(obj.SM_PreivousBonus_YesNo);
+                    $("#ddlFY_Current_Bonus_Year_Applicable").val(obj.SM_CurrentBonus_YesNo);
+                    if (obj.SM_PreivousBonus_YearID) {
+                        $("#ddlFY_Preivous_Bonus_Year")
+                            .val(obj.SM_PreivousBonus_YearID.toString())
+                            .trigger("change");
+                    }
+                    if (obj.SM_CurrentBonus_YearID) {
+                        $("#ddlFY_Current_Bonus_Year")
+                            .val(obj.SM_CurrentBonus_YearID.toString())
+                            .trigger("change");
+                    }
+                    var leaveYearId = obj.SM_PreivousLeave_YearID; // "2025-2026"
+
+                    $("#ddlLeaveYear_Applicable").val(obj.SM_PreivousLeave_YesNo);
+
+                    if (obj.SM_PreivousLeave_YearID) {
+                        $("#ddlLeaveMasterLeaveYearId")
+                            .val(obj.SM_PreivousLeave_YearID.toString())
+                            .trigger("change");
+                    }
+
+                    //$("#ddlLeaveMasterLeaveYearId option").each(function () {
+                    //    if ($(this).text().trim() === leaveYearId.trim()) {
+                    //        $("#ddlLeaveMasterLeaveYearId").val($(this).val());
+                    //        return false;
+                    //    }
+                    //});
+
+                    toggleSalaryDate("#ddlA_Salary_Applicable", "#txtA_SalaryDate");
+                    toggleSalaryDate("#ddlB_Salary_Applicable", "#txtB_SalaryDate");
+                    toggleSalaryDate("#ddlC_Salary_Applicable", "#txtC_SalaryDate");
+                    toggledropdown("#ddlFY_Preivous_Bonus_Year_Applicable", "#ddlFY_Preivous_Bonus_Year");
+                    toggledropdown("#ddlFY_Current_Bonus_Year_Applicable", "#ddlFY_Current_Bonus_Year");
+                }
+            }
+        });
+    });
+
+    function toggleSalaryDate(dropdownId, textboxId) {
+        if ($(dropdownId).val() === "No") { debugger
+            $(textboxId).val("").prop("readonly", true);
+        } else {
+            $(textboxId).prop("readonly", false);
+        }
+    }
+
+    function toggledropdown(dropdownId, textboxId) {debugger
+        if ($(dropdownId).val() === "No") {debugger
+            $(textboxId).val("").prop("readonly", true);
+        } else {
+            $(textboxId).prop("readonly", false);
+        }
+    }
+
+    //use for add regex function
+    jQuery.validator.addMethod(
+    "regex",
+     function (value, element, regexp) {
+         if (regexp.constructor != RegExp)
+             regexp = new RegExp(regexp);
+         else if (regexp.global)
+             regexp.lastIndex = 0;
+         return this.optional(element) || regexp.test(value);
+     }, "erreur expression reguliere"
+  );
+
+    $('#SaveFNFCalculation').validate({
+        rules: {
+            FNFCal_EmployeeId: {
+                required: true,
+            },
+        },
+        messages: {
+            FNFCal_EmployeeId: {
+                required: "Employee name is required",
+            },
+        },
+    });
+
+    var form = $("#SaveFNFCalculation");
+    form.validate();
+
+    //Calculate
+    $("#btnLoad").click(function () {debugger
+        $(".Userloaderbg").css("display", "flex");
+
+        // Call validation function and STOP if validation fails
+        if (!validateDifferentMonths()) {
+            $(".Userloaderbg").css("display", "none");
+            return false;
+        }
+
+        if (form.valid() == false) {
+            $(".Userloaderbg").css("display", "none");
+            return false;
+
+        }
+        debugger;
+        var FNFCal_EmployeeId = $("#ddlFnfEmployee").val();
+        var A_Salary_Applicable = $("#ddlA_Salary_Applicable").val();
+        var B_Salary_Applicable = $("#ddlB_Salary_Applicable").val();
+        var C_Salary_Applicable = $("#ddlC_Salary_Applicable").val();
+
+        var A_SalaryDate = $("#txtA_SalaryDate").val();
+        var B_SalaryDate = $("#txtB_SalaryDate").val();
+        var C_SalaryDate = $("#txtC_SalaryDate").val();
+
+        var FY_Preivous_Bonus_Year_Applicable = $("#ddlFY_Preivous_Bonus_Year_Applicable").val();
+        var FY_Preivous_Bonus_Year = $("#ddlFY_Preivous_Bonus_Year").val();
+
+        var FY_Current_Bonus_Year_Applicable = $("#ddlFY_Current_Bonus_Year_Applicable").val();
+        var FY_Current_Bonus_Year = $("#ddlFY_Current_Bonus_Year").val();
+
+        var LeaveYear_Applicable = $("#ddlLeaveYear_Applicable").val();
+        var LeaveMasterLeaveYearId = $("#ddlLeaveMasterLeaveYearId").val();
+
+        form.valid();
+
+
+        @*var url = '@Url.Action("ESS_FNF_SM_FNFCalculationStatement", "ESS_FNF_SM_FNFCalculationStatement")?FNFCal_EmployeeId=' + FNFCal_EmployeeId;
+        window.location.href = url;*@
+
+        $.ajax({
+            type: 'GET',
+            dataType: 'JSON',
+            contentType: "application/json; charset=utf-8",
+            url:"Get_SM_FNFDetails",
+            data:{
+                FNFCal_EmployeeId:FNFCal_EmployeeId,
+                A_Salary_Applicable:A_Salary_Applicable,
+                A_SalaryDate:A_SalaryDate,
+                B_Salary_Applicable:B_Salary_Applicable,
+                B_SalaryDate:B_SalaryDate,
+                C_Salary_Applicable:C_Salary_Applicable,
+                C_SalaryDate:C_SalaryDate,
+                FY_Preivous_Bonus_Year_Applicable:FY_Preivous_Bonus_Year_Applicable,
+                FY_Preivous_Bonus_Year:FY_Preivous_Bonus_Year,
+                FY_Current_Bonus_Year_Applicable:FY_Current_Bonus_Year_Applicable,
+                FY_Current_Bonus_Year:FY_Current_Bonus_Year,
+                LeaveYear_Applicable:LeaveYear_Applicable,
+                LeaveMasterLeaveYearId:LeaveMasterLeaveYearId,
+            },
+            success:function(data){
+                $(".Userloaderbg").css("display", "none");
+                debugger;
+                if (data && data.GetFnfDetails && data.GetFnfDetails.length > 0) {
+
+                    var arr = data.GetFnfDetails;
+                    var obj = {};
+
+                    // Convert Key/Value array → normal object
+                    arr.forEach(function (item) {
+                        obj[item.Key] = item.Value;
+                    });
+
+                    $("#ddlA_Salary_Applicable").val(A_Salary_Applicable);
+                    $("#ddlB_Salary_Applicable").val(B_Salary_Applicable);
+                    $("#ddlC_Salary_Applicable").val(C_Salary_Applicable);
+
+                    //$("#txtA_SalaryDate").val(A_SalaryDate);
+                    //$("#txtB_SalaryDate").val(B_SalaryDate);
+                    //$("#txtC_SalaryDate").val(C_SalaryDate);
+
+                    $("#ddlFY_Preivous_Bonus_Year_Applicable").val(FY_Preivous_Bonus_Year_Applicable);
+                    $("#ddlFY_Preivous_Bonus_Year").val(FY_Preivous_Bonus_Year);
+                    $("#ddlFY_Current_Bonus_Year_Applicable").val(FY_Current_Bonus_Year_Applicable);
+                    $("#ddlFY_Current_Bonus_Year").val(FY_Current_Bonus_Year);
+
+
+
+                    $("#lblEmployeeName").text(obj.SM_EmployeeName);
+                    $("#lblEmployeeNo").text(obj.SM_EmployeeNo);
+                    $("#lblDOJ").text(obj.SM_JoiningDate);
+                    $("#lblResignationDate").text(obj.SM_ReginationDate);
+                    $("#lblRelievingDate").text(obj.SM_RelievingDate);
+                    $("#lblLastWorkingDate").text(obj.SM_LastWorkingDate);
+                    $("#lblDepartment").text(obj.SM_Department);
+                    $("#lblGrade").text(obj.SM_Grade);
+                    $("#lblBranch").text(obj.SM_BusinessUnit);
+                    $("#lblDesignation").text(obj.SM_Desination);
+                    $("#lblBondDate").text(obj.SM_BondDate);
+                    $("#lblDailyMonthly").text(obj.SM_DailyMonthly);
+                    $("#lblServiceBondApplicable").text(obj.SM_Bond_Applicable);
+                    $("#lblEndNoticePeriod").text(obj.SM_NoticePeriodEndDate);
+
+                    $("#hdnEmployeeName").val(obj.SM_EmployeeName);
+                    $("#hdnDepartment").val(obj.SM_Department);
+                    $("#hdnGrade").val(obj.SM_Grade);
+                    $("#hdnDailyMonthly").val(obj.SM_DailyMonthly);
+                    $("#hdnResignationDate").val(obj.SM_ReginationDate);
+                    $("#hdnEndNoticePeriod").val(obj.SM_NoticePeriodEndDate);
+
+                    $("#hdnEmployeeNo").val(obj.SM_EmployeeNo);
+                    $("#hdnDesignation").val(obj.SM_Desination);
+                    $("#hdnBranch").val(obj.SM_BusinessUnit);
+                    $("#hdnDOJ").val(obj.SM_JoiningDate);
+                    $("#hdnLastWorkingDate").val(obj.SM_LastWorkingDate);
+                    $("#hdnRelievingDate").val(obj.SM_RelievingDate);
+                    $("#hdnServiceBondApplicable").val(obj.SM_Bond_Applicable);
+
+                    $("#txtGrossSalary").val(obj.SM_GrossSalary);
+                    $("#txtBasicSalary").val(obj.SM_BasicSalary);
+                    $("#txtUnpaidA_SalaryDate").val(obj.SM_UnpaidSalaryA_Date);
+                    $("#txtUnpaidB_SalaryDate").val(obj.SM_UnpaidSalaryB_Date);
+                    $("#txtUnpaidC_SalaryDate").val(obj.SM_UnpaidSalaryC_Date);
+                    $("#txtUnpaidSalaryA_Amount").val(obj.SM_UnpaidSalaryA_Amount);
+                    $("#txtUnpaidSalaryB_Amount").val(obj.SM_UnpaidSalaryB_Amount);
+                    $("#txtUnpaidSalaryC_Amount").val(obj.SM_UnpaidSalaryC_Amount);
+
+                    $("#txtTotalUnpaidSalaryAmount").val(obj.SM_TotalUnpaidSalary);
+
+                    $("#txtPreivousBonus_Remark").val(obj.SM_PreivousBonus_Remark);
+                    $("#txtBonusPreviousYearAmount").val(obj.SM_PreivousBonus_Amount);
+                    $("#txtBonusCurrentYearAmount").val(obj.SM_CurrentBonus_Amount);
+                    $("#txtCurrentBonus_Remark").val(obj.SM_CurrentBonus_Remark);
+
+                    $("#txtTotalBonus_Amount").val(obj.SM_TotalBonus_Amount);
+
+                    $("#txtLeavePreviousYear").val(obj.SM_PreivousLeave_Remark);
+                    $("#txtPreivousLeave_Days").val(obj.SM_PreivousLeave_Days);
+                    $("#txtLeavePreviousYearAmount").val(obj.SM_PreivousLeave_Amount);
+                    $("#txtLeaveCurrentYearAmount").val(obj.SM_CurrentLeave_Amount);
+                    $("#txtCurrentLeave_Days").val(obj.SM_CurrentLeave_Days);
+                    $("#txtLeaveCurrentYear").val(obj.SM_CurrentLeave_Remark);
+
+                    $("#txtTotalLeaveEncashmentAmount").val(obj.SM_TotalLeave_Amount);
+
+                    $("#txtOtherEarningA_Amount").val(obj.SM_OtherEarningA_Remark);
+                    $("#txtOtherEarningA_Amount").val(obj.SM_OtherEarningA_Amount);
+                    $("#txtOtherEarningB_Amount").val(obj.SM_OtherEarningB_Remark);
+                    $("#txtOtherEarningB_Amount").val(obj.SM_OtherEarningB_Amount);
+
+                    $("#txtOtherDeductionA_Remark").val(obj.SM_OtherDeductionA_Remark);
+                    $("#txtOtherDeductionA_Amount").val(obj.SM_OtherDeductionA_Amount);
+
+                    $("#txtOtherDeductionB_Remark").val(obj.SM_OtherDeductionB_Remark);
+                    $("#txtOtherDeductionB_Amount").val(obj.SM_OtherDeductionB_Amount);
+                    $("#txtAdvanceRecovered").val(obj.SM_Advance);
+                    $("#txtSalaryTDS").val(obj.SM_TDS);
+                    $("#txtNoticePeriodDays").val(obj.SM_ShortFallNoticePay_Days);
+                    $("#txtNoticePeriodDayAmount").val(obj.SM_ShortFallNoticePay_Amount);
+                    $("#txtBondRemark").val(obj.SM_BondRemark);
+                    $("#txtMinServiceBondDeduction").val(obj.SM_ServicesBond);
+                    $("#txtOtherAmount").val(obj.SM_OtherDeduction);
+                    $("#txtTotalAmountDeduction").val(obj.SM_TotalDeduction);
+                    $("#txtNetAmountPayable").val(obj.SM_FinalPay);
+                    $("#txtGratuity_Applicable").val(obj.SM_Gratuity_Applicable);
+                    $("#txtGratuity_Service").val(obj.SM_Gratuity_Service);
+
+                    //let totalEarning = obj.SM_OtherEarningA_Amount + obj.SM_OtherEarningB_Amount + obj.SM_TotalBonus_Amount + obj.SM_TotalLeave_Amount;
+                    //let totaldeduction = obj.SM_OtherDeduction + obj.SM_OtherDeductionA_Amount + obj.SM_OtherDeductionB_Amount;
+                    $("#txtTotalAmountPayable").val(obj.SM_TotalEarning);
+
+                }
+            }
+        });
+    });
+
+
+    $("#btnsubmit").click(function () {
+        debugger;
+
+        form.valid();
+        if (form.valid() == false) {
+            $("#txtEstablishedDate").removeClass("error");
+            return false;
+        }
+
+        var FNFCal_EmployeeId = $("#ddlFnfEmployee").val();
+        var FnfCalId_Encrypted = $("#FnfCalId_Encrypted").val();
+        $("#SaveFNFCalculation").submit();
+    });
+
+</script>
+
+<script>
+    function validateDifferentMonths() {debugger
+
+        var a = $("#txtA_SalaryDate").val();
+        var b = $("#txtB_SalaryDate").val();
+        var c = $("#txtC_SalaryDate").val();
+
+        var A_Salary_Applicable = $("#ddlA_Salary_Applicable").val();
+        var B_Salary_Applicable = $("#ddlB_Salary_Applicable").val();
+        var C_Salary_Applicable = $("#ddlC_Salary_Applicable").val();
+
+        var FY_Preivous_Bonus_Year_Applicable = $("#ddlFY_Preivous_Bonus_Year_Applicable").val();
+        var FY_Preivous_Bonus_Year = $("#ddlFY_Preivous_Bonus_Year").val();
+        var FY_Current_Bonus_Year_Applicable = $("#ddlFY_Current_Bonus_Year_Applicable").val();
+        var FY_Current_Bonus_Year = $("#ddlFY_Current_Bonus_Year").val();
+
+        let inputs = $("#txtA_SalaryDate, #txtB_SalaryDate, #txtC_SalaryDate");
+        inputs.css("border", "");
+        $("#errorA_SalaryDate, #errorB_SalaryDate, #errorC_SalaryDate").text("");
+
+        let error = false;
+        if (A_Salary_Applicable === 'Yes' && a == "") {
+            $("#errorA_SalaryDate").text("Please Select Month.");
+            error = true;
+        }
+
+        if (B_Salary_Applicable === 'Yes' && b == "") {
+            $("#errorB_SalaryDate").text("Please Select Month.");
+            error = true;
+        }
+
+        if (C_Salary_Applicable === 'Yes' && c == "") {
+            $("#errorC_SalaryDate").text("Please Select Month.");
+            error = true;
+        }
+
+        if(FY_Preivous_Bonus_Year_Applicable === 'Yes' && FY_Preivous_Bonus_Year == "")
+        {
+            $("#errorFY_Preivous_Bonus_Year").text("Please Select Bonus Previous Year.");
+            error = true;
+        }
+        else
+        {
+            $("#errorFY_Preivous_Bonus_Year").text("");
+        }
+
+        if(FY_Current_Bonus_Year_Applicable === 'Yes' && FY_Current_Bonus_Year == "")
+        {
+            $("#errorFY_Current_Bonus_Year").text("Please Select Bonus Current Year.");
+            error = true;
+        }
+        else
+        {
+            $("#errorFY_Current_Bonus_Year").text("");
+        }
+
+        if (a && b && a === b) {
+            $("#errorA_SalaryDate").text("Duplicate month.");
+            $("#errorB_SalaryDate").text("Duplicate month.");
+            error = true;
+        }
+
+        if (a && c && a === c) {
+            $("#errorA_SalaryDate").text("Duplicate month");
+            $("#errorC_SalaryDate").text("Duplicate month");
+            error = true;
+        }
+
+        if (b && c && b === c) {
+            $("#errorB_SalaryDate").text("Duplicate month");
+            $("#errorC_SalaryDate").text("Duplicate month");
+            error = true;
+        }
+
+        return !error;
+    }
+
+    // Validate on change
+    $("#txtA_SalaryDate, #txtB_SalaryDate, #txtC_SalaryDate").change(function () {debugger
+        validateDifferentMonths();
+    });
+
+
+
+    $(document).ready(function () {
+
+        function calculateTotalEarningDeduction() {debugger
+            let TotalUnpaidSalaryAmount = parseFloat($("#txtTotalUnpaidSalaryAmount").val()) || 0;
+            let TotalBonus_Amount = parseFloat($("#txtTotalBonus_Amount").val()) || 0;
+            let TotalLeaveEncashmentAmount = parseFloat($("#txtTotalLeaveEncashmentAmount").val()) || 0;
+
+            let OtherEarningA_Amount = parseFloat($("#txtOtherEarningA_Amount").val()) || 0;
+            let OtherEarningB_Amount = parseFloat($("#txtOtherEarningB_Amount").val()) || 0;
+            let TotalOtherEarning = OtherEarningA_Amount + OtherEarningB_Amount;
+            $("#txtTotalOtherEarning").val(TotalOtherEarning);
+
+            // Calculate Earning(A)
+            let totalEarning = TotalUnpaidSalaryAmount + TotalBonus_Amount + TotalLeaveEncashmentAmount + TotalOtherEarning;
+            $("#txtTotalAmountPayable").val(totalEarning);
+
+            // Calculate Deduction(B)
+            let OtherDeductionA_Amount = parseFloat($("#txtOtherDeductionA_Amount").val()) || 0;
+            let OtherDeductionB_Amount = parseFloat($("#txtOtherDeductionB_Amount").val()) || 0;
+            let OtherAmount = parseFloat($("#txtOtherAmount").val()) || 0;
+            let MinServiceBondDeduction = parseFloat($("#txtMinServiceBondDeduction").val()) || 0;
+            let SalaryTDS = parseFloat($("#txtSalaryTDS").val()) || 0;
+            let NoticePeriodDayAmount = parseFloat($("#txtNoticePeriodDayAmount").val()) || 0;
+
+            let totalDeduction = OtherDeductionA_Amount + OtherDeductionB_Amount + OtherAmount + MinServiceBondDeduction + SalaryTDS + NoticePeriodDayAmount;
+            $("#txtTotalAmountDeduction").val(totalDeduction);
+
+            let TotalNetPay = totalEarning - totalDeduction;
+            $("#txtNetAmountPayable").val(TotalNetPay);
+        }
+
+        $("#txtOtherEarningA_Amount, #txtOtherEarningB_Amount, #txtTotalBonus_Amount, #txtTotalLeaveEncashmentAmount, #txtOtherDeductionA_Amount, #txtOtherDeductionB_Amount, #txtOtherAmount,#txtMinServiceBondDeduction,#txtSalaryTDS,#txtNoticePeriodDayAmount")
+            .on("keyup change", function () {
+                calculateTotalEarningDeduction();
+            });
+    });
+</script>
+<script>
+    $(document).on('input', '.numeric', function () {
+        // Remove any non-numeric characters except decimal
+        this.value = this.value.replace(/[^0-9.]/g, '');
+
+        // Allow only one decimal point
+        const parts = this.value.split('.');
+        if (parts.length > 2) {
+            this.value = parts[0] + '.' + parts[1];
+        }
+    });
+
+    $("#btnSalaryDetailsList").on("click", function () {debugger
+
+        var FNFCal_EmployeeId = $("#ddlFnfEmployee").val();
+
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("GetSalaryDetails", "ESS_FNF_SM_FNFCalculationStatement")',
+            data: { FNFCal_EmployeeId: FNFCal_EmployeeId },
+            success: function (response) {
+                debugger;
+
+                let list = response.salaryList;
+                let rows = "";
+
+                if (!list || list.length === 0) {
+                    $("#SalaryDetailsTableBody").html("<tr><td colspan='4'>No Data</td></tr>");
+                    return;
+                }
+
+                list.forEach(function (item) {
+                    // Convert array of Key/Value to object
+                    let obj = {};
+                    item.forEach(function(kv) {
+                        obj[kv.Key] = kv.Value;
+                    });
+
+                    rows += `
+                <tr>
+                    <td class="text-nowrap">${obj.MonthYear || ''}</td>
+                    <td class="text-end text-nowrap">${obj.SalaryPayableDays || 0}</td>
+                    <td class="text-end text-nowrap">${obj.SalaryNetPay || 0}</td>
+                    <td class="text-nowrap">${obj.Salary_IsHold || ''}</td>
+                </tr>`;
+                });
+
+                $("#SalaryDetailsTableBody").html(rows);
+            }
+        });
+
+    });
+
+
+    $(".bonus-btn").on("click", function () {
+
+        var FNFCal_EmployeeId = $("#ddlFnfEmployee").val();
+        var yearType = $(this).data("year"); // CY or PY
+
+        var FY_Current_Bonus_Year = $("#ddlFY_Current_Bonus_Year").val();
+        var FY_Preivous_Bonus_Year = $("#ddlFY_Preivous_Bonus_Year").val();
+
+        var isCurrentApplicable =
+            $("#ddlFY_Current_Bonus_Year_Applicable").val() === "Yes";
+
+        var isPreviousApplicable =
+            $("#ddlFY_Preivous_Bonus_Year_Applicable").val() === "Yes";
+
+        // Validation
+        if (!validateDifferentMonths()) {
+            return;
+        }
+
+        // Sidebar title
+        $("#BonusdetailsLabel").text( yearType === "CY"? "Current Year Bonus Details" : "Previous Year Bonus Details"
+        );
+
+        // Decide applicability & year
+        let isApplicable = false;
+        let bonusYear = null;
+
+        if (yearType === "CY") {
+            isApplicable = isCurrentApplicable;
+            bonusYear = FY_Current_Bonus_Year;
+        } else if (yearType === "PY") {
+            isApplicable = isPreviousApplicable;
+            bonusYear = FY_Preivous_Bonus_Year;
+        }
+
+        if (!isApplicable) {
+            $("#BonusTableBody").html(
+                "<tr><td colspan='4' class='text-center text-muted'>data not available</td></tr>"
+            );
+            return;
+        }
+
+        // Single AJAX call
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetBonusDetails", "ESS_FNF_SM_FNFCalculationStatement")',
+            data: {
+                FNFCal_EmployeeId: FNFCal_EmployeeId,
+                BonusYear: bonusYear
+            },
+            success: function (response) {
+
+                let list = response.BonusList;
+                let rows = "";
+
+                if (!list || list.length === 0) {
+                    $("#BonusTableBody").html(
+                        "<tr><td colspan='4' class='text-center text-muted'>data not available</td></tr>"
+                    );
+                    return;
+                }
+
+                list.forEach(function (item) {
+                    let obj = {};
+                    item.forEach(function (kv) {
+                        obj[kv.Key] = kv.Value;
+                    });
+
+                    rows += `
+                    <tr>
+                        <td class="text-nowrap">${obj.MonthYear || ""}</td>
+                        <td class="text-end text-nowrap">${obj.SalaryPayableDays || 0}</td>
+                        <td class="text-end text-nowrap">${obj.RatePartB_Bonus || 0}</td>
+                        <td class="text-end text-nowrap">${obj.SalaryBonusContribution || 0}</td>
+                    </tr>`;
+                });
+
+                $("#BonusTableBody").html(rows);
+            }
+        });
+    });
+
+    $(".leave-btn").on("click", function () {debugger
+        var FNFCal_EmployeeId = $("#ddlFnfEmployee").val();
+        var yearType = $(this).data("year"); // PY or CY
+        var LeaveMasterLeaveYearId = $("#ddlLeaveMasterLeaveYearId").val();
+
+        // Optional: Change sidebar title
+        $("#LeaveEncashmentLabel").text(
+            yearType === "CY" ? "Current Year Leave Encashment" : "Previous Year Leave Encashment"
+        );
+
+
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("GetLeaveEncashmentDetails", "ESS_FNF_SM_FNFCalculationStatement")',
+            data: { FNFCal_EmployeeId: FNFCal_EmployeeId ,
+                LeaveMasterLeaveYearId:LeaveMasterLeaveYearId,
+                yearType:yearType},
+            success: function (response) {
+                debugger;
+
+                let list = response.LeaveEncashmentList;
+                let rows = "";
+
+                if (!list || list.length === 1) {
+                    $("#LeaveTableBody").html("<tr><td colspan='14'>data not available</td></tr>");
+                    return;
+                }
+
+                list.forEach(function (item) {
+                    // Convert array of Key/Value to object
+                    let obj = {};
+                    item.forEach(function(kv) {
+                        obj[kv.Key] = kv.Value;
+                    });
+
+                    rows += `
+                <tr>
+                   <td class="text-nowrap">${obj.MonthYear || ''}</td>
+                   <td class="text-end text-nowrap">${obj.AttenMonthlyAB || 0}</td>
+                   <td class="text-end text-nowrap">${obj.AttenMonthlyPP || 0}</td>
+                   <td class="text-end text-nowrap">${obj.AttenMonthlyWO || 0}</td>
+                   <td class="text-end text-nowrap"> ${obj.AttenMonthlyPH || 0}</td>
+                   <td class="text-end text-nowrap">${obj.AttenMonthlyCO || 0}</td>
+                   <td class="text-end text-nowrap">${obj.AttenMonthlyCL || 0}</td>
+                   <td class="text-end text-nowrap">${obj.AttenMonthlySL || 0}</td>
+                   <td class="text-end text-nowrap">${obj.AttenMonthlyEL || 0}</td>
+                   <td class="text-end text-nowrap">${obj.AttenMonthlyML || 0}</td>
+                   <td class="text-end text-nowrap">${obj.AttenMonthlyESIC || 0}</td>
+                   <td class="text-end text-nowrap">${obj.AttenMonthlyLWP || 0}</td>
+                    <td class="text-end text-nowrap">${obj.AttenMonthlyLL || 0}</td>
+                    <td class="text-end text-nowrap">${obj.AttenMonthlyPayableDays || 0}</td>
+                </tr>`;
+                });
+
+                $("#LeaveTableBody").html(rows);
+            }
+        });
+
+    });
+
+</script>

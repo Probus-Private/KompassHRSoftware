@@ -1,0 +1,551 @@
+﻿@model KompassHR.Areas.Module.Models.Module_Payroll.MonthlyAttendance
+@{
+    ViewBag.Title = "Module_Payroll_PayrollProcess";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+
+
+<style>
+    .Col-md-2 {
+        margin: 10px 0;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    label.error, .Error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Payroll Process
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Module_Payroll_Menu", "Module_Payroll_Menu", new {id = 6, ScreenId=159, area = "Module" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <div class="panel panel-inverse" data-sortable-id="index-1">
+                    <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                        <h4 class="panel-title">Payroll Process</h4>
+                        <div class="panel-heading-btn">
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                        </div>
+                    </div>
+                    <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                        <p class="pb-0">
+                            Define payroll process here!
+                        </p>
+                    </div>
+                    <div class="panel-body" style="max-height: fit-content;">
+                        <div class="row justify-content-center">
+                            <div class="row justify-content-center">
+                                <form role="form" action='@Url.Action("SaveUpdate", "Module_Payroll_PayrollProcess", new { area = "Module" })' id="formPayrollProcess" method="post">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-3">
+                                                    Company Name
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-9">
+                                                    @Html.DropDownListFor(model => model.CmpId, new SelectList(ViewBag.GetCompanyName, "Id", "Name"), "--Select--", new { @class = "form-select", id = "ddlCmpId", type = "text", name = "CmpId", autocomplete = "Off" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-3">
+                                                    Business Unit
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-9">
+                                                    @Html.DropDownListFor(model => model.BranchId, new SelectList(ViewBag.GetBranchName, "Id", "Name"), "--Select--", new { @class = "form-select", id = "ddlBranchId", type = "text", name = "BranchId", autocomplete = "Off" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-3">
+                                                    Month/Year
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-9">
+                                                    @Html.TextBoxFor(model => model.Month, new { @class = "form-control", name = "FromDate", type = "month", id = "FromDate" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="row mb-15px">
+                                                <label class="form-label col-form-label col-md-3">
+                                                    Salary Process (Category)
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-9">
+                                                    @Html.DropDownListFor(model => model.ProcessCategoryId, new SelectList(ViewBag.SalaryProcess, "Id", "Name"), new { @class = "form-select", id = "ddlProcessCategoryId", type = "text", name = "ProcessCategoryId", autocomplete = "Off" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="LastShortLeaveBx">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <div class="BtnBx">
+                                                        <button type="button" id="btnEmployeeSubmit" onclick="funMonthlyAttendance()"
+                                                                class="btn btn-primary btn-sm">
+                                                            <i class="fa-solid fa-floppy-disk"></i>  Process
+                                                        </button>
+                                                        <a href="@Url.Action("GetList", "Module_Payroll_PayrollProcess", new { area = "Module" })">
+                                                            <button type="button" class="btn btn-danger btn-sm">
+                                                                <i class="fa-solid fa-share-from-square"></i> List
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- #Start modal-dialog -->
+<div class="modal fade" id="myEmployeeAttendance" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header bg-black text-white">
+                <h4 class="modal-title">Employee List</h4>
+                <div class="panel-heading-btn">
+                    <a href="javascript:;" class="btn btn-icon btn-danger CloseModelHistory" data-bs-dismiss="modal"
+                       aria-hidden="true" id="CloseModelHistory">
+                        <i class="fa fa-xmark"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="modal-body">
+                <!-- BEGIN panel -->
+                <div class="modal-body-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-scroll div1">
+                                <div class="row">
+                                    <table class="table table-bordered mb-0 text-dark align-middle TabledataBulkClass tblAddData" style="width: 100%;" id="tblEmployeeHistoryHead">
+                                        <thead class="table-active horizontal-scroll" style="background-color: rgba(233, 236, 239, 1) !important;">
+                                            <tr>
+                                                @*<th class="text-nowrap text-center">All <input type="checkbox" class="form-check-input" data-checked="all-checkbox" id="SelectAll" onchange="checkAll(this)" /></th>*@
+
+                                                <th class="text-nowrap">Employee No </th>
+                                                <th class="text-nowrap">Employee Name</th>
+                                                <th class="text-nowrap">Business Unit</th>
+                                                <th class="text-nowrap">Category</th>
+                                                <th class="text-nowrap">Remark </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tblBodyEmployeeAttendance"></tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- END panel -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger btnpress btn-sm CloseModelHistory" id="CloseModelHistory" data-bs-dismiss="modal" aria-hidden="true">
+                    <i class="fa-solid fa-share-from-square"></i> Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #End modal-dialog -->
+
+<script>
+    $(document).ready(function () {
+        $("#ddlCmpId").select2();
+        $("#ddlBranchId").select2();
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+
+        $("#ddlCmpId").on("change", function () {
+            debugger;
+            $("#ddlBranchId").find("option").remove();
+            var CmpId = $("#ddlCmpId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetBusinessUnit", "Module_Payroll_PayrollProcess")',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    if (data != null) {
+                        $("#ddlBranchId").append("<option value=0>--Select-- </option>");
+                        $.each(data, function (i, p) {
+                            $("#ddlBranchId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        });
+        var today = new Date();
+        // Format the date as YYYY-MM (year-month)
+        var yyyy = today.getFullYear();
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+        var defaultMonth = yyyy + '-' + mm;
+        // Set the value of the input element to the default month
+        var CheckEmptyDate = document.getElementById('FromDate').value;
+        if (CheckEmptyDate == "") {
+            document.getElementById('FromDate').value = defaultMonth;
+        }
+
+
+        $('#myEmployeeAttendance').on('shown.bs.modal', function () {
+            if ($.fn.DataTable.isDataTable('.TabledataBulkClass')) {
+                $('.TabledataBulkClass').DataTable().destroy();
+            }
+
+            $('.TabledataBulkClass').DataTable({
+                scrollY: 300,
+                scrollCollapse: true,
+                paging: false,
+                scrollX: true,
+                searching: true,
+                autoWidth: false,
+                dom: '<"d-flex justify-content-between align-items-center"<"dt-left-buttons"B><"dt-search"f>>rtip',
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        text: 'Export to Excel',
+                        title: 'List of Employee of missing record',
+                        className: 'btn btn-primary', // Optional: Bootstrap styling for the button
+                    },
+                ],
+            });
+        });
+
+
+        //$('#myEmployeeSalary').on('shown.bs.modal', function () {
+        //    if ($.fn.DataTable.isDataTable('.TabledataBulkClass')) {
+        //        $('.TabledataBulkClass').DataTable().destroy();
+        //    }
+
+        //    $('.TabledataBulkClass').DataTable({
+        //        scrollY: 300,
+        //        scrollCollapse: true,
+        //        paging: false,
+        //        scrollX: true,
+        //        searching: true,
+        //        autoWidth: false,
+        //        dom: '<"d-flex justify-content-between align-items-center"<"dt-left-buttons"B><"dt-search"f>>rtip',
+        //        buttons: [
+        //            {
+        //                extend: 'excelHtml5',
+        //                text: 'Export to Excel',
+        //                title: 'Employee salary data',
+        //                className: 'btn btn-primary', // Optional: Bootstrap styling for the button
+        //            },
+        //        ],
+        //    });
+        //});
+
+
+        //$('#myEmployeeAttendance').on('shown.bs.modal', function () {
+        //    var table = $('.TabledataBulkClass').DataTable();
+
+        //    if ($.fn.DataTable.isDataTable('.TabledataBulkClass')) {
+        //        table.destroy();
+        //    }
+
+        //    $('.TabledataBulkClass').DataTable({
+        //        scrollY: 300,
+        //        scrollCollapse: true,
+        //        paging: false,
+        //        scrollX: true,
+        //        searching: true,
+        //        autoWidth: false,
+        //    });
+        //});
+    });
+
+</script>
+
+<script>
+    //use for add regex function
+    jQuery.validator.addMethod(
+    "regex",
+     function (value, element, regexp) {
+         if (regexp.constructor != RegExp)
+             regexp = new RegExp(regexp);
+         else if (regexp.global)
+             regexp.lastIndex = 0;
+         return this.optional(element) || regexp.test(value);
+     }, "erreur expression reguliere"
+  );
+
+    $('#formPayrollProcess').validate({
+        rules: {
+            CmpId: {
+                required: true,
+            },
+            BranchId: {
+                required: true,
+            },
+            Month: {
+                required: true,
+            },
+        },
+        messages: {
+            CmpId: {
+                required: "Company name is required",
+            },
+            BranchId: {
+                required: "Business unit is required",
+            },
+            Month: {
+                required: "Month is required",
+            },
+        },
+    });
+
+    var form = $("#formPayrollProcess");
+    form.validate();
+
+    function funMonthlyAttendance() {
+        debugger;
+
+        // Validate the form
+        if (!form.valid()) {
+            $("#FromDate").removeClass("error");
+            return false;
+        }
+
+        // Retrieve values from form fields
+        var CmpId = $("#ddlCmpId").val();
+        var BranchId = $("#ddlBranchId").val();
+        var Month = $("#FromDate").val();
+        var ProcessCategoryId = $("#ddlProcessCategoryId").val();
+
+        // Display loader
+        $(".Userloaderbg").css("display", "flex");
+
+        // Perform AJAX request
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("SaveUpdate", "Module_Payroll_PayrollProcess")',
+            contentType: "application/json; charset=utf-8",
+            data: JSON.stringify({ Month: Month, CmpId: CmpId, BranchId: BranchId,ProcessCategoryId:ProcessCategoryId }),
+            success: function (response) {
+                debugger;
+
+                // Parse the response
+                //var parsedData = JSON.parse(response);
+                var Message = response.Message;
+                var Icon = response.Icon;
+                var isValid = response.Valid;
+
+                // Handle response
+                if (isValid === "1") {
+                    if (Message != null) {
+                        if (Message != null) {
+                            Swal.fire({
+                                icon: Icon,
+                                text: Message,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            })
+                            return false;
+                        }
+                    }
+                } else if (isValid ==="2"){
+                    // Add your error handling logic here
+                    $(".Userloaderbg").css("display", "none");
+                    debugger;
+                    const data = response.Result;
+                    const modal = $('#myEmployeeAttendance');
+                    const tableBody = $('#tblBodyEmployeeAttendance');
+
+                    modal.modal(data.length > 0 ? 'show' : 'hide');
+                    tableBody.empty(); // Clear existing rows
+
+                    if (data) {
+                        data.forEach(item => {
+                            const row = $('<tr>');
+
+                            const employeeNoCell = item.find(e => e.Key === "tb_ValidationEmployeeNo");
+                            const employeeNameCell = item.find(e => e.Key === "tb_ValidationEmployeeName");
+                            const BranchNameCell = item.find(e => e.Key === "tb_ValidationBranchName");
+                            const CategoryCell = item.find(e => e.Key === "tb_ValidationCategory");
+                            const ValidationRemarkCell = item.find(e => e.Key === "tb_ValidationRemark");
+                            //row.append(
+                            //    `<td><center><input type="checkbox" class="form-check-input"/></center></td>`
+                            //);
+                            row.append(`<td>${employeeNoCell ? employeeNoCell.Value : ''}</td>`);
+                            row.append(`<td>${employeeNameCell ? employeeNameCell.Value : ''}</td>`);
+                            row.append(`<td>${BranchNameCell ? BranchNameCell.Value : ''}</td>`);
+                            row.append(`<td>${CategoryCell ? CategoryCell.Value : ''}</td>`);
+                            row.append(`<td>${ValidationRemarkCell ? ValidationRemarkCell.Value : ''}</td>`);
+
+                            tableBody.append(row);
+                        });
+                    }
+
+                }
+                else if (isValid ===""){
+                    var Message = response.Message;
+                    var Icon = response.Icon;
+                    if (Message != null) {
+                        if (Message != null) {
+                            Swal.fire({
+                                icon: Icon,
+                                text: Message,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            }).then(function() {
+                                window.location.reload();
+                            });
+                        }
+                    }
+                }
+            },
+            error: function (xhr, status, error) {
+                // Handle AJAX error
+                console.error("AJAX Error: ", status, error);
+                alert("An error occurred while processing the request.");
+            },
+            complete: function () {
+                // Hide loader
+                $(".Userloaderbg").css("display", "none");
+            }
+        });
+
+        return false; // Prevent form submission
+    }
+
+
+    @*function funMonthlyAttendance() {
+        debugger;
+        form.valid();
+        if (form.valid() == false) {
+            $("#FromDate").removeClass("error");
+            return false;
+        }
+        var CmpId= $("#ddlCmpId").val();
+        var BranchId= $("#ddlBranchId").val();
+        var Month= $("#FromDate").val();
+        $(".Userloaderbg").css("display", "flex");
+        $.ajax({
+            type: 'POST',
+            dataType: 'text',
+            contentType: "application/json; charset=utf-8",
+            url: '@Url.Action("SaveUpdate", "Module_Payroll_PayrollProcess")',
+            data: { Month: Month, CmpId:CmpId,BranchId:BranchId},
+            success: function (data) {
+                debugger;
+                var Adata=JSON.parse(data);
+                var Meassage=Adata.Message;
+                var Icon=Adata.Icon;
+                var Valid=Adata.Valid;
+                if (Valid==1)
+                {
+
+                }
+            }
+        })
+       // $("#formPayrollProcess").submit();
+    }*@
+</script>
+
+

@@ -1,0 +1,826 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_Training.Training_TrainingAssesmentQuestion
+
+@{
+    ViewBag.Title = "ESS_Training_TrainingAssesmentQuestion";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+<style>
+    /* CSS to hide elements */
+    .hidden {
+        display: none;
+    }
+</style>
+
+<style>
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    .card-row-title {
+        color: #e63c3c;
+        font-size: 18px;
+        font-weight: 600;
+        text-transform: capitalize;
+        border-bottom: #009ce7 1px solid;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Training Assesment Question
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_LMS_Training_Training", "ESS_LMS_Training_Training",  new { id = 38,ScreenId=589, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading">
+                    <h4 class="panel-title"> Training Assesment Question - <Span>@ViewBag.AddUpdateTitle</Span></h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Add training assesment question details here!
+                    </p>
+                </div>
+
+                <div class="panel-body" data-scrollbar="true">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "ESS_Training_TrainingAssesmentQuestion", new { area = "ESS" })' id="TrainingAssesmentQuestion" method="post">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Training Calender
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.TrainingCalenderId, new SelectList(ViewBag.TrainingCalender, "Id", "Name"), "--Select--", new { id = "ddlTrainingCalenderID", name = "TrainingCalenderID", @class = "form-select", autocomplete = "off" })
+                                                <span id="ddlTrainingCalenderID-error" class="text-danger" style="display:none;"></span>
+                                                @Html.HiddenFor(model => model.Training_AssesmentQuestionId, new { @class = "form-control", id = "Training_AssesmentQuestionId" })
+                                                @Html.HiddenFor(model => model.Training_AssesmentQuestionId_Encrypted, new { @class = "form-control", id = "Training_AssesmentQuestionId_Encrypted" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Language
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @{
+                                                    bool isReadOnly1 = !string.IsNullOrEmpty(Model.Training_AssesmentQuestionId_Encrypted);
+                                                    string bgColor1 = isReadOnly1 ? "background-color: #eee;" : "";
+                                                }
+                                                @Html.DropDownListFor(model => model.TrainingLangaugeId, new SelectList(ViewBag.TrainingAssesmentLangauge, "Id", "Name"), "--Select--", new { id = "ddlTrainingLangaugeID", name = "TrainingLangaugeID", @class = "form-select", autocomplete = "off",Style=bgColor1 })
+                                                @if (isReadOnly1)
+                                                {
+                                                    <script>
+                                                        document.getElementById("ddlTrainingLangaugeID").setAttribute("disabled", "disabled");
+                                                    </script>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-4">
+                                            Question Type
+                                            <span class="important">*</span>
+                                        </label>
+                                        <div class="col-md-8">
+                                            @{
+                                                bool isReadOnly = !string.IsNullOrEmpty(Model.Training_AssesmentQuestionId_Encrypted);
+                                                string bgColor = isReadOnly ? "background-color: #eee;" : "";
+                                            }
+                                            @Html.DropDownListFor(model => model.QuestionType, new List<SelectListItem>{
+
+                                                                        new SelectListItem {Text ="Single Choice", Value="1"},
+                                                                         new SelectListItem {Text ="Multiple Choice", Value="2"},
+                                                                         new SelectListItem {Text ="Input", Value="3"},
+                                                                      },
+                                               new { @class = "form-select", id = "txtQuestionType", type = "text", name = "QuestionTypeID", autocomplete = "Off",style= bgColor })
+                                            @if (isReadOnly)
+                                            {
+                                                <script>
+                                                        document.getElementById("txtQuestionType").setAttribute("disabled", "disabled");
+                                                </script>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                </div>
+                                <div class="row mb-15px">
+                                    <label class="form-label col-form-label col-md-2">
+                                        Question
+                                        <span class="important">*</span>
+                                    </label>
+                                    <div class="col-md-10">
+                                        @Html.TextBoxFor(model => model.Question, new { @class = "form-control", type = "text", id = "txtQuestion", autocomplete = "Off", name = "Question" })
+                                    </div>
+                                </div>
+
+                                <div class="row mb-15px">
+                                    <label class="form-label col-form-label col-md-2" id="lblOptions">
+                                        Options
+                                        <span class="important">*</span>
+                                    </label>
+                                    <div class="col-md-10">
+                                        @Html.TextBoxFor(model => model.Options, new { @class = "form-control", type = "text", id = "txtOptions", autocomplete = "Off", name = "Options" })
+                                        <label class="form-label col-form-label col-md-2" id="lblerror" style="display: none; color: red;">Option Is Required</label>
+                                        <label class="form-label col-form-label col-md-8" id="lblErrorDuplicate" style="display: none; color: red;">Option Exists In Table</label>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-15px" id="divInputAnswer">
+                                    <label class="form-label col-form-label col-md-2">
+                                        Answer
+                                        <span class="important">*</span>
+                                    </label>
+                                    <div class="col-md-10">
+                                        @Html.TextBoxFor(model => model.InputAnswer, new { @class = "form-control", type = "text", id = "txtInputAnswer", autocomplete = "Off", name = "InputAnswer" })
+                                    </div>
+                                </div>
+
+                                <div class="row mb-15px">
+                                    <label class="form-label col-form-label col-md-2">
+                                    </label>
+                                    <label class="form-label col-form-label col-md-2">
+                                        @Html.CheckBoxFor(model => model.IsActive, new { id = "chkIsActive", name = "IsActive", @checked = "checked" })
+                                        &nbsp;   Is Active
+                                    </label>
+                                    <label class="form-label col-form-label col-md-2">
+                                        @Html.CheckBoxFor(model => model.IsAnswer, new { id = "chkIsAnswer", name = "IsAnswer", @checked = "checked" })
+                                        &nbsp;   Is Answer
+                                    </label>
+                                    <div class="col-md-12">
+                                        <div class="BtnBx">
+                                            <div>
+                                                <button type="button" id="btnAdd"
+                                                        class="btn btn-primary btn-sm">
+                                                    <i class="fa-solid fa-plus"></i> Add
+                                                </button>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="table-scroll div1">
+                                    <div class="table-wrap">
+                                        <table class="table table-bordered align-middle " id="data-table-combine"
+                                               style="width: 100%;">
+                                            <thead>
+                                                <tr>
+                                                    <th class="text-nowrap" style="width: 80px;">Delete</th>
+                                                    <th class="text-nowrap" style="width: 80px;">Sr. No</th>
+                                                    <th class="text-nowrap">Options</th>
+                                                    <th class="text-nowrap">Answer</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tblBodyOptions"></tbody>
+                                        </table>
+                                        <label class="form-label col-form-label col-md-2" id="lbltblerror" style="display: none; color: red;">Enter Options</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="button" id="btnsubmit"
+                                                                class="btn btn-primary btn-sm">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                        <a href="@Url.Action("GetList", "ESS_Training_TrainingAssesmentQuestion", new { area = "ESS" })">
+                                                            <button type="button" class="btn btn-danger btn-sm" id="btnTrainingAssesmentQuestion">
+                                                                <i class="fa-solid fa-share-from-square"></i> List
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#ddlTrainingCalenderID").select2();
+        $("#ddlTrainingLangaugeID").select2();
+
+        document.getElementById("divInputAnswer").classList.add("hidden");
+        //$("#txtQuestionType").select2();
+        $("#chkIsActive").prop("checked",true);
+        var Options =@Html.Raw(Json.Encode(ViewBag.GetOptions));
+        debugger;
+        if (Options != null) {
+            var table = document.getElementById("tblBodyOptions");
+
+            // Loop through the Options array
+            for (var i = 0; i < Options.length; i++) { // Use '<' instead of '<=' to avoid accessing undefined element
+                debugger;
+                // Insert a new row at the end of the table body
+                var row = table.insertRow(table.rows.length);
+
+                // Insert delete button cell
+                var deleteButtonCell = row.insertCell(0);
+                deleteButtonCell.innerHTML = '<center><a href="javascript:void(0);" type="button" onclick="deleteRow(this)" id="btnDelete" style="cursor:pointer;">' +
+                    '<i class="fa-solid fa-trash-alt text-danger fa-lg"></i></a></center>';
+
+                // Insert the option value cells
+                row.insertCell(1).innerHTML = Options[i][0].Value; // Value from first column of Options array
+                row.insertCell(2).innerHTML = Options[i][1].Value; // Value from second column of Options array
+
+                // 3. Insert checkbox cell
+                var checkboxCell = row.insertCell(3);
+                var isChecked = Options[i][2].Value; // This should be true/false
+
+                var checkbox = document.createElement("input");
+                checkbox.type = "checkbox";
+                checkbox.checked = isChecked === true || isChecked === "true"; // handle both boolean or string
+
+                checkboxCell.appendChild(checkbox);
+
+                // Optional: If you want to reset the global checkbox outside table
+                document.getElementById('chkIsAnswer').checked = false;
+            }
+            var  QuestionType=$("#txtQuestionType").val();
+            if (QuestionType=="1")
+            {
+                $("#txtQuestion").attr("readonly", true).css("background-color", "#eee");
+                $("#ddlTrainingLangaugeID").attr("readonly", true).css("background-color", "#eee");
+
+            }
+            else if (QuestionType=="2"){
+                $("#txtQuestion").attr("readonly", true).css("background-color", "#eee");
+                $("#ddlTrainingLangaugeID").attr("readonly", true).css("background-color", "#eee");
+
+            }
+            else{
+                $("#txtQuestion").attr("readonly", false).css("background-color", "");
+                $("#ddlTrainingLangaugeID").attr("readonly", false).css("background-color", "");
+                document.getElementById("txtOptions").classList.add("hidden");
+                document.getElementById("lblOptions").classList.add("hidden");
+                document.getElementById("divInputAnswer").classList.remove("hidden");
+                document.getElementById("data-table-combine").classList.add("hidden");
+            }
+        }
+
+
+
+        debugger;
+        $('#btnTrainingAssesmentQuestion').click(function () {
+              var url = '@Url.Action("GetList", "ESS_Training_TrainingAssesmentQuestion")';
+            window.location.href = url;
+        });
+
+     
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                });
+            }
+        }
+
+        $("#txtQuestionType").on("change", function () {
+            debugger;
+
+            var dropdownValue = document.getElementById("txtQuestionType").value;
+
+            // Get the elements to show/hide
+            var inputSection = document.getElementById("txtOptions");
+            var InputAnswer = document.getElementById("divInputAnswer");
+            var tableSection = document.getElementById("tblBodyOptions");
+            var inputLabel = document.getElementById("lblOptions");
+            var addButton = document.getElementById("btnAdd");
+            var table = document.getElementById("data-table-combine");
+
+            if (dropdownValue == 3)
+            {
+                inputSection.classList.add("hidden");
+                InputAnswer.classList.remove("hidden");
+                tableSection.classList.add("hidden");
+                inputLabel.classList.add("hidden");
+                addButton.classList.add("hidden");
+                table.classList.add("hidden");
+            }
+            else if (dropdownValue == 2)
+            {
+                inputSection.classList.remove("hidden");
+                InputAnswer.classList.add("hidden");
+                tableSection.classList.remove("hidden");
+                inputLabel.classList.remove("hidden");
+                addButton.classList.remove("hidden");
+                table.classList.remove("hidden");
+            }
+            else if (dropdownValue == 1)
+            {
+                inputSection.classList.remove("hidden");
+                InputAnswer.classList.add("hidden");
+                tableSection.classList.remove("hidden");
+                inputLabel.classList.remove("hidden");
+                addButton.classList.remove("hidden");
+                table.classList.remove("hidden");
+            }
+            else
+            {
+                inputSection.classList.remove("hidden");
+                tableSection.classList.remove("hidden");
+                inputLabel.classList.remove("hidden");
+                addButton.classList.remove("hidden");
+                table.classList.remove("hidden");
+            }
+
+        })
+
+    })
+
+    function deleteRow(button) {
+        debugger;
+        var row = button.closest("tr"); // Find the row closest to the clicked button
+        row.remove();  // Remove the row when the button is clicked
+
+        var table = document.getElementById("tblBodyOptions"); // Replace with your table's ID
+        var rowCount = table.querySelectorAll("tbody tr").length;
+        if (rowCount==0)
+        {
+            $("#txtQuestion").attr("readonly", false).css("background-color", "#fff");
+            $("#txtQuestionType").prop("disabled", false).css("background-color", "#fff");
+            $("#ddlTrainingLangaugeID").prop("disabled", false).css("background-color", "#fff");
+        }
+
+        adjustSerialNumbers();
+    }
+    function adjustSerialNumbers() {debugger;
+
+        var rows = document.getElementById("tblBodyOptions").rows;  // Get all rows in the table
+
+        // Loop through the rows and update serial numbers
+        for (var i = 0; i <= rows.length; i++) {
+            rows[i].cells[1].textContent = i + 1;
+            if(rows.length>0){
+                srno = i + 1;// Set new SRNO based on the index
+            }
+            else{
+                srno=1;
+            }
+        }
+    }
+</script>
+
+
+
+<script>
+    var srno=0;
+
+    $("#btnAdd").click(function () {
+        debugger;
+        var option = document.getElementById("txtOptions").value;
+        var error = document.getElementById("lblerror");
+        var AnswerIsChecked = document.getElementById('chkIsAnswer').checked;
+        if(option==""){
+            error.style.display = "block";
+        }
+        else{
+            error.style.display = "none";
+        }
+        form.valid();
+        if(form.valid()==false)
+        {
+            return false;
+        }
+
+        var inputData = document.getElementById("txtOptions").value;
+        var GetQuesionId = document.getElementById("txtQuestionType").value;
+
+        // If the input box is not empty
+        if (inputData.trim() !== "") {
+            // Get the table body
+            var tableBody = document.getElementById("tblBodyOptions");
+            var rows = tableBody.getElementsByTagName("tr");
+            var isDuplicate = false;
+
+            // Check for duplicates
+            debugger;
+            var isAnyAnswerChecked = false;
+            for (var i = 0; i < rows.length; i++)
+            {
+
+                var $row = $(rows[i]); // Convert DOM row to jQuery object
+                debugger;
+                var checkbox = $row.find('td:eq(3) input[type="checkbox"]').prop('checked');
+                if (GetQuesionId==1)
+                {
+                    if (checkbox && AnswerIsChecked) {
+                        isAnyAnswerChecked = true;
+                        $("#lblErrorDuplicate").html("You have already set answer.");
+                        $("#lblErrorDuplicate").css("display", "flex");
+                        return false;
+                    }
+                    else
+                    {
+                        $("#lblerror").html("");
+                        $("#lblerror").css("display", "none");
+                        isAnyAnswerChecked = false;
+                    }
+                }
+
+
+                var cellValue = $row.find('td:eq(2)').text().trim(); // Third column (index 2)
+                if (cellValue === inputData) {
+                    isDuplicate = true;
+                    break;
+                }
+                //var cellValue = rows[i].cells[2].textContent.trim(); // Assuming the data is in the third column (index 2)
+                //if (cellValue === inputData) {
+                //    isDuplicate = true;
+                //    break;
+                //}
+            }
+            var DuplicateError = document.getElementById("lblErrorDuplicate");
+            if (isDuplicate) {
+                DuplicateError.style.display = "block";
+                return;
+            }
+            else{
+                DuplicateError.style.display = "none";
+            }
+
+            var ClearanceTitle = $('#txtClearanceTitle').val();
+
+            // Create a new row
+            var newRow = tableBody.insertRow();
+
+            // Insert delete button cell
+            var deleteButtonCell = newRow.insertCell(0);
+            deleteButtonCell.innerHTML = '<center><a href="javascript:void(0);" type="button" onclick="deleteRow(this)" id="btnDelete" style="cursor:pointer;">' +
+                '<i class="fa-solid fa-trash-alt text-danger fa-lg"></i></a></center>';
+            // Create a new cell and insert the input data into it
+            // Create cells for other columns
+            var cell1 = newRow.insertCell(1);
+            var cell2 = newRow.insertCell(2);
+            var cell3 = newRow.insertCell(3);
+
+            // Add the input values to their respective columns
+            srno++;
+            cell1.textContent = srno;
+            cell2.textContent = inputData;
+
+
+            var checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.checked = AnswerIsChecked; // If you want to keep it checked based on that flag
+            cell3.appendChild(checkbox);
+            document.getElementById('chkIsAnswer').checked = false;
+
+            // cell3.textContent =
+            // srno++;
+            document.getElementById("txtOptions").value = "";
+            var  QuestionType=$("#txtQuestionType").val();
+            if (QuestionType=="1")
+            {debugger
+                $("#txtQuestion").attr("readonly", true).css("background-color", "#eee");
+                $("#txtQuestionType").prop("disabled", true).css("background-color", "#eee");
+                $("#ddlTrainingLangaugeID").prop("disabled", true).css("background-color", "#eee");
+            }
+            else if (QuestionType=="2"){debugger
+                $("#txtQuestion").attr("readonly", true).css("background-color", "#eee");
+                $("#txtQuestionType").prop("disabled", true).css("background-color", "#eee");
+                $("#ddlTrainingLangaugeID").prop("disabled", true).css("background-color", "#eee");
+            }
+            else{debugger
+                $("#txtQuestion").attr("readonly", false).css("background-color", "");
+                $("#txtQuestionType").prop("disabled", true).css("background-color", "#eee");
+                $("#ddlTrainingLangaugeID").prop("disabled", true).css("background-color", "#eee");
+            }
+            adjustSerialNumbers();
+        }
+    });
+
+    //use for add regex function
+    jQuery.validator.addMethod(
+    "regex",
+     function(value, element, regexp) {
+         if (regexp.constructor != RegExp)
+             regexp = new RegExp(regexp);
+         else if (regexp.global)
+             regexp.lastIndex = 0;
+         return this.optional(element) || regexp.test(value);
+     },"erreur expression reguliere"
+  );
+
+    $('#TrainingAssesmentQuestion').validate({
+        rules: {
+            TrainingCalenderId: {
+                required: true,
+            },
+            TrainingLangaugeId: {
+                required: true,
+            },
+            QuestionType: {
+                required:true,
+            },
+            Question:{
+                required:true,
+            },
+        },
+        messages: {
+            TrainingCalenderId: {
+                required:"Training Calender name is required",
+            },
+            TrainingLangaugeId: {
+                required:"Langauge name is required",
+            },
+            QuestionType: {
+                required:"Question Type is required",
+            },
+            Question: {
+                required:"Question is required",
+            },
+        },
+    });
+
+    var form = $("#TrainingAssesmentQuestion");
+    form.validate();
+  
+    $("#btnsubmit").click(function () {
+
+        debugger;
+        form.valid();
+        if(form.valid()==false)
+        {
+            return false;
+        }
+        var TrainingCalenderId=$("#ddlTrainingCalenderID").val();
+        var TrainingLangaugeId=$("#ddlTrainingLangaugeID").val();
+        var Training_AssesmentQuestionId =$("#Training_AssesmentQuestionId").val();
+        var TrainingAssesmentQuestionId_Encrypted =$("#Training_AssesmentQuestionId_Encrypted").val();
+        var Question=$("#txtQuestion").val();
+        var Type=Number($('#txtQuestionType').val());
+        document.getElementById('txtOptions').value = ' ';
+        var IsActive = Boolean($('#chkIsActive').prop('checked'));
+
+        if (Type == "1") {debugger;
+            var checkedCount = 0;
+            $('#tblBodyOptions tr').each(function () {
+                var isChecked = $(this).find('td:eq(3) input[type="checkbox"]').prop('checked');
+                if (isChecked)
+                {
+                    checkedCount++;
+                }
+            });
+            if (checkedCount > 1) {
+                Swal.fire({
+                    icon: 'info',
+                    text: 'Only one answer can be selected when question type single choice.',
+                    allowOutsideClick: false
+                });
+                return false;
+            }
+
+            if (checkedCount < 1) {
+                Swal.fire({
+                    icon: 'info',
+                    text: 'Please select at least one option before submitting.',
+                    allowOutsideClick: false
+                });
+                return false;
+            }
+        }
+        $(".Userloaderbg").css("display", "flex");
+
+        $.ajax({
+            url: '@Url.Action("IsTrainingAssementQuestionExists", "ESS_Training_TrainingAssesmentQuestion")',
+            method:"get",
+            data:{TrainingCalenderId:TrainingCalenderId,
+                TrainingLangaugeId:TrainingLangaugeId,
+                TrainingAssesmentQuestionId_Encrypted:TrainingAssesmentQuestionId_Encrypted,
+                Question:Question},
+            success:function(response){
+                debugger;
+                $(".Userloaderbg").css("display", "none");
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon=="error") {
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                        }
+                    }
+                }
+                else
+                {
+                    if(Type!=3){
+                        var Training_AssesmentQuestionId_Encrypted= $("#Training_AssesmentQuestionId_Encrypted").val();
+                        var table = document.getElementById("tblBodyOptions");
+                        var rowCount = table.rows.length;
+                        var Task = new Array();
+
+                        for (i = 0; i <= rowCount-1; i++) {
+                            var data = {};
+                            data.Options = table.rows[i].cells[2].innerHTML;
+                            var checkbox = table.rows[i].cells[3].querySelector('input[type="checkbox"]');
+                            data.IsAnswer = checkbox ? checkbox.checked : false;
+                            Task.push(data);
+                        }
+                        debugger;
+                        var error = document.getElementById("lbltblerror");
+                        if(rowCount<=0){
+                            error.style.display="block";
+                        }
+                        else{
+                            $.ajax({
+                                type: "POST",
+                                url: '@Url.Action("SaveUpdate", "ESS_Training_TrainingAssesmentQuestion")',
+                                data: JSON.stringify({Task: Task,
+                                    Question:Question,
+                                    TrainingCalenderId:TrainingCalenderId,
+                                    TrainingLangaugeId:TrainingLangaugeId,
+                                    Type:Type,
+                                    Training_AssesmentQuestionId_Encrypted:Training_AssesmentQuestionId_Encrypted,
+                                    Training_AssesmentQuestionId:Training_AssesmentQuestionId,
+                                    IsActive:IsActive}),
+                                contentType: "application/json; charset=utf-8",
+                                dataType: "json",
+                                success: function (response)
+                                {
+                                    debugger;
+                                    $(".Userloaderbg").css("display", "none");
+                                    var Message1 = response.Message;
+                                    var Icon1 = response.Icon;
+                                    if (response !=null) {
+                                        if (Message1 != null) {
+                                            Swal.fire({
+                                                icon: Icon1,
+                                                text: Message1,
+                                                allowOutsideClick: () => {
+                                                    const popup = Swal.getPopup()
+                                                    popup.classList.remove('swal2-show')
+                                                    setTimeout(() => {
+                                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                                    })
+                                                    setTimeout(() => {
+                                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                                    }, 500)
+                                                    return false
+                                                }
+                                            }).then((result) => {
+                                                if (result.isConfirmed) {
+                                                    window.location.reload();
+                                                    //window.location.href = '@Url.Action("GetList", "ESS_Training_TrainingAssesmentQuestion")';
+                                                } else if (
+                                                    /* Read more about handling dismissals below */
+                                                    result.dismiss === Swal.DismissReason.cancel
+                                                ) {
+
+                                                }
+                                            })
+                                        }
+                                        // location.reload();
+                                    }
+                                }
+                            });
+                        }
+                    }
+                    else{ //THIS CODE IS FOR INPUT FIELD
+                        var Training_AssesmentQuestionId_Encrypted= $("#Training_AssesmentQuestionId_Encrypted").val();
+                        var InputAnswer=$("#txtInputAnswer").val();
+                        $.ajax({
+                            type: "POST",
+                            url: '@Url.Action("SaveUpdate", "ESS_Training_TrainingAssesmentQuestion")',
+                            data: JSON.stringify({Task: Task,
+                                Question:Question,
+                                InputAnswer:InputAnswer,
+                                TrainingCalenderId:TrainingCalenderId,
+                                TrainingLangaugeId:TrainingLangaugeId,
+                                Type:Type,
+                                Training_AssesmentQuestionId_Encrypted:Training_AssesmentQuestionId_Encrypted,
+                                Training_AssesmentQuestionId:Training_AssesmentQuestionId,
+                                IsActive:IsActive}),
+                            contentType: "application/json; charset=utf-8",
+                            dataType: "JSON",
+                            success: function (response)
+                            {
+                                debugger;
+                                $(".Userloaderbg").css("display", "none");
+                                var Message1 = response.Message;
+                                var Icon1 = response.Icon;
+                                if (response !=null) {
+                                    if (Message1 != null) {
+                                        Swal.fire({
+                                            icon: Icon1,
+                                            text: Message1,
+                                            allowOutsideClick: () => {
+                                                const popup = Swal.getPopup()
+                                                popup.classList.remove('swal2-show')
+                                                setTimeout(() => {
+                                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                                })
+                                                setTimeout(() => {
+                                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                                }, 500)
+                                                return false
+                                            }
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                window.location.href = '@Url.Action("GetList", "ESS_Training_TrainingAssesmentQuestion")';
+                                            } else if (
+                                                /* Read more about handling dismissals below */
+                                                result.dismiss === Swal.DismissReason.cancel
+                                            ) {
+
+                                            }
+                                        })
+                                    }
+                                    // location.reload();
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
+    });
+</script>

@@ -1,0 +1,1046 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_ClaimReimbusement.Claim_Travel
+@{
+    ViewBag.Title = "App_ClaimReimbusement_TravelClaim";
+    Layout = "~/Views/Shared/_MobileLayout.cshtml";
+}
+
+
+<link href="~/assets/MyCSS/Tailwindcss.css" rel="stylesheet" />
+
+<style>
+    .app-header-fixed {
+        padding-top: 0px;
+        padding-bottom: 0px;
+    }
+
+    .app-content {
+        padding: 0px 0px;
+    }
+
+    .panel .panel-body {
+        padding: 8px;
+    }
+
+    label.error, .Error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+
+    @@media (max-width: 767px) {
+        .form-label {
+            margin-bottom: 0.25rem;
+            display: inline-block;
+        }
+    }
+
+    #btnSubmit {
+        transition: background-color 0.3s ease;
+    }
+
+    #btnGetList {
+        transition: background-color 0.3s ease;
+    }
+</style>
+
+<style>
+    /*.form-label-container {
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: flex-end;
+                                    }*/
+
+    .form-label-text {
+        display: inline-flex;
+        align-items: center;
+        min-width: 120px; /* Adjust this value to fit your longest label */
+    }
+
+        .form-label-text i {
+            margin-right: 0.5rem; /* Space between icon and label text */
+        }
+</style>
+
+<style>
+    @@media (max-width: 767px) {
+        .row.mb-3.align-items-center {
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: center;
+        }
+
+            .row.mb-3.align-items-center .col-md-4,
+            .row.mb-3.align-items-center .col-md-8 {
+                flex: 1;
+                max-width: none;
+                padding-right: 10px;
+                padding-left: 10px;
+            }
+
+            .row.mb-3.align-items-center .col-md-4 {
+                flex: 0 0 auto;
+                width: 40%;
+            }
+
+            .row.mb-3.align-items-center .col-md-8 {
+                flex: 1;
+                width: 60%;
+            }
+
+        .form-label {
+            margin-bottom: 0;
+            white-space: nowrap;
+        }
+
+        .form-control,
+        .form-select {
+            width: 100%;
+        }
+    }
+</style>
+
+<style>
+    .expense-form-section {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background-color: #fff;
+        padding: 30px 15px 15px 15px; /* Extra top padding for label */
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        position: relative;
+    }
+
+    .lblClass {
+        position: absolute;
+        top: -10px; /* Places label on top border */
+        left: 15px; /* Aligns label to left with padding */
+        background-color: #fff;
+        padding: 0 8px 0 0; /* Padding to mask border, no right padding */
+        /*font-size: 14px;*/
+        font-weight: 500;
+        color: #333;
+        z-index: 1;
+    }
+</style>
+
+<style>
+    .expense-form-section {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background-color: #авис System: #fff;
+        padding: 15px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="panel panel-inverse" data-sortable-id="index-1">
+        <div class="panel-body" data-scrollbar="false">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-inverse" data-sortable-id="index-1">
+                        <div class="panel-body">
+                            <form role="form" action="@Url.Action("SaveUpdate", "App_ClaimReimbusement_TravelClaim", new { area = "App" })" id="FormTravelClaim" method="post" enctype="multipart/form-data">
+                                
+
+                                <div class="row mb-3 align-items-center">
+                                    <div class="col-md-4">
+                                        <div class="form-label-container">
+                                            <label class="form-label">
+                                                <span class="form-label-text">
+                                                    <i class="fa-solid fa-hashtag text-purple-600"></i> Doc No.<span class="important">*</span>
+                                                </span>:
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(model => model.VoucherNo, new { @class = "form-control", @id = "txtVoucherNo", Value = @ViewBag.VoucherNo, Readonly = "true", Style = "background-color: #eee;" })
+                                        @Html.HiddenFor(model => model.TravelClaimId_Encrypted)              
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3 align-items-center">
+                                    <div class="col-md-4">
+                                        <div class="form-label-container">
+                                            <label class="form-label">
+                                                <span class="form-label-text">
+                                                    <i class="fa-solid fa-calendar-days text-purple-600"></i> Doc Date<span class="important">*</span>
+                                                </span>:
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(model => model.VoucherDate, new { @name = "VoucherDate", @class = "form-control", @id = "VoucherDate", @type = "date", Readonly = "true", Style = "background-color: #eee;" })
+                                    </div>
+                                </div>
+
+
+                                <div class="row mb-3 align-items-center">
+                                    <div class="col-md-4">
+                                        <div class="form-label-container">
+                                            <label class="form-label">
+                                                <span class="form-label-text">
+                                                    <i class="fas fa-car text-purple-600"></i> Travel Type
+                                                    <span class="important">*</span>
+                                                </span>:
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.TravelType, new SelectList(ViewBag.VehicleType, "Id", "Name"), "--Select--", new { name = "TravelType", id = "ddlTravelType", @class = "form-select", autocomplete = "off" })
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3 align-items-center">
+                                    <div class="col-md-4 form-label-container">
+                                        <label class="form-label">
+                                            <span class="form-label-text">
+                                                <i class="fas fa-coins text-purple-600"></i> Per KM Rate 
+                                            </span>:
+                                        </label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(model => model.PerKMRate, new { @class = "form-control", @id = "txtPerKMRate", autocomplete = "off", type = "number", @readonly = "readonly", Style = "background-color: #eee;" })
+                                    </div>
+                                </div>
+
+
+                                <div class="row mb-3 align-items-center">
+                                    <div class="col-md-4 form-label-container">
+                                        <label class="form-label">
+                                            <span class="form-label-text">
+                                                <i class="fa-solid fa-calendar-day text-blue-500"></i> From Date <span class="important">*</span>
+                                            </span>:
+                                        </label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(model => model.FromDate, new { @class = "form-control", @id = "FromDate", @type = "date" })
+                                        <span class="Error" id="ErrorFromDate"></span>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="row mb-3 align-items-center">
+                                    <div class="col-md-4 form-label-container">
+                                        <label class="form-label">
+                                            <span class="form-label-text">
+                                                <i class="fa-solid fa-calendar-check text-blue-600"></i> To Date <span class="important">*</span>
+                                            </span>:
+                                        </label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(model => model.ToDate, new { @class = "form-control", @id = "ToDate", @type = "date" })
+                                        <span class="Error" id="ErrorToDate"></span>
+                                    </div>
+                                </div>
+
+
+
+
+                                <div class="row mb-3 align-items-center">
+                                    <div class="col-md-4 form-label-container">
+                                        <label class="form-label"><span class="form-label-text"><i class="fas fa-map-marker-alt text-red-600"></i>  From Location<span class="important">*</span></span>:</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(model => model.FromLocation, new { @class = "form-control", @id = "txtFromLocation", autocomplete = "off" })                                    </div>
+                                </div>
+
+
+
+                                <div class="row mb-3 align-items-center">
+                                    <div class="col-md-4 form-label-container">
+                                        <label class="form-label"><span class="form-label-text"><i class="fas fa-map-marker-alt text-purple-600"></i> To Location <span class="important">*</span></span>:</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.TextBoxFor(model => model.ToLocation, new { @class = "form-control", @id = "txtToLocation", autocomplete = "off" })
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3 align-items-center">
+                                    <div class="col-md-4 form-label-container">
+
+                                        <label class="form-label"> <span class="form-label-text"><i class="fas fa-lightbulb text-yellow-500"></i> Description<span class="important">*</span></span>:</label>
+
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.TextAreaFor(model => model.Description, new { @class = "form-control", @rows = "2", @id = "txtDescription" })
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3 align-items-center">
+                                    <div class="col-md-4 form-label-container">
+                                        <label class="form-label"> <span class="form-label-text"><i class="fas fa-bullseye text-purple-600"></i> Travel Purpose<span class="important">*</span></span>:</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        @Html.DropDownListFor(model => model.ClaimTravelPurposeId, new SelectList(ViewBag.ClaimTravelPurpose, "Id", "Name"), "--Select--", new { id = "ddlClaimTravelPurposeId", name = "ClaimTravelPurposeId", @class = "form-select", autocomplete = "off" })
+                                    </div>
+                                </div>
+                                <hr />
+                                <!-- Total KM Section -->
+                                <br />
+
+                                <section class="expense-form-section">
+                                    <div class="container">
+                                        <div class="row mb-15px">
+                                            <div class="col-12">
+                                                <label class="form-label lblClass">
+                                                    Total KM
+                                                </label>
+                                                @Html.TextBoxFor(model => model.TotalKM, new { @class = "form-control", @id = "txtTotalKMAmount", autocomplete = "off", @Value = "0", Readonly = "true", Style = "background-color: #e9ecef; text-align:right", type = "text", onkeypress = " return numbervalidate(event)" })
+                                                <span id="ErrortxtTotalKMAmount" class="Error"></span>
+                                            </div>
+                                            <div class="col-12 mt-2">
+                                                @Html.TextBoxFor(model => model.TotalKMAmount, new { @class = "form-control", @id = "txtTotalKM", @Value = "0", Readonly = "true", Style = "background-color: #e9ecef; text-align:right" })
+                                            </div>
+                                            <div class="col-12 mt-2">
+                                                @Html.TextBox("ImgTotalKM", "",new { type = "file", name = "ImgTotalKM",@class = "form-control file-validation", accept = "image/*,application/pdf", id = "ImgTotalKM" ,onchange = "ResetFile('ImgTotalKM')" })
+                                                @*<input type="file" name="ImgTotalKM" class="form-control file-validation" accept="image/*,application/pdf" id="ImgTotalKM"  />*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+
+
+
+                                
+                                <!-- Transport (Ticket) Amount Section -->
+                                <section class="expense-form-section">
+                                    <div class="container">
+                                        <div class="row mb-15px">
+                                            <div class="col-12">
+                                                <label class="form-label lblClass">
+                                                    Transport (Ticket) Amount
+                                                </label>
+                                             @Html.TextBoxFor(model => model.Transport, new { @class = "form-control", @id = "txtTransportTicketAmount", @Value = "0", type = "number", style = "text-align:right" })
+                                            </div>
+                                            <div class="col-12 mt-2">
+                                                @Html.TextBox("ImgTransport","", new { type = "file", name = "ImgTransport", @class = "form-control file-validation", accept = "image/*,application/pdf", id = "ImgTransport" , onchange = "ResetFile('ImgTransport')" })
+                                                @*<input type="file" name="ImgTransport" class="form-control file-validation" accept="image/*,application/pdf" id="ImgTransport" />*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <!-- Food Amount Section -->
+                                <section class="expense-form-section">
+                                    <div class="container">
+                                        <div class="row mb-15px">
+                                            <div class="col-12">
+                                                <label class="form-label lblClass">
+                                                    Food Amount
+                                                </label>
+                                                @Html.TextBoxFor(model => model.Food, new { @class = "form-control", @id = "txtFoodAmount", @Value = "0", type = "number", style = "text-align:right" })
+                                            </div>
+                                            <div class="col-12 mt-2">
+                                                @Html.TextBox("ImgFood","", new { type = "file", name = "ImgFood", @class = "form-control file-validation", accept = "image/*,application/pdf", id = "ImgFood", onchange = "ResetFile('ImgFood')" })
+                                                @*<input type="file" name="ImgFood" class="form-control file-validation" accept="image/*,application/pdf" id="ImgFood" />*@                                           
+                                             </div>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <!-- Hotel Lodging Amount Section -->
+                                <section class="expense-form-section">
+                                    <div class="container">
+                                        <div class="row mb-15px">
+                                            <div class="col-12">
+                                                <label class="form-label lblClass">
+                                                    Hotel Lodging Amount
+                                                </label>
+                                                @Html.TextBoxFor(model => model.Hotel, new { @class = "form-control", @id = "txtHotelLodgingAmount", @Value = "0", type = "number", style = "text-align:right" })
+                                            </div>
+                                            <div class="col-12 mt-2">
+                                                @Html.TextBox("ImgHotel","", new { type = "file", name = "ImgHotel", @class = "form-control file-validation", accept = "image/*,application/pdf", id = "ImgHotel" , onchange = "ResetFile('ImgHotel')" })
+                                                @*<input type="file" name="ImgHotel" class="form-control file-validation" accept="image/*,application/pdf" id="ImgHotel" />*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <!-- Local Conveyance Section -->
+                                <section class="expense-form-section">
+                                    <div class="container">
+                                        <div class="row mb-15px">
+                                            <div class="col-12">
+                                                <label class="form-label lblClass">
+                                                    Local Conveyance
+                                                </label>
+                                                @Html.TextBoxFor(model => model.ConveyanceRemark, new { @class = "form-control", @id = "txtConveyanceRemark", @placeholder = "Please enter text" })
+                                                <span id="ErrorConveyanceRemark" class="Error"></span>
+                                            </div>
+                                            <div class="col-12 mt-2">
+                                                @Html.TextBoxFor(model => model.Conveyance, new { @class = "form-control", @id = "txtConveyance", @Value = "0", type = "number", style = "text-align:right" })
+                                            </div>
+                                            <div class="col-12 mt-2">
+                                                @Html.TextBox("ImgConveyance", "", new { type = "file", name = "ImgConveyance", @class = "form-control file-validation", accept = "image/*,application/pdf", id = "ImgConveyance", onchange = "ResetFile('ImgConveyance')" })
+                                                @*<input type="file" name="ImgConveyance" class="form-control file-validation" accept="image/*,application/pdf" id="ImgConveyance" />*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <!-- Other 1 Section -->
+                                <section class="expense-form-section">
+                                    <div class="container">
+                                        <div class="row mb-15px">
+                                            <div class="col-12">
+                                                <label class="form-label lblClass">
+                                                    Other 1
+                                                </label>
+                                                @Html.TextBoxFor(model => model.OtherARemark, new { @class = "form-control", @id = "txtOtherARemark", @placeholder = "Please enter text" })
+                                                <span id="ErrorOtherARemark" class="Error"></span>
+                                            </div>
+                                            <div class="col-12 mt-2">
+                                                @Html.TextBoxFor(model => model.OtherA, new { @class = "form-control", @id = "txtOtherA", @Value = "0", type = "number", style = "text-align:right" })
+                                            </div>
+                                            <div class="col-12 mt-2">
+                                                @Html.TextBox("ImgOtherA", "", new { type = "file", name = "ImgOtherA", @class = "form-control file-validation", accept = "image/*,application/pdf", id = "ImgOtherA", onchange = "ResetFile('ImgOtherA')" })
+                                                @*<input type="file" name="ImgOtherA" class="form-control file-validation" accept="image/*,application/pdf" id="ImgOtherA" />*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <!-- Other 2 Section -->
+                                <section class="expense-form-section">
+                                    <div class="container">
+                                        <div class="row mb-15px">
+                                            <div class="col-12">
+                                                <label class="form-label lblClass">
+                                                    Other 2
+                                                </label>
+                                                @Html.TextBoxFor(model => model.OtherBRemark, new { @class = "form-control", @id = "txtOtherBRemark", @placeholder = "Please enter text" })
+                                                <span id="ErrorOtherBRemark" class="Error"></span>
+                                            </div>
+                                            <div class="col-12 mt-2">
+                                                @Html.TextBoxFor(model => model.OtherB, new { @class = "form-control", @id = "txtOtherB", @Value = "0", type = "number", style = "text-align:right" })
+                                            </div>
+                                            <div class="col-12 mt-2">
+                                                @Html.TextBox("ImgOtherB", "", new { type = "file", name = "ImgOtherB", @class = "form-control file-validation", accept = "image/*,application/pdf", id = "ImgOtherB" , onchange = "ResetFile('ImgOtherB')" })
+                                                @*<input type="file" name="ImgOtherB" class="form-control file-validation" accept="image/*,application/pdf" id="ImgOtherB" />*@
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <section class="expense-form-section">
+                                    <div class="container">
+                                        <div class="row mb-15px">
+                                            <div class="col-12">
+                                                <label class="form-label lblClass">Total Amount</label>
+                                                @Html.TextBoxFor(model => model.TotalAmount, new { @class = "form-control", type = "number", @id = "txtTotalAmount", Readonly = "true", @Value = "0", Style = "background-color: #e9ecef; text-align:right" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                <div class="col-md-12 LastShortLeaveBx">
+                                    <div class="BtnBx">
+                                        <div>
+                                            <button type="button" id="btnSubmit" class="btn btn-primary btn-sm">
+                                                <i class="fa-solid fa-floppy-disk"></i> Submit
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-sm" id="btnGetList" onclick="btnGetLists();">
+                                                <i class="fa-solid fa-share-from-square"></i> List
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function ResetFile(Origin) {
+        debugger
+        var a = Origin; // Correct concatenation
+
+        let allowedExtension = [
+            'image/jpeg',
+            'image/jpg',
+            'image/png',
+            'application/pdf',
+            'application/msword', // .doc
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
+            'application/zip', // .zip
+            'application/x-zip-compressed', // Some browsers use this for ZIP
+            'multipart/x-zip' // Additional MIME type for ZIP
+        ];
+
+        let maxSize = 3 * 1024 * 1024; // 3 MB in bytes
+
+        let fileInput = document.getElementById(a);
+
+        if (!fileInput || !fileInput.files.length) {
+            Swal.fire({
+                icon: "error",
+                text: "No file selected.",
+            });
+            return;
+        }
+
+        let file = fileInput.files[0];
+        let type = file.type;
+        let size = file.size;
+
+        // Check file type
+        if (allowedExtension.indexOf(type) === -1) {
+            Swal.fire({
+                icon: "error",
+                text: "File type should be jpeg/jpg/png/pdf/docx/doc/zip",
+            });
+            fileInput.value = null;
+            return;
+        }
+
+        // Check file size
+        if (size > maxSize) {
+            Swal.fire({
+                icon: "error",
+                text: "File size should not exceed 3 MB.",
+            });
+            fileInput.value = null;
+            return;
+        }
+    }
+</script>
+
+<script>
+    document.querySelectorAll(".file-validation").forEach(function (input) {
+        input.addEventListener("change", function () {
+            const allowedTypes = [
+                "image/jpeg",
+                "image/jpg",
+                "image/png",
+                "application/pdf"
+            ];
+            const file = this.files[0];
+            if (file && !allowedTypes.includes(file.type)) {
+                Swal.fire({    
+                    text: 'Only Images and PDF files are allowed!',
+                    icon: 'error',
+                    allowOutsideClick: false
+                });
+                this.value = ""; // reset file input
+            }
+        });
+    });
+
+</script>
+
+
+
+<script>
+
+
+
+    function btnGetLists()
+    {
+        var url = '@Url.Action("App_GetList", "App_ClaimReimbusement_TravelClaim")';
+        window.location.href = url;
+    }
+    $(document).ready(function () {
+
+
+
+        $("#TravelClaimEmployeeId").select2();
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        if (Message != null) {
+            Swal.fire({
+                icon: Icon,
+                text: Message,
+                allowOutsideClick: false
+            }).then(function() {
+                window.location.reload();
+            });
+        }
+
+
+        $("#ddlTravelType").change(function () {
+            debugger;
+            var TravelType = $('select#ddlTravelType option:selected').text();
+            if(TravelType=="Two Wheeler")
+            {
+                $('#txtTotalKMAmount').attr('readonly', false);
+                $('#txtTotalKMAmount').css('background-color', '');
+                $('#txtTotalKMAmount').val(0);
+                $('#txtTotalKM').val(0);
+                $('#txtTransportTicketAmount').val(0);
+                $('#txtFoodAmount').val(0);
+                $('#txtHotelLodgingAmount').val(0);
+                $('#txtConveyanceRemark').val("");
+                $('#txtConveyance').val(0);
+                $('#txtOtherARemark').val("");
+                $('#txtOtherA').val(0);
+                $('#txtOtherBRemark').val("");
+                $('#txtOtherB').val(0);
+                $('#txtTotalAmount').val(0);
+
+            }
+            else if( TravelType=="Four Wheeler" )
+            {
+                $('#txtTotalKMAmount').val(0);
+                $('#txtTotalKM').val(0);
+                $('#txtTransportTicketAmount').val(0);
+                $('#txtFoodAmount').val(0);
+                $('#txtHotelLodgingAmount').val(0);
+                $('#txtConveyanceRemark').val("");
+                $('#txtConveyance').val(0);
+                $('#txtOtherARemark').val("");
+                $('#txtOtherA').val(0);
+                $('#txtOtherBRemark').val("");
+                $('#txtOtherB').val(0);
+                $('#txtTotalAmount').val(0);
+                $('#txtTotalKMAmount').attr('readonly', false);
+                $('#txtTotalKMAmount').css('background-color', '');
+            }
+            else if( TravelType=="Public Transport")
+            {
+                $('#txtTotalKMAmount').attr('readonly', false);
+                $('#txtTotalKMAmount').css('background-color', '');
+                $('#txtTotalKMAmount').val(0);
+                $('#txtTotalKM').val(0);
+                $('#txtTransportTicketAmount').val(0);
+                $('#txtFoodAmount').val(0);
+                $('#txtHotelLodgingAmount').val(0);
+                $('#txtConveyanceRemark').val("");
+                $('#txtConveyance').val(0);
+                $('#txtOtherARemark').val("");
+                $('#txtOtherA').val(0);
+                $('#txtOtherBRemark').val("");
+                $('#txtOtherB').val(0);
+                $('#txtTotalAmount').val("0");
+            }
+
+            @*$.ajax({
+                async: true,
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: 'application/json; charset=utf-8',
+                url: '@Url.Action("GetTravelRate", "App_ClaimReimbusement_TravelClaim")',
+                data: { TravelType: TravelType },
+                success: function (data) {*@
+            
+           $.ajax({
+                url: '@Url.Action("GetTravelRate", "App_ClaimReimbusement_TravelClaim")',
+                type: 'GET',
+                data: { TravelType: TravelType },
+                dataType: 'json',   // important
+                success: function (data) {
+                    console.log(data);
+                    if (data && data.data !== undefined) {
+                        $("#txtPerKMRate").val(data.data);
+                    } else if (data.error) {
+                        alert(data.error); // e.g. SessionExpired or AccessDenied
+                    }
+                },
+                error: function (xhr) {
+                    console.log(xhr.responseText);
+                }
+            });
+
+        })
+
+
+
+        $("#txtTotalKMAmount,#txtTotalKM,#txtTransportTicketAmount,#txtFoodAmount,#txtHotelLodgingAmount,#txtConveyance,#txtOtherA,#txtOtherB").keyup(function (e) {
+            debugger;
+
+            $("#ErrortxtTotalKMAmount").html("");
+            // var TotalAmount = $("#txtTotalAmount").val(AllTotal);
+            var PerKMRate = Number($("#txtPerKMRate").val());
+            var TotalKMAmount = Number($("#txtTotalKMAmount").val());
+            var TotakKMRate = PerKMRate * TotalKMAmount;
+            $("#txtTotalKM").val(TotakKMRate);
+
+            var TotalKM = Number($("#txtTotalKM").val());
+            var TransportTicketAmount = Number($("#txtTransportTicketAmount").val());
+            var FoodAmount = Number($("#txtFoodAmount").val());
+            var HotelLodgingAmount = Number($("#txtHotelLodgingAmount").val());
+            var LocalConveyanceAmount = Number($("#txtConveyance").val());
+            var Other1Amount = Number($("#txtOtherA").val());
+            var Other2Amount = Number($("#txtOtherB").val());
+
+            var AllTotal = TotalKM + TransportTicketAmount + FoodAmount + HotelLodgingAmount + LocalConveyanceAmount + Other1Amount + Other2Amount;
+            var AllTotalRoundUp = Math.round(AllTotal);
+            $("#txtTotalAmount").val(AllTotalRoundUp);
+        });
+
+        $("#formReset").click(function () {
+            $("#FormTravelClaim")[0].reset()
+        });
+    });
+
+    var date = new Date();
+    var dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000 )).toISOString().split("T")[0];
+    $("#VoucherDate").val(dateString);
+    $("#FromDate").val(dateString);
+    $("#ToDate").val(dateString);
+
+
+    function NotificationFunction(TravelClaimId_Encrypted) {
+        debugger;
+        $.ajax({
+            type: "Get",
+            url: '@Url.Action("GetContactDetails", "App_ClaimReimbusement_TravelClaim")',
+            data: { TravelClaimId_Encrypted: TravelClaimId_Encrypted},
+            dataType: "text",
+            success: function (data) {
+                debugger;
+                var datas = JSON.parse(data);
+                if (datas.data.length != 0)
+                {
+                    var Getdata = datas.data[0];
+                    $('#lblManager1Name').html(Getdata[0].Value);
+                    $('#lblManager1EmailId').html(Getdata[1].Value);
+                    $('#lblManager1Mobile').html(Getdata[2].Value);
+
+                    $('#lblManager2Name').html(Getdata[3].Value);
+                    $('#lblManager2EmailId').html(Getdata[4].Value);
+                    $('#lblManager2Mobile').html(Getdata[5].Value);
+
+                    $('#lblHRName').html(Getdata[6].Value);
+                    $('#lblHREmailId').html(Getdata[7].Value);
+                    $('#lblHRMobile').html(Getdata[8].Value);
+
+                    if (Getdata[9] == undefined)
+                    {
+                        $('#DivAccount').hide();
+                    }
+                    else
+                    {
+                        $('#DivAccount').show();
+                        $('#lblAcName').html(Getdata[9].Value);
+                        $('#lblAcEmailId').html(Getdata[10].Value);
+                        $('#lblAcMobile').html(Getdata[11].Value);
+                    }
+
+                    $('#NotificationModalPopUp').modal('show');
+                }
+            }
+        });
+    }
+
+</script>
+
+<script>
+    $('#FormTravelClaim').validate({
+        rules: {
+            VoucherNo: {
+                required: true,
+            },
+            VoucherDate: {
+                required: true,
+            },
+            TravelType: {
+                required: true,
+            },
+            FromDate: {
+                required: true,
+            },
+            ToDate: {
+                required: true,
+            },
+            FromLocation: {
+                required: true,
+            },
+            ToLocation: {
+                required: true,
+            },
+            Description: {
+                required: true,
+            },
+            TravelClaimEmployeeId :{
+                required: true,
+            },
+            ClaimTravelPurposeId:{
+                required: true,
+            },
+            ClaimTravelPurposeId:{
+                required: true,
+            }
+        },
+        messages: {
+            VoucherNo: {
+                required: "Voucher No is required",
+            },
+            VoucherDate: {
+                required: "Voucher Date is required",
+            },
+            TravelType: {
+                required: "Travel Type is required",
+            },
+            FromDate: {
+                required: "From Date is required",
+            },
+            ToDate: {
+                required: "To Date is required",
+            },
+            FromLocation: {
+                required: "From Location is required",
+            },
+            ToLocation: {
+                required: "To Location is required",
+            },
+            Description: {
+                required: "Description is required",
+            },
+            ClaimTravelPurposeId:{
+                required: "Travel purpose name is required"
+            },
+
+        },
+    });
+
+    var form = $("#FormTravelClaim");
+    form.validate();
+    var IsValid = @Html.Raw(Json.Encode(TempData["IsValid"]));
+    $("#btnSubmit").click(function () {
+
+        var txtConveyance = Number($("#txtConveyance").val());
+        var txtOtherA = Number($("#txtOtherA").val());
+        var txtOtherB = Number($("#txtOtherB").val());
+        if(txtConveyance>0)
+        {
+            if($("#txtConveyanceRemark").val()=="")
+            {$("#ErrorConveyanceRemark").html("Local conveyance remark is required"); return false;}
+            else
+            {{$("#ErrorConveyanceRemark").html("");}}
+        }
+
+        if(txtOtherA>0)
+        {
+            if($("#txtOtherARemark").val()=="")
+            {$("#ErrorOtherARemark").html("OtherA Remark is required"); return false;}
+            else
+            {{$("#ErrorOtherARemark").html("");}}
+        }
+
+        if(txtOtherB>0)
+        {
+            if($("#txtOtherBRemark").val()=="")
+            {$("#ErrorOtherBRemark").html("OtherB Remark is required"); return false;}
+            else
+            {{$("#ErrorOtherBRemark").html("");}}
+        }
+
+        if (form.valid() == false) {
+            $("#VoucherDate").removeClass('error');
+            $("#FromDate").removeClass('error');
+            $("#ToDate").removeClass('error');
+            return false;
+        }
+
+        var TotalAmount =$("#txtTotalAmount").val();
+        if(TotalAmount=="" || TotalAmount==0)
+        {
+            $("#ErrortxtTotalKMAmount").html("Please enter total KM");
+            return false;
+        }
+        else{
+            $("#ErrortxtTotalKMAmount").html("");
+        }
+
+        debugger;
+        form.valid();
+        if(form.valid()==false)
+        {
+            return false;
+        }
+
+
+        if(IsValid=="0")
+        {
+            Swal.fire({
+                //title: 'Saved',
+                icon: 'error',
+                text: 'You cannot apply claim for that day',
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup()
+                    popup.classList.remove('swal2-show')
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                    })
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                    }, 500)
+                    return false
+                }
+            });
+            return false;
+        }
+        $(".Userloaderbg").css("display", "flex");
+      //var TravelClaimEmployeeId = $("#TravelClaimEmployeeId").val();
+        var TravelClaimIdEncrypted = $("#TravelClaimId_Encrypted").val();
+        $.ajax({
+            method:"get",
+            dataType: 'JSON',
+            contentType: "application/json; charset=utf-8",
+            url: '@Url.Action("IsTravelClaimExists", "App_ClaimReimbusement_TravelClaim")',
+            data:{TravelClaimIdEncrypted:TravelClaimIdEncrypted},
+            success: function (response) {
+                debugger;
+                $(".Userloaderbg").css("display", "none");
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon=="error") {
+                    if (Message1 != null) {
+                        Swal.fire({
+                            icon: Icon1,
+                            text: Message1,
+                            allowOutsideClick: false
+                        });
+                    }
+                }
+                else{
+                    $(".Userloaderbg").css("display", "flex");
+                    $("#FormTravelClaim").submit();
+                }
+            }
+        });
+    });
+
+
+
+    $("#btnList").click(function () {
+        var EmployeeID = $("#ShortLeaveEmployeeId").val();
+        $.ajax({
+            async: true,
+            type: 'GET',
+            dataType: 'JSON',
+            contentType: 'application/json; charset=utf-8',
+            url: '@Url.Action("TravelClaimList", "ESS_ClaimReimbusement_TravelClaim")',
+            //data: { EmployeeID: EmployeeID },
+            success: function (data) {
+                debugger;
+                if (data !=null) {
+                    $.each(data, function(i, p) {
+                        $("#ShortLeaveShiftId").append("<option value='" + p.ShiftId +"'>" + p.ShiftName +"</option>");
+                        $("#ShiftName").val(p.ShiftName);
+                    });
+                }
+            },
+        });
+    });
+
+
+    $('#ToDate').change(function () {
+        debugger
+        var StartDate= document.getElementById('FromDate').value;
+        var EndDate= document.getElementById('ToDate').value;
+        if(StartDate=="")
+        {
+            $("#ErrorFromDate").html("Please selct from date first");
+            $("#ToDate").val('');
+            return false;
+        }
+        else{
+            $("#ErrorToDate").html("");
+        }
+
+        var sDate = new Date(StartDate);
+        var eDate = new Date(EndDate);
+        var Time = Math.abs(eDate - sDate);
+        var days = Math.ceil(Time/(1000 * 60 * 60 * 24))+1;
+
+        if(StartDate!= '' && EndDate!= '' && sDate > eDate)
+        {
+            $("#ErrorToDate").html("To Date should not be less than From Date.");
+            $("#ToDate").val('');
+            return false;
+        }
+        else{
+            $("#ErrorFromDate").html("");
+        }
+    });
+
+
+
+    function DeleteTravelClaim(TravelClaimId_Encrypted) {
+        const DeleteButtons = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        DeleteButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+            allowOutsideClick: false
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '@Url.Action("TravelClaimDelete", "App_ClaimReimbusement_TravelClaim")?TravelClaimId_Encrypted=' + TravelClaimId_Encrypted;
+
+            } else if (
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+
+            }
+        })
+    }
+
+
+
+    $("#TravelClaimEmployeeId").change(function () {
+        $.ajax({
+            async: true,
+            type: 'GET',
+            dataType: 'JSON',
+            contentType: 'application/json; charset=utf-8',
+            url:'@Url.Action("EmployeeChange", "App_ClaimReimbusement_TravelClaim")',
+            success: function (data) {
+                debugger;
+                $("#ddlTravelType").find("option").remove();
+                if (data !=null) {
+                    $("#ddlTravelType").append("<option value=0>--Select--</option>");
+                    for (var i = 0; i < data.data.length; i++) {
+                        debugger;
+                        $("#ddlTravelType").append("<option value='" + data.data[i][1].Value +"'>" + data.data[i][1].Value +"</option>");
+                    }
+                    //$.each(data, function(i, p) {
+                    //    debugger;
+                    //    $("#ddlTravelType").append("<option value='" + data.data[0][0].Value +"'>" + data.data[0][1].Value +"</option>");
+
+                    //});
+                }
+            },
+        });
+    });
+
+    function numbervalidate(key) {
+        var presskeys = (key.which) ? key.which : key.presskeys;
+        if (!(presskeys == 8 || presskeys == 46) && (presskeys < 48 || presskeys > 57)) {
+            return false;
+        }
+    }
+</script>
+
+

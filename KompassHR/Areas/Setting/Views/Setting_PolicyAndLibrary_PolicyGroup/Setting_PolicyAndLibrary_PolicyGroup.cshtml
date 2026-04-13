@@ -1,0 +1,412 @@
+﻿@model KompassHR.Areas.Setting.Models.Setting_Prime.Mas_PolicyGroup_Master
+@{
+    ViewBag.Title = "Setting_PolicyAndLibrary_PolicyGroup";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+<style>
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 13px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    .Error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 13px;
+    }
+</style>
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Policy Group
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("ESS_AdminDashboard_Dashboard", "ESS_AdminDashboard_Dashboard", new { id = 32, ScreenId = 121, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Setting_PolicyAndLibrary_Menu", "Setting_PolicyAndLibrary_Menu", new { id = 17, ScreenId = 13, area = "Setting" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Settings">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Policy Group - @ViewBag.AddUpdateTitle </h4>
+
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Define policy group here!
+                    </p>
+                </div>
+                <div class="panel-body" data-scrollbar="false">
+                    <div class="row">
+                        <form action="/Setting/Setting_PolicyAndLibrary_PolicyGroup/SaveUpdate" id="FormPolocyLiabrary" method="post" enctype="multipart/form-data">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Company Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.CmpID, new SelectList(ViewBag.CompanyName, "CompanyId", "CompanyName"), "--Select--", new { id = "ddlCompanyname", @class = "form-select", name = "CmpID" })
+                                                @Html.HiddenFor(model => model.PolicyGroupMasterId_Encrypted)
+                                                @Html.ValidationMessageFor(model => model.CmpID, "", new { @class = "help-block", @id = "ErrorBranchId", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Business Unit
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+
+                                                @Html.DropDownListFor(model => model.PolicyGroupBranchId, new SelectList(ViewBag.Location, "BranchId", "BranchName"), "--Select--", new { name = "ShiftGroupBranchId", @class = "form-select", @id = "ddlLocation" })
+                                                @Html.ValidationMessageFor(model => model.PolicyGroupBranchId, "", new { @class = "help-block", @id = "ErrorBranchId", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Policy Group Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.GroupName, new { @class = "form-control", type = "text", name = "GroupShiftName", id = "txtGroupShiftName", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr class="mt-0">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-2">
+                                        </label>
+                                        <div class="col-md-8">
+                                            <!-- BEGIN table-responsive -->
+                                            <table class="table table-bordered align-middle" id="tblPolicyGroupdata" style="width: 100%;">
+                                                <thead style="text-align: center;">
+                                                    <tr style="background-color: lightgray; border: lightslategray;">
+                                                        <th class="text-nowrap ">Action</th>
+                                                        <th class="text-nowrap ">Policy Name</th>
+                                                        <th class="text-nowrap width-45">Remark</th>
+                                                        @*<th class="text-nowrap ">Download</th>*@
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="PolicyGroupdata1" style="text-align: center" ;></tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="LastShortLeaveBx">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="BtnBx">
+                                                <div>
+                                                    <button type="button" id="btnGet" class="btn btn-primary btn-sm">
+                                                        <i class="fa-solid fa-floppy-disk" id="btnSave"></i> Submit
+                                                    </button>
+                                                    <a href="/Setting/Setting_PolicyAndLibrary_PolicyGroup/GetList">
+                                                        <button type="button" class="btn btn-danger btn-sm" id="btnPolicyList">
+                                                            <i class="fa-solid fa-share-from-square"></i> List
+                                                        </button>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#ddlCompanyname").select2();
+        $("#ddlLocation").select2();
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        // return false
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+
+
+        $("#ddlCompanyname").on("change", function () {
+            $("#ddlLocation").find("option").remove();
+            var CmpId = $("#ddlCompanyname").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: 'GetBusinessUnit',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    debugger;
+                    if (data !=null) {
+                        $("#ddlLocation").append("<option value=0> --Select-- </option>");
+                        $.each(data, function(i, p) {
+                            $("#ddlLocation").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                        });
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        });
+
+
+        $("#ddlLocation").on("change", function () {
+            debugger;
+            $('#tblPolicyGroupdata tr').not(function(){ return !!$(this).has('th').length; }).remove();
+            var LocationId = $("#ddlLocation").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetPolicyGroup", "Setting_PolicyAndLibrary_PolicyGroup")',
+                data: { LocationId: LocationId },
+                success: function (data) {
+                    if (data !=null) {
+                        debugger;
+                        var Obj = data.GetList;
+                        var i=1;
+                        var table = document.getElementById("tblPolicyGroupdata");
+                        $.each(Obj, function (data, value) {
+                            var rowCount = table.rows.length;
+                            var row = table.insertRow(rowCount);
+                            var count = $('#tblPolicyGroupdata tr td').length;
+                            row.insertCell(0).innerHTML = ""+'<input id="chk" type="checkbox" name="checkBoxName" class="form-check-input" Value="'+value.PolicyLibraryId+'" >'+""
+                            row.insertCell(1).innerHTML = "" + value.PolicyName + "";
+                            row.insertCell(2).innerHTML = "" + value.remark + "";
+                            //row.insertCell(3).innerHTML = "" + '<a href="'+value.DocumentPath+'"><i class="fa fa-download" style="font-size:large;color:blue"></i></a>' + "";
+                        });
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        });
+
+    });//ready function
+
+
+</script>
+
+<script>
+    //use for add regex function
+    jQuery.validator.addMethod(
+    "regex",
+     function(value, element, regexp) {
+         if (regexp.constructor != RegExp)
+             regexp = new RegExp(regexp);
+         else if (regexp.global)
+             regexp.lastIndex = 0;
+         return this.optional(element) || regexp.test(value);
+     },"erreur expression reguliere"
+  );
+    $('#FormPolocyLiabrary').validate({
+        rules: {
+            CmpID: {
+                required: true,
+            },
+            PolicyGroupBranchId: {
+                required: true,
+            },
+            GroupName: {
+                required: true,
+            },
+        },
+        messages: {
+            CmpID: {
+                required: "Company name is required",
+            },
+            PolicyGroupBranchId: {
+                required: "Business unit is required",
+            },
+            GroupName: {
+                required: "Group name is required",
+            },
+        },
+    });
+
+    var form = $("#FormPolocyLiabrary");
+    form.validate();
+    $("#btnGet").on("click",function(){
+        form.valid();
+        if(form.valid()==false)
+        {
+            return false;
+        }
+        var CmpId = $("#ddlCompanyname").val();
+        var BranchId = $("#ddlLocation").val();
+        if(CmpId==0)
+        {
+            $('#ErrorCmpId').html("Company name is required");return false;}
+        else{$('#ErrorCmpId').html(""); }
+        if(BranchId==0)
+        {
+            $('#ErrorBranchId').html("Business unit is required");return false;}
+        else{$('#ErrorBranchId').html(""); }
+        debugger;
+        var lstPolicyGroup=[];
+        $(':checkbox:checked').each(function (i) {
+            debugger;
+            var data1 = {};
+            data1.PolicyLibraryId = $(this).val();
+            var currentRow = $(this).closest("tr");
+            data1.PolicyLibraryId.value = currentRow.find("td:eq(0)").html();
+            data1.PolicyName = currentRow.find("td:eq(1)").html();
+            data1.remark = currentRow.find("td:eq(2)").html();
+            lstPolicyGroup.push(data1);
+        });
+        if (lstPolicyGroup == "") {
+            debugger;
+            Swal.fire({
+                icon: "error",
+                text: "Please select atleaset one policy group",
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup()
+                    popup.classList.remove('swal2-show')
+                    return false;
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                    })
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                    }, 500)
+                    window.location.reload();
+                    return false
+                }
+            });
+            return false;
+        }
+        var CompanyId = $("#ddlCompanyname :selected").val();
+        var LocationId = $("#ddlLocation :selected").val();
+        var GroupShiftName = $("#txtGroupShiftName").val();
+        var PolicyGroupMasterIdEncrypted = $("#PolicyGroupMasterId_Encrypted").val();
+
+        debugger;
+        $.ajax({
+            async: true,
+            type:"POST",
+            url: "IsPolicyLaibraryExist",
+            data : JSON.stringify({PolicyGroupMasterIdEncrypted:PolicyGroupMasterIdEncrypted, CompanyId:CompanyId,LocationId:LocationId,GroupShiftName:GroupShiftName,lstPolicyGroup:lstPolicyGroup,lstPolicyGroup:lstPolicyGroup}),
+            contentType: "application/json; charset=utf-8",
+            dataType:"text",
+            success: function (response) {
+                debugger;
+                var data = JSON.parse(response);
+                var Message1 = data.Message;
+                var Icon1 = data.Icon;
+                if (data.Icon=="error") {
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                        }
+                    }
+                }
+                else{
+                    $("#FormPolocyLiabrary").submit();
+                }
+            }
+        });
+    })
+
+
+
+
+
+    var SelectedShiftList = @Html.Raw(Json.Encode(ViewBag.SelectedShiftList));
+    if(SelectedShiftList!=null || SelectedShiftList!="")
+    {
+        var table = document.getElementById("tblPolicyGroupdata");
+        $.each(SelectedShiftList, function (data1, value) {
+            debugger;
+            var rowCount = table.rows.length;
+            var row = table.insertRow(rowCount);
+            var count = $('#tblPolicyGroupdata tr td').length;
+            row.insertCell(0).innerHTML = ""+'<input id="chk" type="checkbox" name="checkBoxName" class="form-check-input" Value="'+value[0].Value+'" '+value[1].Value+'>'+""
+            row.insertCell(1).innerHTML = "" + value[2].Value + "";
+            row.insertCell(2).innerHTML = "" + value[3].Value + "";
+            //row.insertCell(3).innerHTML = "" + '<a href="'+value[4].Value+'"><i class="fa fa-download" style="font-size:large;color:blue"></i></a>' + "";
+        });
+    }
+</script>

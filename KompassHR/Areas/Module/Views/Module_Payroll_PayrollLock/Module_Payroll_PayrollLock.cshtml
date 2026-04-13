@@ -1,0 +1,535 @@
+﻿@model KompassHR.Areas.Module.Models.Module_Payroll.Payroll_Lock
+@{
+    ViewBag.Title = "Module_Payroll_PayrollLock";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+
+<style>
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Payroll Lock
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Module_Payroll_Menu", "Module_Payroll_Menu", new {id = 6, ScreenId=159, area = "Module" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">  Payroll Lock  - Add @*<b>@ViewBag.AddUpdateTitle</b>*@  </h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Define Payroll Lock here!
+                    </p>
+                </div>
+                <div class="panel-body" data-scrollbar="true">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "Module_Payroll_PayrollLock", new { area = "Module" })' id="SavePayrollLock" method="post" data-parsley-validate="">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Company Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.CmpId, new SelectList(ViewBag.CompanyName, "Id", "Name"), "--Select--", new { id = "ddlCmpId", @class = "form-select", autocomplete = "off", name = "CmpId" })
+                                                @Html.HiddenFor(model => model.PayrollLockId_Encrypted, new { id = "PayrollLockId_Encrypted" })
+                                                @Html.ValidationMessageFor(model => model.CmpId, "", new { @class = "help-block", @id = "ErrorCmpID", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Business Unit
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.PayrollLockBranchID, new SelectList(ViewBag.BranchName, "Id", "Name"), "--Select--", new { id = "ddlBranchId", @class = "form-select", autocomplete = "off", name = "PayrollLockBranchID" })
+                                                @Html.ValidationMessageFor(model => model.PayrollLockBranchID, "", new { @class = "help-block", @id = "ErrorPayrollLockBranchID", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Month/Year
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.PayrollLockMonthYear, new { @class = "form-control", type = "month", id = "GetMonth", autocomplete = "Off", name = "GetMonth" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button type="button" id="btnshow" onclick="showList()" class="btn btn-success btn-sm  mb-10px">
+                                            Show
+                                        </button>
+                                    </div>
+
+                                </div>
+                                <div class="row mb-15px">
+                                    <label class="form-label col-form-label col-md-2">
+                                    </label>
+                                    <label class="form-label col-form-label col-md-2">
+                                        @Html.CheckBoxFor(model => model.Status, new { id = "chkStatus", @checked = "checked" })
+
+
+                                        @*@Html.CheckBoxFor(model => model.Status, new { id = "chkStatus" })*@
+                                        &nbsp;  Lock
+                                    </label>
+
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-8">
+                                        <div class="table-scroll div1">
+                                            <div class="row">
+                                                <table class="table table-bordered mb-0 text-dark align-middle TabledataBulkClass tblAddData" style="width: 100%;" id="tblEmployeeHistoryHead">
+                                                    <thead class="table-active horizontal-scroll" style="background-color: rgba(233, 236, 239, 1) !important;">
+                                                        <tr>
+                                                            <th class="text-nowrap">Export </th>
+                                                            <th class="text-nowrap">Total Employee </th>
+                                                            <th class="text-nowrap">Pending</th>
+                                                            <th class="text-nowrap">Apporved</th>
+                                                            <th class="text-nowrap">Reject</th>
+                                                            <th class="text-nowrap">Net Pay</th>
+                                                            <th class="text-nowrap">Arrears Amount</th>
+                                                            <th class="text-nowrap">PF</th>
+                                                            <th class="text-nowrap">ESIC</th>
+                                                            <th class="text-nowrap">PT</th>
+                                                            <th class="text-nowrap">LWF </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="tblBodyPayrollEmployee"></tbody>
+                                                </table>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2"></div>
+                                </div>
+                                <br />
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="button" id="btnSubmit"
+                                                                class="btn btn-primary btn-sm">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                        <a href="@Url.Action("GetList", "Module_Payroll_PayrollLock", new { area = "Module" })">
+                                                            <button type="button" class="btn btn-danger btn-sm" id="btnGetCostCenterList">
+                                                                <i class="fa-solid fa-share-from-square"></i> List
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    //use for add regex function
+    jQuery.validator.addMethod(
+  "regex",
+   function(value, element, regexp) {
+       if (regexp.constructor != RegExp)
+           regexp = new RegExp(regexp);
+       else if (regexp.global)
+           regexp.lastIndex = 0;
+       return this.optional(element) || regexp.test(value);
+   },"erreur expression reguliere"
+);
+
+
+    $("#SavePayrollLock").validate({
+        rules: {
+            CmpID: {
+                required: true,
+            },
+            PayrollLockBranchID: {
+                required: true,
+            },
+            PayrollLockMonthYear: {
+                required: true,
+            }
+        },
+        messages: {
+            CmpID: {
+                required: "Campany name is required",
+            },
+            PayrollLockBranchID: {
+                required: "Business unit is required",
+            },
+            PayrollLockMonthYear: {
+                required: " Month/Year is required",
+            }
+        },
+    });
+
+    var form = $("#SavePayrollLock");
+    form.validate();
+    $("#btnSubmit").click(function () {
+        debugger;
+        var CmpId=$("#ddlCmpId").val();
+        var PayrollLockBranchID=$("#ddlBranchId").val();
+
+        if(CmpId=="")
+        {$('#ErrorCmpID').html("Company name is required"); $("#ErrorCmpID").focus();  return false;}
+        else{ $('#ErrorCmpID').html("");}
+
+        if(PayrollLockBranchID=="0")
+        {$('#ErrorPayrollLockBranchID').html("Business unit is required"); $("#ErrorPayrollLockBranchID").focus();  return false;}
+        else{ $('#ErrorPayrollLockBranchID').html("");}
+
+        form.valid();
+        if(form.valid()==false)
+        {
+            $("#GetMonth").removeClass("error")
+            return false;
+        }
+        $(".Userloaderbg").css("display", "flex");
+        debugger;
+        var CmpId=$("#ddlCmpId").val();
+        var PayrollLockBranchID=$("#ddlBranchId").val();
+        var PayrollLockMonthYear=$("#GetMonth").val();
+
+        var Status = $("#chkStatus").prop("checked");
+        var PayrollLockId_Encrypted=$("#PayrollLockId_Encrypted").val();
+        $.ajax({
+            url: '@Url.Action("IsPayrollLockExists", "Module_Payroll_PayrollLock")',
+            method:"get",
+            data:{CmpId:CmpId,PayrollLockBranchID:PayrollLockBranchID,PayrollLockMonthYear:PayrollLockMonthYear,Status:Status,PayrollLockId_Encrypted:PayrollLockId_Encrypted},
+            success:function(response){
+                debugger;
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon=="error") {
+                    $(".Userloaderbg").css("display", "none");
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                        }
+                    }
+                }
+                else{
+                    $("#SavePayrollLock").submit();
+
+                }
+            }
+        });
+
+    });
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        $("#ddlCmpId").select2();
+        $("#ddlBranchId").select2();
+        debugger;
+        var today = new Date();
+        // Format the date as YYYY-MM (year-month)
+        var yyyy = today.getFullYear();
+        var mm = String(today.getMonth() + 1).padStart(2, '0'); // January is 0!
+        var defaultMonth = yyyy + '-' + mm;
+        // Set the value of the input element to the default month
+        var CheckEmptyDate = document.getElementById('GetMonth').value;
+        if (CheckEmptyDate == "") {
+            document.getElementById('GetMonth').value = defaultMonth;
+        }
+
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        // return false
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+
+        $("#ddlCmpId").on("change", function () {debugger
+            $("#ddlBranchId").find("option").remove();
+            var CmpId = $("#ddlCmpId").val();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetMonthlyBusinessUnit", "Module_Payroll_PayrollLock")',
+                data: { CmpId: CmpId },
+                success: function (data) {
+                    debugger;
+                    if (data.Branch != null) {
+                        $("#ddlBranchId").append("<option value=''>--Select--</option>");
+                        $.each(data.Branch, function (i, p) {
+                            $("#ddlBranchId").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+                    }
+                    else {
+                        $('#ErrorESSPassword').html(" ");
+                    }
+                }
+            })
+        })
+        debugger;
+        var Doc = @Html.Raw(Json.Encode(TempData["PayrollLockMonthYear"]));
+        if(Doc !=null)
+        {
+            $("#GetMonth").val(Doc);
+        }
+
+    });
+</script>
+
+<script>
+    function millisecTodate(milliDate) {
+        var date = new Date(milliDate);
+        var mnth = ("0" + (date.getMonth() + 1)).slice(-2);
+        var day = ("0" + date.getDate()).slice(-2);
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        hours = hours < 10 ? '0'+hours : hours;
+        minutes = minutes < 10 ? '0'+minutes : minutes;
+        var ddmmyyyy = [date.getFullYear(), mnth,day].join("-");
+        return ddmmyyyy;
+    }
+
+    function convertDate(data) {
+        var getdate = parseInt(data.replace("/Date(", "").replace(")/", ""));
+        var date = millisecTodate(getdate);
+        return date;
+    }
+
+    $("#btnSubmit").click(function()
+    {
+        if(CmpID=="")
+        {$('#ErrorCmpID').html("Company name is required"); $("#ErrorCmpID").focus();  return false;}
+        else{ $('#ErrorCmpID').html("");}
+    })
+
+    function showList() {
+        debugger;
+
+        var CmpId=$("#ddlCmpId").val();
+        var PayrollLockBranchID=$("#ddlBranchId").val();
+        var PayrollLockMonthYear=$("#GetMonth").val();
+
+        if(CmpId=="")
+        {$('#ErrorCmpID').html("Company name is required"); $("#ErrorCmpID").focus();  return false;}
+        else{ $('#ErrorCmpID').html("");}
+
+        form.valid();
+        if (form.valid() == false) {
+            $("#MonthYear").removeClass("error");
+            return false;
+        }
+        $.ajax({
+            type: "GET",
+            url: '@Url.Action("GetPayrollSalarydetails", "Module_Payroll_PayrollLock")',
+            data:{
+                CmpId:CmpId,
+                PayrollLockBranchID:PayrollLockBranchID,
+                PayrollLockMonthYear:PayrollLockMonthYear
+            },
+            contentType: "application/json; charset=utf-8",
+            dataType: "text",
+            success: function (response) {
+                debugger;
+                const data = JSON.parse(response);
+                const tableBody = $('#tblBodyPayrollEmployee');
+                if ($.fn.DataTable.isDataTable('#tblEmployeeHistoryHead')) {
+                    $('#tblEmployeeHistoryHead').DataTable().clear().destroy();
+                }
+
+                tableBody.empty();
+
+                if (data) {
+                    data.forEach(item => {debugger
+                        const row = $('<tr>');
+
+                        const TotalEmployeeCountCell = item.find(e => e.Key === "TotalEmployeeCount");
+                        const ApprovedCountCell = item.find(e => e.Key === "ApprovedCount");
+                        const RejectedCountCell = item.find(e => e.Key === "RejectedCount");
+                        const PendingCountCell = item.find(e => e.Key === "PendingCount");
+                        const SalaryNetPayCell = item.find(e => e.Key === "SalaryNetPay");
+                        const SalaryEarn_ArrearsCell = item.find(e => e.Key === "SalaryEarn_Arrears");
+                        const PFCell = item.find(e => e.Key === "PF");
+                        const ESICCell = item.find(e => e.Key === "ESIC");
+                        const PTCell = item.find(e => e.Key === "PT");
+                        const LWFCell = item.find(e => e.Key === "LWF");
+
+
+                        // td[1] to td[10] matching thead
+                       row.append(`
+                        <td class="text-nowrap text-center">
+                            <a id="btnshow"
+                               onclick="downloadExcelFile()" style="cursor:pointer;">
+                                <i class="fa-solid fa-download fa-lg text-primary"></i>
+                            </a>
+                        </td>`);
+                        row.append(`<td class="text-nowrap text-end">${TotalEmployeeCountCell.Value}</td>`);
+                        row.append(`<td class="text-nowrap text-end">${ApprovedCountCell.Value }</td>`);
+                        row.append(`<td class="text-nowrap text-end">${RejectedCountCell.Value }</td>`);
+                        row.append(`<td class="text-nowrap text-end">${PendingCountCell.Value}</td>`);
+                        row.append(`<td class="text-nowrap text-end">${SalaryEarn_ArrearsCell.Value}</td>`);
+                        row.append(`<td class="text-nowrap text-end">${SalaryNetPayCell.Value}</td>`);
+                        row.append(`<td class="text-nowrap text-end">${PFCell.Value}</td>`);
+                        row.append(`<td class="text-nowrap text-end">${ESICCell.Value}</td>`);
+                        row.append(`<td class="text-nowrap text-end">${PTCell.Value}</td>`);
+                        row.append(`<td class="text-nowrap text-end">${LWFCell.Value}</td>`);
+
+                        tableBody.append(row);
+                    });
+
+                }
+            }
+        });
+    }
+
+    function downloadExcelFile() {debugger
+        $(".Userloaderbg").css("display", "flex");
+        var CmpId=$("#ddlCmpId").val();
+        var PayrollLockBranchID=$("#ddlBranchId").val();
+        var PayrollLockMonthYear=$("#GetMonth").val();
+        var url = `@Url.Action("DownloadExcelFile", "Module_Payroll_PayrollLock")?CmpId=${CmpId}&PayrollLockMonthYear=${PayrollLockMonthYear}&PayrollLockBranchID=${PayrollLockBranchID}`;
+        $.ajax({
+            url: url,
+            method: 'GET',
+            xhrFields: {
+                responseType: 'blob' // Set the response type to blob
+            },
+            success: function(data) {
+                debugger;
+                $(".Userloaderbg").css("display", "none");
+                if(data.size==0)
+                {
+                    Swal.fire({
+                        icon: 'error',
+                        text: 'Record Not Found',
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup()
+                            popup.classList.remove('swal2-show')
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake')
+                            })
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake')
+                            }, 500)
+                            return false
+                        }
+                    });
+                    $(".Userloaderbg").css("display", "none");
+                    return false;
+                }
+             //   var formattedDate = convertMonthYearFormat(GetMonth);
+                var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                var anchorElement = document.createElement('a');
+                var url = window.URL.createObjectURL(blob);
+                anchorElement.href = url;
+                anchorElement.download = 'PayrollSheet.xlsx';
+                anchorElement.click();
+                window.URL.revokeObjectURL(url);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error downloading file:', error);
+            }
+        });
+    }
+</script>

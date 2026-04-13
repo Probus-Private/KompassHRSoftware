@@ -1,0 +1,674 @@
+﻿    @model KompassHR.Areas.ESS.Models.ESS_TMS.TMS_WorkOnTask
+@{
+    ViewBag.Title = "ESS_TMS_WorkOnTask";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+
+
+<link href="~/assets/plugins/summernote/dist/summernote-lite.css" rel="stylesheet" />
+<script src="~/assets/plugins/summernote/dist/summernote-lite.min.js"></script>
+
+<style>
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+
+    .note-editable {
+        border: groove;
+        font-size: 16px;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <!-- BEGIN breadcrumb -->
+    <ol class="breadcrumb float-xl-end">
+        <li class="breadcrumb-item"><a href="@Url.Action("Dashboard", "Dashboard", new { area = "Dashboard" })">Dashboard</a></li>
+        <li class="breadcrumb-item"><a href="@Url.Action("ESS_TMS_Menu", "ESS_TMS_Menu", new {id = 12, ScreenId= 194, area = "ESS" })">TMS Menu</a></li>
+    </ol>
+    <!-- END breadcrumb -->
+    <!-- BEGIN page-header -->
+    <h1 class="page-header"> Work on Task </h1>
+    <!-- END page-header -->
+
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Work on Task - Add </h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form action="@Url.Action("SaveUpdate", "ESS_TMS_WorkOnTask", new { area = "ESS" })" id="SaveWorkOnTask" method="post" enctype="multipart/form-data">
+                                <div class="row mb-15px">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Doc No.
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.DocNo, new { @class = "form-control", name = "DocNo", id = "txtDocNo", autocomplete = "Off", type = "text", Value = @ViewBag.DocNo, Style = "background-color: #eee", @readonly = "readonly" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Doc Date
+                                            </label>
+                                            <div class="col-md-8">
+                                                @{
+                                                    var minDateOffset = TempData["DocMinDate"] != null ? Convert.ToInt32(TempData["DocMinDate"]) : 0;
+                                                    var maxDateOffset = TempData["DocMaxDate"] != null ? Convert.ToInt32(TempData["DocMaxDate"]) : 0;
+
+                                                    var minDate = DateTime.Now.AddDays(-minDateOffset).ToString("yyyy-MM-dd");
+                                                    var maxDate = DateTime.Now.AddDays(maxDateOffset).ToString("yyyy-MM-dd");
+                                                }
+                                                @Html.TextBoxFor(model => model.DocDate, new { @class = "form-control", name = "DocDate", id = "txtDocDate", autocomplete = "Off", type = "date", min = minDate, max = maxDate })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-15px">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Task No.
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.DocNos, new { @class = "form-control", name = "TaskID", id = "txtTaskID", autocomplete = "Off", type = "text", Style = "background-color: #eee", @readonly = "readonly" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Task Date
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.TaskDate, new { @class = "form-control", name = "TaskDate", id = "txtTaskDate", autocomplete = "Off", type = "date", Style = "background-color: #eee", @readonly = "readonly" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-15px">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Task Name
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.TaskName, new { @class = "form-control", name = "TaskName", id = "txtTaskID", autocomplete = "Off", type = "text", Style = "background-color: #eee", @readonly = "readonly" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Assigner Name
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBox("AssignerName", TempData["AssignerName"], new { @class = "form-control", style = "background-color: #eee;", @readonly = "readonly" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-15px">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Client Name
+                                            </label>
+                                            <div class="col-md-10">
+                                                @Html.TextBox("Clientname", TempData["Clientname"], new { @class = "form-control", style = "background-color: #eee;", @readonly = "readonly" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-15px">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Project Name
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBox("ProjectName", TempData["ProjectName"], new { @class = "form-control", style = "background-color: #eee;", @readonly = "readonly" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Module Name
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBox("ModuleName", TempData["ModuleName"], new { @class = "form-control", style = "background-color: #eee;", @readonly = "readonly" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-15px">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Task Category
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @*@Html.DropDownListFor(model => model.TaskCategoryId, new SelectList(ViewBag.TaskCategory, "Id", "Name"), "--Select--", new { id = "txtTaskCategoryId", name = "TaskCategoryId", @class = "form-select", onchange = "onTaskCategoryChange()" ,, style = "background-color: #eee;", @readonly = "readonly" })*@
+                                                @Html.TextBox("TaskCategoryName", TempData["TaskCategoryName"], new { @class = "form-control", style = "background-color: #eee;", @readonly = "readonly" })
+
+
+                                               </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Task SubCategory
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @*@Html.DropDownListFor(model => model.TaskSubCategoryId, new SelectList(ViewBag.TaskSubCategory, "Id", "Name"), "--Select--", new { id = "txtTaskSubCategoryId", name = "TaskSubCategoryId", @class = "form-select",, style = "background-color: #eee;", @readonly = "readonly" })*@
+                                                @Html.TextBox("TaskSubCategoryName", TempData["TaskSubCategoryName"], new { @class = "form-control", style = "background-color: #eee;", @readonly = "readonly" })
+                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-15px">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Task Assign Date
+                                            </label>
+                                            <div class="col-md-6">
+                                                @Html.TextBox("DateOrTime", TempData["AssignDate"], new { @class = "form-control", style = "background-color: #eee;", @readonly = "readonly" })
+                                            </div>
+                                            <div class="col-md-2">
+                                                @Html.TextBox("Priority", TempData["Priority"], new { @class = "form-control", style = "background-color: #eee; padding-left: 5px;", @readonly = "readonly" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    @if (TempData["AssignTime"] != "")
+                                    {
+                                        <div class="col-md-6">
+                                            <div class="row">
+                                                <label class="form-label col-form-label col-md-4">
+                                                    Task Assign Time
+                                                </label>
+                                                <div class="col-md-8">
+                                                    @Html.TextBox("AssignTime", TempData["AssignTime"], new { @class = "form-control", style = "background-color: #eee;", @readonly = "readonly" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Work on Task
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-10">
+                                                @*@Html.TextAreaFor(model => model.Description, new { @class = "form-control", name = "WorkOnTask", id = "Description", autocomplete = "Off" })*@
+                                                @Html.TextAreaFor(model => model.WorkOnTask, new { @class = "summernote", style = "border: 1px solid #000;", id = "WorkOnTask", @placeholder = "Description....", autocomplete = "Off", contenteditable = "true" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-15px">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Task Work From Time
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.WorkFromTime, new { @class = "form-control", name = "WorkFromTime", id = "txtWorkFromTime", autocomplete = "Off", type = "time" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Task Work To Time
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.WorkToTime, new { @class = "form-control", name = "WorkToTime", id = "txtWorkToTime", autocomplete = "Off", type = "time" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-15px">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Attachment
+                                            </label>
+                                            <div class="col-md-8">
+                                                <input class="form-control" type="file" name="FilePath" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            @*<label class="form-label col-form-label col-md-4">
+                                                    Work On Task (Total Min.)
+                                                    <span class="important">*</span>
+                                                </label>
+                                                <div class="col-md-2">
+                                                    @Html.TextBoxFor(model => model.TaskTime, new { @class = "form-control", name = "TaskTime", id = "txtTaskTime", autocomplete = "off", type = "text", step = "1", maxlength = "3" })
+                                                </div>*@
+                                            <label class="form-label col-form-label col-md-4">
+                                                Total Min On Time
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.TaskTime, new { @class = "form-control", name = "TaskTime", id = "txtTaskTime", autocomplete = "off", type = "text", step = "1", maxlength = "3" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-15px">
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Task Status
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.TaskStatus, new List<SelectListItem>{
+                                                new SelectListItem {Text ="Complete", Value="Complete"},
+                                                 new SelectListItem {Text ="In Process", Value="In Process"},
+                                              }, "--Select--", new { @class = "form-select", name = "TaskStatus", @id = "txtTaskStatus", onchange = "TasksStatus()" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Complete Percentage  <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.CompletePercentage, new { @class = "form-control", name = "CompletePercentage", id = "txtCompletePercentage", autocomplete = "Off", type = "text", step = "1", maxlength = "3" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="row mb-15px" hidden>
+                                    <div class="col-md-6">
+                                        <div class="row">
+                                            <label class="form-label col-form-label col-md-4">
+                                                KRA
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.KRA, new List<SelectListItem>{
+                                                  new SelectListItem {Text ="Type1", Value="Type1"},
+                                                  new SelectListItem {Text ="Type2", Value="Type2"},
+                                              }, "--Select--", new { @class = "form-select", name = "KRA", value = "0", @id = "txtKRA" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="submit" id="SubmitBtn" class="btn btn-primary btn-sm">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                        <button type="button" id="btnGetList" class="btn btn-danger btn-sm">
+                                                            <i class="fa-solid fa-share-from-square"></i>
+                                                            List
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+    </div>
+</div>
+<script>
+    $(".summernote").summernote({
+        placeholder: '',
+        height: "300"
+    });
+</script>
+
+<script>
+    $("#btnGetList").click(function () {
+        var url = '@Url.Action("ESS_TMS_EmployeeTaskSheet", "ESS_TMS_EmployeeTaskSheet")';
+        window.location.href = url;
+    });
+
+    $(document).ready(function () {
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                });
+            }
+        }
+
+        $(document).on('input', '#txtTaskTime, #txtCompletePercentage', function () {
+            this.value = this.value.replace(/[^0-9]/g, ''); // Remove all non-numeric characters
+        });
+
+        var date = new Date();
+        var dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000 )).toISOString().split("T")[0];
+        $("#txtDocDate").val(dateString);
+
+        var CreatedDate = @Html.Raw(Json.Encode(TempData["CreatedDate"]));
+        debugger;
+        if(CreatedDate=="")
+        {
+        }
+        else
+        {
+            var CreatedDate =  convertDate(CreatedDate);
+            $("#txtTaskDate").val(CreatedDate);
+        }
+    });//ready function
+
+    function TasksStatus(){
+        debugger;
+        var TaskStatus = $('#txtTaskStatus').val();
+        if(TaskStatus=="Complete")
+        {
+            $("#txtCompletePercentage").val("100");
+        }
+        if(TaskStatus=="In Process")
+        {
+            $("#txtCompletePercentage").val(" ");
+        }
+    }
+</script>
+
+<script>
+    function getTimeDifferenceInMinutes(fromTime, toTime)
+    {
+        return fromTime && toTime ? (new Date("1970/01/01 " + toTime) - new Date("1970/01/01 " + fromTime)) / 60000 : 0;
+    }
+
+
+    $.validator.addMethod("timeLessThan", function (value, element, params) {
+        var fromTime = $(params).val();
+        if (!fromTime || !value) return true;
+        // Calculate the total difference in minutes
+        var totalMinutes = getTimeDifferenceInMinutes(fromTime, value);
+        $("#txtTaskTime").val(totalMinutes);
+        return totalMinutes > 0;
+    }, "To Time must be greater than From Time.");
+
+
+    $.validator.addMethod("timeGreaterThan", function (value, element, params) {
+        var toTime = $(params).val();
+        if (!toTime || !value) return true;
+        // Calculate the total difference in minutes
+        var totalMinutes = getTimeDifferenceInMinutes(value, toTime);
+        $("#txtTaskTime").val(totalMinutes);
+        return totalMinutes >= 0;
+    }, "From Time must be less than To Time.");
+
+    jQuery.validator.addMethod(
+       "regex",
+        function(value, element, regexp) {
+            if (regexp.constructor != RegExp)
+                regexp = new RegExp(regexp);
+            else if (regexp.global)
+                regexp.lastIndex = 0;
+            return this.optional(element) || regexp.test(value);
+        },"erreur expression reguliere"
+     );
+
+    $('#SaveWorkOnTask').validate({
+        rules: {
+            DocDate: {
+                required: true,
+            },
+            WorkOnTask: {
+                required: true,
+            },
+            //TaskName: {
+            //    required: true,
+            //},
+            TaskTime: {
+                required: true,
+            },
+            WorkFromTime: {
+                required: true,
+                timeGreaterThan: "#txtWorkToTime", // Pass the ID of the FromTime field
+            },
+            WorkToTime: {
+                required: true,
+                timeLessThan: "#txtWorkFromTime", // Pass the ID of the FromTime field
+            },
+            TaskStatus: {
+                required: true,
+            },
+            CompletePercentage:{
+                required: true,
+            },
+        },
+        messages: {
+            DocDate: {
+                required:"Doc Date is required",
+            },
+            WorkOnTask: {
+                required:"Work On Task is required",
+            },
+            //TaskName: {
+            //    required: "Task name is required",
+            //},
+            TaskTime: {
+                required: "Task time is required",
+            },
+            WorkFromTime: {
+                required: "From time is required",
+                timeGreaterThan: "From Time must be less than To Time",
+            },
+            WorkToTime: {
+                required: "To time is required",
+                timeLessThan: "To Time must be greater than From Time",
+            },
+            TaskStatus: {
+                required: "Task Status is required",
+            },
+            CompletePercentage: {
+                required: "Complete Percentage is required",
+            },
+        },
+    });
+
+
+</script>
+
+<script>
+
+    function millisecTodate(milliDate) {
+        var date = new Date(milliDate);
+        var mnth = ("0" + (date.getMonth() + 1)).slice(-2);
+        var day = ("0" + date.getDate()).slice(-2);
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        hours = hours < 10 ? '0'+hours : hours;
+        minutes = minutes < 10 ? '0'+minutes : minutes;
+        var ddmmyyyy = [date.getFullYear(), mnth,day].join("-");
+        return ddmmyyyy;
+    }
+
+    function convertDate(data) {
+        var getdate = parseInt(data.replace("/Date(", "").replace(")/", ""));
+        var date = millisecTodate(getdate);
+        return date;
+    }
+
+</script>

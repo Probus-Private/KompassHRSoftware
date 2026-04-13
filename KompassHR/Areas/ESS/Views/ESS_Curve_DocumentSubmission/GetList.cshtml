@@ -1,0 +1,381 @@
+﻿
+@{
+    ViewBag.Title = "GetList";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/assets/MyCDN/MenuFontStyle.css" rel="stylesheet" />
+<link href="~/assets/MyCSS/MenuImages.css" rel="stylesheet" />
+<link href="~/Content/Site.css" rel="stylesheet" />
+<script src="~/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- ================== End SWEEand css ================== -->
+
+<head>
+    <style>
+        /* ====================== Table Container ====================== */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table.table {
+            border-collapse: separate;
+            border-spacing: 0 8px; /* Space between rows */
+        }
+
+            table.table th,
+            table.table td {
+                vertical-align: middle;
+                padding: 12px 15px;
+            }
+
+            table.table th {
+                background-color: #f8f9fa;
+                font-weight: 600;
+                color: #495057;
+            }
+
+            /* ====================== Table Rows ====================== */
+            table.table tbody tr {
+                background: #ffffff;
+                border-radius: 12px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+                transition: 0.25s ease;
+            }
+
+                table.table tbody tr:hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+                }
+
+        /* Row Status Left Border */
+        .table-success td:first-child {
+            border-left: 5px solid #28a745;
+        }
+
+        .table-danger td:first-child {
+            border-left: 5px solid #dc3545;
+        }
+
+        /* ====================== Status Badges ====================== */
+        .badge-status {
+            padding: 5px 14px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+            .badge-status.complete {
+                background-color: rgba(46, 204, 113, 0.15);
+                color: #28a745;
+            }
+
+            .badge-status.pending {
+                background-color: rgba(231, 76, 60, 0.12);
+                color: #e74c3c;
+            }
+
+        /* ====================== Action Buttons ====================== */
+        .action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 14px;
+            transition: 0.2s;
+            margin-right: 5px;
+            border: none;
+        }
+
+        .action-btn-upload {
+            background-color: #007bff;
+        }
+
+            .action-btn-upload:hover {
+                background-color: #0056b3;
+            }
+
+        .action-btn-delete {
+            background-color: #dc3545;
+        }
+
+            .action-btn-delete:hover {
+                background-color: #a71d2a;
+            }
+
+        /* ====================== File Icon ====================== */
+        .file-icon {
+            font-size: 20px;
+            color: #6c757d;
+            margin-right: 8px;
+        }
+
+        /* ====================== Responsive ====================== */
+        @@media (max-width: 767px) {
+            table.table th, table.table td {
+                padding: 10px 8px;
+                font-size: 14px;
+            }
+
+            .action-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 12px;
+            }
+        }
+
+        .badge-status.approved {
+            background-color: rgba(40, 167, 69, 0.15);
+            color: #28a745;
+        }
+
+        .badge-status.rejected {
+            background-color: rgba(220, 53, 69, 0.12);
+            color: #dc3545;
+        }
+    </style>
+</head>
+
+<div id="content" class="app-content">
+    <div class="pageHeader d-flex align-items-center justify-content-between" style="flex-wrap:nowrap;">
+        <h5 class="page-header text-center text-md-start">Document Submission </h5>
+        <ol class="breadcrumb float-md-end mb-0">
+            <li style="margin-right: 10px;">
+                <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                    <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                </a>
+            </li>
+            <li>
+                <a href="@Url.Action("ESS_Curve_Menu", "ESS_Curve_Menu", new {id = 20, ScreenId=210, area = "ESS" })">
+                    <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                </a>
+            </li>
+        </ol>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p>
+                        Here’s a detailed list of document compulsory submission.
+                    </p>
+                </div>
+
+                <div class="panel-body" style="background:#fff;">
+                    <div class="table-responsive">
+                        <table class="table align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Document Name</th>
+                                    <th>Due Date</th>
+                                    <th>Due Days</th>
+                                    <th>Status</th>
+                                    <th>Submitted date</th>
+                                    <th>File Name</th>
+                                    <th class="text-center">Approval status</th>
+                                    <th class="text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var d in ViewBag.GetUserDocumentList)
+                                {
+                                    var isComplete = d.SubmissionStatus == "Complete";
+                                    var rowClass = isComplete ? "table-success" : "table-danger";
+
+                                    var isApproved = d.Status == "Approved";
+
+                                    <tr>
+                                        <td> @d.AssignmentTitle</td>
+                                        <td>@d.DueDate</td>
+                                        <td>@d.DueDays</td>
+                                        <td>
+                                            <span class="badge-status @(isComplete ? "complete" : "pending")">
+                                                @(isComplete ? "Complete" : "Pending")
+                                            </span>
+                                        </td>
+                                        <td>@d.DocSubmitDate</td>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(d.DocumentPath))
+                                            {
+                                                <a href="@Url.Action("DownloadAttachment", "ESS_Curve_DocumentSubmission", new { DownloadAttachment = d.DocumentPath })" title="Download File">
+                                                    <i class="fa fa-download"></i>
+                                                </a> @Html.Raw("&nbsp;") @d.FileName
+                                            }
+
+                                        </td>
+                                        <td class="text-center">
+
+                                            @* If document Approved *@
+                                            @if ((d.Status == "Approved") && (d.SubmissionStatus == "Complete"))
+                                            {
+                                                <span class="badge-status approved">
+                                                    Approved
+                                                </span>
+                                            }
+
+                                            @* If document Rejected *@
+                                            else if ((d.Status == "Rejected") && (d.SubmissionStatus == "Complete"))
+                                            {
+                                                <span class="badge-status rejected">
+                                                    Rejected
+                                                </span>
+                                            }
+                                            </td>
+                                        <td class="text-center">
+
+                                            @* If document Approved *@
+                                            @if ((d.Status == "Approved") && (d.SubmissionStatus == "Complete"))
+                                            {
+                                            }
+
+                                            @* If document Rejected *@
+                                            else if ((d.Status == "Rejected") && (d.SubmissionStatus == "Complete"))
+                                            {
+                                                <a onclick="Delete('@d.DocAssignmentDetailsId')"
+                                                   class="action-btn action-btn-delete text-decoration-none">
+                                                    <i class="fa fa-trash"></i>
+                                                </a>
+                                            }
+
+                                            @* If submission completed but still pending approval *@
+                                            else if (d.SubmissionStatus == "Complete")
+                                            {
+                                                <a onclick="Delete('@d.DocAssignmentDetailsId')"
+                                                   class="action-btn action-btn-delete text-decoration-none">
+                                                    <i class="fa fa-trash"></i>
+                                                </a>
+                                            }
+
+                                            @* If submission pending (user has not uploaded yet) *@
+                                            else if (d.SubmissionStatus == "Pending")
+                                            {
+                                                <form action="@Url.Action("ESS_Curve_DocumentSubmission", "ESS_Curve_DocumentSubmission", new { area = "ESS" })" style="display:inline;">
+                                                    <input type="hidden" name="DocAssignmentMasterId" value="@d.DocAssignmentMasterId" />
+                                                    <input type="hidden" name="DocAssignmentDetailsId" value="@d.DocAssignmentDetailsId" />
+                                                    <input type="hidden" name="Description" value="@d.Description" />
+
+                                                    <button type="submit" class="action-btn action-btn-upload me-1 text-decoration-none">
+                                                        <i class="fa fa-arrow-right"></i>
+                                                    </button>
+                                                </form>
+                                            }
+
+                                        </td>
+
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $(document).ready(function () {debugger
+        $('title').html("Document Submission");
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Message != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        return false
+                    }
+                });
+            }
+        }
+    });
+</script>
+<script>
+    function Delete(DocAssignmentDetailsId) {
+        debugger;
+        const DeleteButtons = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        DeleteButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+            allowOutsideClick: () => {
+                const popup = Swal.getPopup()
+                popup.classList.remove('swal2-show')
+                setTimeout(() => {
+                    popup.classList.add('animate__animated', 'animate__headShake')
+                })
+                setTimeout(() => {
+                    popup.classList.remove('animate__animated', 'animate__headShake')
+                }, 500)
+                return false
+            }
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '@Url.Action("Delete", "ESS_Curve_DocumentSubmission")?DocAssignmentDetailsId=' + DocAssignmentDetailsId;
+
+            } else if (
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+
+            }
+        })
+    }
+
+</script>
+<script>
+    function initTooltips() {
+
+        // Dispose old tooltips (important for modal / ajax reload)
+        document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
+            if (bootstrap.Tooltip.getInstance(el)) {
+                bootstrap.Tooltip.getInstance(el).dispose();
+            }
+        });
+
+        // Initialize all tooltips
+        document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
+            new bootstrap.Tooltip(el);
+        });
+    }
+
+    // Run on page load
+    document.addEventListener("DOMContentLoaded", function () {
+        initTooltips();
+    });
+
+    // Run when modal opens (VERY IMPORTANT)
+    var employeeModal = document.getElementById('EmployeeListModel');
+    if (employeeModal) {
+        employeeModal.addEventListener('shown.bs.modal', function () {
+            initTooltips();
+        });
+    }
+</script>

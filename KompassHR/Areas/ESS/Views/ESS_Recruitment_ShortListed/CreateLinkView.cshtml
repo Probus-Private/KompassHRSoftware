@@ -1,0 +1,353 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_Recruitment.Recruitment_Interview
+
+@{
+    ViewBag.Title = "CreateLinkView";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+
+<style>
+      label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+    .note-toolbar {
+        display: none;
+    }
+
+    .note-editable {
+        height: 100% !important;
+        [contenteditable="false"];
+    }
+
+    .table, tr, td, th, .invoice, .smallFrom {
+        border: none;
+        font-size: 13px;
+        font-family: Arial;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <!-- BEGIN breadcrumb -->
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Create Link
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_Recruitment_Menu", "ESS_Recruitment_Menu", new {id = 1, ScreenId=126, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title"> Create Link - <b>Update</b> </h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Interview Rescheduled
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "ESS_Recruitment_ShortListed", new { area = "ESS" })' id="SaveInterviewSchedule" method="post">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Interview Type
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @*@Html.Hidden("ResumeId_Encrypted", ViewBag.ShortListedProfile?.ResumeId_Encrypted, new { id = "txtResumeId_Encrypted" })*@
+                                                @Html.HiddenFor(model => model.CandidateName, new { id = "txtResumeId_Encrypted", Value = @ViewBag.ShortListedProfile.CandidateName })
+                                                @Html.HiddenFor(model => model.ResourceId, new { id = "txtResumeId_Encrypted", Value = @ViewBag.ShortListedProfile.ResourceId })
+                                                @Html.HiddenFor(model => model.designationname, new { id = "txtResumeId_Encrypted", Value = @ViewBag.ShortListedProfile.designationname })
+                                                @Html.HiddenFor(model => model.CompanyName, new { id = "txtResumeId_Encrypted", Value = @ViewBag.ShortListedProfile.CompanyName })
+                                                @Html.HiddenFor(model => model.BranchName, new { id = "txtBranchName", Value = @ViewBag.ShortListedProfile.BranchName })
+                                                @Html.HiddenFor(model => model.ResumeId_Encrypted, new { id = "txtResumeId_Encrypted", Value = @ViewBag.ShortListedProfile.ResumeId_Encrypted })
+                                                @Html.HiddenFor(model => model.CandidateMail, new { id = "CandidateMail", Value = @ViewBag.ShortListedProfile.CandidateMail })
+                                                @Html.HiddenFor(model => model.ReuestPoolRecruiterId, new { id = "RequestAssignId", Value = @ViewBag.ShortListedProfile.ReuestPoolRecruiterId })
+                                                @Html.DropDownListFor(model => model.InterviewType,
+                                                 new List<SelectListItem>{new SelectListItem {Text ="Offline", Value="Offline"},
+                                                                         new SelectListItem {Text ="Online", Value="Online"},
+                                                                        }, "--Select--", new { @class = "form-select", id = "txtInterviewType", type = "text", name = "InterviewType", autocomplete = "Off" })
+                                                @Html.HiddenFor(model => model.InterviewId_Encrypted, new { id = "txtInterviewId_Encrypted" })
+                                                @Html.HiddenFor(model => model.InterviewId, new { id = "txtInterviewId" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Interview Date
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(m => m.InterviewDate,
+    new
+    {
+        @class = "form-control",
+        type = "date",
+        value = Model.InterviewDate.ToString("yyyy-MM-dd") ?? ""
+    })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Interview Time
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(m => m.InterviewTime,
+    new
+    {
+        @class = "form-control",
+        type = "time",
+        value = Model.InterviewTime.ToString(@"hh\:mm") ?? ""
+    })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Branch(For Address)
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @*@Html.DropDownList("BranchId", ViewBag.BranchList as SelectList,"-- Select Branch --",new { @class = "form-control", id = "ddlBranch" })*@
+                                                @Html.DropDownList("BranchId", new SelectList(ViewBag.BranchList, "Id", "Name"), "Select", new { id = "ddlBranch", @class = "form-control form-select select2", autocomplete = "off", name = "BranchId" })
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Link/Address
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextAreaFor(model => model.MeetingLink, new { @class = "form-control", id = "txtMeetingLink", type = "text", name = "MeetingLink", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Interviewer
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(
+    m => m.InterviewerEmployeeId,
+    new SelectList(ViewBag.InterviewerEmployee, "Id", "Name", Model.InterviewerEmployeeId),
+    "Select",
+    new { id = "ddlInterviewerEmployeeId", @class = "form-select", autocomplete = "off",name= "InterviewerEmployee" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="BtnBx">
+                                        <div>
+                                            <button type="button" id="btnSubmit" class="btn btn-primary btn-sm">
+                                                <i class="fa-solid fa-floppy-disk"></i> Submit
+                                            </button>
+                                            <a href="@Url.Action("CandidateInterviewList", "ESS_Recruitment_ShortListed", new { area = "ESS" })">
+                                                <button type="button" id="btnGetList"
+                                                        class="btn btn-danger btn-sm">
+                                                    <i class="fa-solid fa-share-from-square"></i>
+                                                    List
+                                                </button>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    var list = @Html.Raw(Json.Encode(ViewBag.GetInterviewList));
+    var mode = '@ViewBag.UpdateOrView'; 
+    debugger
+    if (mode !== 'Edit') {
+        $("#SaveInterviewSchedule :input").prop("disabled", true);  
+        $("#btnSubmit").hide();                                     
+        $('#btnGetList').css({'pointer-events': 'auto', 'opacity': '1'}).prop('disabled', false);    }
+    if (list) {
+        function parseDotNetDate(dotNetDate) {
+            if (!dotNetDate) return null;
+            var match = /Date\((\d+)\)/.exec(dotNetDate);
+            return match ? new Date(parseInt(match[1])) : null;
+        }
+
+        var interviewDate = parseDotNetDate(list.InterviewDate);
+        var interviewTime = parseDotNetDate(list.InterviewTime);
+
+        // --- Format date in local timezone ---
+        function formatDateLocal(date) {
+            if (!date) return "";
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, "0");
+            const day = String(date.getDate()).padStart(2, "0");
+            return `${year}-${month}-${day}`;
+        }
+
+        // --- Format time in local timezone ---
+        function formatTimeLocal(date) {
+            if (!date) return "";
+            const hours = String(date.getHours()).padStart(2, "0");
+            const minutes = String(date.getMinutes()).padStart(2, "0");
+            return `${hours}:${minutes}`;
+        }
+
+        const formattedDate = formatDateLocal(interviewDate);
+        const formattedTime = formatTimeLocal(interviewTime);
+
+        $("#InterviewDate").val(formattedDate);
+        $("#InterviewTime").val(formattedTime);
+
+        console.log("Formatted Date:", formattedDate, "Formatted Time:", formattedTime);
+    }
+
+    $("#ddlInterviewerEmployeeId").select2();
+    $("#SaveInterviewSchedule").validate({
+        rules: {
+            InterviewType: {
+                required: true,
+            },
+            InterviewDate: {
+                required: true,
+            },
+            InterviewTime: {
+                required: true,
+            },
+            MeetingLink: {
+                required: true,
+            },
+            InterviewerEmployee:{
+                required: true,
+            }
+        },
+        messages: {
+            InterviewType: {
+                required: "Interview type is required",
+            },
+            InterviewDate: {
+                required: "Interview date is required",
+            },
+            InterviewTime: {
+                required: "Interview time is required",
+            },
+            MeetingLink: {
+                required: "Meeting link is required",
+            },
+            InterviewerEmployee:{
+                required: "Employee is required",
+            }
+        }
+    });
+    var form = $("#SaveInterviewSchedule");
+    form.validate();
+
+    $("#btnSubmit").click(function () {
+        debugger;
+        form.valid();
+        if(form.valid()==false)
+        {
+            $("#dateInterviewDate").removeClass('error')
+            $("#dateInterviewDate").removeClass('error')
+            return false;
+        }
+        $(".Userloaderbg").css("display", "flex");
+        $("#myModal").modal('hide');
+        var Encrypted = $("#txtResumeId_Encrypted").val();
+
+        var hiddenInput = $('<input>').attr({
+            type: 'hidden',
+            name: 'Encrypted',  
+            value: Encrypted   
+        });
+        $("#SaveInterviewSchedule").append(hiddenInput);
+        $("#SaveInterviewSchedule").submit();
+    });
+
+
+    $("#ddlBranch").change(function () {
+        var branchId = $(this).val();
+
+        if (branchId != "" && branchId != "0") {
+            $.ajax({
+                url: '/ESS_Recruitment_ShortListed/GetBranchAddress',
+                type: 'GET',
+                data: { branchId: branchId },
+                success: function (res) {
+                    if (res) {
+                        $("#txtMeetingLink").val(res.Address);
+                    } else {
+                        $("#txtMeetingLink").val('');
+                    }
+                },
+                error: function () {
+                    alert("Error fetching address");
+                }
+            });
+        } else {
+            $("#txtMeetingLink").val('');
+        }
+    });
+
+</script>
+
+

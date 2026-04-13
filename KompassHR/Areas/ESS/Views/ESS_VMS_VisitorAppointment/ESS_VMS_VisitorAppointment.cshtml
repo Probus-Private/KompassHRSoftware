@@ -1,0 +1,1022 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_VMS.Visitor_Appointment
+@{
+    ViewBag.Title = "ESS_VMS_VisitorAppointment";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+
+<style>
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    /*table first column fixed*/
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .select2.select2-container {
+        width: 100% !important;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Visitor Appointment 
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ESS_VMS_Menu", "ESS_VMS_Menu",  new { id = 10,ScreenId=184, area = "ESS" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+ 
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">Visitor Appointment - <b>@ViewBag.AddUpdateTitle</b> </h4>
+                    <div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        This is the visitor appointment form.
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "ESS_VMS_VisitorAppointment", new { area = "ESS" })' id="SaveVisitorAppointment" method="post">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Doc  No.
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.DocNo, new { @class = "form-control", id = "DocNo", type = "text", autocomplete = "Off", Value = @ViewBag.DocNo.DocNo, @readonly = "readonly", Style = "background-color: lightgray;" })
+                                                @Html.HiddenFor(model => model.VisitorAppointmentID_Encrypted, new { id = "VisitorAppointmentID_Encrypted" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Appointment Date
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.AppointmentDate, new { @class = "form-control", name = "AppointmentDate", type = "date", id = "txtAppointmentDate", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Company Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.CmpId, new SelectList(ViewBag.ComapnyName, "Id", "Name"), new { @class = "form-control", name = "CmpId", type = "date", id = "txtCmpId", onChange = "ChangeConpany()" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Business Unit
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.VisitorAppointmentBranchID, new SelectList(ViewBag.BranchName, "Id", "Name"), new { @class = "form-control", id = "txtVisitorBranchID", name = "VisitorAppointmentBranchID", onChange = "BranchName()" })
+                                                @Html.ValidationMessageFor(model => model.VisitorAppointmentBranchID, "", new { @class = "help-block", id = "ErrorVisitorAppointmentBranchID", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Host Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.VisitorAppointmentEmployeeID, new SelectList(ViewBag.EmployeeName, "Id", "Name"), "--Select--", new { @class = "form-control", name = "VisitorAppointmentEmployeeID", id = "txtVisitorAppointmentEmployeeID" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                              Visiting Business Unit
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.VisitingBranchID, new SelectList(ViewBag.VisitingBranchName, "Id", "Name"), new { @class = "form-control", id = "txtVisitingBranchID", name = "VisitingBranchID" })
+                                                @Html.ValidationMessageFor(model => model.VisitorAppointmentBranchID, "", new { @class = "help-block", id = "ErrorVisitingBranchID", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Appointment Time
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.AppointmentTime, new { @name = "AppointmentTime", @class = "form-control", @id = "txtAppointmentTime", @type = "time" })
+                                                @Html.ValidationMessageFor(model => model.AppointmentTime, "", new { @class = "help-block", id = "ErrorAppointmentTime", @style = "color:red" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Visitor Type
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.VisitorTypeId, new SelectList(ViewBag.VisitorType, "Id", "Name"), "--Select--", new { @class = "form-control", name = "VisitorType", type = "date", id = "txtVisitorType" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Mobile No
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-6 col-9">
+                                                @Html.TextBoxFor(model => model.MobileNo, new { @class = "form-control", name = "MobileNo", type = "text", id = "txtVisitorMobileNo", autocomplete = "Off", Maxlength = 10, onkeypress = " return numbervalidate(event)" })
+                                            </div>
+                                            <div class="col-md-2 col-3">
+                                                <button type="button" id="btnGetMoblie" onclick="GetAllData()" class="btn btnpress btn-primary">
+                                                    Search
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6" id="LastVisitDate">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4" id="CountOfVisitor">Last Visit</label>
+                                            <div class="col-md-6 col-10" id="HideLastVisitDate">
+                                                <input type="text" id="lblCountOfVisitor" class="form-control" />
+                                            </div>
+                                            <div class="col-md-1 col-2">
+                                                <button type="button" class="btn btnpress btn-primary" id="btnGetInformatiom">
+                                                    <span><i class="fa-solid fa-eye"></i></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Visitor Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.VisitorName, new { @class = "form-control", name = "VisitorName", type = "text", id = "txtVisitorName", autocomplete = "Off", oninput = "this.value = this.value.toUpperCase()" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Designation
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.Designation, new { @class = "form-control", name = "VisitorDesignation", type = "text", id = "txtVisitorDesignation", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Addition Person
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.AdditionPerson, new { @class = "form-control", name = "AdditionPerson", type = "text", id = "txtAdditionPerson", autocomplete = "Off", onkeypress = " return numbervalidate(event)", Maxlength = 10 })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Email Id
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.TextBoxFor(model => model.EmailID, new { @class = "form-control", name = "EmailId", type = "text", id = "txtVisitorEmailID", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-2">
+                                                Visitor Company Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-10">
+                                                @Html.TextBoxFor(model => model.Company, new { @class = "form-control", name = "VisitorCompany", type = "text", id = "txtVisitorCompany", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                VIP
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.IsSpecial, new List<SelectListItem> {
+                                                  new SelectListItem { Text = "No", Value = "0"},
+                                                    new SelectListItem { Text = "Yes", Value = "1"}
+                                                }, new { id = "ddlIsSpecial", @class = "form-select", autocomplete = "off", name = "IsSpecial" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-4">
+                                                Purpose
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-8">
+                                                @Html.DropDownListFor(model => model.VisitorPuposeId, new SelectList(ViewBag.PurposeName, "Id", "Name"), "--Select--", new { id = "ddlVisitorPupose", @class = "form-control", name = "VisitorPuposeId" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3" style="width: 16.5%;">
+                                                Remark
+                                            </label>
+                                            <div class="col-md-9" style="min-width: 83.5%; max-width: 100%;">
+                                                @Html.TextAreaFor(model => model.VisitorRemark, new { @class = "form-control", name = "VisitorRemark", type = "text", id = "txtVisitorRemark", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-3">
+                                                Appointment Location
+                                            </label>
+                                            <div class="col-md-9">
+                                                @Html.TextBoxFor(model => model.MeetingLocation, new { @class = "form-control", name = "MeetingLocation", type = "text", id = "txtMeetingLocation", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="submit" id="btnSubmit" class="btn btn-primary btn-sm">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                        </button>
+                                                        <button type="button" id="btnGetVisitorAppointmentList" onclick="VisitorAppointmentList()" class="btn btn-danger btn-sm"
+                                                                data-bs-toggle="modal" href="#modal-dialog">
+                                                            <i class="fa-solid fa-share-from-square"></i> List
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+
+                </div>
+                <!-- END panel -->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- #Start modal-dialog -->
+<div class="modal fade" id="modal_basic2" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-black text-white">
+                <h4 class="modal-title">Visitor Details</h4>
+                <div class="panel-heading-btn">
+                    <a href="javascript:;" class="btn btn-icon btn-danger" data-bs-dismiss="modal"
+                       aria-hidden="true">
+                        <i class="fa fa-xmark"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="modal-body">
+                <!-- BEGIN panel -->
+                <div class="modal-body-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered tblAddData" id="tblIFSCcodeHeading" style="width: 100%">
+                                    <thead style="background-color: rgba(233, 236, 239, 1) !important;">
+                                        <tr class="text-center">
+                                            <th class="text-nowrap text-center">Last Visit</th>
+                                            <th class="text-nowrap text-center">Visitor Name</th>
+                                            <th class="text-nowrap text-center">Designation</th>
+                                            <th class="text-start text-nowrap">Addition Person</th>
+                                            <th class="text-start text-nowrap">Email Id</th>
+                                            <th class="text-nowrap text-center">Visitor Company Name</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tblVisitorDetails"></tbody>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- END panel -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnCancel" class="btn btn-primary btn-sm" data-bs-dismiss="modal">
+                    <i class="fa-solid fa-floppy-disk"> </i> Ok
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- #End modal-dialog -->
+
+
+
+
+<script>
+    function VisitorAppointmentList(){
+        var url = '@Url.Action("GetList", "ESS_VMS_VisitorAppointment")';
+        window.location.href = url;
+    }
+
+
+
+    function numbervalidate(key) {
+        var presskeys = (key.which) ? key.which : key.presskeys;
+        if (!(presskeys == 8 || presskeys == 46) && (presskeys < 48 || presskeys > 57)) {
+            return false;
+        }
+    }
+
+
+    //Ajax Call For GetLocation
+    $(document).ready(function () {
+
+        $("#txtVisitorAppointmentEmployeeID").select2();
+        var GetAddUpdateTitle = @Html.Raw(Json.Encode(ViewBag.AddUpdateTitle));
+        if(GetAddUpdateTitle=="Add")
+        {
+            var GetBranchId = @Html.Raw(Json.Encode(Session["BranchId"]));
+            var GetEmployeeId = @Html.Raw(Json.Encode(Session["EmployeeId"]));
+            var BranchAddress = @Html.Raw(Json.Encode(ViewBag.BranchAddress));
+            var GetBranchAddress= BranchAddress[0][0].Value;
+            $("#txtVisitorBranchID").val(GetBranchId).select2();
+            $("#txtVisitorAppointmentEmployeeID").val(GetEmployeeId).select2();
+            $("#txtMeetingLocation").val(GetBranchAddress);
+            $("#txtVisitingBranchID").val(GetBranchId).select2();
+        }
+
+
+
+        var date = new Date();
+        var dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000 )).toISOString().split("T")[0];
+        $("#txtAppointmentDate").val(dateString);
+        $("#txtCmpId").select2();
+        $("#txtVisitorBranchID").select2();
+        $("#txtVisitorType").select2();
+        $("#txtVisitingBranchID").select2();
+
+        $("#btnGetLocation").click(function () {
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                url: '@Url.Action("GetLocation", "ESS_VMS_VisitorAppointment")',
+                success: function (data) {
+
+                    $("#txtVisitorBranchID").val(data);
+                },
+                error: function() {
+                    alert("There is some problem to get the date");
+                }
+            });
+        });
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        // return false
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+        $("#formReset").click(function () {
+            $("#SaveVisitorAppointment")[0].reset()
+        });
+
+        var IsSpecial = @Html.Raw(Json.Encode(TempData["IsSpecial"]));
+        debugger
+        if (IsSpecial == true) {
+            $("#ddlIsSpecial").val("1");
+        }
+        else if(IsSpecial == false) {
+            $("#ddlIsSpecial").val("0");
+        }
+        debugger;
+        var AppointmentDate = @Html.Raw(Json.Encode(TempData["AppointmentDate"]));
+        if(AppointmentDate == null || AppointmentDate == "")
+        {
+
+        }
+        else
+        {
+            var AppointmentDate =  convertDate(AppointmentDate);
+            $("#txtAppointmentDate").val(AppointmentDate);
+
+        }
+
+
+
+        $("#txtVisitorBranchID").change(function () {
+            debugger;
+            var CompanyId = $("#txtCmpId").val();
+
+            var BranchId = $("#txtVisitorBranchID").val();
+            $("#txtVisitorAppointmentEmployeeID").find("option").remove();
+            $.ajax({
+                type: 'GET',
+                dataType: 'JSON',
+                contentType: "application/json; charset=utf-8",
+                url: '@Url.Action("GetEmployee", "ESS_VMS_VisitorAppointment")',
+                data: { BranchId: BranchId },
+                success: function (data) {
+                    debugger;
+                    var EmployeeName=data.EmployeeName;
+                    var AddressBranch=data.AddressBranch;
+                    if (data != null) {
+                        $.each(EmployeeName, function (i, p) {
+                            $("#txtVisitorAppointmentEmployeeID").append("<option value='" + p.Id + "'>" + p.Name + "</option>");
+                        });
+
+
+                        var BranchAdress = AddressBranch[0][0].Value;
+                        $("#txtMeetingLocation").val(BranchAdress);
+                    }
+                }
+            });
+        });
+
+    });//Ready function
+
+    function DeleteVisitorAppointment(VisitorAppointmentID_Encrypted) {
+        const DeleteButtons = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        DeleteButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+
+            allowOutsideClick: () => {
+                const popup = Swal.getPopup()
+                popup.classList.remove('swal2-show')
+                setTimeout(() => {
+                    popup.classList.add('animate__animated', 'animate__headShake')
+                })
+                setTimeout(() => {
+                    popup.classList.remove('animate__animated', 'animate__headShake')
+                }, 500)
+                return false
+            }
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '@Url.Action("PendingDelete", "ESS_VMS_VisitorAppointment")?VisitorAppointmentID_Encrypted=' + VisitorAppointmentID_Encrypted;
+                //window.location.href = url;
+            //    DeleteButtons.fire(
+            //        'Deleted!',
+            //        'Your file has been deleted.',
+            //        'success'
+            //    )
+            //} else if (
+            //    /* Read more about handling dismissals below */
+            //    result.dismiss === Swal.DismissReason.cancel
+            //) {
+
+            }
+        })
+    }
+
+
+    function GetAllData(){
+        debugger
+        var Moblieno = $("#txtVisitorMobileNo").val();
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("GetAllInformation", "ESS_VMS_VisitorAppointment")',
+            data: { Moblieno: Moblieno },
+            success: function (GetData) {
+                debugger;
+                console.log(GetData)
+                if(GetData=="")
+                {
+                    var Message ="Record not found";
+                    var Icon = "error";
+                    if (Message != null) {
+                        if (Message != null) {
+                            Swal.fire({
+                                icon: Icon,
+                                text: Message,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                        }
+                    }
+                }
+                else{
+                    debugger;
+                   // $("#LastVisitDate").show();
+                   // $("#HideLastVisitDate").show();
+                    var visitorName = GetData[0][0].Value;
+                    var Designation = GetData[0][2].Value;
+                    var AdditionPerson = GetData[0][1].Value;
+                    var Email = GetData[0][4].Value;
+                    var CompanyName = GetData[0][5].Value;
+                    var IsSpecial  = GetData[0][6].Value;
+                    var Purpose = GetData[0][7].Value;
+                    var Conference  = GetData[0][10].Value;
+                    var Remark = GetData[0][8].Value;
+                    var count =GetData[0][11].Value
+                    $("#txtVisitorName").val(visitorName);
+                    $("#txtVisitorDesignation").val(Designation);
+                    $("#txtAdditionPerson").val(AdditionPerson);
+                    $("#txtVisitorEmailID").val(Email);
+                    $("#txtVisitorCompany").val(CompanyName);
+                    if(IsSpecial ==  true)
+                    {
+                        $("#ddlIsSpecial").val("1");
+                    }
+                    else
+                    {
+                        $("#ddlIsSpecial").val("0");
+                    }
+                    $("#ddlVisitorPupose").val(Purpose);
+                   // $("#txtConferenceId").val(Conference);
+                    $("#txtVisitorRemark").val(Remark);
+                    var Appointmentdate = convertDate(count)
+                    $("#lblCountOfVisitor").val(Appointmentdate);
+
+                }
+            }
+        });
+    }
+
+</script>
+
+<script>
+
+    function millisecTodate(milliDate) {
+        var date = new Date(milliDate);
+        var mnth = ("0" + (date.getMonth() + 1)).slice(-2);
+        var day = ("0" + date.getDate()).slice(-2);
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        hours = hours < 10 ? '0'+hours : hours;
+        minutes = minutes < 10 ? '0'+minutes : minutes;
+        var ddmmyyyy = [date.getFullYear(), mnth,day].join("-");
+        return ddmmyyyy;
+    }
+
+    function convertDate(data) {
+        var getdate = parseInt(data.replace("/Date(", "").replace(")/", ""));
+        var date = millisecTodate(getdate);
+        return date;
+    }
+
+
+    jQuery.validator.addMethod(
+       "regex",
+        function(value, element, regexp) {
+            if (regexp.constructor != RegExp)
+                regexp = new RegExp(regexp);
+            else if (regexp.global)
+                regexp.lastIndex = 0;
+            return this.optional(element) || regexp.test(value);
+        },"erreur expression reguliere"
+     );
+
+    $('#SaveVisitorAppointment').validate({
+        rules: {
+            CmpId:{
+                required: true,
+            },
+            AppointmentDate: {
+                required: true,
+            },
+            AppointmentTime: {
+                required: true,
+            },
+            VisitorName: {
+                required: true,
+            },
+            EmailID:{
+                email: true
+            },
+            VisitorPuposeId:{
+                required: true,
+            },
+            VisitorAppointmentBranchID:{
+                required: true,
+            },
+            MobileNo:{
+                required: true,
+            },
+            Company:{
+                required: true,
+            },
+            VisitorTypeId:{
+                required: true,
+            },
+            VisitorAppointmentEmployeeID:{
+                required: true,
+            },
+
+        },
+        messages: {
+            CmpId:{
+                required: "Company Name is required"
+            },
+            AppointmentDate: {
+                required:"Appointment date is required",
+            },
+            AppointmentTime: {
+                required:"Appointment time is required",
+            },
+            VisitorName: {
+                required: "Visitor name is required",
+            },
+            EmailID: {
+                email: "Please enter a valid email address"
+            },
+            VisitorPuposeId: {
+                required: "Pupose is required",
+            },
+            VisitorAppointmentBranchID:{
+                required: "Business Unit is required",
+            },
+            MobileNo:{
+                required: "Mobile No is required"
+            },
+            Company:{
+                required: "Visitor company name is required"
+            },
+            VisitorTypeId:{
+                required: "Visitor type is required"
+            },
+            VisitorAppointmentEmployeeID:{
+                required: "Host name is required"
+            }
+        },
+    });
+
+
+    var form = $("#SaveVisitorAppointment");
+    form.validate();
+    $("#btnSubmit").click(function () {
+        debugger;
+        form.valid();
+        if(form.valid()==false)
+        {
+            $("#txtAppointmentDate").removeClass('error');
+            $("#txtAppointmentTime").removeClass('error');
+            return false;
+        }
+        var BranchId=$("#txtVisitorBranchID").val();
+        if(BranchId==0)
+        {
+            $("#ErrorVisitorAppointmentBranchID").html("Business unit is required"); return false;
+        }
+        else
+        {
+            $("#ErrorVisitorAppointmentBranchID").html("");
+        }
+
+        var AppointmentTime = $("#txtAppointmentTime").val();
+        var AppointmentDate = $("#txtAppointmentDate").val();
+        var currentDateTime = new Date(); // for now
+
+        // Splitting the appointment time into hours and minutes
+        var appointmentTimeParts = AppointmentTime.split(':');
+        var appointmentHours = parseInt(appointmentTimeParts[0]);
+        var appointmentMinutes = parseInt(appointmentTimeParts[1]);
+
+        // Splitting the appointment date into year, month, and day
+        var appointmentDateParts = AppointmentDate.split('-');
+        var appointmentYear = parseInt(appointmentDateParts[0]);
+        var appointmentMonth = parseInt(appointmentDateParts[1]) - 1; // Months are zero-indexed
+        var appointmentDay = parseInt(appointmentDateParts[2]);
+
+        // Constructing appointment date and time
+        var appointmentDateTime = new Date(appointmentYear, appointmentMonth, appointmentDay, appointmentHours, appointmentMinutes, 0);
+
+        if (appointmentDateTime < currentDateTime) {
+            $("#ErrorAppointmentTime").html("Time should not be less than current Time");
+            return false;
+            //alert('Time should not be less than current Time');
+        } else {
+            $("#ErrorAppointmentTime").html("");
+        }
+        $(".Userloaderbg").css("display", "flex");
+    });
+</script>
+
+<script>
+    function ChangeConpany() {
+        debugger;
+        $("#txtVisitorBranchID").find("option").remove();
+        var CmpId = $("#txtCmpId").val();
+        $("#txtVisitorBranchID").find("option").remove();
+        $("#txtVisitorAppointmentEmployeeID").find("option").remove();
+        $.ajax({
+            type: 'GET',
+            dataType: 'JSON',
+            contentType: "application/json; charset=utf-8",
+            url: '@Url.Action("GetBusinessUnit", "ESS_VMS_VisitorAppointment")',
+            data: { CmpId: CmpId },
+            success: function (data) {
+                debugger;
+                var Branch=data.Branch;
+                var EmployeeName=data.EmployeeName;
+                var AddressBranch=data.AddressBranch;
+                if (data !=null) {
+                    //$("#txtVisitorBranchID").append("<option value=''>--Select-- </option>");
+                    $.each(Branch, function(i, p) {
+                        $("#txtVisitorBranchID").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                    });
+
+                    $.each(EmployeeName, function(i, p) {
+                        $("#txtVisitorAppointmentEmployeeID").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                    });
+
+                    var BranchAdress = AddressBranch[0][0].Value;
+                    $("#txtMeetingLocation").val(BranchAdress);
+                }
+            }
+        })
+    }
+
+
+    $("#btnGetInformatiom").click(function(){
+        debugger;
+        var MoblieNo = $("#txtVisitorMobileNo").val();
+
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("GetVisitorDetails", "ESS_VMS_VisitorAppointment")',
+            data: { MoblieNo : MoblieNo },
+            success: function (data) {
+                debugger;
+                $('#tblVisitorDetails tr').not(function () { return !!$(this).has('th').length; }).remove();
+                if(data!=null)
+                {
+                    for(var i=0;i <= data.length-1;i++)
+                    {
+                        var table = document.getElementById("tblVisitorDetails");
+                        var rowCount = table.rows.length;
+                        var row = table.insertRow(rowCount);
+                        var TaskAssign = data[i];
+                        var count = $('#tblVisitorDetails tr').length;
+                        row.insertCell(0).innerHTML = "" +convertDate(TaskAssign[0].Value) + "";
+                        row.insertCell(1).innerHTML = "" + TaskAssign[1].Value+ "";
+                        row.insertCell(2).innerHTML = "" + TaskAssign[2].Value + "";
+                        row.insertCell(3).innerHTML = "" + TaskAssign[3].Value + "";
+                        row.insertCell(4).innerHTML = "" + TaskAssign[4].Value + "";
+                        row.insertCell(5).innerHTML = "" + TaskAssign[5].Value + "";
+
+                    }
+                }
+                $('#modal_basic2').modal('show');
+            }
+
+        });
+       // $('#modal_basic2').modal('show');
+
+    });
+
+
+    $("#txtVisitorDesignation").keypress(function(){
+        debugger;
+        var DesignationName = $("#txtVisitorDesignation").val();
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("SuggestionOfDesignation", "ESS_VMS_VisitorAppointment")',
+            data: { DesignationName: DesignationName },
+            success: function (data) {
+                // Handle success response here
+            }
+        });
+    });
+
+    var today = new Date().toISOString().split('T')[0];
+    document.getElementById("txtAppointmentDate").setAttribute("min", today);
+
+    var maxDate = new Date();
+    maxDate.setDate(maxDate.getDate() + 30);
+    var maxDateISOString = maxDate.toISOString().split('T')[0];
+    document.getElementById("txtAppointmentDate").setAttribute("max", maxDateISOString);
+
+
+    function numbervalidate(key) {
+        var presskeys = (key.which) ? key.which : key.presskeys;
+        if (!(presskeys == 8 || presskeys == 46) && (presskeys < 48 || presskeys > 57)) {
+            return false;
+        }
+    }
+
+</script>

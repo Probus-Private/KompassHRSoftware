@@ -1,0 +1,1044 @@
+﻿@model KompassHR.Areas.ESS.Models.ESS_TimeOffice.Atten_WorkFromHome
+
+@{
+    ViewBag.Title = "App_Attendance_WFH";
+    Layout = "~/Views/Shared/_MobileLayout.cshtml";
+}
+<link href="~/assets/MyCSS/Tailwindcss.css" rel="stylesheet" />
+
+@*<script src="~/scripts/jquery-1.10.2.js"></script>
+    <script src="~/scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/scripts/jquery.validate.js"></script>
+    <script src="~/scripts/jquery.validate.min.js"></script>
+    <script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="~/assets/bower_components/moment/moment.js"></script>
+    <script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+    <link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+    <script src="~/assets/js/CaptchaVerification.js"></script>*@
+<style>
+    .app-header-fixed {
+        padding-top: 0px;
+        padding-bottom: 0px;
+    }
+
+    .app-content {
+        padding: 0px 0px;
+    }
+
+    .panel .panel-body {
+        padding: 8px;
+    }
+
+    label.error, .Error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+</style>
+
+<style>
+    /*.form-label-container {
+                                        display: flex;
+                                        align-items: center;
+                                        justify-content: flex-end;
+                                    }*/
+
+    .form-label-text {
+        display: inline-flex;
+        align-items: center;
+        min-width: 120px; /* Adjust this value to fit your longest label */
+    }
+
+        .form-label-text i {
+            margin-right: 0.5rem; /* Space between icon and label text */
+        }
+</style>
+
+
+
+<style>
+    @@media (max-width: 767px) {
+        .row.mb-3.align-items-center {
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: center;
+        }
+
+            .row.mb-3.align-items-center .col-md-4,
+            .row.mb-3.align-items-center .col-md-8 {
+                flex: 1;
+                max-width: none;
+                padding-right: 10px;
+                padding-left: 10px;
+            }
+
+            .row.mb-3.align-items-center .col-md-4 {
+                flex: 0 0 auto;
+                width: 40%;
+            }
+
+            .row.mb-3.align-items-center .col-md-8 {
+                flex: 1;
+                width: 60%;
+            }
+
+        .form-label {
+            margin-bottom: 0;
+            white-space: nowrap;
+        }
+
+        .form-control,
+        .form-select {
+            width: 100%;
+        }
+    }
+</style>
+
+
+
+<div id="content" class="app-content">
+    <div class="panel panel-inverse" data-sortable-id="index-1">
+        <div class="panel-body" data-scrollbar="false">
+            <div class="row">
+                <div class="col-md-12">
+                    <form role="form" action='@Url.Action("SaveUpdate", "App_Attendance_WFH", new { area = "App" })' id="SaveWorkFromHome" method="post">
+                        <div class="row mb-3 align-items-center">
+                            <div class="col-md-4">
+                                <div class="form-label-container">
+                                    <label class="form-label">
+                                        <span class="form-label-text">
+                                            <i class="fa-solid fa-hashtag text-purple-600"></i> Doc No.
+                                        </span>:
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                @Html.TextBoxFor(model => model.DocNo, new { @class = "form-control", type = "text", name = "Description", id = "txtDocNo", autocomplete = "Off", Value = @ViewBag.DocNo, Style = "background-color: #eee;" })
+                            </div>
+                        </div>
+                        <div class="row mb-3 align-items-center">
+                            <div class="col-md-4">
+                                <div class="form-label-container">
+                                    <label class="form-label">
+                                        <span class="form-label-text">
+                                            <i class="fas fa-briefcase text-purple-600"></i>  Shift<span class="important">*</span>
+                                        </span>:
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="hidden" name="WFHShiftName" id="ShiftName" />
+                                @Html.DropDownListFor(model => model.WFHShiftId, new SelectList(ViewBag.GetShiftList, "ShiftId", "ShiftName"), "--Select--", new { id = "ddlShift", name = "WFHShiftId", @class = "form-select", autocomplete = "off" })
+                            </div>
+                        </div>
+
+                        <div class="row mb-3 align-items-center">
+                            <div class="col-md-4">
+                                <div class="form-label-container">
+                                    <label class="form-label">
+                                        <span class="form-label-text">
+                                            <i class="fa-solid fa-cash-register text-orange-500"></i>  Day<span class="important">*</span>
+                                        </span>:
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="hidden" name="WFHShiftName" id="ShiftName" />
+                                @Html.DropDownListFor(model => model.WFHType, new List<SelectListItem>{
+                                                new SelectListItem {Text ="Full Day", Value="Full Day"},
+                                                new SelectListItem {Text ="1st Half", Value="1st Half"},
+                                                new SelectListItem {Text ="2nd Half", Value="2nd Half"},
+                                              }, "--Select--", new { @class = "form-select", name = "ddlWfhCompanyShift", @id = "ddlWfhCompanyShift", @required = "required" })
+                            </div>
+                        </div>
+
+                        <div class="row mb-3 align-items-center">
+                            <div class="col-md-4">
+                                <div class="form-label-container">
+                                    <label class="form-label">
+                                        <span class="form-label-text">
+                                            <i class="fa-solid fa-calendar-day text-blue-500"></i>  From Date<span class="important">*</span>
+                                        </span>:
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                @Html.TextBoxFor(model => model.FromDate, new { @class = "form-control", type = "Date", name = "txtFromDate", id = "txtFromDate", autocomplete = "Off", onkeydown = "return false" })
+                                @Html.ValidationMessageFor(model => model.FromDate, "", new { @class = "help-block", id = "ErrortxtFromDate", @style = "color:red" })
+                            </div>
+                        </div>
+
+                        <div class="row mb-3 align-items-center">
+                            <div class="col-md-4">
+                                <div class="form-label-container">
+                                    <label class="form-label">
+                                        <span class="form-label-text">
+                                            <i class="fa-solid fa-calendar-check text-blue-600"></i> To Date<span class="important">*</span>
+                                        </span>:
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                @Html.TextBoxFor(model => model.ToDate, new { @class = "form-control", type = "Date", name = "txtToDate", id = "txtToDate", autocomplete = "Off", onkeydown = "return false" })
+                                @Html.ValidationMessageFor(model => model.ToDate, "", new { @class = "help-block", id = "ErrortxtToDate", @style = "color:red" })
+                            </div>
+                        </div>
+
+
+                        <div class="row mb-3 align-items-center">
+                            <div class="col-md-4">
+                                <div class="form-label-container">
+                                    <label class="form-label">
+                                        <span class="form-label-text">
+                                            <i class="fa-solid fa-clock text-purple-600"></i>From Time<span class="important">*</span>
+                                        </span>:
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                @Html.TextBoxFor(model => model.FromTime, new { @class = "form-control", type = "Time", name = "FromTime", id = "FromTime", autocomplete = "Off", @required = "required" })
+                                @Html.ValidationMessageFor(model => model.FromTime, "", new { @class = "help-block", id = "ErrorFromTime", @style = "color:red" })
+                            </div>
+                        </div>
+
+
+                        <div class="row mb-3 align-items-center">
+                            <div class="col-md-4">
+                                <div class="form-label-container">
+                                    <label class="form-label">
+                                        <span class="form-label-text">
+                                            <i class="fa-solid fa-clock text-purple-600"></i>To Time<span class="important">*</span>
+                                        </span>:
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                @Html.TextBoxFor(model => model.ToTime, new { @class = "form-control", type = "Time", name = "ToTime", id = "ToTime", autocomplete = "Off", @required = "required" })
+                                @Html.ValidationMessageFor(model => model.ToTime, "", new { @class = "help-block", id = "ErrorToTime", @style = "color:red" })
+                            </div>
+                        </div>
+                        <div class="row mb-3 align-items-center">
+                            <div class="col-md-4">
+                                <div class="form-label-container">
+                                    <label class="form-label">
+                                        <span class="form-label-text">
+                                            <i class="fas fa-lightbulb text-yellow-500"></i>Reason<span class="important">*</span>
+                                        </span>:
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                @Html.TextAreaFor(model => model.Reason, new { @class = "form-control", type = "text", name = "Reason", id = "Reason", autocomplete = "Off", @required = "required" })
+                            </div>
+                        </div>
+
+
+                        @*<div class="row">
+                                <div class="col-md-12">
+                                    <div class="row mb-15px">
+                                        <label class="form-label col-form-label col-md-3"
+                                               style="width: 16.5%;">
+
+                                            <span class="important">*</span>
+                                        </label>
+                                        <div class="col-md-9" style="min-width: 83.5%; max-width: 100%;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>*@
+
+                        <div class="row">
+                            <div class="LastShortLeaveBx">
+                                <div class="row">
+                                    <div class="col-md-4 d-flex">
+                                    </div>
+                                    <div class="col-md-8">
+                                        <div class="BtnBx">
+                                            <div>
+                                                <button type="button" id="btnSubmit" class="btn btn-primary btn-sm">
+                                                    <i class="fa-solid fa-floppy-disk"></i> Submit
+                                                </button>
+                                                <button type="button" class="btn btn-danger btn-sm" id="btnGetList" onclick="btnGetLists();">
+                                                    <i class="fa-solid fa-share-from-square"></i> List
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END panel -->
+</div>
+
+@*@*<div class="col-md-4">
+        <div class="panel panel-inverse" data-sortable-id="index-1">
+            <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                <h4 class="panel-title">Attendance Log </h4>
+                <div class="panel-heading-btn">
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                    <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                </div>
+            </div>
+            <div class="panel-body" data-scrollbar="true">
+                <div class="row" style="max-height:350px; overflow-y:auto;">
+                    <!-- BEGIN table-responsive -->
+                    <table class="table table-bordered align-middle" id="fixed-header" style="width: 100%;">
+                        <thead style="background-color:#eee">
+                            <tr>
+                                <th class="text-center">Date & Time</th>
+                                <th class="text-center">I / O</th>
+                                <th class="text-center">Remark</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var d in ViewBag.GetDeviceLogsList)
+                            {
+                                <tr>
+                                    <td>@d.LogDate</td>
+                                    @if (@d.Direction == "IN")
+                                    {
+                                        <td class="text-center"><i class="fa-solid fa-circle-down fa-lg" style="color: #5cce40; padding: 0px;"></i></td>
+                                    }
+                                    @if (@d.Direction == "OUT")
+                                    {
+                                        <td class="text-center"><i class="fa-solid fa-circle-up fa-lg" style="color:#fe6966; padding: 0px;"></i></td>
+                                    }
+                                    <td class="text-nowrap">@d.C1</td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+                    <!-- END table-responsive -->
+                </div>
+            </div>
+        </div>
+    </div>*@
+
+<!-- #Start NotificationModalPopUp modal-dialog -->
+<div class="modal fade" id="NotificationModalPopUp" data-bs-backdrop="static" data-bs-keyboard="true" data-bs-theme="dark">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header bg-black text-white">
+                <h4 class="modal-title">Manager Details</h4>
+                <div class="panel-heading-btn">
+                    <a href="javascript:;" class="btn btn-icon btn-danger" data-bs-dismiss="modal" aria-hidden="true">
+                        <i class="fa fa-xmark"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="modal-body">
+                <!-- BEGIN panel -->
+                <div class="modal-body-content">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="teambx">
+                                            <div class="teamheading">Manager 1</div>
+                                            <div class="teambody">
+                                                <div class="teamcontactBx">
+                                                    <div class="teamname">
+                                                        <i class="fa-solid fa-user"></i>
+                                                        @Html.Label("ManagerName1", new { @class = "control-label", id = "lblManager1Name" })
+                                                    </div>
+                                                    <div class="teamEmail">
+                                                        <i class="fa fa-envelope"></i>
+                                                        @Html.Label("EmailId", new { @class = "control-label", id = "lblManager1EmailId" })
+                                                    </div>
+                                                    <div class="teamMob">
+                                                        <i class="fa fa-phone"></i>
+                                                        @Html.Label("MobileNo", new { @class = "control-label", id = "lblManager1Mobile" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12">
+                                        <div class="teambx">
+                                            <div class="teamheading">Manager 2</div>
+                                            <div class="teambody">
+                                                <div class="teamcontactBx">
+                                                    <div class="teamname">
+                                                        <i class="fa-solid fa-user"></i>
+                                                        @Html.Label("ManagerName2", new { @class = "control-label", id = "lblManager2Name" })
+                                                    </div>
+                                                    <div class="teamEmail">
+                                                        <i class="fa fa-envelope"></i>
+                                                        @Html.Label("EmailId", new { @class = "control-label", id = "lblManager2EmailId" })
+                                                    </div>
+                                                    <div class="teamMob">
+                                                        <i class="fa fa-phone"></i>
+                                                        @Html.Label("MobileNo", new { @class = "control-label", id = "lblManager2Mobile" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="teambx">
+                                            <div class="teamheading">HR</div>
+                                            <div class="teambody">
+                                                <div class="teamcontactBx">
+                                                    <div class="teamname">
+                                                        <i class="fa-solid fa-user"></i>
+                                                        @Html.Label("HR", new { @class = "control-label", id = "lblHRName" })
+                                                    </div>
+                                                    <div class="teamEmail">
+                                                        <i class="fa fa-envelope"></i>
+                                                        @Html.Label("EmailId", new { @class = "control-label", id = "lblHREmailId" })
+                                                    </div>
+                                                    <div class="teamMob">
+                                                        <i class="fa fa-phone"></i>
+                                                        @Html.Label("MobileNo", new { @class = "control-label", id = "lblHRMobile" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- END panel -->
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" id="btnCancel" class="btn btn-primary btn-sm" data-bs-dismiss="modal">
+                    <i class="fa-solid fa-floppy-disk"> </i> Ok
+                </button>
+                @*<input type="button" class="Ok btn btn-close" data-bs-dismiss="modal" id="btnCancel" value="Cancel" />*@
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        debugger;
+        var GetMinMaxDate = @Html.Raw(Json.Encode(TempData["GetMinMaxDate"]));
+        var MinDate = GetMinMaxDate[0].Value;
+        var MaxDate = GetMinMaxDate[1].Value;
+        var currentDate = new Date();
+        //For MinDate Set
+        currentDate.setDate(currentDate.getDate() - MinDate); //2 Meanse Currect daye plus 2 days enabled only
+        var SetMinDays = currentDate.toISOString().split('T')[0];
+        document.getElementById("txtFromDate").setAttribute("min", SetMinDays);
+        document.getElementById("txtToDate").setAttribute("min", SetMinDays);
+        //For Max Date Set
+        var currentDate1 = new Date();
+        currentDate1.setDate(currentDate1.getDate() + MaxDate);
+        var SetMaxDays = currentDate1.toISOString().split('T')[0];
+        document.getElementById("txtFromDate").setAttribute("max", SetMaxDays);
+        document.getElementById("txtToDate").setAttribute("max", SetMaxDays);
+
+
+        $("#WFHIdEmployeeId").select2();
+
+
+
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        debugger;
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        // return false
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }
+
+        var date = new Date();
+        var dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000)).toISOString().split("T")[0];
+
+        $('#ddlWfhCompanyShift').change(function () {
+            debugger;
+            var SelectedDay = $('#ddlWfhCompanyShift').val();
+            $("#txtToDate").removeAttr('readonly', true);
+            document.querySelector('#txtToDate').style.backgroundColor = '';
+            if(SelectedDay == "Full Day" )
+            {
+                var ShiftId = $("#ddlShift").val();
+                $.ajax({
+                    async: true,
+                    type: 'GET',
+                    dataType: 'JSON',
+                    contentType: 'application/json; charset=utf-8',
+                    url: 'WorkFromHomeType',
+                    data: { DayType:"Full Day",ShiftId: ShiftId },
+                    success: function (data){
+                        debugger;
+                        var SetData = Object.values(data[0]);
+                        var a = Object.values(SetData[0]);
+                        var b = Object.values(SetData[1]);
+                        var duration = Object.values(SetData[2]);
+                        document.getElementById("FromTime").value = a[1];
+                        document.getElementById("ToTime").value = b[1];
+                    },
+
+                });
+                $("#txtFromDate").val(dateString);
+                $("#txtToDate").val(dateString);
+            }
+            if(SelectedDay ==  "1st Half" )
+            {
+                $("#txtFromDate").val(dateString);
+                $("#txtToDate").val(dateString);
+                $("#txtToDate").attr('readonly', true);
+                document.querySelector('#txtToDate').style.backgroundColor = '#e9ecef';
+
+                var ShiftId = $("#ddlShift").val();
+                $.ajax({
+                    async: true,
+                    type: 'GET',
+                    dataType: 'JSON',
+                    contentType: 'application/json; charset=utf-8',
+                    url: 'WorkFromHomeType',
+                    data: { DayType:"1st Half",ShiftId: ShiftId },
+                    success: function (data){
+                        debugger;
+                        var SetData = Object.values(data[0]);
+                        var a = Object.values(SetData[0]);
+                        var b = Object.values(SetData[1]);
+                        var duration = Object.values(SetData[2]);
+                        document.getElementById("FromTime").value = a[1];
+                        document.getElementById("ToTime").value = b[1];
+                    },
+
+                });
+                //$("#txtFromDate").val(dateString);
+                // $("#txtToDate").val(dateString);
+
+            }
+            if(SelectedDay ==  "2nd Half")
+            {
+                $("#txtFromDate").val(dateString);
+                $("#txtToDate").val(dateString);
+                $("#txtToDate").attr('readonly', true);
+                document.querySelector('#txtToDate').style.backgroundColor = '#e9ecef';
+                var GetfromDate=$("#txtFromDate").val().toString("yyyy-MM-dd");
+                $("#txtToDate").val(GetfromDate);
+                var ShiftId = $("#ddlShift").val();
+                $.ajax({
+                    async: true,
+                    type: 'GET',
+                    dataType: 'JSON',
+                    url: 'WorkFromHomeType',
+                    data: { DayType:"2nd Half",ShiftId: ShiftId },
+                    success: function (data){
+                        debugger;
+                        var SetData = Object.values(data[0]);
+                        var a = Object.values(SetData[0]);
+                        var b = Object.values(SetData[1]);
+                        var duration = Object.values(SetData[2]);
+                        document.getElementById("FromTime").value = a[1];
+                        document.getElementById("ToTime").value = b[1];
+                    },
+
+                });
+                // $("#txtFromDate").val(dateString);
+                //$("#txtToDate").val(dateString);
+            }
+
+        });
+
+        $("#formReset").click(function () {
+            $("#SaveWorkFromHome")[0].reset();
+        });
+
+    });//ready Funcation
+</script>
+
+<script>
+
+    function btnGetLists(){
+        var url = '@Url.Action("App_Attendance_WFH_ApprovalandrejectList", "App_Attendance_WFH")';
+        window.location.href = url;
+    }
+    function DeleteOutDoor(WFHId_Encrypted) {
+        const DeleteButtons = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        DeleteButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+            allowOutsideClick: () => {
+                const popup = Swal.getPopup()
+                popup.classList.remove('swal2-show')
+                setTimeout(() => {
+                    popup.classList.add('animate__animated', 'animate__headShake')
+                })
+                setTimeout(() => {
+                    popup.classList.remove('animate__animated', 'animate__headShake')
+                }, 500)
+                return false
+            }
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '@Url.Action("Delete", "App_Attendance_WFH")?WFHId_Encrypted=' + WFHId_Encrypted;
+
+            } else if (
+                result.dismiss === Swal.DismissReason.cancel
+            ) {
+
+            }
+        })
+    }
+
+
+    jQuery.validator.addMethod(
+     "regex",
+      function(value, element, regexp) {
+          if (regexp.constructor != RegExp)
+              regexp = new RegExp(regexp);
+          else if (regexp.global)
+              regexp.lastIndex = 0;
+          return this.optional(element) || regexp.test(value);
+      },"erreur expression reguliere"
+  );
+
+    $('#SaveWorkFromHome').validate({
+        rules: {
+            WFHShiftId:{
+                required: true,
+            },
+            WFHIdEmployeeId: {
+                required: true,
+            },
+            ddlWfhCompanyShift:{
+                required: true,
+            },
+            FromDate:{
+                required: true,
+            },
+            ToDate:{
+                required: true,
+            },
+            FromTime:{
+                required: true,
+            },
+            ToTime:{
+                required: true,
+            },
+            Reason:{
+                required: true,
+            }
+
+        },
+        messages: {
+            WFHShiftId:{
+                required: "Please select shift",
+            },
+            WFHIdEmployeeId: {
+                required: "Please select the Employee Name",
+            },
+            ddlWfhCompanyShift: {
+                required: "Wfh type is required",
+            },
+            FromDate:{
+                required: "From Date is required",
+            },
+            ToDate:{
+                required: "To Date is required",
+            },
+            FromTime:{
+                required: "From Time is required",
+            },
+            ToTime:{
+                required: "To Time is required",
+            },
+            Reason:{
+                required: "Reason is required",
+            }
+        },
+    });
+
+    //$("#WFHIdEmployeeId").select2();
+    var form = $("#SaveWorkFromHome");
+    form.validate();
+    $("#btnSubmit").click(function () {
+        debugger;
+        //var AdditionalNotify = [];
+        //for (var option of document.getElementById('ddlAdditionNotify').options)
+        //{
+        //    if (option.selected) {
+        //        AdditionalNotify.push(option.value);
+        //    }
+        //}
+        //var AdditionalNotifyPerson = JSON.stringify(AdditionalNotify);
+        form.valid();
+        if(form.valid()==false)
+        {
+            $("#txtFromDate").removeClass('error');
+            $("#FromTime").removeClass('error');
+            $("#txtToDate").removeClass('error');
+            $("#ToTime").removeClass('error');
+            return false;
+        }
+        var FromTime = $("#FromTime").val();
+        var ToTime = $("#ToTime").val();
+        if (FromTime >= ToTime) {
+            $('#ErrorToTime').html("To time should be greater than from time");
+            return false;
+        }else if(FromTime < ToTime){
+            $('#ErrorToTime ,#ErrorFromTime').html("");
+        }
+        else {
+            $('#ErrorToTime').html("");
+        }
+        var StartDate= document.getElementById('txtFromDate').value;
+        var EndDate= document.getElementById('txtToDate').value;
+        if(StartDate > EndDate){
+            $('#ErrortxtToDate').html("To Date should be greater than from date");
+            return false;
+        }
+        else
+        {
+            $('#ErrortxtToDate').html("");
+        }
+
+
+        var EmployeeId = $("#WFHIdEmployeeId").val();
+        var WHFType=$("#ddlWfhCompanyShift").val();
+        var FromDate=$("#txtFromDate").val();
+        var Todate = $("#txtToDate").val();
+        var FromTime=$("#FromTime").val();
+        var ToTime = $("#ToTime").val();
+        var ErrorFromDate=$("#ErrortxtFromDate").text();
+        var ErrorToDate = $("#ErrortxtToDate").text();
+        //if(ErrorFromDate == 'From Date should be less than to date' || ErrorToDate == 'To Date should be greater than from date' || ErrorFromTime =='From Time should be less than To time' || ErrorToTime == 'To time should be greater than from time')
+        if( FromTime > ToTime || ToTime < FromTime || FromDate > Todate )
+        {
+            return false;
+        }
+
+        else{
+            $(".Userloaderbg").css("display","flex");
+            $.ajax({
+                url:"IsWHFExists",
+                method:"get",
+                data:{EmployeeId:EmployeeId,WHFType:WHFType,FromDate:FromDate,Todate:Todate,FromTime:FromTime,ToTime:ToTime}, //AdditionalNotifyPerson:AdditionalNotifyPerson,
+                success:function(response){
+                    debugger;
+                    var Message1 = response.Message;
+                    var Icon1 = response.Icon;
+                    if (response.Icon=="error") {
+                        if (Message1 != null) {
+                            if (Message1 != null) {
+                                Swal.fire({
+                                    icon: Icon1,
+                                    text: Message1,
+                                    allowOutsideClick: () => {
+                                        const popup = Swal.getPopup()
+                                        popup.classList.remove('swal2-show')
+                                        return false;
+                                        setTimeout(() => {
+                                            popup.classList.add('animate__animated', 'animate__headShake')
+                                        })
+                                        setTimeout(() => {
+                                            popup.classList.remove('animate__animated', 'animate__headShake')
+                                        }, 500)
+                                        return false
+                                    }
+                                })
+                                $(".Userloaderbg").css("display","none");
+                            }
+                        }
+                        return false;
+                    }
+                    else{
+                        $("#SaveWorkFromHome").submit();
+                    }
+                }
+            });
+        }
+
+    });
+
+    function NotificationFunction(EmployeeId,WFHId_Encrypted) {
+        $.ajax({
+            type: "Get",
+            url: "GetContactDetails",
+            data: {EmployeeId:EmployeeId , WFHId_Encrypted:WFHId_Encrypted},
+            dataType: "text",
+            success: function (data) {
+                debugger;
+                var datas = JSON.parse(data);
+                var Getdata = datas.data[0];
+
+                $('#lblManager1Name').html(Getdata[0].Value);
+                $('#lblManager1EmailId').html(Getdata[1].Value);
+                $('#lblManager1Mobile').html(Getdata[2].Value);
+
+                $('#lblManager2Name').html(Getdata[3].Value);
+                $('#lblManager2EmailId').html(Getdata[4].Value);
+                $('#lblManager2Mobile').html(Getdata[5].Value);
+
+                $('#lblHRName').html(Getdata[6].Value);
+                $('#lblHREmailId').html(Getdata[7].Value);
+                $('#lblHRMobile').html(Getdata[8].Value);
+                $('#NotificationModalPopUp').modal('show');
+            }
+        });
+    }
+
+
+
+
+
+
+
+    //$("#FromTime").change(function () {
+    //    debugger;
+    //    var FromTime = $("#FromTime").val();
+    //    var ToTime = $("#ToTime").val();
+    //    var Shift = $("#ddlShift").text(); // Use .val() to get the selected value
+    //    alert(Shift);
+    //    console.log(Shift);
+
+    //    if (ToTime == "" || ToTime == null) {
+    //        $('#ErrorStartTime').html("");
+    //    } else if (FromTime >= ToTime) {
+    //        $('#ErrorFromTime').html("From Time should be less than To time");
+    //        return false;
+    //    } else {
+    //        $("#ErrorFromTime").html("");
+    //    }
+
+
+    //    var shiftInfo = Shift;
+    //    var shiftDetails = {};
+
+    //    var matches = shiftInfo.match(/([A-Za-z]+)\s*\((\d{1,2}:\d{2}[APMapm]{2})\s*-\s*(\d{1,2}:\d{2}[APMapm]{2})\)/);
+
+    //    if (matches && matches.length === 4) {
+    //        shiftDetails.shiftName = matches[1];  // "KK"
+    //        shiftDetails.startTime = matches[2];  // "9:00AM"
+    //        shiftDetails.endTime = matches[3];    // "6:00PM"
+
+    //        console.log("Shift Name: " + shiftDetails.shiftName);
+    //        console.log("Start Time: " + shiftDetails.startTime);
+    //        console.log("End Time: " + shiftDetails.endTime);
+    //    } else {
+    //        console.log("Invalid shift information format");
+    //    }
+
+    //    // Use shiftDetails object for further processing or storage
+    //    console.log(shiftDetails);
+
+    //    // Assuming Shift is in the format "9am:to:6pm"
+    //    var shiftStart = parseInt(Shift.split(':')[0]);
+    //    var shiftEnd = parseInt(Shift.split(':')[2]);
+
+    //    // Assuming FromTime and ToTime are in 24-hour format
+    //    var fromHour = parseInt(FromTime.split(':')[0]);
+    //    var toHour = parseInt(ToTime.split(':')[0]);
+
+    //    // Check if the selected time range is outside the shift hours
+    //    if (fromHour < shiftStart || toHour > shiftEnd) {
+    //        $('#ErrorFromTime').html("Selected time range is outside of the shift hours");
+    //        return false;
+    //    } else {
+    //        $('#ErrorFromTime').html("");
+    //    }
+    //});
+
+
+
+    $("#FromTime").change(function () {
+        debugger;
+        var FromTime = $("#FromTime").val();
+        var ToTime = $("#ToTime").val();
+        if (ToTime == "" || ToTime == null) {
+            $('#ErrorStartTime').html("");
+        } else if (FromTime >= ToTime) {
+            $('#ErrorFromTime').html("From Time should be less than To time");
+            return false;
+        }else if(FromTime < ToTime){
+            $('#ErrorToTime ,#ErrorFromTime').html("");
+        }
+        else {
+            $("#ErrorFromTime").html("");
+        }
+
+
+    });
+
+    $("#ToTime").change(function(){
+        debugger;
+        var FromTime = $("#FromTime").val();
+        var ToTime = $("#ToTime").val();
+        if (FromTime >= ToTime) {
+            $('#ErrorToTime').html("To time should be greater than from time");
+            return false;
+        }else if(FromTime < ToTime){
+            $('#ErrorToTime ,#ErrorFromTime').html("");
+        }
+        else {
+            $('#ErrorToTime').html("");
+        }
+    });
+
+
+    //$("#ToTime").change(function () {
+    //    debugger;
+    //    var FromTime = $("#FromTime").val();
+    //    var ToTime = $("#ToTime").val();
+    //    var Shift = $("#ddlShift").val(); // Assuming Shift is in the format "9am:to:6pm"
+
+    //    if (FromTime >= ToTime) {
+    //        $('#ErrorToTime').html("To time should be greater than from time");
+    //        return false;
+    //    } else {
+    //        $('#ErrorToTime').html("");
+    //    }
+
+    //    // Assuming Shift is in the format "9am:to:6pm"
+    //    var shiftStart = parseInt(Shift.split(':')[0]);
+    //    var shiftEnd = parseInt(Shift.split(':')[2]);
+
+    //    // Assuming FromTime and ToTime are in 24-hour format
+    //    var fromHour = parseInt(FromTime.split(':')[0]);
+    //    var toHour = parseInt(ToTime.split(':')[0]);
+
+    //    if (toHour > shiftEnd) {
+    //        $('#ErrorToTime').html("To time exceeds shift end time");
+    //        return false;
+    //    } else if (toHour < shiftStart) {
+    //        $('#ErrorToTime').html("To time should be within shift hours");
+    //        return false;
+    //    } else {
+    //        $('#ErrorToTime').html("");
+    //    }
+    //});
+
+
+    $("#txtFromDate").change(function(){
+        debugger;
+        var SelectedDay = $('#ddlWfhCompanyShift').val();
+        if(SelectedDay ==  "1st Half" )
+        {
+            $("#txtToDate").val("");
+            var GetfromDate=$("#txtFromDate").val().toString("yyyy-MM-dd");
+            $("#txtToDate").val(GetfromDate);
+        }
+        if(SelectedDay ==  "2nd Half" )
+        {
+            $("#txtToDate").val("");
+            var GetfromDate=$("#txtFromDate").val().toString("yyyy-MM-dd");
+            $("#txtToDate").val(GetfromDate);
+        }
+        var StartDate= document.getElementById('txtFromDate').value;
+        var EndDate= document.getElementById('txtToDate').value;
+        var sDate = new Date(StartDate);
+        var eDate = new Date(EndDate);
+        var Time = Math.abs(eDate - sDate);
+        var days = Math.ceil(Time/(1000 * 60 * 60 * 24))+1;
+        $("#txtTotalDay").val(days);
+        if(EndDate == "" && EndDate ==null){
+            $("#ErrortxtFromDate").html("");
+        }else if(StartDate > EndDate){
+            $('#ErrortxtFromDate').html("From Date should be less than to date");
+            return false;
+        }else if(StartDate=>EndDate){
+            $('#ErrortxtToDate ,#ErrortxtFromDate').html("");
+            return false;
+        }
+        else{
+            $('#ErrortxtFromDate').html("");
+            return false;
+        }
+
+
+
+    })
+
+    $("#txtToDate").change(function(){
+        debugger;
+        var StartDate= document.getElementById('txtFromDate').value;
+        var EndDate= document.getElementById('txtToDate').value;
+        var sDate = new Date(StartDate);
+        var eDate = new Date(EndDate);
+        var Time = Math.abs(eDate - sDate);
+        var days = Math.ceil(Time/(1000 * 60 * 60 * 24))+1;
+        $("#txtTotalDay").val(days);
+        if(StartDate == "" && StartDate ==null){
+            $("#ErrortxtToDate").html("");
+        }else if(StartDate > EndDate){
+            $('#ErrortxtToDate').html("To Date should be greater than from date");
+            return false;
+        }else if(StartDate=>EndDate){
+            $('#ErrortxtToDate ,#ErrortxtFromDate').html("");
+
+        }
+        else{
+            $('#ErrortxtToDate').html("");
+        }
+        //var SelectedDay = $('#ddlWfhCompanyShift').val();
+        //if(SelectedDay ==  "1st Half" )
+        //{
+        //    var StartDate= document.getElementById('txtFromDate').value;
+        //    var EndDate= document.getElementById('txtToDate').value;
+        //    if(StartDate<EndDate)
+        //    {
+        //        $('#ErrortxtToDate').html("For 1st half you cannot apply for two days of WFH");return false;
+        //    }
+        //    else{
+        //        $('#ErrortxtToDate').html("");
+        //    }
+        //}
+    })
+
+    //CapthaVerification code added in CapthaVerification.js file.
+    $(".Close").click(function () {
+        $("#mainCaptcha").val("");
+        $("#txtInput").val("");
+        $("#success").html("");
+        $("#error").html("");
+    });
+
+</script>

@@ -1,0 +1,222 @@
+﻿
+@{
+    ViewBag.Title = "ESS_MyPolicyAndLibrary_MyPolicy";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+<html>
+
+<head>
+    <style>
+        .box {
+            width: 100px;
+            height: 100px;
+            backdrop-filter: blur(25px) saturate(00%);
+            background-color: rgba(255, 255, 255, 1);
+            border-radius: 12px;
+            border: 3px solid rgba(255, 255, 255, 1);
+            margin: 5px;
+            box-shadow: inset 0 15px 25px rgba(0, 0, 0, 0.03), inset 0px -15px 25px rgba(0, 0, 0, 0.03), 0 15px 25px rgba(0, 0, 0, 0.05);
+            padding: 15px 0px;
+            font-family: 'Montserrat', sans-serif;
+            position: relative;
+            z-index: 0;
+        }
+
+            .box:hover {
+                /* BORDER:2PX SOLID #666; */
+                border: 2px solid #007bff;
+                cursor: pointer;
+                transform: translateY(-4px);
+            }
+
+
+            .box .info i {
+                font-size: 18px;
+                width: 100%;
+                text-align: center;
+                margin-bottom: 15px;
+                color: #007bff;
+            }
+
+            .box :hover.INFO i,
+            .box:hover .info h7 {
+                COLOR: #000;
+            }
+
+            .box .info h7 {
+                font-size: 11px;
+                text-align: center;
+                display: flex;
+                justify-content: center;
+                font-weight: 900 !important;
+                text-transform: capitalize;
+                margin-bottom: 2px;
+                padding: 0 10px;
+                color: #444;
+            }
+
+        .Col-md-2 {
+            margin: 10px 0;
+        }
+
+        a .icon2 {
+            text-align: center;
+            width: 100%;
+        }
+
+            a .icon2 i {
+                font-size: 40px;
+                color: #007bff;
+            }
+
+        .icon2 h7 {
+            font-weight: 600;
+        }
+
+        .callout {
+            /*position: fixed;*/
+            bottom: 35px;
+            right: 20px;
+            margin-left: 20px;
+            max-width: 300px;
+        }
+
+        .callout-header {
+            padding: 25px 15px;
+            background: #FFFACD;
+            font-size: 20px;
+            color: black;
+            border: solid;
+        }
+
+        .callout-container {
+            padding: 15px;
+            background-color: #ccc;
+            color: black;
+            border: solid;
+        }
+
+        .closebtn {
+            position: absolute;
+            top: 5px;
+            right: 15px;
+            color: white;
+            font-size: 30px;
+            cursor: pointer;
+        }
+
+            .closebtn:hover {
+                color: lightgrey;
+            }
+
+            .card {
+            height: 150px; /* Set a fixed height */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <div id="content" class="app-content">
+        <!-- BEGIN breadcrumb -->
+        <ol class="breadcrumb float-md-end mb-0">
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("Dashboard", "Dashboard",new { area=""})">
+                    <img src="~/assets/img/Icons/home-button.png" class="img-fluid" style="max-width: 40%;float:right" />
+                </a>
+            </li>
+        </ol>
+
+        <!-- END breadcrumb -->
+        <!-- BEGIN page-header -->
+        <h1 class="page-header"> Organization Chart </h1>
+        <!-- END page-header -->
+
+        <div class="row">
+            <div class="col-lg-12 col-md-12">
+                <!-- BEGIN panel -->
+                <div class="panel panel-inverse" data-sortable-id="index-1">
+                    <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                        <h4 class="panel-title">Menu</h4>
+                        <div class="panel-heading-btn">
+                            <a href="javascript:;" class="btn btn-xs btn-icon btn-default"
+                               data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        </div>
+                    </div>
+                    <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                        <p class="pb-0">
+                            This is the list of organisation chart.
+                        </p>
+                    </div>
+                    <div class="panel-body" style="max-height: max-content; background: #f5f8ff;" id="PolicyLibrary">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="container">
+                                    <div class="row">
+                                        @foreach (var d in ViewBag.GetOrganisationChartList)
+                                        {
+                                            <div class="col-md-4 col-sm-6 col-12 mb-3">
+                                                <div class="card shadow border">
+                                                    <!-- Header: Icon and Name -->
+                                                    <div class="card-header bg-white d-flex align-items-center p-2 border-bottom">
+                                                        @*<i class="fa-solid fa-chart-bar me-2" style="font-size: 1.5rem;"></i>*@
+                                                        <img src="~/assets/img/Allimages/OrgChart.png"  style="height: 30px;"/> &nbsp;&nbsp;
+                                                        <h5 class="mb-0">@d.OrganisationTypeName</h5>
+                                                    </div>
+
+                                                    <!-- Body: Remark -->
+                                                    <div class="card-body p-2">
+                                                        <p class="text mb-0" style="font-size: 0.875rem;">@d.OrganisationTypeRemark</p>
+                                                    </div>
+
+                                                    <!-- Footer: Button -->
+                                                    <div class="card-footer bg-white d-flex justify-content-end p-1">
+                                                        <a href="@Url.Action("ShowOrganisationChart", "ESS_OrganisationChart_Menu", new { TypeId = d.OrganisationTypeId , Name=d.OrganisationTypeName})"
+                                                           class="btn btn-primary rounded-circle d-flex align-items-center justify-content-center"
+                                                           style="width: 20px; height: 20px; padding: 0;">
+                                                            <i class="fa fa-arrow-right" style="font-size: 0.75rem;"></i>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        }
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+<script>
+    function PolicyName(DocumentPath,PolicyLibraryId) {
+        debugger;
+        var PolicyLibraryIdNo = Number(PolicyLibraryId);
+        var encodedPath = encodeURIComponent(DocumentPath);
+        var pdfUrl = '@Url.Action("PDFPreview", "ESS_MyPolicyAndLibrary_MyPolicy")' + '?filename=' + encodedPath+ '&policyLibraryId=' + PolicyLibraryIdNo;
+        document.getElementById("ViewPDF").src = pdfUrl + "#toolbar=0&navpanes=0&scrollbar=0";
+    // Redirect or open in a new tab
+    window.location.href = pdfUrl;
+    }
+</script>

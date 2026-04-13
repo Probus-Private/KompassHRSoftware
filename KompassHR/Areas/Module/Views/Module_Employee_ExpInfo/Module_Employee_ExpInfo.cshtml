@@ -1,0 +1,1052 @@
+﻿@model KompassHR.Areas.Module.Models.Module_Employee.Mas_Employee_Experience
+@{
+    ViewBag.Title = "Module_Employee_ExpInfo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/scripts/jquery-1.10.2.js"></script>
+<script src="~/scripts/jquery-1.10.2.min.js"></script>
+<script src="~/scripts/jquery.validate.js"></script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/assets/plugins/sweetalert/dist/sweetalert.min.js"></script>
+<script src="~/assets/bower_components/moment/moment.js"></script>
+<script src="~/assets/plugins/parsleyjs/dist/parsley.min.js"></script>
+<link href="~/assets/plugins/select2/dist/css/select2.min.css" rel="stylesheet" />
+<script src="~/assets/plugins/select2/dist/js/select2.min.js"></script>
+
+<style>
+    .table {
+        --bs-table-striped-bg: rgba(0, 0, 255, 0.02);
+    }
+
+    .text-nowrap {
+        font-size: 12px;
+    }
+
+    tbody tr td {
+        font-size: 12px;
+        padding: 4px !important;
+    }
+
+    .ListBtn {
+        background-color: transparent;
+        color: #000;
+        font-size: 15px !important;
+        padding: 5px 8px !important;
+        border: none;
+    }
+
+        .ListBtn:hover {
+            background-color: transparent;
+            color: #000;
+        }
+
+            .ListBtn:hover i {
+                transition: all 0.5s;
+                transform: scale(1.5);
+            }
+
+
+
+    .box2 {
+   
+
+    text-align:center;
+    position: relative;
+    z-index: 0;
+    margin-bottom: 10px;
+  
+
+    }
+        .box2 .info {
+       
+            display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; }
+
+        .box2 .imgbx {
+      width: 80px;
+    height: 80px;
+    padding:5px 0px;
+    font-family:Open Sans,sans-serif;
+          border: 1px solid #dedede;
+    border-radius: 20px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+        }
+
+        /*.box2:hover {
+            border: 2px solid #ff9c19;
+            border-radius: 10px;
+            cursor: pointer;
+            transform: translateY(-10px);
+           
+        }*/
+        .box2 img {
+             width: 50px;
+    height: 50px;
+    filter: brightness(1.2);
+        }
+
+            .box2:hover .info i {
+                color: #ff9c19;
+            }
+
+
+        .box2 .info i {
+           
+            width: 100%;
+            text-align: center;
+            margin-bottom: 5px;
+            color: #007bff;
+        }
+
+        .box2 .info h7 {
+            position: relative;
+           
+            text-align: center;
+            display: flex;
+            justify-content: center;
+  color:#000;
+            text-transform: capitalize;
+            margin-top: 5px;
+      
+          
+        }
+
+    /*.div1 td:nth-child(1) {
+        position: sticky;
+        left: 0;
+    }*/
+
+    /*.div1 td:nth-child(2) {
+        position: sticky;
+        left: 62px;
+    }*/
+
+    /*.fixed-side {
+        position: sticky;
+        left: 0px;
+    }*/
+
+    /*.fixed-side1 {
+        position: sticky;
+        left: 62px;
+    }*/
+    .Tooltip {
+        position: relative;
+    }
+
+        .Tooltip button {
+            width: 35px;
+        }
+
+        .Tooltip:hover .Tooltip-text {
+            display: flex;
+            position: absolute;
+        }
+
+        .Tooltip .Tooltip-text {
+            z-index: 1;
+            min-width: 45px;
+            max-width: fit-content;
+            background-color: black;
+            color: #fff;
+            top: 40px;
+            right: -18px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            display: none;
+            justify-content: center;
+            position: absolute;
+            margin-right: 10px;
+        }
+
+            .Tooltip .Tooltip-text::after {
+                content: "";
+                position: absolute;
+                top: -20px;
+                right: 20px;
+                border-width: 10px;
+                border-style: solid;
+                border-color: transparent transparent black transparent;
+            }
+
+    .ListBtn {
+        font-size: 10px !important;
+        padding: 5px 8px !important;
+        border: 1px solid lightgray !important;
+    }
+
+    /*.trheading {
+        background-color: rgba(233, 236, 239, 0.5) !important;
+    }*/
+
+    tr td {
+        padding: 4px !important;
+        font-weight: 600;
+    }
+
+    .table-striped > tbody > tr:nth-of-type(odd) > * {
+        --bs-table-accent-bg: rgba(233, 236, 239, 0.3) !important;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+
+    .table-wrap::-webkit-scrollbar {
+        width: 6px;
+        height: 10px;
+        background-color: #F5F5F5;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background-color: #777;
+        border-radius: 10px;
+    }
+
+    .table-wrap {
+        width: 100%;
+        overflow: auto;
+    }
+
+    .table-scroll table {
+        width: 100%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+    }
+
+    .table-scroll th, .table-scroll td {
+        padding: 5px 10px;
+        border: 1px solid lightgray;
+        background: #fff;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .table-scroll th {
+        background-color: rgba(233, 236, 239, 1) !important;
+    }
+
+    .card-row-title {
+        color: #e63c3c;
+        font-size: 18px;
+        font-weight: 600;
+        text-transform: capitalize;
+        border-bottom: #009ce7 1px solid;
+    }
+
+    label.error {
+        text-align: left;
+        height: 25px;
+        color: red;
+        font-size: 12px;
+    }
+
+    .error {
+        text-align: left;
+        height: 35px;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .empbx h4 {
+        margin-bottom: 5px;
+    }
+
+    .empbx h6 i {
+        font-size: 1rem;
+        margin-right: 5px;
+    }
+
+    .empbx {
+        margin-bottom: 20px;
+    }
+</style>
+
+<div id="content" class="app-content">
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
+            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
+                Experience Information
+            </h1>
+            <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
+                <li style="margin-right: 10px;">
+                    <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
+                        <img src="~/assets/MenuImages/Home.png" style="max-width: 100%; height: auto;" alt="Home">
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Module_Employee_EmployeeList", "Module_Employee_EmployeeList", new {id = 3, ScreenId=142, area = "Module" })">
+                        <img src="~/assets/MenuImages/Back.png" style="max-width: 100%; height: auto;" alt="Back">
+                    </a>
+                </li>
+            </ol>
+        </div>
+    </div>
+   
+    <div class="row">
+        <div class="col-md-12">
+            <!-- BEGIN panel -->
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+               
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">@*@i.SET_MODULES.FormName*@  Experience Information - Add</h4>
+                    @*<div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-danger" data-toggle="panel-remove"><i class="fa fa-times"></i></a>
+                    </div>*@
+                </div>
+                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                    <p class="pb-0">
+                        Add employee previous experience.
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" action='@Url.Action("SaveUpdate", "Module_Employee_ExpInfo", new { area = "Module" })' id="SaveExperienceInformation" method="post">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="empbx">
+                                            <span>
+                                                <h4> <i class="fa-solid fa-user"></i> @Session["OnboardEmployeeName"] -  @Session["OnboardEmployeeNo"] </h4>
+                                            </span>
+                                            <span>
+                                                <h6> <i class="fa-solid fa-briefcase"></i>  @Session["OnboardEmpDepartment"] / @Session["OnboardEmpDesignation"] </h6>
+                                            </span>
+                                            <span>
+                                                <h6> <i class="fa-solid fa-calendar"></i> @Session["OnboardEmpDoj"] </h6>
+                                            </span>
+                                            <hr>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-15px" id="btnGet">
+                                    <div class="col-md-6" style="width:fit-content;">
+                                        <button type="button" id="btnGetPrebordingList" onclick="GetDetails('Pre')"
+                                                class="btn btn-success btn-sm btnpress">
+                                            <i class="fa-regular fa-copy"></i> Get
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="row mb-15px">
+                                    <div class="col-md-12">
+                                        <div class="card-row-title">
+                                            Previous Employeer/Company-Information
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Company Name
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.CompanyName, new { @class = "form-control", name = "CompanyName", type = "text", id = "txtCompanyName", autocomplete = "Off", Maxlength = 50 })
+                                                @Html.HiddenFor(model => model.ExperienceId_Encrypted, new { id = "ExperienceId_Encrypted" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Industry Type
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.IndustryType, new { @class = "form-control", name = "IndustryType", type = "text", id = "txtIndustryType", autocomplete = "Off", Maxlength = 50 })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                HR Name
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.HRName, new { @class = "form-control", name = "HRName", type = "text", id = "txtHRName", autocomplete = "Off", Maxlength = 50 })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Manager Name
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.ManagerName, new { @class = "form-control", name = "ManagerName", type = "text", id = "txtManagerName", autocomplete = "Off", Maxlength = 50 })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                HR Email ID
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.HREmailID, new { @class = "form-control", name = "HREmailID", type = "text", id = "txtHREmailID", autocomplete = "Off", Maxlength = 50 })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Manager Email ID
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.ManagerEmailID, new { @class = "form-control", name = "ManagerEmailID", type = "text", id = "txtManagerEmailID", autocomplete = "Off", Maxlength = 50 })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                HR Contact
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.HRContact, new { @class = "form-control", name = "HRContact", type = "text", onkeypress = "return event.charCode >=48", id = "txtHRContact", autocomplete = "Off", Maxlength = 10 })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Manager Contact
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.ManagerContact, new { @class = "form-control", name = "ManagerContact", type = "text", onkeypress = "return event.charCode >=48", id = "txtManagerContact", autocomplete = "Off", Maxlength = 10 })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Company Address
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextAreaFor(model => model.CompanyAddress, new { @class = "form-control", name = "CompanyAddress", type = "text", id = "txtCompanyAddress", autocomplete = "Off", Maxlength = 500 })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-15px">
+                                    <div class="col-md-12">
+                                        <div class="card-row-title">
+                                            Job Description
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Designation
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.Desigantion, new { @class = "form-control", name = "Desigantion", type = "text", id = "txtDesigantion", autocomplete = "Off", Maxlength = 50 })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Department
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.Department, new { @class = "form-control", name = "Department", type = "text", id = "txtDepartment", autocomplete = "Off", Maxlength = 50 })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Start Date
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.StartDate, new { @class = "form-control", name = "StartDate", type = "date", id = "dateStartDate", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                End Date
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.EndDate, new { @class = "form-control", name = "EndDate", type = "date", id = "txtEndDate", autocomplete = "Off" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Salary Per Annum
+                                                (LPA)
+                                                <span class="important">*</span>
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextBoxFor(model => model.Salary, new { @class = "form-control", name = "Salary", type = "number", id = "txtSalary", autocomplete = "Off", Maxlength = 50, onkeypress = "return event.charCode >=48" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row mb-15px">
+                                            <label class="form-label col-form-label col-md-12">
+                                                Job Description
+                                            </label>
+                                            <div class="col-md-12">
+                                                @Html.TextAreaFor(model => model.JobDescription, new { @class = "form-control", name = "JobDescription", type = "text", id = "txtJobDescription", autocomplete = "Off", Maxlength = 1000 })
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="LastShortLeaveBx">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div class="BtnBx">
+                                                    <div>
+                                                        <button type="button" data-bs-toggle="offcanvas"
+                                                                href="#offcanvasExample" id="btnActionList" onclick="EmployeeDetails(this)" class="btn  btnpress ListBtn">
+                                                            <i class="fa-solid fa-list"></i>
+                                                        </button>
+                                                        <button type="button" id="btnSubmit"
+                                                                class="btn btn-primary btn-sm">
+                                                            <i class="fa-solid fa-floppy-disk"></i> Save
+                                                        </button>
+                                                        <a href="@Url.Action("Module_Employee_EmployeeList", "Module_Employee_EmployeeList", new { area = "Module" })">
+                                                            <button type="button"
+                                                                    class="btn btn-danger btn-sm" id="btnBack">
+                                                                <i class="fa-solid fa-share-from-square"></i>
+                                                                List
+                                                            </button>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- END panel -->
+        </div>
+
+
+        <div class="col-md-12">
+            <div class="panel panel-inverse" data-sortable-id="index-1">
+                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
+                    <h4 class="panel-title">Experience Information - List</h4>
+                    @*<div class="panel-heading-btn">
+                        <a href="javascript:;" class="btn btn-xs btn-icon btn-default"
+                           data-toggle="panel-expand"><i class="fa fa-expand"></i></a>                       
+                    </div>*@
+                </div>
+                <div class="panel-body" data-scrollbar="true">
+                    <!-- BEGIN table-responsive -->
+                    <div class="table-scroll div1">
+                        <div class="table-wrap">
+
+                            <table class="table table-bordered align-middle" id="fixed-header"
+                                   style="width: 100%;">
+                                <thead>
+                                    <tr class="text-center">
+                                        <th class="text-nowrap fixed-side"> Action</th>
+                                        <th class="text-nowrap"> Company Name </th>
+                                        <th class="text-nowrap"> Industry Type</th>
+                                        <th class="text-nowrap"> Desigantion </th>
+                                        <th class="text-nowrap"> Department </th>
+                                        <th class="text-nowrap"> Salary Per Annum </th>
+                                        <th class="text-nowrap"> Start Date </th>
+                                        <th class="text-nowrap"> End date </th>
+                                        <th class="text-nowrap"> Company Address </th>
+                                        <th class="text-nowrap"> Job Description </th>
+                                        <th class="text-nowrap"> HR Name </th>
+                                        <th class="text-nowrap"> HR Contact </th>
+                                        <th class="text-nowrap"> HR Email ID</th>
+                                        <th class="text-nowrap"> Manager Name </th>
+                                        <th class="text-nowrap"> Manager Contact </th>
+                                        <th class="text-nowrap"> Manager Email ID </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var d in ViewBag.GetEmployeeExperienceList)
+                                    {
+                                        <tr>
+
+                                            <td class="text-center">
+                                                <i class="fa-solid fa-pen" onclick="EditExperienceInformation('@d.ExperienceEmployeeID')" id="btnEdit"></i> &nbsp;
+                                                <i class="fa-solid fa-trash-alt text-red" onclick="DeleteExperirnceInformations('@d.ExperienceId_Encrypted')" id="btnDelete"></i>
+                                            </td>
+                                            <td>@d.CompanyName</td>
+                                            <td>@d.IndustryType</td>
+                                            <td>@d.Desigantion</td>
+                                            <td>@d.Department</td>
+                                            <td>@d.Salary</td>
+                                            <td>@d.StartDate</td>
+                                            <td>@d.EndDate</td>
+                                            <td>@d.CompanyAddress</td>
+                                            <td>@d.JobDescription</td>
+                                            <td>@d.HRName</td>
+                                            <td>@d.HRContact</td>
+                                            <td>@d.HREmailID</td>
+                                            <td>@d.ManagerName</td>
+                                            <td>@d.ManagerContact</td>
+                                            <td>@d.ManagerEmailID</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- END table-responsive -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    @Html.Action("Onboarding_SidebarMenu", "Module_Employee_PersonalInfo")
+</div>
+
+
+
+<script>
+    $(document).ready(function () {  
+        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+        var CountExperienceEmployeeID = @Html.Raw(Json.Encode(TempData["CountExperienceEmployeeID"]));
+        if(CountExperienceEmployeeID!=0)
+        {
+            $("#btnGet").hide();
+        }
+        else
+        {
+            $("#btnGet").show();
+        }
+        debugger;
+        if (Message != null) {
+            if (Icon != null) {
+                Swal.fire({
+                    icon: Icon,
+                    text: Message,
+                    allowOutsideClick: () => {
+                        const popup = Swal.getPopup()
+                        popup.classList.remove('swal2-show')
+                        setTimeout(() => {
+                            popup.classList.add('animate__animated', 'animate__headShake')
+                        })
+                        setTimeout(() => {
+                            popup.classList.remove('animate__animated', 'animate__headShake')
+                        }, 500)
+                        // return false
+                    }
+                }).then(function() {
+                    window.location.reload();
+                });
+            }
+        }      
+    });
+
+    function GetDetails(Status) {
+        debugger;
+
+        var baseUrl = '@Url.Action("PreboardingGetDetails", "Module_Employee_ExpInfo", new { area = "Module" })';
+        //var url = baseUrl + '?Status=' + encodeURIComponent(Status);
+
+        window.location.href = baseUrl;
+    }
+</script>
+
+<script>
+    function DeleteExperirnceInformations(ExperienceId_Encrypted) {
+        const DeleteButtons = Swal.mixin({
+            customClass: {
+                cancelButton: ' btnpress',
+                confirmButton: ' btnpress'
+            },
+            buttonsStyling: true
+        })
+        DeleteButtons.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: false,
+
+            allowOutsideClick: () => {
+                const popup = Swal.getPopup()
+                popup.classList.remove('swal2-show')
+                setTimeout(() => {
+                    popup.classList.add('animate__animated', 'animate__headShake')
+                })
+                setTimeout(() => {
+                    popup.classList.remove('animate__animated', 'animate__headShake')
+                }, 500)
+                return false
+            }
+
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '@Url.Action("Delete", "Module_Employee_ExpInfo")?ExperienceId_Encrypted=' + ExperienceId_Encrypted;
+                //window.location.href = url;
+                DeleteButtons.fire(
+
+                'Deleted!',
+                'Your file has been deleted.',
+                'success'
+                )
+            } else if (
+                /* Read more about handling dismissals below */
+            result.dismiss === Swal.DismissReason.cancel
+            ) {
+
+            }
+
+        })
+    }
+</script>
+
+<script>
+
+    //use for add regex function
+    jQuery.validator.addMethod(
+  "regex",
+   function(value, element, regexp) {
+       if (regexp.constructor != RegExp)
+           regexp = new RegExp(regexp);
+       else if (regexp.global)
+           regexp.lastIndex = 0;
+       return this.optional(element) || regexp.test(value);
+   },"erreur expression reguliere"
+);
+    // Define a custom validation method to check if EndDate is greater than StartDate
+    $.validator.addMethod("greaterThan", function (value, element, params) {
+        var StartDate =  $("#dateStartDate").val();
+        if (!value || !StartDate) return true; // Skip validation if either value is empty
+        return new Date(value) > new Date(StartDate); // Compare the dates
+    }, "End date must be greater than Start date.");
+
+    $("#SaveExperienceInformation").validate({
+        rules: {
+            CompanyName: {
+                required: true,
+                regex: /^[a-zA-Z0-9\-\()\. ]+$/,
+            },
+            IndustryType: {
+                required: true,
+                regex: /^[a-zA-Z ]+$/,
+            },
+            //HRName: {
+            //    required: true,
+            //    regex: /^[a-zA-Z ]+$/,
+            //},
+            //ManagerName: {
+            //    required: true,
+            //    regex: /^[a-zA-Z ]+$/,
+            //},
+            //HREmailID: {
+            //    required: true,
+            //    email:true,
+            //},
+            //ManagerEmailID: {
+            //    required: true,
+            //    email:true,
+            //},
+            //HRContact: {
+            //    required: true,
+            //    regex: /^[0-9]+$/,
+            //    minimum:10,
+            //    maximum:10,
+            //},
+            //ManagerContact: {
+            //    required: true,
+            //    regex: /^[0-9]+$/,
+            //    minimum:10,
+            //    maximum:10,
+            //},
+            //CompanyAddress: {
+            //    required: true,
+            //    regex: /^[a-zA-Z0-9\-\.\()\/ ]+$/,
+            //},
+            Desigantion: {
+                required: true,
+                regex: /^[a-zA-Z\.\-\/ ]+$/,
+            },
+            Department: {
+                required: true,
+                regex: /^[a-zA-Z\.\-\/ ]+$/,
+            },
+            StartDate: {
+                required: true,
+                date: true, // Ensure the StartDate is a valid date
+            },
+            EndDate: {
+                required: true,
+                date: true, // Ensure the EndDate is a valid date
+                greaterThan: "#StartDate", // Apply the custom validation rule
+            },
+            Salary: {
+                required: true,
+                regex: /^[0-9\.]+$/,
+
+            },
+            //JobDescription: {
+            //    required: true,
+            //    regex: /^[a-zA-Z0-9\-\.\()\/ ]+$/,
+            //},
+        },
+        messages: {
+            CompanyName: {
+                required: "Company name is required",
+                regex: "Please enter only alphabet"
+            },
+            IndustryType: {
+                required: "Industry type is required",
+                regex: "Please enter only alphabet"
+            },
+            //HRName: {
+            //    required: "HR name is required",
+            //    regex: "Please enter only alphabet"
+            //},
+            //ManagerName: {
+            //    required: "Manager name is required",
+            //    regex: "Please enter only alphabet"
+            //},
+            //HREmailID: {
+            //    required: "HR email id is required",
+            //},
+            //ManagerEmailID: {
+            //    required: "Manager email id is required",
+            //},
+            //HRContact: {
+            //    required: "HR contact is required",
+            //    regex: "Please enter only digits",
+            //},
+            //ManagerContact: {
+            //    required: "Manager contact is required",
+            //    regex: "Please enter only digits",
+            //},
+            //CompanyAddress: {
+            //    required: "Company address is required",
+            //    regex: "Please enter only digits",
+            //},
+            Desigantion: {
+                required: "Desigantion is required",
+                regex: "Please enter only alphabet"
+            },
+            Department: {
+                required: "Department is required",
+                regex: "Please enter only alphabet"
+            },
+            StartDate: {
+                required: "Start date is required",
+            },
+            EndDate: {
+                required: "End date is required",
+                greaterThan: "End date must be greater than Start date.", 
+            },
+            Salary: {
+                required: "Salary is required",
+                regex: "Please enter only digits",
+            },
+            //JobDescription: {
+            //    required: "Job description is required",
+            //    regex: "Please enter only alphabet"
+            //},
+        }
+    });
+    var form = $("#SaveExperienceInformation");
+    form.validate();
+
+    $("#btnSubmit").click(function () {
+        debugger;
+        form.valid();
+        if(form.valid()==false)
+        {
+            $("#datStartDate").removeClass('error');
+            $("#dateEndDate").removeClass('error');
+            return false;
+        }
+        debugger;
+        var ExperienceId_Encrypted=$("#ExperienceId_Encrypted").val();
+        var CompanyName=$("#txtCompanyName").val();
+        debugger;
+        $.ajax({
+            url: '@Url.Action("IsExpInfoExists", "Module_Employee_ExpInfo")',
+            method:"get",
+            data:{ExperienceId_Encrypted:ExperienceId_Encrypted,CompanyName:CompanyName},
+            success:function(response){
+                debugger;
+                var Message1 = response.Message;
+                var Icon1 = response.Icon;
+                if (response.Icon=="error") {
+                    if (Message1 != null) {
+                        if (Message1 != null) {
+                            Swal.fire({
+                                icon: Icon1,
+                                text: Message1,
+                                allowOutsideClick: () => {
+                                    const popup = Swal.getPopup()
+                                    popup.classList.remove('swal2-show')
+                                    setTimeout(() => {
+                                        popup.classList.add('animate__animated', 'animate__headShake')
+                                    })
+                                    setTimeout(() => {
+                                        popup.classList.remove('animate__animated', 'animate__headShake')
+                                    }, 500)
+                                    return false
+                                }
+                            });
+                        }
+                    }
+                }
+                else{
+                    $("#SaveExperienceInformation").submit();
+
+                }
+            }
+        });
+
+    });
+
+    function EditExperienceInformation(ExperienceEmployeeID) {
+        debugger
+        $.ajax({
+            url: '@Url.Action("GetExperienceDetails", "Module_Employee_ExpInfo")',
+            type: 'GET',
+            data: { ExperienceEmployeeID: ExperienceEmployeeID },
+            success: function(response) {
+                debugger
+                if (response.success) {
+                    // Check if data is an array
+                    if (Array.isArray(response.data) && response.data.length > 0) {
+                        var experienceData = response.data[0];
+                        // Now populate using experienceData
+                        $("#ExperienceId_Encrypted").val(experienceData.ExperienceId_Encrypted);
+                        $("#txtCompanyName").val(experienceData.CompanyName);
+                        $("#txtIndustryType").val(experienceData.IndustryType);
+                        $("#txtHRName").val(experienceData.HRName);
+                        $("#txtManagerName").val(experienceData.ManagerName);
+                        $("#txtHREmailID").val(experienceData.HREmailID);
+                        $("#txtManagerEmailID").val(experienceData.ManagerEmailID);
+                        $("#txtHRContact").val(experienceData.HRContact);
+                        $("#txtManagerContact").val(experienceData.ManagerContact);
+                        $("#txtCompanyAddress").val(experienceData.CompanyAddress);
+                        $("#txtDesigantion").val(experienceData.Desigantion);
+                        $("#txtDepartment").val(experienceData.Department);
+                        $("#txtSalary").val(experienceData.Salary);
+                        $("#txtJobDescription").val(experienceData.JobDescription);
+                    } else {
+                        console.error('Data is not in expected array format');
+                    }
+
+                    if (experienceData.StartDate) {
+                        var startDate = parseDate(experienceData.StartDate);
+                        if (startDate) {
+                            $("#dateStartDate").val(formatDateForInput(startDate));
+                        }
+                    }
+            
+                    if (experienceData.EndDate) {
+                        var endDate = parseDate(experienceData.EndDate);
+                        if (endDate) {
+                            $("#txtEndDate").val(formatDateForInput(endDate));
+                        }
+                    }
+                    //$('html, body').animate({
+                    //    scrollTop: $("#SaveExperienceInformation").offset().top
+                    //}, 500);
+                }
+                
+                
+                else {
+                    Swal.fire({
+                        icon: 'error',
+                        text: response.message || 'Failed to load experience details',
+                        allowOutsideClick: () => false
+                    });
+                }
+            },
+            error: function() {
+                Swal.fire({
+                    icon: 'error',
+                    text: 'An error occurred while loading experience details',
+                    allowOutsideClick: () => false
+                });
+            }
+        });
+    }
+
+    function parseDate(dateString) {
+        if (!dateString) return null;
+        if (dateString.startsWith('/Date(')) {
+            var timestamp = parseInt(dateString.substr(6));
+            return new Date(timestamp);
+        }
+        if (dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
+            return new Date(dateString + 'T00:00:00');
+        }
+        var parsedDate = new Date(dateString);
+        if (!isNaN(parsedDate.getTime())) {
+            return parsedDate;
+        }
+    }
+
+    function formatDateForInput(date) {
+        if (!date) return '';
+        return date.toISOString().split('T')[0];
+    }
+</script>
