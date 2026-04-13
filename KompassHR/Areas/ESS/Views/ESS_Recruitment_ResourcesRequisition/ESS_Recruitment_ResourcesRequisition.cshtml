@@ -1,8 +1,21 @@
 ﻿@model KompassHR.Areas.ESS.Models.ESS_Recruitment.Recruitment_ResourceRequest
 @{
     ViewBag.Title = "ESS_Recruitment_ResourcesRequisition";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_LayoutPageSmartHR.cshtml";
 }
+<script>
+  
+    $(document).ready(function () {
+
+        $('.nav-link').removeClass('active');
+        $('.tab-pane').removeClass('show active');
+
+        $('#Menu-tab').addClass('active');
+        $('#Menu-tab-pane').addClass('show active');
+
+        $('#RecruitmentMenulink').addClass('active');
+    });
+</script>
 
 
 <script src="~/scripts/jquery-1.10.2.js"></script>
@@ -15,6 +28,15 @@
 <script src="~/assets/plugins/summernote/dist/summernote-lite.min.js"></script>
 
 <style>
+       .page-wrapper .content {
+    padding:20px;padding-top:15px;}
+ .alert {
+    padding: 0.8rem;
+    border-radius: 4px;
+    font-size: 12px;
+}table.table.dataTable > tbody > tr td{
+     color:#222;
+ }
     .card-row-title {
         color:  blue;
         font-size: 18px;
@@ -142,13 +164,27 @@
     }
 </style>
 
-<div id="content" class="app-content">
 
-    <div class="row" style="margin-bottom: 10px;">
-        <div class="col-md-12" style="display: flex; justify-content: space-between; align-items: center;">
-            <h1 style="font-size: 18px; font-family: roboto; transform: translateY(4px); margin: 0;">
-                Resource Request
-            </h1>
+
+<div id="content" class="app-content content">
+
+    <!-- Breadcrumb -->
+    <div class="d-md-flex d-block align-items-center justify-content-between page-breadcrumb ">
+        <div class="my-auto mb-2">
+            <h2 class="mb-1">Resource Request</h2>
+            @*<nav>
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item">
+                        <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })"><i class="ti ti-smart-home"></i></a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="@Url.Action("ESS_Recruitment_Menu", "ESS_Recruitment_Menu", new {id = 1, ScreenId=126, area = "ESS" })" class="fs-14"> Recruitment </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">Resource Request</li>
+                </ol>
+            </nav>*@
+        </div>
+        <div class="d-flex my-xl-auto right-content align-items-center flex-wrap gap-3 mb-2">
             <ol style="list-style: none; padding: 0; margin: 0; display: flex;">
                 <li style="margin-right: 10px;">
                     <a href="@Url.Action("Dashboard", "Dashboard", new { area = "" })">
@@ -163,14 +199,17 @@
             </ol>
         </div>
     </div>
+    <!-- /Breadcrumb -->
+
+  
 
     <div class="row">
         <div class="col-md-12">
             <!-- BEGIN panel -->
-            <div class="panel panel-inverse" data-sortable-id="index-1">
-                <div class="panel-heading" style="background-color:@Session["HeaderColor"]; color:@Session["HeaderTextColor"]">
-                    <h4 class="panel-title"> Resource Request - @ViewBag.AddUpdateTitle </h4>
-                    <div class="panel-heading-btn">
+            <div class="panel">
+                <div class="panel-heading">
+                    <h4 class="panel-title text-black"> Resource Request - @ViewBag.AddUpdateTitle </h4>
+                    <div class="panel-heading-btn d-none">
                         <a href="javascript:;" class="btn btn-xs btn-icon btn-default" data-toggle="panel-expand"><i class="fa fa-expand"></i></a>
                         <a href="javascript:;" class="btn btn-xs btn-icon btn-success" data-toggle="panel-reload"><i class="fa fa-redo"></i></a>
                         <a href="javascript:;" class="btn btn-xs btn-icon btn-warning" data-toggle="panel-collapse"><i class="fa fa-minus"></i></a>
@@ -178,7 +217,7 @@
 
                     </div>
                 </div>
-                <div class="alert alert-yellow rounded-0 pb-0 d-flex align-items-center mb-0 text-black">
+                <div class="alert alert-yellow rounded-0  d-flex align-items-center text-black mb-0">
                     <p class="pb-0">
                         To make a resource request, complete this form.
                     </p>
@@ -189,7 +228,7 @@
                             <form role="form" action='@Url.Action("SaveUpdate", "ESS_Recruitment_ResourcesRequisition", new { area = "ESS" })' id="SaveResourcesRecruitment" method="post" enctype="multipart/form-data">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="row mb-15px">
+                                        <div class="row mb-3">
                                             <label class="form-label col-form-label col-md-8">
                                                 Resource Requisition Number (System Generated)
                                             </label>
@@ -201,7 +240,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="row mb-15px">
+                                        <div class="row mb-3">
                                             <label class="form-label col-form-label col-md-4">
                                                 Requisition Date
                                                 <span class="important">*</span>
@@ -213,8 +252,8 @@
                                     </div>
                                 </div>
 
-                                <hr class="mt-0">
-                                <div class="row mb-10px">
+
+                                <div class="row mb-2">
                                     <div class="col-md-12">
                                         <div class="card-row-title">
                                             Job Information
@@ -223,19 +262,19 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="row mb-15px">
+                                        <div class="row mb-3">
                                             <label class="form-label col-form-label col-md-4">
                                                 Company Name
                                                 <span class="important">*</span>
                                             </label>
                                             <div class="col-md-8">
-                                                @Html.DropDownListFor(model => model.CmpId, new SelectList(ViewBag.ComapnyName, "Id", "Name"), "--Select--", new { @class = "form-select", id = "txtCmpId", type = "text", name = "CmpId", autocomplete = "Off" })
+                                                @Html.DropDownListFor(model => model.CmpId, new SelectList(ViewBag.ComapnyName, "Id", "Name"), "--Select--", new { @class = "form-select form-control", id = "txtCmpId", type = "text", name = "CmpId", autocomplete = "Off" })
                                                 @Html.ValidationMessageFor(model => model.CmpId, "", new { @class = "help-block", id = "ErrorCmpId", @style = "color:red" })
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="row mb-15px">
+                                        <div class="row mb-3">
                                             <label class="form-label col-form-label col-md-4">
                                                 Business Unit
                                                 <span class="important">*</span>
@@ -249,7 +288,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="row mb-15px">
+                                        <div class="row mb-3">
                                             <label class="form-label col-form-label col-md-4">
                                                 Department
                                                 <span class="important">*</span>
@@ -261,7 +300,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="row mb-15px">
+                                        <div class="row mb-3">
                                             <label class="form-label col-form-label col-md-4">
                                                 Designation
                                                 <span class="important">*</span>
@@ -275,7 +314,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="row mb-15px">
+                                        <div class="row mb-3">
                                             <label class="form-label col-form-label col-md-4">
                                                 Grade
                                                 <span class="important">*</span>
@@ -287,7 +326,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="row mb-15px">
+                                        <div class="row mb-3">
                                             <label class="form-label col-form-label col-md-4">
                                                 Total Position
                                                 <span class="important">*</span>
@@ -300,7 +339,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="row mb-15px">
+                                        <div class="row mb-3">
                                             <label class="form-label col-form-label col-md-4">
                                                 Position Type
                                                 <span class="important">*</span>
@@ -312,7 +351,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6" id="ReplacementDiv">
-                                        <div class="row mb-15px">
+                                        <div class="row mb-3">
                                             <label class="form-label col-form-label col-md-4">
                                                 If Replacement
                                                 @*<span class="important">*</span>*@
@@ -326,7 +365,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="row mb-15px">
+                                        <div class="row mb-3">
                                             <label class="form-label col-form-label col-md-4">
                                                 Closing Date
                                                 <span class="important">*</span>
@@ -337,7 +376,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="row mb-15px">
+                                        <div class="row mb-3">
                                             <label class="form-label col-form-label col-md-4">
                                                 Work Type @*<span class="important">*</span>*@
                                             </label>
@@ -358,7 +397,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="row mb-15px">
+                                        <div class="row mb-3">
                                             <label class="form-label col-form-label col-md-4">
                                                 Legal Bond@*<span class="important">*</span>*@
                                             </label>
@@ -374,7 +413,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="row mb-15px">
+                                        <div class="row mb-3">
                                             <label class="form-label col-form-label col-md-4">
                                                 Legal Bond (In Months)
                                                 @*<span class="important">*</span>*@
@@ -388,7 +427,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="row mb-15px">
+                                        <div class="row mb-3">
                                             <label class="form-label col-form-label col-md-4">
                                                 Priority
                                             </label>
@@ -401,7 +440,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="row mb-15px">
+                                        <div class="row mb-3">
                                             <div class="col-md-4"></div>
                                             <div class="col-md-8">
                                                 @Html.CheckBoxFor(model => model.Confidential)
@@ -413,7 +452,7 @@
                                 </div>
 
                                 <hr class="mt-0">
-                                <div class="row mb-10px">
+                                <div class="row mb-2">
                                     <div class="col-md-12">
                                         <div class="card-row-title">
                                             Technical Information
@@ -423,7 +462,7 @@
 
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="row mb-15px">
+                                        <div class="row mb-3">
                                             <label class="form-label col-form-label col-md-4">
                                                 Candidate Type
                                                 <span class="important">*</span>
@@ -442,7 +481,7 @@
 
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="row mb-15px">
+                                        <div class="row mb-3">
                                             <label class="form-label col-form-label col-md-4">
                                                 Min. Experience (In Years)
                                                 <span class="important">*</span>
@@ -454,7 +493,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="row mb-15px">
+                                        <div class="row mb-3">
                                             <label class="form-label col-form-label col-md-4">
                                                 Max. Experience (In Years)
                                                 <span class="important">*</span>
@@ -468,7 +507,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="row mb-15px">
+                                        <div class="row mb-3">
                                             <label class="form-label col-form-label col-md-4">
                                                 Preferred Technical Skills
 
@@ -480,7 +519,7 @@
                                     </div>
 
                                     <div class="col-md-6">
-                                        <div class="row mb-15px">
+                                        <div class="row mb-3">
                                             <label class="form-label col-form-label col-md-4">
                                                 Must Have Technical Skills
                                             </label>
@@ -492,7 +531,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="row mb-15px">
+                                        <div class="row mb-3">
                                             <label class="form-label col-form-label col-md-4">
                                                 Qualification
                                                 <span class="important">*</span>
@@ -506,7 +545,7 @@
                                 </div>
 
                                 <hr class="mt-0">
-                                <div class="row mb-10px">
+                                <div class="row mb-2">
                                     <div class="col-md-12">
                                         <div class="card-row-title">
                                             Budget Information
@@ -516,7 +555,7 @@
 
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="row mb-15px">
+                                        <div class="row mb-3">
                                             <label class="form-label col-form-label col-md-4">
                                                 Position Budgeted@*<span class="important">*</span>*@
                                             </label>
@@ -528,7 +567,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="row mb-15px">
+                                        <div class="row mb-3">
                                             <label class="form-label col-form-label col-md-4">
                                                 Currency @*<span class="important">*</span>*@
                                             </label>
@@ -542,7 +581,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="row mb-15px">
+                                        <div class="row mb-3">
                                             <label class="form-label col-form-label col-md-4">
                                                 Min. Budget (in lakhs)@*<span class="important">*</span>*@
                                             </label>
@@ -555,7 +594,7 @@
                                     </div>
 
                                     <div class="col-md-6">
-                                        <div class="row mb-15px">
+                                        <div class="row mb-3">
                                             <label class="form-label col-form-label col-md-4">
                                                 Max. Budget (in lakhs)@*<span class="important">*</span>*@
                                             </label>
@@ -568,7 +607,7 @@
                                     </div>
                                 </div>
                                 <hr class="mt-0">
-                                <div class="row mb-10px">
+                                <div class="row mb-2">
                                     <div class="col-md-12">
                                         <div class="card-row-title">
                                             Preferred Candidate
@@ -578,7 +617,7 @@
 
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="row mb-15px">
+                                        <div class="row mb-3">
                                             <label class="form-label col-form-label col-md-4">
                                                 Minimum Age (In Years)<span class="important">*</span>
                                             </label>
@@ -590,7 +629,7 @@
                                     </div>
 
                                     <div class="col-md-6">
-                                        <div class="row mb-15px">
+                                        <div class="row mb-3">
                                             <label class="form-label col-form-label col-md-4">
                                                 Maximum Age (In Years)<span class="important">*</span>
                                             </label>
@@ -604,7 +643,7 @@
 
                                 <div class="row">
                                     @*<div class="col-md-6">
-                                            <div class="row mb-15px">
+                                            <div class="row mb-3">
                                                 <label class="form-label col-form-label col-md-4">
                                                     Language <span class="important">*</span>
                                                 </label>
@@ -615,7 +654,7 @@
                                         </div>*@
 
                                     <div class="col-md-6">
-                                        <div class="row mb-15px">
+                                        <div class="row mb-3">
                                             <label class="form-label col-form-label col-md-4">
                                                 Marital Status <span class="important">*</span>
                                             </label>
@@ -630,7 +669,7 @@
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="row mb-15px">
+                                        <div class="row mb-3">
                                             <label class="form-label col-form-label col-md-4">
                                                 Gender<span class="important">*</span>
                                             </label>
@@ -649,7 +688,7 @@
                                 <div class="row">
 
                                     @*<div class="col-md-6">
-                                                <div class="row mb-15px">
+                                                <div class="row mb-3">
                                                     <label class="form-label col-form-label col-md-4">
                                                         Shift Timing<span class="important">*</span>
                                                     </label>
@@ -662,7 +701,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="row mb-15px">
+                                        <div class="row mb-3">
                                             <label class="form-label col-form-label col-md-4">
                                                 Residence@*<span class="important">*</span>*@
                                             </label>
@@ -679,7 +718,7 @@
                                     </div>
 
                                     @*<div class="col-md-6">
-                                        <div class="row mb-15px">
+                                        <div class="row mb-3">
                                             <label class="form-label col-form-label col-md-4">
                                                 Compentencies<span class="important">*</span>
                                             </label>
@@ -691,7 +730,7 @@
                                 </div>
 
                                 <hr class="mt-0">
-                                <div class="row mb-10px">
+                                <div class="row mb-2">
                                     <div class="col-md-12">
                                         <div class="card-row-title">
                                             Attachment
@@ -700,7 +739,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="row mb-15px">
+                                        <div class="row mb-3">
                                             <label class="form-label col-form-label col-md-4">
                                                 Attach File
                                             </label>
@@ -714,16 +753,16 @@
                                                 }
                                                 else
                                                 {
-                                                    <a type="button" class="btn btn-success ListBtn btnpress" href="@Url.Action("DownloadFile", "ESS_Recruitment_ResourcesRequisition", new { ResourceRequest = TempData["FilePath"], area = "ESS" })" download>
-                                                        <i class="fa-solid fa-download"></i>
-                                                    </a>
+                                                <a type="button" class="btn btn-success ListBtn btnpress" href="@Url.Action("DownloadFile", "ESS_Recruitment_ResourcesRequisition", new { ResourceRequest = TempData["FilePath"], area = "ESS" })" download>
+                                                    <i class="fa-solid fa-download"></i>
+                                                </a>
                                                 }
 
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="row mb-15px">
+                                        <div class="row mb-3">
                                             <label class="form-label col-form-label col-md-4">
                                                 Job Description Template
                                             </label>
@@ -734,99 +773,103 @@
                                     </div>
                                 </div>
                                 <hr class="mt-0">
-                                <div class="row mb-10px">
+                                <div class="row mb-2">
                                     <div class="col-md-12">
                                         <div class="card-row-title">
                                             Additional Information
                                         </div>
                                     </div>
                                 </div>
-                        </div>
 
-                        <div class="form-group row">
-                            <div class="col-md-12">
-                                <label class="form-label col-form-label col-md-4">Job Description </label>
-                                <input type="hidden" id="hiddenJdTemplate" name="HiddenField" />
-                                @Html.TextAreaFor(model => model.Remark, new { @class = "summernote", style = "border: 1px solid #000;", id = "Remark", @required = "required", @placeholder = "Job Description....", autocomplete = "Off", contenteditable = "true"})
 
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="LastShortLeaveBx">
-                                <div class="row">
+                                <div class="form-group row">
                                     <div class="col-md-12">
-                                        <div class="BtnBx">
-                                            <div>
-                                                <button type="button" id="btnSubmit" class="btn btn-primary btn-sm">
-                                                    <i class="fa-solid fa-floppy-disk"></i> Submit
-                                                </button>
-                                                <a href="@Url.Action("GetList", "ESS_Recruitment_ResourcesRequisition", new { area = "ESS" })">
-                                                    <button type="button" id="btnGetList"
-                                                            class="btn btn-danger btn-sm">
-                                                        <i class="fa-solid fa-share-from-square"></i>
-                                                        List
+                                        <label class="form-label col-form-label col-md-4">Job Description </label>
+                                        <input type="hidden" id="hiddenJdTemplate" name="HiddenField" />
+                                        @Html.TextAreaFor(model => model.Remark, new { @class = "summernote", style = "border: 1px solid #000;", id = "Remark", @required = "required", @placeholder = "Job Description....", autocomplete = "Off", contenteditable = "true" })
+
+                                    </div>
+                                </div>
+
+
+                                <div class="row">
+
+                                    <div class="col-md-12">
+                                        <div class="LastShortLeaveBx">
+                                            <div class="BtnBx">
+                                                <div>
+                                                    <button type="button" id="btnSubmit" class="btn btn-primary btn-sm">
+                                                        <i class="fa-solid fa-floppy-disk"></i> Submit
                                                     </button>
-                                                </a>
+                                                    <a href="@Url.Action("GetList", "ESS_Recruitment_ResourcesRequisition", new { area = "ESS" })">
+                                                        <button type="button" id="btnGetList"
+                                                                class="btn btn-danger btn-sm">
+                                                            <i class="fa-solid fa-share-from-square"></i>
+                                                            List
+                                                        </button>
+                                                    </a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
+
                                 </div>
-                            </div>
+                            </form>
                         </div>
-                        </form>
                     </div>
                 </div>
             </div>
         </div>
+        <!-- END panel -->
     </div>
-    <!-- END panel -->
-</div>
 
-<script>
-    $("#myForm").submit(function (e) {
-        e.preventDefault(); // Prevent form from submitting normally
+    </div>
 
-        var formData = new FormData(this); // Capture form data
+    <script>
+        $("#myForm").submit(function (e) {
+            e.preventDefault(); // Prevent form from submitting normally
 
-        $.ajax({
-            url: '@Url.Action("SaveUpdate", "ESS_Recruitment_ResourcesRequisition")',
-            type: 'POST',
-            data: formData,
-            contentType: false,
-            processData: false,
-            success: function (response) {
-                if (!response.success) {
+            var formData = new FormData(this); // Capture form data
+
+            $.ajax({
+                url: '@Url.Action("SaveUpdate", "ESS_Recruitment_ResourcesRequisition")',
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    if (!response.success) {
+                        Swal.fire({
+                            icon: response.icon,
+                            title: "Error",
+                            text: response.message
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: response.icon,
+                            title: "Success",
+                            text: response.message
+                        }).then(() => {
+                            location.reload(); // Reload the page if needed
+                        });
+                    }
+                },
+                error: function () {
                     Swal.fire({
-                        icon: response.icon,
+                        icon: "error",
                         title: "Error",
-                        text: response.message
-                    });
-                } else {
-                    Swal.fire({
-                        icon: response.icon,
-                        title: "Success",
-                        text: response.message
-                    }).then(() => {
-                        location.reload(); // Reload the page if needed
+                        text: "Something went wrong. Please try again."
                     });
                 }
-            },
-            error: function () {
-                Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: "Something went wrong. Please try again."
-                });
-            }
+            });
         });
-    });
-</script>
+    </script>
 
-<script>
+    <script>
 
-    $(document).ready(function () {
-        debugger;
-        @*var a=  @Html.Raw(Json.Encode(Session["CompanyId"]));
+        $(document).ready(function () {
+            debugger;
+            @*var a=  @Html.Raw(Json.Encode(Session["CompanyId"]));
         var b=  @Html.Raw(Json.Encode(Session["EmployeeBranchId"]));
         var c=  @Html.Raw(Json.Encode(Session["EmployeeDepartmentId"]));
         var d=  @Html.Raw(Json.Encode(Session["EmployeeDesignationId"]));
@@ -836,7 +879,7 @@
         $("#txtDepartment").val(c).select2();
         $("#txtDesignation").val(d).select2();*@
 
-        @*$("#txtBranchId").find("option").remove();
+            @*$("#txtBranchId").find("option").remove();
         var EmpID = id;
         $.ajax({
             type: 'GET',
@@ -860,7 +903,7 @@
             }
         })*@
 
-        @*$("#txtJDTemplate").find("option").remove();
+            @*$("#txtJDTemplate").find("option").remove();
         var DeptId = c;
             $.ajax({
                 type: 'GET',
@@ -884,36 +927,36 @@
                     }
                 }
             });*@
-        $("#txtJDTemplate").select2();
-        $("#ReplacementDiv").hide();
-        $("#txtMinBudget").attr("disabled", true);
-        $("#txtMaxBudget").attr("disabled", true);
-        $("#txtLegalBondDuration").attr("disabled", "disabled");
+            $("#txtJDTemplate").select2();
+            $("#ReplacementDiv").hide();
+            $("#txtMinBudget").attr("disabled", true);
+            $("#txtMaxBudget").attr("disabled", true);
+            $("#txtLegalBondDuration").attr("disabled", "disabled");
 
-        $("#txtCmpId").on("change", function () {
-            debugger;
-            $("#txtBranchId").find("option").remove();
-            var CmpId = $("#txtCmpId").val();
-            $.ajax({
-                type: 'GET',
-                dataType: 'JSON',
-                contentType: "application/json; charset=utf-8",
-                url: '@Url.Action("GetBusinessUnit", "ESS_Recruitment_ResourcesRequisition")',
-                data: { CmpId: CmpId },
-                success: function (data) {
-                    if (data !=null) {
-                        $("#txtBranchId").append("<option value=0>--Select-- </option>");
-                        $.each(data, function(i, p) {
-                            $("#txtBranchId").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
-                        });
+            $("#txtCmpId").on("change", function () {
+                debugger;
+                $("#txtBranchId").find("option").remove();
+                var CmpId = $("#txtCmpId").val();
+                $.ajax({
+                    type: 'GET',
+                    dataType: 'JSON',
+                    contentType: "application/json; charset=utf-8",
+                    url: '@Url.Action("GetBusinessUnit", "ESS_Recruitment_ResourcesRequisition")',
+                    data: { CmpId: CmpId },
+                    success: function (data) {
+                        if (data !=null) {
+                            $("#txtBranchId").append("<option value=0>--Select-- </option>");
+                            $.each(data, function(i, p) {
+                                $("#txtBranchId").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                            });
+                        }
+                        else {
+                            $('#ErrorESSPassword').html(" ");
+                        }
                     }
-                    else {
-                        $('#ErrorESSPassword').html(" ");
-                    }
-                }
-            })
-        });
-        @*$("#txtDepartment").on("change", function () {
+                })
+            });
+            @*$("#txtDepartment").on("change", function () {
             debugger;
             $("#txtJDTemplate").find("option").remove();
             var DeptId = $("#txtDepartment").val();
@@ -936,7 +979,7 @@
                 }
             })
         });*@
-        @*$("#txtDepartment").on("change", function () {
+            @*$("#txtDepartment").on("change", function () {
             debugger;
             $("#txtJDTemplate").find("option").remove();
             var DeptId = $("#txtDepartment").val();
@@ -964,212 +1007,212 @@
             });
         });*@
 
-        $("#txtJDTemplate").change(function () {
-            debugger;
-            var JDTemplate = $('#txtJDTemplate option:selected').val();
+            $("#txtJDTemplate").change(function () {
+                debugger;
+                var JDTemplate = $('#txtJDTemplate option:selected').val();
 
-            $.ajax({
-                type: 'GET',
-                dataType: 'JSON',
-                contentType: "application/json; charset=utf-8",
-                url: '@Url.Action("JDDescription", "ESS_Recruitment_ResourcesRequisition")',
-                data: { JDTemplate: JDTemplate },
-                success: function (data) {
-                    debugger;
-                    if (data != null && data.length > 0 && data[0].length > 0) {
-                        var data = [
-                            [{ Value: data[0][0].Value }]
-                        ];
-                        var encodedValue = $("<div/>").text(data[0][0].Value).html();
-                        $("#hiddenJdTemplate").val(encodedValue);
-
-                        $('#Remark').val( data[0][0].Value);
-
-
-
-                        //var a = $("#hiddenJdTemplate").val(data[0][0].Value);
-                        //console.log(a);
-                        $(".note-editable").html(data[0][0].Value);
-                    }
-                    else
-                    {
-                        $('#Remark').val(null);
-                    }
-                }
-            });
-        });
-
-        debugger
-        $("#txtPositionType").change(function(){
-            debugger;
-            var PositionType=  $('#txtPositionType option:selected').html()
-            var DepartmentIds= $("#txtDepartment").val();
-            var DesignationIds= $("#txtDesignation").val();
-
-            if(DepartmentIds!="" && DesignationIds!="")
-            {
-                $("#ErrorDepartmentID").html("");
-                $("#ErrorDesignationID").html("");
-            }
-            else{ $("#ErrorDepartmentID").html("Please select department name");return false;
-                $("#ErrorDesignationID").html("Please select designation Name"); return false;}
-            if(PositionType=="Replacement")
-            {
-
-                $("#ReplacementDiv").show();
-                $("#ddlEmployeeifReplacement").find("option").remove();
                 $.ajax({
                     type: 'GET',
                     dataType: 'JSON',
                     contentType: "application/json; charset=utf-8",
-                    url: '@Url.Action("GetRepalcementEmployee", "ESS_Recruitment_ResourcesRequisition")',
-                    data: { DepartmentIds: DepartmentIds,DesignationIds:DesignationIds },
+                    url: '@Url.Action("JDDescription", "ESS_Recruitment_ResourcesRequisition")',
+                    data: { JDTemplate: JDTemplate },
                     success: function (data) {
-                        if (data !=null) {
-                            $("#ddlEmployeeifReplacement").append("<option value=0>--Select-- </option>");
-                            $.each(data, function(i, p) {
-                                $("#ddlEmployeeifReplacement").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
-                            });
+                        debugger;
+                        if (data != null && data.length > 0 && data[0].length > 0) {
+                            var data = [
+                                [{ Value: data[0][0].Value }]
+                            ];
+                            var encodedValue = $("<div/>").text(data[0][0].Value).html();
+                            $("#hiddenJdTemplate").val(encodedValue);
+
+                            $('#Remark').val( data[0][0].Value);
+
+
+
+                            //var a = $("#hiddenJdTemplate").val(data[0][0].Value);
+                            //console.log(a);
+                            $(".note-editable").html(data[0][0].Value);
                         }
-                        else {
-                            $('#ErrorESSPassword').html(" ");
+                        else
+                        {
+                            $('#Remark').val(null);
                         }
                     }
-                })
-            }
-            else{
-                $("#ReplacementDiv").hide();
-                $("#ddlEmployeeifReplacement").find("option").remove();
-            }
+                });
+            });
 
-        });
+            debugger
+            $("#txtPositionType").change(function(){
+                debugger;
+                var PositionType=  $('#txtPositionType option:selected').html()
+                var DepartmentIds= $("#txtDepartment").val();
+                var DesignationIds= $("#txtDesignation").val();
 
-        $("#txtDesignation").change(function(){
-            var DesignationID =$("#txtDesignation").val();
-            debugger;
-            $.ajax({
-                type: 'GET',
-                dataType: 'JSON',
-                contentType: "application/json; charset=utf-8",
-                url: '@Url.Action("GetDesignationWiseDetails", "ESS_Recruitment_ResourcesRequisition")',
-                data: { DesignationID: DesignationID },
-                success: function (DesignationList) {
-                    debugger;
-                    if (DesignationList !=null) {
-                        var MinAge=DesignationList[0].Value;
-                        var MaxAge=DesignationList[1].Value;
-                        var MinExprience=DesignationList[2].Value;
-                        var MaxExprience=DesignationList[3].Value;
-                        var MinBudget=DesignationList[4].Value;
-                        var MaxBudget=DesignationList[5].Value;
-                        $("#txtMinExperience").val(MinExprience);
-                        $("#txtMaxExperience").val(MaxExprience);
-                        $("#txtMinAge").val(MinAge);
-                        $("#txtMaxAge").val(MaxAge);
-                        if(MinBudget!=null || MaxBudget!=null )
-                        {
-                            $("#txtPositionBudgeted").val("true").select2();
-                            $("#txtMinBudget").attr("disabled", false);
-                            $("#txtMaxBudget").attr("disabled", false);
-                            $("#txtMinBudget").val(MinBudget);
-                            $("#txtMaxBudget").val(MaxBudget);
+                if(DepartmentIds!="" && DesignationIds!="")
+                {
+                    $("#ErrorDepartmentID").html("");
+                    $("#ErrorDesignationID").html("");
+                }
+                else{ $("#ErrorDepartmentID").html("Please select department name");return false;
+                    $("#ErrorDesignationID").html("Please select designation Name"); return false;}
+                if(PositionType=="Replacement")
+                {
+
+                    $("#ReplacementDiv").show();
+                    $("#ddlEmployeeifReplacement").find("option").remove();
+                    $.ajax({
+                        type: 'GET',
+                        dataType: 'JSON',
+                        contentType: "application/json; charset=utf-8",
+                        url: '@Url.Action("GetRepalcementEmployee", "ESS_Recruitment_ResourcesRequisition")',
+                        data: { DepartmentIds: DepartmentIds,DesignationIds:DesignationIds },
+                        success: function (data) {
+                            if (data !=null) {
+                                $("#ddlEmployeeifReplacement").append("<option value=0>--Select-- </option>");
+                                $.each(data, function(i, p) {
+                                    $("#ddlEmployeeifReplacement").append("<option value='" + p.Id +"'>" + p.Name +"</option>");
+                                });
+                            }
+                            else {
+                                $('#ErrorESSPassword').html(" ");
+                            }
+                        }
+                    })
+                }
+                else{
+                    $("#ReplacementDiv").hide();
+                    $("#ddlEmployeeifReplacement").find("option").remove();
+                }
+
+            });
+
+            $("#txtDesignation").change(function(){
+                var DesignationID =$("#txtDesignation").val();
+                debugger;
+                $.ajax({
+                    type: 'GET',
+                    dataType: 'JSON',
+                    contentType: "application/json; charset=utf-8",
+                    url: '@Url.Action("GetDesignationWiseDetails", "ESS_Recruitment_ResourcesRequisition")',
+                    data: { DesignationID: DesignationID },
+                    success: function (DesignationList) {
+                        debugger;
+                        if (DesignationList !=null) {
+                            var MinAge=DesignationList[0].Value;
+                            var MaxAge=DesignationList[1].Value;
+                            var MinExprience=DesignationList[2].Value;
+                            var MaxExprience=DesignationList[3].Value;
+                            var MinBudget=DesignationList[4].Value;
+                            var MaxBudget=DesignationList[5].Value;
+                            $("#txtMinExperience").val(MinExprience);
+                            $("#txtMaxExperience").val(MaxExprience);
+                            $("#txtMinAge").val(MinAge);
+                            $("#txtMaxAge").val(MaxAge);
+                            if(MinBudget!=null || MaxBudget!=null )
+                            {
+                                $("#txtPositionBudgeted").val("true").select2();
+                                $("#txtMinBudget").attr("disabled", false);
+                                $("#txtMaxBudget").attr("disabled", false);
+                                $("#txtMinBudget").val(MinBudget);
+                                $("#txtMaxBudget").val(MaxBudget);
+
+                            }
+                            else{
+                                $("#txtPositionBudgeted").val("false").select2();
+                                $("#txtMinBudget").attr("disabled", true);
+                                $("#txtMaxBudget").attr("disabled", true);
+                                $("#txtMinBudget").val("");
+                                $("#txtMaxBudget").val("");
+                            }
 
                         }
-                        else{
-                            $("#txtPositionBudgeted").val("false").select2();
-                            $("#txtMinBudget").attr("disabled", true);
-                            $("#txtMaxBudget").attr("disabled", true);
+                        else {
+                            $("#txtMinExperience").val("");
+                            $("#txtMaxExperience").val("");
+                            $("#txtMinAge").val("");
+                            $("#txtMaxAge").val("");
                             $("#txtMinBudget").val("");
                             $("#txtMaxBudget").val("");
                         }
-
                     }
-                    else {
-                        $("#txtMinExperience").val("");
-                        $("#txtMaxExperience").val("");
-                        $("#txtMinAge").val("");
-                        $("#txtMaxAge").val("");
-                        $("#txtMinBudget").val("");
-                        $("#txtMaxBudget").val("");
-                    }
+                })
+            });
+            debugger
+            $("#txtPositionBudgeted").change(function(){
+                debugger;
+                $("#txtMinBudget").val("");
+                $("#txtMaxBudget").val("");
+                var PositionBudgeted =  $("#txtPositionBudgeted").val();
+                if(PositionBudgeted=="true")
+                {
+                    $("#txtMinBudget").prop("disabled", false);
+                    $("#txtMaxBudget").prop("disabled", false);
                 }
-            })
-        });
-        debugger
-        $("#txtPositionBudgeted").change(function(){
-            debugger;
-            $("#txtMinBudget").val("");
-            $("#txtMaxBudget").val("");
-            var PositionBudgeted =  $("#txtPositionBudgeted").val();
-            if(PositionBudgeted=="true")
-            {
-                $("#txtMinBudget").prop("disabled", false);
-                $("#txtMaxBudget").prop("disabled", false);
-            }
-            else if(PositionBudgeted=="false")
+                else if(PositionBudgeted=="false")
+                {
+                    $("#txtMinBudget").prop("disabled", true);
+                    $("#txtMaxBudget").prop("disabled", true);
+                }
+
+            });
+
+            $("#txtLegalBond").change(function(){
+                debugger;
+                $("#txtLegalBondDuration").val("");
+                var LegalBond =   $("#txtLegalBond").val();
+                if(LegalBond == "false")
+                {
+                    $("#txtLegalBondDuration").prop("disabled", true);
+                }
+                else if(LegalBond == "true")
+                {
+                    $("#txtLegalBondDuration").prop("disabled", false);
+
+                }
+            });
+
+            @*var Action = @Html.Raw(Json.Encode(TempData["Action"]));*@
+
+
+            //if(Action == "Update")
+            //{
+            //    $("#txtLegalBondDuration").prop("disabled", false);
+            //    $("#txtMinBudget").prop("disabled", false);
+            //    $("#txtMaxBudget").prop("disabled", false);
+            //}
+            //else
+            //{
+            //    $("#txtLegalBondDuration").prop("disabled", true);
+            //    $("#txtMinBudget").prop("disabled", true);
+            //    $("#txtMaxBudget").prop("disabled", true);
+            //}
+
+            var PositionBudgeted = @Html.Raw(Json.Encode(TempData["PositionBudgeted"]));
+            if(PositionBudgeted==false)
             {
                 $("#txtMinBudget").prop("disabled", true);
                 $("#txtMaxBudget").prop("disabled", true);
             }
-
-        });
-
-        $("#txtLegalBond").change(function(){
-            debugger;
-            $("#txtLegalBondDuration").val("");
-            var LegalBond =   $("#txtLegalBond").val();
-            if(LegalBond == "false")
+            else if (PositionBudgeted==true){
+                $("#txtMinBudget").prop("disabled", false);
+                $("#txtMaxBudget").prop("disabled", false);
+            }
+            var LegalBond = @Html.Raw(Json.Encode(TempData["LegalBond"]));
+            if(LegalBond==false)
             {
                 $("#txtLegalBondDuration").prop("disabled", true);
             }
-            else if(LegalBond == "true")
-            {
+            else if(LegalBond==true){
                 $("#txtLegalBondDuration").prop("disabled", false);
-
             }
-        });
+            var PositionTypeID = @Html.Raw(Json.Encode(TempData["PositionTypeID"]));
+            var EmployeeifReplacement = @Html.Raw(Json.Encode(TempData["EmployeeifReplacement"]));
+            var Currency = @Html.Raw(Json.Encode(TempData["Currency"]));
+            var JDTemplate=@Html.Raw(Json.Encode(TempData["JDTemplate"]));
 
-        @*var Action = @Html.Raw(Json.Encode(TempData["Action"]));*@
 
-
-        //if(Action == "Update")
-        //{
-        //    $("#txtLegalBondDuration").prop("disabled", false);
-        //    $("#txtMinBudget").prop("disabled", false);
-        //    $("#txtMaxBudget").prop("disabled", false);
-        //}
-        //else
-        //{
-        //    $("#txtLegalBondDuration").prop("disabled", true);
-        //    $("#txtMinBudget").prop("disabled", true);
-        //    $("#txtMaxBudget").prop("disabled", true);
-        //}
-
-        var PositionBudgeted = @Html.Raw(Json.Encode(TempData["PositionBudgeted"]));
-        if(PositionBudgeted==false)
-        {
-            $("#txtMinBudget").prop("disabled", true);
-            $("#txtMaxBudget").prop("disabled", true);
-        }
-        else if (PositionBudgeted==true){
-            $("#txtMinBudget").prop("disabled", false);
-            $("#txtMaxBudget").prop("disabled", false);
-        }
-        var LegalBond = @Html.Raw(Json.Encode(TempData["LegalBond"]));
-        if(LegalBond==false)
-        {
-            $("#txtLegalBondDuration").prop("disabled", true);
-        }
-        else if(LegalBond==true){
-            $("#txtLegalBondDuration").prop("disabled", false);
-        }
-        var PositionTypeID = @Html.Raw(Json.Encode(TempData["PositionTypeID"]));
-        var EmployeeifReplacement = @Html.Raw(Json.Encode(TempData["EmployeeifReplacement"]));
-        var Currency = @Html.Raw(Json.Encode(TempData["Currency"]));
-        var JDTemplate=@Html.Raw(Json.Encode(TempData["JDTemplate"]));
-      
-
-      @*function decodeHtml(html) {
+            @*function decodeHtml(html) {
     var txt = document.createElement("textarea");
     txt.innerHTML = html;
     return txt.value;
@@ -1184,680 +1227,680 @@ var decodedTwice = decodeHtml(decodedOnce);
 $('#Remark').summernote('code', decodedTwice);*@
 
 
-        if(PositionTypeID==2)
-        {
-            $("#ReplacementDiv").show();
-            $("#ddlEmployeeifReplacement").val(EmployeeifReplacement).select2();
+            if(PositionTypeID==2)
+            {
+                $("#ReplacementDiv").show();
+                $("#ddlEmployeeifReplacement").val(EmployeeifReplacement).select2();
+            }
+            if(Currency!=null)
+            {
+                $("#txtCurrency").val(Currency).select2();
+                $("#txtJDTemplate").val(JDTemplate);
+            }
+
+
+
+            $("#txtCmpId").select2();
+            $("#txtBranchId").select2();
+            $("#txtDesignation").select2();
+            $("#txtDepartment").select2();
+            $("#txtGrade").select2();
+            $("#txtPositionType").select2();
+            $("#txtWorkType").select2();
+            $("#txtLegalBond").select2();
+            $("#txtLegalBond").select2();
+            $("#txtPriority").select2();
+            $("#txtPositionBudgeted").select2();
+            $("#txtPreferredGender").select2();
+            $("#txtCurrency").select2();
+            $("#txtPreferredMaritalStatus").select2();
+            $("#txtResidence").select2();
+            $("#ddlEmployeeifReplacement").select2();
+
+            var Message = @Html.Raw(Json.Encode(TempData["Message"]));
+            var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
+            debugger;
+            if (Message != null) {
+                if (Icon != null) {
+                    Swal.fire({
+                        icon: Icon,
+                        text: Message,
+                        allowOutsideClick: () => {
+                            const popup = Swal.getPopup()
+                            popup.classList.remove('swal2-show')
+                            setTimeout(() => {
+                                popup.classList.add('animate__animated', 'animate__headShake')
+                            })
+                            setTimeout(() => {
+                                popup.classList.remove('animate__animated', 'animate__headShake')
+                            }, 500)
+                            // return false
+                        }
+                    }).then(function() {
+                        window.location.reload();
+                    });
+                }
+            }
+
+            var Doc = @Html.Raw(Json.Encode(TempData["DocDate"]));
+            var ClosingDate = @Html.Raw(Json.Encode(TempData["ClosingDate"]));
+
+            if(Doc =="" || ClosingDate == "")
+            {
+
+            }
+            else
+            {
+                var DocDate =  convertDate(Doc);
+                var ClosingDate =  convertDate(ClosingDate);
+
+                $("#txtDocDate").val(DocDate);
+                $("#txtClosingDate").val(ClosingDate);
+            }
+
+
+
+
+        });//Ready Funcation
+
+        $("#txtCandidateType").change(function () {
+            debugger
+            var CandidateType = $("#txtCandidateType").val();
+
+            if (CandidateType == "Fresher" || CandidateType == "Intern") {
+                $("#txtMinExperience").val("0").prop("readonly", true);
+                $("#txtMaxExperience").val("0").prop("readonly", true);
+            }
+            else if (CandidateType == "Experience") {
+                $("#txtMinExperience").val("").prop("readonly", false);
+                $("#txtMaxExperience").val("").prop("readonly", false);
+            }
+        });
+
+        function numbervalidate(key) {
+            var presskeys = (key.which) ? key.which : key.presskeys;
+            if (!(presskeys == 8 || presskeys == 46) && (presskeys < 48 || presskeys > 57)) {
+                return false;
+            }
         }
-        if(Currency!=null)
+
+        function ResetFile()
         {
-            $("#txtCurrency").val(Currency).select2();
-            $("#txtJDTemplate").val(JDTemplate);
-        }
+            let allowedExtension = ['image/jpeg', 'image/jpg', 'image/png','application/pdf','application/docx','application/doc','application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+            let type = document.getElementById('txtAttachFile').files[0].type;
 
-
-
-        $("#txtCmpId").select2();
-        $("#txtBranchId").select2();
-        $("#txtDesignation").select2();
-        $("#txtDepartment").select2();
-        $("#txtGrade").select2();
-        $("#txtPositionType").select2();
-        $("#txtWorkType").select2();
-        $("#txtLegalBond").select2();
-        $("#txtLegalBond").select2();
-        $("#txtPriority").select2();
-        $("#txtPositionBudgeted").select2();
-        $("#txtPreferredGender").select2();
-        $("#txtCurrency").select2();
-        $("#txtPreferredMaritalStatus").select2();
-        $("#txtResidence").select2();
-        $("#ddlEmployeeifReplacement").select2();
-
-        var Message = @Html.Raw(Json.Encode(TempData["Message"]));
-        var Icon = @Html.Raw(Json.Encode(TempData["Icon"]));
-        debugger;
-        if (Message != null) {
-            if (Icon != null) {
+            if(allowedExtension.indexOf(type)>-1)
+            {
+            }
+            else
+            {
                 Swal.fire({
-                    icon: Icon,
-                    text: Message,
-                    allowOutsideClick: () => {
-                        const popup = Swal.getPopup()
-                        popup.classList.remove('swal2-show')
-                        setTimeout(() => {
-                            popup.classList.add('animate__animated', 'animate__headShake')
-                        })
-                        setTimeout(() => {
-                            popup.classList.remove('animate__animated', 'animate__headShake')
-                        }, 500)
-                        // return false
-                    }
-                }).then(function() {
-                    window.location.reload();
-                });
+                    icon: "error",
+                    text: "File type should be jpeg/jpg/png/pdf/docx/doc",
+                })
+                //alert('File type should be jpeg/jpg/png/pdf/docx/doc')
+                document.getElementById("txtAttachFile").value = null;
+            }
+            $("#lblFileName").text('');
+        }
+
+        var date = new Date();
+        var dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000 )).toISOString().split("T")[0];
+        $("#txtDocDate").val(dateString);
+
+        var today = new Date().toISOString().split('T')[0];
+        document.getElementById("txtClosingDate").setAttribute("min", today);
+
+        //====================StartCompareminOrMaxAge==================
+
+        $("#txtMaxAge,#txtMinAge").change(function(){
+            debugger;
+            var minAge= parseInt(document.getElementById('txtMinAge').value);
+            var maxAge=parseInt(document.getElementById('txtMaxAge').value);
+            if(minAge>maxAge)
+            {
+                $("#ErrorMaxAge").html("Candidate age should be more than Minimum age.");return false;
+            }
+            else
+            {
+                $("#ErrorMaxAge").html("");
+            }
+            if(minAge<18)
+            {
+                $("#ErrorMinAge").html("Candidate should be aged over 18!");return false;
+            }
+            else
+            {
+                $("#ErrorMinAge").html("");
+            }
+        });
+
+
+        $("#txtMaxExperience ,#txtMinExperience").change(function(){
+            debugger;
+            var minExperience= Number(document.getElementById('txtMinExperience').value);
+            var maxExperience=Number(document.getElementById('txtMaxExperience').value);
+            if(minExperience>maxExperience)
+            {
+                $("#ErrorMaxExperience").html("Minimum experience should be not greater than Maximum experience"); return false;
+            }
+            else
+            {
+                $("#ErrorMaxExperience").html("");
+            }
+        });
+
+
+        //$("#txtMinExperience").change(function(){
+        //    debugger;
+        //    var minExperience= parseInt(document.getElementById('txtMinExperience').value);
+        //    var maxExperience=parseInt(document.getElementById('txtMaxExperience').value);
+        //    if(minExperience>maxExperience)
+        //    {
+        //        $("#ErrortxtMinExperience").html("Min experience less than max experience");
+        //    }
+        //    else
+        //    {
+        //        $("#ErrortxtMinExperience").html("");
+        //    }
+        //});
+
+        //====================EndCompareminormaxBuget==================
+
+        //====================StartCompareminormaxBuget==================
+
+        $("#txtMaxBudget ,#txtMinBudget").change(function(){
+            debugger;
+            var minbudget= Number(document.getElementById('txtMinBudget').value);
+            var maxbuget=Number(document.getElementById('txtMaxBudget').value);
+            if(minbudget>maxbuget)
+            {
+                $("#ErrorMaxBudget").html("Min budget should be less than Max budget.");return false;
+            }
+            else
+            {
+                $("#ErrorMaxBudget").html("");
+            }
+        });
+
+
+        //$("#txtMinBudget").change(function(){
+        //    debugger;
+        //    var minbudget= Number(document.getElementById('txtMinBudget').value);
+        //    var maxbuget= Number(document.getElementById('txtMaxBudget').value);
+        //    if(minbudget<maxbuget)
+        //    {
+        //        $("#ErrorMinBudget").html("Min Buget greter Than maxbuget");
+        //    }
+        //    else
+        //    {
+        //        $("#ErrorMinBudget").html("");
+        //    }
+        //});
+
+
+        $("#txtLegalBondDuration").keyup(function() {
+            var LegalboandMonth=  $("#txtLegalBondDuration").val();
+            LegalboandMonth>60 ? $("#ErrortxtLegalBondDuration").html("Not allow greter than 60") : $("#ErrortxtLegalBondDuration").html("");
+        });
+
+        function numbervalidate(key) {
+            var presskeys = (key.which) ? key.which : key.presskeys;
+            if (!(presskeys == 8 || presskeys == 46) && (presskeys < 48 || presskeys > 57)) {
+                return false;
             }
         }
 
-        var Doc = @Html.Raw(Json.Encode(TempData["DocDate"]));
-        var ClosingDate = @Html.Raw(Json.Encode(TempData["ClosingDate"]));
 
-        if(Doc =="" || ClosingDate == "")
-        {
+        //====================EndCompareminormaxBuget==================
 
-        }
-        else
-        {
-            var DocDate =  convertDate(Doc);
-            var ClosingDate =  convertDate(ClosingDate);
-
-            $("#txtDocDate").val(DocDate);
-            $("#txtClosingDate").val(ClosingDate);
-        }
-
-       
-
-
-    });//Ready Funcation
-
-    $("#txtCandidateType").change(function () {
-        debugger
-        var CandidateType = $("#txtCandidateType").val();
-
-        if (CandidateType == "Fresher" || CandidateType == "Intern") {
-            $("#txtMinExperience").val("0").prop("readonly", true);
-            $("#txtMaxExperience").val("0").prop("readonly", true);
-        } 
-        else if (CandidateType == "Experience") {
-            $("#txtMinExperience").val("").prop("readonly", false);
-            $("#txtMaxExperience").val("").prop("readonly", false);
-        }
-    });
-
-    function numbervalidate(key) {
-        var presskeys = (key.which) ? key.which : key.presskeys;
-        if (!(presskeys == 8 || presskeys == 46) && (presskeys < 48 || presskeys > 57)) {
-            return false;
-        }
-    }
-
-    function ResetFile()
-    {
-        let allowedExtension = ['image/jpeg', 'image/jpg', 'image/png','application/pdf','application/docx','application/doc','application/msword','application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-        let type = document.getElementById('txtAttachFile').files[0].type;
-
-        if(allowedExtension.indexOf(type)>-1)
-        {
-        }
-        else
-        {
-            Swal.fire({
-                icon: "error",
-                text: "File type should be jpeg/jpg/png/pdf/docx/doc",
+        function DeleteFunction(ResourceId_Encrypted) {
+            const DeleteButtons = Swal.mixin({
+                customClass: {
+                    cancelButton: ' btnpress',
+                    confirmButton: ' btnpress'
+                },
+                buttonsStyling: true
             })
-            //alert('File type should be jpeg/jpg/png/pdf/docx/doc')
-            document.getElementById("txtAttachFile").value = null;
-        }
-        $("#lblFileName").text('');
-    }
-
-    var date = new Date();
-    var dateString = new Date(date.getTime() - (date.getTimezoneOffset() * 60000 )).toISOString().split("T")[0];
-    $("#txtDocDate").val(dateString);
-
-    var today = new Date().toISOString().split('T')[0];
-    document.getElementById("txtClosingDate").setAttribute("min", today);
-
-    //====================StartCompareminOrMaxAge==================
-
-    $("#txtMaxAge,#txtMinAge").change(function(){
-        debugger;
-        var minAge= parseInt(document.getElementById('txtMinAge').value);
-        var maxAge=parseInt(document.getElementById('txtMaxAge').value);
-        if(minAge>maxAge)
-        {
-            $("#ErrorMaxAge").html("Candidate age should be more than Minimum age.");return false;
-        }
-        else
-        {
-            $("#ErrorMaxAge").html("");
-        }
-        if(minAge<18)
-        {
-            $("#ErrorMinAge").html("Candidate should be aged over 18!");return false;
-        }
-        else
-        {
-            $("#ErrorMinAge").html("");
-        }
-    });
-
-
-    $("#txtMaxExperience ,#txtMinExperience").change(function(){
-        debugger;
-        var minExperience= Number(document.getElementById('txtMinExperience').value);
-        var maxExperience=Number(document.getElementById('txtMaxExperience').value);
-        if(minExperience>maxExperience)
-        {
-            $("#ErrorMaxExperience").html("Minimum experience should be not greater than Maximum experience"); return false;
-        }
-        else
-        {
-            $("#ErrorMaxExperience").html("");
-        }
-    });
-
-
-    //$("#txtMinExperience").change(function(){
-    //    debugger;
-    //    var minExperience= parseInt(document.getElementById('txtMinExperience').value);
-    //    var maxExperience=parseInt(document.getElementById('txtMaxExperience').value);
-    //    if(minExperience>maxExperience)
-    //    {
-    //        $("#ErrortxtMinExperience").html("Min experience less than max experience");
-    //    }
-    //    else
-    //    {
-    //        $("#ErrortxtMinExperience").html("");
-    //    }
-    //});
-
-    //====================EndCompareminormaxBuget==================
-
-    //====================StartCompareminormaxBuget==================
-
-    $("#txtMaxBudget ,#txtMinBudget").change(function(){
-        debugger;
-        var minbudget= Number(document.getElementById('txtMinBudget').value);
-        var maxbuget=Number(document.getElementById('txtMaxBudget').value);
-        if(minbudget>maxbuget)
-        {
-            $("#ErrorMaxBudget").html("Min budget should be less than Max budget.");return false;
-        }
-        else
-        {
-            $("#ErrorMaxBudget").html("");
-        }
-    });
-
-
-    //$("#txtMinBudget").change(function(){
-    //    debugger;
-    //    var minbudget= Number(document.getElementById('txtMinBudget').value);
-    //    var maxbuget= Number(document.getElementById('txtMaxBudget').value);
-    //    if(minbudget<maxbuget)
-    //    {
-    //        $("#ErrorMinBudget").html("Min Buget greter Than maxbuget");
-    //    }
-    //    else
-    //    {
-    //        $("#ErrorMinBudget").html("");
-    //    }
-    //});
-
-
-    $("#txtLegalBondDuration").keyup(function() {
-        var LegalboandMonth=  $("#txtLegalBondDuration").val();
-        LegalboandMonth>60 ? $("#ErrortxtLegalBondDuration").html("Not allow greter than 60") : $("#ErrortxtLegalBondDuration").html("");
-    });
-
-    function numbervalidate(key) {
-        var presskeys = (key.which) ? key.which : key.presskeys;
-        if (!(presskeys == 8 || presskeys == 46) && (presskeys < 48 || presskeys > 57)) {
-            return false;
-        }
-    }
-
-
-    //====================EndCompareminormaxBuget==================
-
-    function DeleteFunction(ResourceId_Encrypted) {
-        const DeleteButtons = Swal.mixin({
-            customClass: {
-                cancelButton: ' btnpress',
-                confirmButton: ' btnpress'
-            },
-            buttonsStyling: true
-        })
-        DeleteButtons.fire({
-            title: 'Ready to submit your software request?',
-            text: "Ensure all required fields are completed before submitting.",
-            icon: 'warning',
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: 'No, cancel!',
-            reverseButtons: false,
-            allowOutsideClick: () => {
-                const popup = Swal.getPopup()
-                popup.classList.remove('swal2-show')
-                setTimeout(() => {
-                    popup.classList.add('animate__animated', 'animate__headShake')
-                })
-                setTimeout(() => {
-                    popup.classList.remove('animate__animated', 'animate__headShake')
-                }, 500)
-                return false
-            }
-
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = '@Url.Action("DeleteRecruitment", "ESS_Recruitment_ResourcesRequisition")?ResourceId_Encrypted=' + ResourceId_Encrypted;
-            } else if (
-                /* Read more about handling dismissals below */
-                result.dismiss === Swal.DismissReason.cancel
-            ) {
-
-            }
-        })
-    }
-
-</script>
-
-<script>
-    //use for add regex function
-    jQuery.validator.addMethod(
-    "regex",
-     function(value, element, regexp) {
-         if (regexp.constructor != RegExp)
-             regexp = new RegExp(regexp);
-         else if (regexp.global)
-             regexp.lastIndex = 0;
-         return this.optional(element) || regexp.test(value);
-     },"erreur expression reguliere"
-  );
-
-    $('#SaveResourcesRecruitment').validate({
-        rules: {
-            CmpId: {
-                required: true,
-            },
-            ResourceBranchId:{
-                required: true,
-            },
-            DesignationID: {
-                required: true,
-            },
-            DepartmentID: {
-                required: true,
-            },
-            GradeID: {
-                required: true,
-            },
-            ClosingDate: {
-                required: true,
-            },
-            TotalPositions: {
-                required: true,
-            },
-            PositionTypeID: {
-                required: true,
-            },
-            MinExperience: {
-                required: true,
-            },
-            MaxExperience: {
-                required: true,
-            },
-
-            MinExperience: {
-                required: true,
-            },
-            MaxExperience: {
-                required: true,
-            },
-            Qualification: {
-                required: true,
-            },
-            PreferredLanguage:{
-                required: true,
-            },
-            PreferredLanguage:{
-                required: true,
-            },
-            //PreferredTechnicalSkills:{
-            //    required: true,
-            //},
-            //MusthaveTechnicalSkills:{
-            //    required: true,
-            //},
-            PositionBudgeted:{
-                required: true,
-            },
-            MinAge:{
-                required: true,
-            },
-            MaxAge:{
-                required: true,
-            },
-            PreferredMaritalStatus:{
-                required: true,
-            },
-            PreferredGender:{
-                required: true,
-            },
-            //WorkTypeID:{
-            //    required: true,
-            //},
-            ////PreferredShiftTiming:{
-            ////    required: true,
-            ////},
-            ////Residence:{
-            ////    required: true,
-            ////},
-            //Competencies:{
-            //    required: true,
-            //},
-            //Priority:{
-            //    required: true,
-            //},
-            DocDate:{
-                required: true,
-            },
-            Currency:{
-                required: true,
-            },
-            ClosingDate:{
-                required: true,
-            },
-
-        },
-        messages: {
-            CmpId: {
-                required: "Company name is required",
-            },
-            ResourceBranchId:{
-                required: "Business unit is required",
-            },
-            DesignationID: {
-                required: "Designation name is required",
-            },
-            DepartmentID: {
-                required: "Department name is required",
-            },
-            GradeID: {
-                required: "Grade name is required",
-            },
-            ClosingDate: {
-                required: "Closing date is required",
-            },
-            TotalPositions: {
-                required: "Total positions is required",
-            },
-            PositionTypeID: {
-                required: "Position Type is required",
-            },
-            MinExperience: {
-                required: "Min Experience is required",
-            },
-            MaxExperience: {
-                required: "Max experience is required",
-            },
-            MinExperience: {
-                required:"Min experience is required",
-            },
-
-            Qualification: {
-                required:"Qualification is required",
-            },
-            //PreferredLanguage: {
-            //    required:"Language is required",
-            //},
-            //PreferredTechnicalSkills: {
-            //    required:"Preferred technical skills is required",
-            //},
-            //MusthaveTechnicalSkills: {
-            //    required:"Must have technical skills is required",
-            //},
-            PositionBudgeted:{
-                required:"Position budgeted skills is required",
-            },
-            MinAge:{
-                required: "Min age is required",
-            },
-            MaxAge:{
-                required: "Max age is required",
-            },
-            PreferredMaritalStatus:{
-                required: "Marital status is required",
-            },
-            PreferredGender:{
-                required: "Gender  is required",
-            },
-            //WorkTypeID:{
-            //    required: "Work type  is required",
-            //},
-            //PreferredShiftTiming:{
-            //    required: "Shift timing  is required",
-            //},
-            //Residence:{
-            //    required: "Residence is required",
-            //},
-            //Competencies:{
-            //    required: "Competencies is required",
-            //},
-            //Priority:{
-            //    required:"Priority is required",
-            //},
-            DocDate:{
-                required: "DocDate is required",
-            },
-            Currency:{
-                required: "Currency is required",
-            },
-            ClosingDate:{
-                required: "Closing date is required",
-            },
-
-        },
-    });
-
-    var form = $("#SaveResourcesRecruitment");
-    form.validate();
-    $("#btnSubmit").click(function () {
-        const Approved = Swal.mixin({
-            customClass: {
-                cancelButton: ' btnpress',
-                confirmButton: ' btnpress'
-            },
-            buttonsStyling: true
-        })
-        Approved.fire({
-            title: 'Ready to submit your request?',
-            text: "Ensure all required fields are completed before submitting.",
-            icon: 'warning',
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            showCancelButton: true,
-            confirmButtonText: 'Yes Proceed!',
-            cancelButtonText: 'No, Cancel!',
-            reverseButtons: false,
-
-            allowOutsideClick: () => {
-                const popup = Swal.getPopup()
-                popup.classList.remove('swal2-show')
-                setTimeout(() => {
-                    popup.classList.add('animate__animated', 'animate__headShake')
-                })
-                setTimeout(() => {
-                    popup.classList.remove('animate__animated', 'animate__headShake')
-                }, 500)
-                return false
-            }
-
-        }).then((result) => {
-            if (result.isConfirmed) {
-                debugger;
-                form.valid();
-                if(form.valid()==false)
-                {
-                    $("#txtClosingDate").removeClass("error");
-                    return false;
-                }
-                var Department=$("#txtDepartment").val();
-                var Designation=$("#txtDesignation").val();
-                var ClosingDate=$("#txtClosingDate").val();
-                var CmpId=$("#txtCmpId").val();
-                var BranchId=$("#txtBranchId").val();
-                var txtWorkType=$("#txtWorkType").val();
-                var txtGrade=$("#txtGrade").val();
-                var legalbond=$("#txtLegalBond").val();
-
-
-
-                //if(CmpId=="")
-                //{
-                //    $("#ErrorCmpId").html("Company name is required"); return false;
-                //}
-                //else
-                //{
-                //    $("#ErrorCmpId").html("");
-                //}
-                if(BranchId==0)
-                {
-                    $("#ErrorResourceBranchId").html("Business unit is required"); return false;
-                }
-                else
-                {
-                    $("#ErrorResourceBranchId").html("");
+            DeleteButtons.fire({
+                title: 'Ready to submit your software request?',
+                text: "Ensure all required fields are completed before submitting.",
+                icon: 'warning',
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: false,
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup()
+                    popup.classList.remove('swal2-show')
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                    })
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                    }, 500)
+                    return false
                 }
 
-                if(legalbond=="true")
-                {
-                    var legalbondMonth=$("#txtLegalBondDuration").val();
-                    if(legalbondMonth=="")
-                    {$('#ErrortxtLegalBondDuration').html("Legal bond (month) is required");return false}
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '@Url.Action("DeleteRecruitment", "ESS_Recruitment_ResourcesRequisition")?ResourceId_Encrypted=' + ResourceId_Encrypted;
+                } else if (
+                    /* Read more about handling dismissals below */
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+
+                }
+            })
+        }
+
+    </script>
+
+    <script>
+        //use for add regex function
+        jQuery.validator.addMethod(
+        "regex",
+         function(value, element, regexp) {
+             if (regexp.constructor != RegExp)
+                 regexp = new RegExp(regexp);
+             else if (regexp.global)
+                 regexp.lastIndex = 0;
+             return this.optional(element) || regexp.test(value);
+         },"erreur expression reguliere"
+      );
+
+        $('#SaveResourcesRecruitment').validate({
+            rules: {
+                CmpId: {
+                    required: true,
+                },
+                ResourceBranchId:{
+                    required: true,
+                },
+                DesignationID: {
+                    required: true,
+                },
+                DepartmentID: {
+                    required: true,
+                },
+                GradeID: {
+                    required: true,
+                },
+                ClosingDate: {
+                    required: true,
+                },
+                TotalPositions: {
+                    required: true,
+                },
+                PositionTypeID: {
+                    required: true,
+                },
+                MinExperience: {
+                    required: true,
+                },
+                MaxExperience: {
+                    required: true,
+                },
+
+                MinExperience: {
+                    required: true,
+                },
+                MaxExperience: {
+                    required: true,
+                },
+                Qualification: {
+                    required: true,
+                },
+                PreferredLanguage:{
+                    required: true,
+                },
+                PreferredLanguage:{
+                    required: true,
+                },
+                //PreferredTechnicalSkills:{
+                //    required: true,
+                //},
+                //MusthaveTechnicalSkills:{
+                //    required: true,
+                //},
+                PositionBudgeted:{
+                    required: true,
+                },
+                MinAge:{
+                    required: true,
+                },
+                MaxAge:{
+                    required: true,
+                },
+                PreferredMaritalStatus:{
+                    required: true,
+                },
+                PreferredGender:{
+                    required: true,
+                },
+                //WorkTypeID:{
+                //    required: true,
+                //},
+                ////PreferredShiftTiming:{
+                ////    required: true,
+                ////},
+                ////Residence:{
+                ////    required: true,
+                ////},
+                //Competencies:{
+                //    required: true,
+                //},
+                //Priority:{
+                //    required: true,
+                //},
+                DocDate:{
+                    required: true,
+                },
+                Currency:{
+                    required: true,
+                },
+                ClosingDate:{
+                    required: true,
+                },
+
+            },
+            messages: {
+                CmpId: {
+                    required: "Company name is required",
+                },
+                ResourceBranchId:{
+                    required: "Business unit is required",
+                },
+                DesignationID: {
+                    required: "Designation name is required",
+                },
+                DepartmentID: {
+                    required: "Department name is required",
+                },
+                GradeID: {
+                    required: "Grade name is required",
+                },
+                ClosingDate: {
+                    required: "Closing date is required",
+                },
+                TotalPositions: {
+                    required: "Total positions is required",
+                },
+                PositionTypeID: {
+                    required: "Position Type is required",
+                },
+                MinExperience: {
+                    required: "Min Experience is required",
+                },
+                MaxExperience: {
+                    required: "Max experience is required",
+                },
+                MinExperience: {
+                    required:"Min experience is required",
+                },
+
+                Qualification: {
+                    required:"Qualification is required",
+                },
+                //PreferredLanguage: {
+                //    required:"Language is required",
+                //},
+                //PreferredTechnicalSkills: {
+                //    required:"Preferred technical skills is required",
+                //},
+                //MusthaveTechnicalSkills: {
+                //    required:"Must have technical skills is required",
+                //},
+                PositionBudgeted:{
+                    required:"Position budgeted skills is required",
+                },
+                MinAge:{
+                    required: "Min age is required",
+                },
+                MaxAge:{
+                    required: "Max age is required",
+                },
+                PreferredMaritalStatus:{
+                    required: "Marital status is required",
+                },
+                PreferredGender:{
+                    required: "Gender  is required",
+                },
+                //WorkTypeID:{
+                //    required: "Work type  is required",
+                //},
+                //PreferredShiftTiming:{
+                //    required: "Shift timing  is required",
+                //},
+                //Residence:{
+                //    required: "Residence is required",
+                //},
+                //Competencies:{
+                //    required: "Competencies is required",
+                //},
+                //Priority:{
+                //    required:"Priority is required",
+                //},
+                DocDate:{
+                    required: "DocDate is required",
+                },
+                Currency:{
+                    required: "Currency is required",
+                },
+                ClosingDate:{
+                    required: "Closing date is required",
+                },
+
+            },
+        });
+
+        var form = $("#SaveResourcesRecruitment");
+        form.validate();
+        $("#btnSubmit").click(function () {
+            const Approved = Swal.mixin({
+                customClass: {
+                    cancelButton: ' btnpress',
+                    confirmButton: ' btnpress'
+                },
+                buttonsStyling: true
+            })
+            Approved.fire({
+                title: 'Ready to submit your request?',
+                text: "Ensure all required fields are completed before submitting.",
+                icon: 'warning',
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                showCancelButton: true,
+                confirmButtonText: 'Yes Proceed!',
+                cancelButtonText: 'No, Cancel!',
+                reverseButtons: false,
+
+                allowOutsideClick: () => {
+                    const popup = Swal.getPopup()
+                    popup.classList.remove('swal2-show')
+                    setTimeout(() => {
+                        popup.classList.add('animate__animated', 'animate__headShake')
+                    })
+                    setTimeout(() => {
+                        popup.classList.remove('animate__animated', 'animate__headShake')
+                    }, 500)
+                    return false
                 }
 
-                else{ $('#ErrortxtLegalBondDuration').html("");}
-                //if(Department=="")
-                //{
-                //    $("#ErrorDepartmentID").html("Department name is required"); return false;
-                //}
-                //else
-                //{
-                //    $("#ErrorDepartmentID").html("");
-                //}
-                //if(Designation=="")
-                //{
-                //    $("#ErrorDesignationID").html("Designation is required"); return false;
-                //}
-                //else
-                //{
-                //    $("#ErrorDesignationID").html("");
-                //}
-                //if(txtGrade=="")
-                //{
-                //    $("#ErrorGradeID").html("Grade name is required"); return false;
-                //}
-                //else
-                //{
-                //    $("#ErrorGradeID").html("");
-                //}
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    debugger;
+                    form.valid();
+                    if(form.valid()==false)
+                    {
+                        $("#txtClosingDate").removeClass("error");
+                        return false;
+                    }
+                    var Department=$("#txtDepartment").val();
+                    var Designation=$("#txtDesignation").val();
+                    var ClosingDate=$("#txtClosingDate").val();
+                    var CmpId=$("#txtCmpId").val();
+                    var BranchId=$("#txtBranchId").val();
+                    var txtWorkType=$("#txtWorkType").val();
+                    var txtGrade=$("#txtGrade").val();
+                    var legalbond=$("#txtLegalBond").val();
 
-                //if(txtWorkType=="")
-                //{
-                //    $("#ErrorWorkTypeID").html("Work type is required"); return false;
-                //}
-                //else
-                //{
-                //    $("#ErrorWorkTypeID").html("");
-                //}
 
-                var ResourceEncrypted=$("#ResourceId_Encrypted").val();
-                $(".Userloaderbg").css("display", "flex");
-                $.ajax({
-                    url: '@Url.Action("IsRecruitmentExists", "ESS_Recruitment_ResourcesRequisition")',
-                    method:"get",
-                    data:{Designation:Designation,ClosingDate:ClosingDate,ResourceEncrypted:ResourceEncrypted,CmpId:CmpId,BranchId:BranchId, Department:Department, Grade:txtGrade},
-                    success:function(response){
-                        debugger;
-                        var Message1 = response.Message;
-                        var Icon1 = response.Icon;
-                        if (response.Icon=="error") {
-                            $(".Userloaderbg").css("display", "none");
-                            if (Message1 != null) {
+
+                    //if(CmpId=="")
+                    //{
+                    //    $("#ErrorCmpId").html("Company name is required"); return false;
+                    //}
+                    //else
+                    //{
+                    //    $("#ErrorCmpId").html("");
+                    //}
+                    if(BranchId==0)
+                    {
+                        $("#ErrorResourceBranchId").html("Business unit is required"); return false;
+                    }
+                    else
+                    {
+                        $("#ErrorResourceBranchId").html("");
+                    }
+
+                    if(legalbond=="true")
+                    {
+                        var legalbondMonth=$("#txtLegalBondDuration").val();
+                        if(legalbondMonth=="")
+                        {$('#ErrortxtLegalBondDuration').html("Legal bond (month) is required");return false}
+                    }
+
+                    else{ $('#ErrortxtLegalBondDuration').html("");}
+                    //if(Department=="")
+                    //{
+                    //    $("#ErrorDepartmentID").html("Department name is required"); return false;
+                    //}
+                    //else
+                    //{
+                    //    $("#ErrorDepartmentID").html("");
+                    //}
+                    //if(Designation=="")
+                    //{
+                    //    $("#ErrorDesignationID").html("Designation is required"); return false;
+                    //}
+                    //else
+                    //{
+                    //    $("#ErrorDesignationID").html("");
+                    //}
+                    //if(txtGrade=="")
+                    //{
+                    //    $("#ErrorGradeID").html("Grade name is required"); return false;
+                    //}
+                    //else
+                    //{
+                    //    $("#ErrorGradeID").html("");
+                    //}
+
+                    //if(txtWorkType=="")
+                    //{
+                    //    $("#ErrorWorkTypeID").html("Work type is required"); return false;
+                    //}
+                    //else
+                    //{
+                    //    $("#ErrorWorkTypeID").html("");
+                    //}
+
+                    var ResourceEncrypted=$("#ResourceId_Encrypted").val();
+                    $(".Userloaderbg").css("display", "flex");
+                    $.ajax({
+                        url: '@Url.Action("IsRecruitmentExists", "ESS_Recruitment_ResourcesRequisition")',
+                        method:"get",
+                        data:{Designation:Designation,ClosingDate:ClosingDate,ResourceEncrypted:ResourceEncrypted,CmpId:CmpId,BranchId:BranchId, Department:Department, Grade:txtGrade},
+                        success:function(response){
+                            debugger;
+                            var Message1 = response.Message;
+                            var Icon1 = response.Icon;
+                            if (response.Icon=="error") {
+                                $(".Userloaderbg").css("display", "none");
                                 if (Message1 != null) {
-                                    Swal.fire({
-                                        icon: Icon1,
-                                        text: Message1,
-                                        allowOutsideClick: () => {
-                                            const popup = Swal.getPopup()
-                                            popup.classList.remove('swal2-show')
-                                            setTimeout(() => {
-                                                popup.classList.add('animate__animated', 'animate__headShake')
-                                            })
-                                            setTimeout(() => {
-                                                popup.classList.remove('animate__animated', 'animate__headShake')
-                                            }, 500)
-                                            return false
-                                        }
-                                    });
+                                    if (Message1 != null) {
+                                        Swal.fire({
+                                            icon: Icon1,
+                                            text: Message1,
+                                            allowOutsideClick: () => {
+                                                const popup = Swal.getPopup()
+                                                popup.classList.remove('swal2-show')
+                                                setTimeout(() => {
+                                                    popup.classList.add('animate__animated', 'animate__headShake')
+                                                })
+                                                setTimeout(() => {
+                                                    popup.classList.remove('animate__animated', 'animate__headShake')
+                                                }, 500)
+                                                return false
+                                            }
+                                        });
+                                    }
                                 }
                             }
+                            else{
+                                $(".Userloaderbg").css("display", "flex");
+                                //$("#SaveResourcesRecruitment").submit(function (event) {
+                                //    // Set hidden field value before submitting
+                                //    $("#hiddenJdTemplate").val();
+                                //});
+                                $("#SaveResourcesRecruitment").submit();
+
+                            }
                         }
-                        else{
-                            $(".Userloaderbg").css("display", "flex");
-                            //$("#SaveResourcesRecruitment").submit(function (event) {
-                            //    // Set hidden field value before submitting
-                            //    $("#hiddenJdTemplate").val();
-                            //});
-                            $("#SaveResourcesRecruitment").submit();
+                    });
 
-                        }
-                    }
-                });
+                } else if (
+                    /* Read more about handling dismissals below */
+                        result.dismiss === Swal.DismissReason.cancel
+                        ) {
 
-            } else if (
-                /* Read more about handling dismissals below */
-                    result.dismiss === Swal.DismissReason.cancel
-                    ) {
+                }
+            })
+        });
+    </script>
 
-            }
-        })
-    });
-</script>
+    <script>
+        function millisecTodate(milliDate) {
+            var date = new Date(milliDate);
+            var mnth = ("0" + (date.getMonth() + 1)).slice(-2);
+            var day = ("0" + date.getDate()).slice(-2);
+            var hours = date.getHours();
+            var minutes = date.getMinutes();
+            hours = hours < 10 ? '0'+hours : hours;
+            minutes = minutes < 10 ? '0'+minutes : minutes;
+            var ddmmyyyy = [date.getFullYear(), mnth,day].join("-");
+            return ddmmyyyy;
+        }
 
-<script>
-    function millisecTodate(milliDate) {
-        var date = new Date(milliDate);
-        var mnth = ("0" + (date.getMonth() + 1)).slice(-2);
-        var day = ("0" + date.getDate()).slice(-2);
-        var hours = date.getHours();
-        var minutes = date.getMinutes();
-        hours = hours < 10 ? '0'+hours : hours;
-        minutes = minutes < 10 ? '0'+minutes : minutes;
-        var ddmmyyyy = [date.getFullYear(), mnth,day].join("-");
-        return ddmmyyyy;
-    }
+        function convertDate(data) {
+            var getdate = parseInt(data.replace("/Date(", "").replace(")/", ""));
+            var date = millisecTodate(getdate);
+            return date;
+        }
+    </script>
 
-    function convertDate(data) {
-        var getdate = parseInt(data.replace("/Date(", "").replace(")/", ""));
-        var date = millisecTodate(getdate);
-        return date;
-    }
-</script>
+    <script>
+        $(".summernote").summernote({
+            placeholder: '',
+            height: "300"
+        });
 
-<script>
-    $(".summernote").summernote({
-        placeholder: '',
-        height: "300"
-    });
+        debugger
+        var isViewMode = '@ViewBag.EditOrView' == "View";
+        if (isViewMode) {
+            disableFormElements();
+            $("#btnSubmit").hide();
+            $(".panel-title").text("Resource Request - View");
+        }
 
-    debugger
-    var isViewMode = '@ViewBag.EditOrView' == "View";
-    if (isViewMode) {
-        disableFormElements();
-        $("#btnSubmit").hide();
-        $(".panel-title").text("Resource Request - View");
-    }
+        function disableFormElements() {
+            $("input, select, textarea, button").not("#btnGetList").prop("disabled", true);
+            $(".summernote").summernote("disable");
+            $("#SaveResourcesRecruitment").addClass("form-disabled");
+            $("button").not("#btnGetList").off("click");
+        };
 
-    function disableFormElements() {
-        $("input, select, textarea, button").not("#btnGetList").prop("disabled", true);
-        $(".summernote").summernote("disable");
-        $("#SaveResourcesRecruitment").addClass("form-disabled");
-        $("button").not("#btnGetList").off("click");
-    };
-    
-</script>
+    </script>
