@@ -1,27 +1,51 @@
 ﻿
 @{
     ViewBag.Title = "ESS_VMSDashboard";
-    Layout = "~/Views/Shared/_LayoutPageSmartHR.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<!-- Highcharts -->
+
+
+  <!-- Highcharts -->
 <script src="https://cdn.jsdelivr.net/npm/highcharts@12.5.0/highcharts.min.js"></script>
+
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highcharts/12.4.0/css/highcharts.css" />
 
-<script>
-    $(document).ready(function () {
 
-        $('.nav-link').removeClass('active');
-        $('.tab-pane').removeClass('show active');
-
-        $('#Menu-tab').addClass('active');
-        $('#Menu-tab-pane').addClass('show active');
-
-        $('#DashboardMenulink').addClass('active');
-    });
-</script>
+<!-- Feather Icon JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.29.2/feather.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.35.0/tabler-icons.min.css" integrity="sha512-gzw5zNP2TRq+DKyAqZfDclaTG4dOrGJrwob2Fc8xwcJPDPVij0HowLIMZ8c1NefFM0OZZYUUUNoPfcoI5jqudw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 
+<style>
+    body {
+        font-family: "Roboto", sans-serif;
+        font-size: 14px;
+        line-height: 1.5;
+        background-color: #F8F9FA;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .page-wrapper {
+        -webkit-transition: all 0.5s ease;
+        -ms-transition: all 0.5s ease;
+        transition: all 0.5s ease;
+        margin: 0 0 0 252px;
+        padding: 50px 0 0;
+        position: relative;
+        left: 0;
+        -webkit-transition: all 0.2s ease;
+        -ms-transition: all 0.2s ease;
+        transition: all 0.2s ease;
+    }
+
+        .page-wrapper .content {
+            padding: 24px;
+            padding-bottom: 0;
+            min-height: calc(100vh - 105px);
+        }
+</style>
 
 
 <style>
@@ -29,7 +53,32 @@
                       VMS DASHBOARD INTERNAL STYLES
                       (Self-contained CSS for the dashboard content)
                       ========================================== */
+    .vms-dashboard .card {
+        border-radius: 10px;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        margin-bottom: 24px;
+        background-color: #fff;
+        display: flex;
+        flex-direction: column;
+        word-wrap: break-word;
+    }
 
+    .vms-dashboard .card-header {
+        background-color: transparent;
+        padding: 1rem 1.25rem;
+        border-bottom: 1px solid rgba(0, 0, 0, .05);
+    }
+
+    .vms-dashboard .card-title {
+        font-weight: 600;
+        font-size: 16px;
+        color: #1D2A3A;
+    }
+
+    .vms-dashboard .card-body {
+        flex: 1 1 auto;
+        padding: 1.25rem;
+    }
 
     .vms-dashboard .avatar {
         display: inline-flex;
@@ -230,721 +279,718 @@
 </style>
 
 
-<!-- ===== MAIN CONTENT ===== -->
-<div class="content vms-dashboard">
 
-    <!-- Breadcrumb -->
-    <div class="d-md-flex d-block align-items-center justify-content-between page-breadcrumb mb-3">
-        <div class="my-auto mb-2">
-            <h2 class="mb-1">Visitor Management Dashboard</h2>
-            <nav>
-                <ol class="breadcrumb mb-0">
-                    <li class="breadcrumb-item">
-                        <a href="index.html"><i class="ti ti-smart-home"></i></a>
-                    </li>
-                    <li class="breadcrumb-item">
-                        <a href="@Url.Action("ESS_Dashboard", "ESS_Dashboard", new { area = "Dashboard" })" class="fs-14"> All Dashboard </a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">VMS Dashboard</li>
-                </ol>
-            </nav>
+<!-- Page Wrapper -->
+<div id="content" class="app-content">
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="content vms-dashboard">
+
+
+        <!-- Page Header -->
+        <div class="d-md-flex d-block align-items-center justify-content-between mb-4 mt-2">
+            <div class="my-auto mb-2 mb-md-0">
+                <h3 class="page-title mb-1">Visitor Management Dashboard</h3>
+                <p class=" mb-0">Overview of visitor activity, approvals, and security alerts.</p>
+            </div>
+            <div class="d-flex my-xl-auto right-content align-items-center flex-wrap gap-2">
+                <a href="#" class="btn btn-primary d-flex align-items-center">
+                    <i class="ti ti-plus me-2"></i>New
+                    Visitor Check-in
+                </a>
+            </div>
         </div>
-        <div class="d-flex my-xl-auto right-content align-items-center flex-wrap">
 
-
-            <a href="#" class="btn btn-primary mb-2"> <i class="ti ti-plus"></i> New Visitor Check-in</a>
-        </div>
-    </div>
-    <!-- /Breadcrumb -->
-    <!-- 1 Top KPI Cards (Summary Fields) -->
-    <div class="row">
-        <div class="col-xl-3 col-sm-6 col-12 d-flex">
-            <div class="card flex-fill shadow-sm border-0 mb-3">
-                <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div>
-                            <span class="fs-13 fw-medium  mb-1 text-truncate d-block">
-                                Total
-                                Visitors Today
+        <!-- 1 Top KPI Cards (Summary Fields) -->
+        <div class="row">
+            <div class="col-xl-3 col-sm-6 col-12 d-flex">
+                <div class="card flex-fill shadow-sm border-0 mb-3">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <span class="fs-13 fw-medium  mb-1 text-truncate d-block">
+                                    Total
+                                    Visitors Today
+                                </span>
+                                <h4 class="fs-22 fw-bold mb-0">125</h4>
+                            </div>
+                            <span class="avatar avatar-md bg-primary-transparent text-primary rounded-circle">
+                                <i class="ti ti-users fs-20"></i>
                             </span>
-                            <h4 class="fs-22 fw-bold mb-0">125</h4>
                         </div>
-                        <span class="avatar avatar-md bg-primary-transparent text-primary rounded-circle">
-                            <i class="ti ti-users fs-20"></i>
-                        </span>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-xl-3 col-sm-6 col-12 d-flex">
-            <div class="card flex-fill shadow-sm border-0 mb-3">
-                <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div>
-                            <span class="fs-13 fw-medium  mb-1 text-truncate d-block">
-                                Currently
-                                Inside
+            <div class="col-xl-3 col-sm-6 col-12 d-flex">
+                <div class="card flex-fill shadow-sm border-0 mb-3">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <span class="fs-13 fw-medium  mb-1 text-truncate d-block">
+                                    Currently
+                                    Inside
+                                </span>
+                                <h4 class="fs-22 fw-bold mb-0 text-success">42</h4>
+                            </div>
+                            <span class="avatar avatar-md bg-success-transparent text-success rounded-circle">
+                                <i class="ti ti-building-community fs-20"></i>
                             </span>
-                            <h4 class="fs-22 fw-bold mb-0 text-success">42</h4>
                         </div>
-                        <span class="avatar avatar-md bg-success-transparent text-success rounded-circle">
-                            <i class="ti ti-building-community fs-20"></i>
-                        </span>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-xl-3 col-sm-6 col-12 d-flex">
-            <div class="card flex-fill shadow-sm border-0 mb-3">
-                <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div>
-                            <span class="fs-13 fw-medium  mb-1 text-truncate d-block">
-                                Checked Out
-                                Today
+            <div class="col-xl-3 col-sm-6 col-12 d-flex">
+                <div class="card flex-fill shadow-sm border-0 mb-3">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <span class="fs-13 fw-medium  mb-1 text-truncate d-block">
+                                    Checked Out
+                                    Today
+                                </span>
+                                <h4 class="fs-22 fw-bold mb-0 text-info">65</h4>
+                            </div>
+                            <span class="avatar avatar-md bg-info-transparent text-info rounded-circle">
+                                <i class="ti ti-logout fs-20"></i>
                             </span>
-                            <h4 class="fs-22 fw-bold mb-0 text-info">65</h4>
                         </div>
-                        <span class="avatar avatar-md bg-info-transparent text-info rounded-circle">
-                            <i class="ti ti-logout fs-20"></i>
-                        </span>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-xl-3 col-sm-6 col-12 d-flex">
-            <div class="card flex-fill shadow-sm border-0 mb-3">
-                <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div>
-                            <span class="fs-13 fw-medium  mb-1 text-truncate d-block">
-                                Expected
-                                Visitors Today
+            <div class="col-xl-3 col-sm-6 col-12 d-flex">
+                <div class="card flex-fill shadow-sm border-0 mb-3">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <span class="fs-13 fw-medium  mb-1 text-truncate d-block">
+                                    Expected
+                                    Visitors Today
+                                </span>
+                                <h4 class="fs-22 fw-bold mb-0 text-primary">18</h4>
+                            </div>
+                            <span class="avatar avatar-md bg-primary-transparent text-primary rounded-circle">
+                                <i class="ti ti-calendar-time fs-20"></i>
                             </span>
-                            <h4 class="fs-22 fw-bold mb-0 text-primary">18</h4>
                         </div>
-                        <span class="avatar avatar-md bg-primary-transparent text-primary rounded-circle">
-                            <i class="ti ti-calendar-time fs-20"></i>
-                        </span>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="row">
-        <div class="col-xl-4 col-sm-6 col-12 d-flex">
-            <div class="card flex-fill shadow-sm border-0 mb-3">
-                <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div>
-                            <span class="fs-13 fw-medium  mb-1 text-truncate d-block">
-                                Requests
-                                Pending Approval
+        <div class="row">
+            <div class="col-xl-4 col-sm-6 col-12 d-flex">
+                <div class="card flex-fill shadow-sm border-0 mb-3">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <span class="fs-13 fw-medium  mb-1 text-truncate d-block">
+                                    Requests
+                                    Pending Approval
+                                </span>
+                                <h4 class="fs-22 fw-bold mb-0 text-warning">15</h4>
+                            </div>
+                            <span class="avatar avatar-md bg-warning-transparent text-warning rounded-circle">
+                                <i class="ti ti-clock-pause fs-20"></i>
                             </span>
-                            <h4 class="fs-22 fw-bold mb-0 text-warning">15</h4>
                         </div>
-                        <span class="avatar avatar-md bg-warning-transparent text-warning rounded-circle">
-                            <i class="ti ti-clock-pause fs-20"></i>
-                        </span>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-xl-4 col-sm-6 col-12 d-flex">
-            <div class="card flex-fill shadow-sm border-0 mb-3">
-                <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div>
-                            <span class="fs-13 fw-medium  mb-1 text-truncate d-block">
-                                Blacklisted
-                                Visitors
+            <div class="col-xl-4 col-sm-6 col-12 d-flex">
+                <div class="card flex-fill shadow-sm border-0 mb-3">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <span class="fs-13 fw-medium  mb-1 text-truncate d-block">
+                                    Blacklisted
+                                    Visitors
+                                </span>
+                                <h4 class="fs-22 fw-bold mb-0 text-danger">2</h4>
+                            </div>
+                            <span class="avatar avatar-md bg-danger-transparent text-danger rounded-circle">
+                                <i class="ti ti-shield-x fs-20"></i>
                             </span>
-                            <h4 class="fs-22 fw-bold mb-0 text-danger">2</h4>
                         </div>
-                        <span class="avatar avatar-md bg-danger-transparent text-danger rounded-circle">
-                            <i class="ti ti-shield-x fs-20"></i>
-                        </span>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-xl-4 col-sm-6 col-12 d-flex">
-            <div class="card flex-fill shadow-sm border-0 mb-3">
-                <div class="card-body">
-                    <div class="d-flex align-items-center justify-content-between">
-                        <div>
-                            <span class="fs-13 fw-medium  mb-1 text-truncate d-block">
-                                Repeat
-                                Visitors
+            <div class="col-xl-4 col-sm-6 col-12 d-flex">
+                <div class="card flex-fill shadow-sm border-0 mb-3">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <span class="fs-13 fw-medium  mb-1 text-truncate d-block">
+                                    Repeat
+                                    Visitors
+                                </span>
+                                <h4 class="fs-22 fw-bold mb-0 text-secondary">38</h4>
+                            </div>
+                            <span class="avatar avatar-md bg-secondary-transparent text-secondary rounded-circle">
+                                <i class="ti ti-user-check fs-20"></i>
                             </span>
-                            <h4 class="fs-22 fw-bold mb-0 text-secondary">38</h4>
-                        </div>
-                        <span class="avatar avatar-md bg-secondary-transparent text-secondary rounded-circle">
-                            <i class="ti ti-user-check fs-20"></i>
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ðŸ“ˆ Charts: Visitor Trend Chart | Visitor Type Chart -->
-    <div class="row">
-        <div class="col-md-6 mb-3 d-flex">
-            <div class="card shadow-sm border-0 flex-fill">
-                <div class="card-header border-0 pb-0 d-flex justify-content-between align-items-center">
-                    <h5 class="card-title mb-0">Visitor Trend (Today)</h5>
-                    <select class="form-select form-select-sm w-auto">
-                        <option>Today</option>
-                        <option>This Week</option>
-                    </select>
-                </div>
-                <div class="card-body">
-                    <div id="visitorTrendChart" style="height: 300px;"></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 mb-3 d-flex">
-            <div class="card shadow-sm border-0 flex-fill">
-                <div class="card-header border-0 pb-0 d-flex justify-content-between align-items-center">
-                    <h5 class="card-title mb-0">Visitor Type Distribution</h5>
-                    <select class="form-select form-select-sm w-auto">
-                        <option>Today</option>
-                        <option>This Month</option>
-                    </select>
-                </div>
-                <div class="card-body">
-                    <div id="visitorTypeChart" style="height: 300px;"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 2 Visitors Inside the Building -->
-    <div class="row">
-        <div class="col-12 mb-3">
-            <div class="card shadow-sm border-0">
-                <div class="card-header border-bottom d-flex align-items-center justify-content-between">
-                    <h5 class="card-title mb-0">Visitors Inside the Building</h5>
-                    <a href="#" class="btn btn-sm btn-outline-primary">View All</a>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover table-center custom-table mb-0">
-                            <thead class="thead-light">
-                                <tr>
-                                    <th>Visitor Name</th>
-                                    <th>Company</th>
-                                    <th>Visiting Employee</th>
-                                    <th>Check-in Time</th>
-                                    <th>Location / Dept</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <img src="~/assets/AkashAsset/img/avatar-05.jpg" class="avatar avatar-sm rounded-circle me-2" alt="img">
-                                            <span class="fs-14 fw-medium text-dark">Rajesh Kumar</span>
-                                        </div>
-                                    </td>
-                                    <td>Tech Mahindra</td>
-                                    <td>Anjali Sharma (HR)</td>
-                                    <td>09:15 AM</td>
-                                    <td>Conference Room A</td>
-                                    <td>
-                                        <span class="badge bg-success-transparent text-success border border-success border-opacity-25">Inside</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <span class="avatar avatar-sm rounded-circle bg-info-transparent text-info me-2 fw-bold">AP</span>
-                                            <span class="fs-14 fw-medium text-dark">Amit Patel</span>
-                                        </div>
-                                    </td>
-                                    <td>Patel Aggregates</td>
-                                    <td>Sanjay Gupta (Sales)</td>
-                                    <td>10:30 AM</td>
-                                    <td>HR Dept</td>
-                                    <td>
-                                        <span class="badge bg-warning-transparent text-warning border border-warning border-opacity-25">Meeting</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <img src="~/assets/AkashAsset/img/avatar-25.jpg" class="avatar avatar-sm rounded-circle me-2" alt="img">
-                                            <span class="fs-14 fw-medium text-dark">Vikram Singh</span>
-                                        </div>
-                                    </td>
-                                    <td>Singh Logistics</td>
-                                    <td>Priya Iyer (Dev)</td>
-                                    <td>11:45 AM</td>
-                                    <td>Reception</td>
-                                    <td>
-                                        <span class="badge bg-info-transparent text-info border border-info border-opacity-25">Waiting</span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 6 Upcoming Visitors | 7 Visitor Approval Requests -->
-    <div class="row">
-        <div class="col-md-6 mb-3 d-flex">
-            <div class="card shadow-sm border-0 flex-fill">
-                <div class="card-header border-bottom d-flex align-items-center justify-content-between">
-                    <h5 class="card-title mb-0">Upcoming / Pre-Approved Visitors</h5>
-                    <a href="#" class="btn btn-sm btn-outline-primary">View All</a>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover table-center custom-table mb-0">
-                            <thead class="thead-light">
-                                <tr>
-                                    <th>Visitor & Company</th>
-                                    <th>Meeting With</th>
-                                    <th>Time</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <div class="fs-14 fw-medium text-dark">Meera Nair</div>
-                                        <div class="fs-12 ">Freelance Designer</div>
-                                    </td>
-                                    <td>Rohan Mehta</td>
-                                    <td>
-                                        <span class="badge bg-primary-transparent text-primary">
-                                            02:00
-                                            PM
-                                        </span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="fs-14 fw-medium text-dark">Arjun Das</div>
-                                        <div class="fs-12 ">Tech Solutions</div>
-                                    </td>
-                                    <td>Deepak Verma</td>
-                                    <td>
-                                        <span class="badge bg-primary-transparent text-primary">
-                                            03:30
-                                            PM
-                                        </span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-6 mb-3 d-flex">
-            <div class="card shadow-sm border-0 flex-fill">
-                <div class="card-header border-bottom d-flex align-items-center justify-content-between">
-                    <h5 class="card-title mb-0">Pending Approval Requests</h5>
-                    <a href="#" class="btn btn-sm btn-outline-primary">View All</a>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover table-center custom-table mb-0">
-                            <thead class="thead-light">
-                                <tr>
-                                    <th>Visitor Name</th>
-                                    <th>Host Employee</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <div class="fs-14 fw-medium text-dark">Kavita Reddy</div>
-                                        <div class="fs-12 ">Interview</div>
-                                    </td>
-                                    <td>Tanmay Bose</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-success px-2 py-1"><i class="ti ti-check"></i></button>
-                                        <button class="btn btn-sm btn-danger px-2 py-1"><i class="ti ti-x"></i></button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="fs-14 fw-medium text-dark">Chetan Bhagat</div>
-                                        <div class="fs-12 ">Vendor Delivery</div>
-                                    </td>
-                                    <td>Anita Desai</td>
-                                    <td>
-                                        <button class="btn btn-sm btn-success px-2 py-1"><i class="ti ti-check"></i></button>
-                                        <button class="btn btn-sm btn-danger px-2 py-1"><i class="ti ti-x"></i></button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 5️⃣ Department-wise Visits & Alerts Panel -->
-    <div class="row">
-        <!-- Department chart -->
-        <div class="col-md-6 mb-3 d-flex">
-            <div class="card shadow-sm border-0 flex-fill">
-                <div class="card-header border-0 pb-0 d-flex justify-content-between align-items-center">
-                    <h5 class="card-title mb-0">Department-wise Visits</h5>
-                </div>
-                <div class="card-body">
-                    <div id="departmentVisitsChart" style="height: 300px;"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-6 mb-3 d-flex">
-            <div class="card shadow-sm border-0 flex-fill">
-                <div class="card-header border-bottom">
-                    <h5 class="card-title mb-0">Alerts Panel</h5>
-                </div>
-                <div class="card-body d-flex flex-column gap-3">
-                    <div class="p-3 bg-warning-transparent rounded d-flex align-items-center border-start border-warning border-4">
-                        <span class="avatar avatar-sm bg-warning text-white rounded-circle me-3">
-                            <i class="ti ti-alert-triangle"></i>
-                        </span>
-                        <div>
-                            <h6 class="mb-1 fs-14 fw-bold">Approval Pending</h6>
-                            <p class="mb-0 fs-13 ">5 visitors waiting for approval.</p>
-                        </div>
-                    </div>
-                    <div class="p-3 bg-danger-transparent rounded d-flex align-items-center border-start border-danger border-4">
-                        <span class="avatar avatar-sm bg-danger text-white rounded-circle me-3">
-                            <i class="ti ti-clock-exclamation"></i>
-                        </span>
-                        <div>
-                            <h6 class="mb-1 fs-14 fw-bold">Overstay Alert</h6>
-                            <p class="mb-0 fs-13 ">2 visitors inside for more than 4 hours.</p>
-                        </div>
-                    </div>
-                    <div class="p-3 bg-info-transparent rounded d-flex align-items-center border-start border-info border-4 mb-0">
-                        <span class="avatar avatar-sm bg-info text-white rounded-circle me-3">
-                            <i class="ti ti-bell-ringing"></i>
-                        </span>
-                        <div>
-                            <h6 class="mb-1 fs-14 fw-bold">Arrival Expected</h6>
-                            <p class="mb-0 fs-13 ">3 expected visitors arriving soon.</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- 8 Blacklisted / Restricted Visitors | 9 Frequent Visitors -->
-    <div class="row">
-        <div class="col-md-6 mb-3 d-flex">
-            <div class="card shadow-sm border-0 flex-fill">
-                <div class="card-header border-bottom d-flex align-items-center justify-content-between">
-                    <h5 class="card-title mb-0 text-danger">
-                        <i class="ti ti-shield-x me-2"></i>Blacklisted /
-                        Restricted Visitors
-                    </h5>
-                    <a href="#" class="btn btn-sm btn-outline-danger">View All</a>
+        <!-- ðŸ“ˆ Charts: Visitor Trend Chart | Visitor Type Chart -->
+        <div class="row">
+            <div class="col-md-6 mb-3 d-flex">
+                <div class="card shadow-sm border-0 flex-fill">
+                    <div class="card-header border-0 pb-0 d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Visitor Trend (Today)</h5>
+                        <select class="form-select form-select-sm w-auto">
+                            <option>Today</option>
+                            <option>This Week</option>
+                        </select>
+                    </div>
+                    <div class="card-body">
+                        <div id="visitorTrendChart" style="height: 300px;"></div>
+                    </div>
                 </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover table-center custom-table mb-0">
-                            <thead class="thead-light">
-                                <tr>
-                                    <th>Visitor Name</th>
-                                    <th>Reason</th>
-                                    <th>Date Added</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <div class="fs-14 fw-medium text-dark">Ravi Shastri</div>
-                                    </td>
-                                    <td><span class="text-danger fs-13">Aggressive Behavior</span></td>
-                                    <td>15 Jan 2026</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="fs-14 fw-medium text-dark">Tarun Gill</div>
-                                    </td>
-                                    <td><span class="text-danger fs-13">Harassment Policy</span></td>
-                                    <td>10 Feb 2026</td>
-                                </tr>
-                            </tbody>
-                        </table>
+            </div>
+            <div class="col-md-6 mb-3 d-flex">
+                <div class="card shadow-sm border-0 flex-fill">
+                    <div class="card-header border-0 pb-0 d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Visitor Type Distribution</h5>
+                        <select class="form-select form-select-sm w-auto">
+                            <option>Today</option>
+                            <option>This Month</option>
+                        </select>
+                    </div>
+                    <div class="card-body">
+                        <div id="visitorTypeChart" style="height: 300px;"></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-6 mb-3 d-flex">
-            <div class="card shadow-sm border-0 flex-fill">
-                <div class="card-header border-bottom d-flex align-items-center justify-content-between">
-                    <h5 class="card-title mb-0">Frequent Visitors</h5>
-                    <a href="#" class="btn btn-sm btn-outline-primary">View All</a>
-                </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover table-center custom-table mb-0">
-                            <thead class="thead-light">
-                                <tr>
-                                    <th>Visitor & Company</th>
-                                    <th>Total Visits</th>
-                                    <th>Last Visit</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <div class="fs-14 fw-medium text-dark">Bipin Chandra</div>
-                                        <div class="fs-12 ">Chandra Logistics</div>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-secondary-transparent text-secondary">
-                                            42
-                                            Visits
-                                        </span>
-                                    </td>
-                                    <td>09 Mar 2026</td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <div class="fs-14 fw-medium text-dark">Dinesh Karthik</div>
-                                        <div class="fs-12 ">Corporate</div>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-secondary-transparent text-secondary">
-                                            28
-                                            Visits
-                                        </span>
-                                    </td>
-                                    <td>01 Mar 2026</td>
-                                </tr>
-                            </tbody>
-                        </table>
+        <!-- 2 Visitors Inside the Building -->
+        <div class="row">
+            <div class="col-12 mb-3">
+                <div class="card shadow-sm border-0">
+                    <div class="card-header border-bottom d-flex align-items-center justify-content-between">
+                        <h5 class="card-title mb-0">Visitors Inside the Building</h5>
+                        <a href="#" class="btn btn-sm btn-outline-primary">View All</a>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-center custom-table mb-0">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Visitor Name</th>
+                                        <th>Company</th>
+                                        <th>Visiting Employee</th>
+                                        <th>Check-in Time</th>
+                                        <th>Location / Dept</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="assets/img/avatar-05.jpg" class="avatar avatar-sm rounded-circle me-2" alt="img">
+                                                <span class="fs-14 fw-medium text-dark">Michael Scott</span>
+                                            </div>
+                                        </td>
+                                        <td>Dunder Mifflin</td>
+                                        <td>Sarah Smith (HR)</td>
+                                        <td>09:15 AM</td>
+                                        <td>Conference Room A</td>
+                                        <td>
+                                            <span class="badge bg-success-transparent text-success border border-success border-opacity-25">Inside</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <span class="avatar avatar-sm rounded-circle bg-info-transparent text-info me-2 fw-bold">DJ</span>
+                                                <span class="fs-14 fw-medium text-dark">Dwight Schrute</span>
+                                            </div>
+                                        </td>
+                                        <td>Schrute Farms</td>
+                                        <td>John Doe (Sales)</td>
+                                        <td>10:30 AM</td>
+                                        <td>HR Dept</td>
+                                        <td>
+                                            <span class="badge bg-warning-transparent text-warning border border-warning border-opacity-25">Meeting</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="assets/img/avatar-04.jpg" class="avatar avatar-sm rounded-circle me-2" alt="img">
+                                                <span class="fs-14 fw-medium text-dark">Jim Halpert</span>
+                                            </div>
+                                        </td>
+                                        <td>Athlead</td>
+                                        <td>Alice Cooper (Dev)</td>
+                                        <td>11:45 AM</td>
+                                        <td>Reception</td>
+                                        <td>
+                                            <span class="badge bg-info-transparent text-info border border-info border-opacity-25">Waiting</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- 6 Upcoming Visitors | 7 Visitor Approval Requests -->
+        <div class="row">
+            <div class="col-md-6 mb-3 d-flex">
+                <div class="card shadow-sm border-0 flex-fill">
+                    <div class="card-header border-bottom d-flex align-items-center justify-content-between">
+                        <h5 class="card-title mb-0">Upcoming / Pre-Approved Visitors</h5>
+                        <a href="#" class="btn btn-sm btn-outline-primary">View All</a>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-center custom-table mb-0">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Visitor & Company</th>
+                                        <th>Meeting With</th>
+                                        <th>Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="fs-14 fw-medium text-dark">Pam Beesly</div>
+                                            <div class="fs-12 ">Freelance Art</div>
+                                        </td>
+                                        <td>Michael Brown</td>
+                                        <td>
+                                            <span class="badge bg-primary-transparent text-primary">
+                                                02:00
+                                                PM
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="fs-14 fw-medium text-dark">Ryan Howard</div>
+                                            <div class="fs-12 ">Tech Solutions</div>
+                                        </td>
+                                        <td>David Jones</td>
+                                        <td>
+                                            <span class="badge bg-primary-transparent text-primary">
+                                                03:30
+                                                PM
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-3 d-flex">
+                <div class="card shadow-sm border-0 flex-fill">
+                    <div class="card-header border-bottom d-flex align-items-center justify-content-between">
+                        <h5 class="card-title mb-0">Pending Approval Requests</h5>
+                        <a href="#" class="btn btn-sm btn-outline-primary">View All</a>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-center custom-table mb-0">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Visitor Name</th>
+                                        <th>Host Employee</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="fs-14 fw-medium text-dark">Kelly Kapoor</div>
+                                            <div class="fs-12 ">Interview</div>
+                                        </td>
+                                        <td>Toby Flenderson</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-success px-2 py-1"><i class="ti ti-check"></i></button>
+                                            <button class="btn btn-sm btn-danger px-2 py-1"><i class="ti ti-x"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="fs-14 fw-medium text-dark">Creed Bratton</div>
+                                            <div class="fs-12 ">Vendor Delivery</div>
+                                        </td>
+                                        <td>Angela Martin</td>
+                                        <td>
+                                            <button class="btn btn-sm btn-success px-2 py-1"><i class="ti ti-check"></i></button>
+                                            <button class="btn btn-sm btn-danger px-2 py-1"><i class="ti ti-x"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5️⃣ Department-wise Visits & Alerts Panel -->
+        <div class="row">
+            <!-- Department chart -->
+            <div class="col-md-6 mb-3 d-flex">
+                <div class="card shadow-sm border-0 flex-fill">
+                    <div class="card-header border-0 pb-0 d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Department-wise Visits</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="departmentVisitsChart" style="height: 300px;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-3 d-flex">
+                <div class="card shadow-sm border-0 flex-fill">
+                    <div class="card-header border-bottom">
+                        <h5 class="card-title mb-0">Alerts Panel</h5>
+                    </div>
+                    <div class="card-body d-flex flex-column gap-3">
+                        <div class="p-3 bg-warning-transparent rounded d-flex align-items-center border-start border-warning border-4">
+                            <span class="avatar avatar-sm bg-warning text-white rounded-circle me-3">
+                                <i class="ti ti-alert-triangle"></i>
+                            </span>
+                            <div>
+                                <h6 class="mb-1 fs-14 fw-bold">Approval Pending</h6>
+                                <p class="mb-0 fs-13 ">5 visitors waiting for approval.</p>
+                            </div>
+                        </div>
+                        <div class="p-3 bg-danger-transparent rounded d-flex align-items-center border-start border-danger border-4">
+                            <span class="avatar avatar-sm bg-danger text-white rounded-circle me-3">
+                                <i class="ti ti-clock-exclamation"></i>
+                            </span>
+                            <div>
+                                <h6 class="mb-1 fs-14 fw-bold">Overstay Alert</h6>
+                                <p class="mb-0 fs-13 ">2 visitors inside for more than 4 hours.</p>
+                            </div>
+                        </div>
+                        <div class="p-3 bg-info-transparent rounded d-flex align-items-center border-start border-info border-4 mb-0">
+                            <span class="avatar avatar-sm bg-info text-white rounded-circle me-3">
+                                <i class="ti ti-bell-ringing"></i>
+                            </span>
+                            <div>
+                                <h6 class="mb-1 fs-14 fw-bold">Arrival Expected</h6>
+                                <p class="mb-0 fs-13 ">3 expected visitors arriving soon.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 8 Blacklisted / Restricted Visitors | 9 Frequent Visitors -->
+        <div class="row">
+            <div class="col-md-6 mb-3 d-flex">
+                <div class="card shadow-sm border-0 flex-fill">
+                    <div class="card-header border-bottom d-flex align-items-center justify-content-between">
+                        <h5 class="card-title mb-0 text-danger">
+                            <i class="ti ti-shield-x me-2"></i>Blacklisted /
+                            Restricted Visitors
+                        </h5>
+                        <a href="#" class="btn btn-sm btn-outline-danger">View All</a>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-center custom-table mb-0">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Visitor Name</th>
+                                        <th>Reason</th>
+                                        <th>Date Added</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="fs-14 fw-medium text-dark">Roy Anderson</div>
+                                        </td>
+                                        <td><span class="text-danger fs-13">Aggressive Behavior</span></td>
+                                        <td>15 Jan 2026</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="fs-14 fw-medium text-dark">Todd Packer</div>
+                                        </td>
+                                        <td><span class="text-danger fs-13">Harassment Policy</span></td>
+                                        <td>10 Feb 2026</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 mb-3 d-flex">
+                <div class="card shadow-sm border-0 flex-fill">
+                    <div class="card-header border-bottom d-flex align-items-center justify-content-between">
+                        <h5 class="card-title mb-0">Frequent Visitors</h5>
+                        <a href="#" class="btn btn-sm btn-outline-primary">View All</a>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover table-center custom-table mb-0">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Visitor & Company</th>
+                                        <th>Total Visits</th>
+                                        <th>Last Visit</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="fs-14 fw-medium text-dark">Bob Vance</div>
+                                            <div class="fs-12 ">Vance Refrigeration</div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-secondary-transparent text-secondary">
+                                                42
+                                                Visits
+                                            </span>
+                                        </td>
+                                        <td>09 Mar 2026</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="fs-14 fw-medium text-dark">David Wallace</div>
+                                            <div class="fs-12 ">Corporate</div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-secondary-transparent text-secondary">
+                                                28
+                                                Visits
+                                            </span>
+                                        </td>
+                                        <td>01 Mar 2026</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+       
+
     </div>
-
-
-
+    <!-- /Page Wrapper -->
 </div>
-<!-- /Page Wrapper -->
+<!-- /Main Wrapper -->
 
 
 <script>
-    // Highcharts Initialization Script for VMS Dashboard
-    document.addEventListener('DOMContentLoaded', function () {
+          // Highcharts Initialization Script for VMS Dashboard
+          document.addEventListener('DOMContentLoaded', function () {
 
-        if (typeof Highcharts !== 'undefined') {
+            if (typeof Highcharts !== 'undefined') {
 
-            Highcharts.setOptions({
+              Highcharts.setOptions({
                 colors: ['#F26522', '#1D2A3A', '#28a745', '#ffc107', '#17a2b8', '#dc3545', '#6c757d'],
 
                 chart: {
-                    backgroundColor: '#ffffff',
-                    style: {
-                        fontFamily: 'Roboto, sans-serif',
-                        color: '#111827'
-                    }
+                  backgroundColor: '#ffffff',
+                  style: {
+                    fontFamily: 'Roboto, sans-serif',
+                    color: '#111827'
+                  }
                 },
 
                 title: {
-                    style: {
-                        color: '#111827',
-                        fontWeight: '600'
-                    }
+                  style: {
+                    color: '#111827',
+                    fontWeight: '600'
+                  }
                 },
 
                 subtitle: {
-                    style: {
-                        color: '#111827'
-                    }
+                  style: {
+                    color: '#111827'
+                  }
                 },
 
                 xAxis: {
-                    labels: { style: { color: '#111827' } },
-                    title: { style: { color: '#111827' } },
-                    gridLineDashStyle: 'Dash',
-                    gridLineColor: 'rgba(0,0,0,0.1)'
+                  labels: { style: { color: '#111827' } },
+                  title: { style: { color: '#111827' } },
+                  gridLineDashStyle: 'Dash',
+                  gridLineColor: 'rgba(0,0,0,0.1)'
                 },
 
                 yAxis: {
-                    labels: { style: { color: '#111827' } },
-                    title: { style: { color: '#111827' } },
-                    gridLineDashStyle: 'Dash',
-                    gridLineColor: 'rgba(0,0,0,0.1)'
+                  labels: { style: { color: '#111827' } },
+                  title: { style: { color: '#111827' } },
+                  gridLineDashStyle: 'Dash',
+                  gridLineColor: 'rgba(0,0,0,0.1)'
                 },
 
                 legend: {
-                    itemStyle: { color: '#111827' },
-                    itemHoverStyle: { color: '#000000' }
+                  itemStyle: { color: '#111827' },
+                  itemHoverStyle: { color: '#000000' }
                 },
 
                 tooltip: {
-                    backgroundColor: '#ffffff',
-                    style: { color: '#111827' }
+                  backgroundColor: '#ffffff',
+                  style: { color: '#111827' }
                 },
 
                 credits: { enabled: false }
 
-            });
+              });
 
-            /* =================================================
-            1️⃣ Visitor Trend Chart (Line Chart)
-            ================================================= */
+              /* =================================================
+              1️⃣ Visitor Trend Chart (Line Chart)
+              ================================================= */
 
-            Highcharts.chart('visitorTrendChart', {
+              Highcharts.chart('visitorTrendChart', {
                 chart: { type: 'spline' },
 
                 title: {
-                    text: 'Visitor Trend (Today)'
+                  text: 'Visitor Trend (Today)'
                 },
 
                 xAxis: { categories: ['9 AM', '11 AM', '2 PM', '4 PM'] },
                 yAxis: { title: { text: 'Number of Visitors' } },
 
                 plotOptions: {
-                    spline: {
-                        dataLabels: {
-                            enabled: true,
-                            style: {
-                                color: '#111827',
-                                textOutline: 'none'
-                            }
-                        }
+                  spline: {
+                    dataLabels: {
+                      enabled: true,
+                      style: {
+                        color: '#111827',
+                        textOutline: 'none'
+                      }
                     }
+                  }
                 },
 
                 series: [{
-                    name: 'Visitors',
-                    data: [10, 18, 12, 8],
-                    color: '#F26522'
+                  name: 'Visitors',
+                  data: [10, 18, 12, 8],
+                  color: '#F26522'
                 }]
-            });
+              });
 
-            /* =================================================
-            2️⃣ Visitor Type Distribution (Pie Chart)
-            ================================================= */
+              /* =================================================
+              2️⃣ Visitor Type Distribution (Pie Chart)
+              ================================================= */
 
-            Highcharts.chart('visitorTypeChart', {
+              Highcharts.chart('visitorTypeChart', {
                 chart: { type: 'pie' },
 
                 title: {
-                    text: 'Visitor Type Distribution'
+                  text: 'Visitor Type Distribution'
                 },
 
                 plotOptions: {
-                    pie: {
-                        allowPointSelect: true,
-                        cursor: 'pointer',
-                        dataLabels: {
-                            enabled: true,
-                            format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-                            style: {
-                                color: '#111827',
-                                textOutline: 'none'
-                            }
-                        }
+                  pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                      enabled: true,
+                      format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                      style: {
+                        color: '#111827',
+                        textOutline: 'none'
+                      }
                     }
+                  }
                 },
 
                 series: [{
-                    name: 'Visitor Types',
-                    colorByPoint: true,
-                    data: [
-                      { name: 'Client', y: 35 },
-                      { name: 'Vendor', y: 25 },
-                      { name: 'Interview Candidate', y: 15 },
-                      { name: 'Delivery', y: 15 },
-                      { name: 'Guest', y: 10 }
-                    ]
+                  name: 'Visitor Types',
+                  colorByPoint: true,
+                  data: [
+                    { name: 'Client', y: 35 },
+                    { name: 'Vendor', y: 25 },
+                    { name: 'Interview Candidate', y: 15 },
+                    { name: 'Delivery', y: 15 },
+                    { name: 'Guest', y: 10 }
+                  ]
                 }]
-            });
+              });
 
 
 
-            /* =================================================
-3️⃣ Department-wise Visits (Bar Chart)
-================================================= */
+              /* =================================================
+  3️⃣ Department-wise Visits (Bar Chart)
+  ================================================= */
 
-            Highcharts.chart('departmentVisitsChart', {
+              Highcharts.chart('departmentVisitsChart', {
                 chart: { type: 'column' },
 
                 title: {
-                    text: 'Department-wise Visits',
-                    style: { color: '#111827' }
+                  text: 'Department-wise Visits',
+                  style: { color: '#111827' }
                 },
 
                 xAxis: {
-                    categories: ['HR', 'Sales', 'Development', 'Admin'],
-                    labels: {
-                        style: { color: '#111827' }
-                    }
+                  categories: ['HR', 'Sales', 'Development', 'Admin'],
+                  labels: {
+                    style: { color: '#111827' }
+                  }
                 },
 
                 yAxis: {
-                    title: {
-                        text: 'Total Visits',
-                        style: { color: '#111827' }
-                    },
-                    labels: {
-                        style: { color: '#111827' }
-                    },
-                    gridLineDashStyle: 'Dash',
-                    gridLineColor: 'rgba(0,0,0,0.1)'
+                  title: {
+                    text: 'Total Visits',
+                    style: { color: '#111827' }
+                  },
+                  labels: {
+                    style: { color: '#111827' }
+                  },
+                  gridLineDashStyle: 'Dash',
+                  gridLineColor: 'rgba(0,0,0,0.1)'
                 },
 
                 tooltip: {
-                    backgroundColor: '#ffffff',
-                    style: { color: '#111827' },
-                    pointFormat: '<b>{point.y}</b> Visits'
+                  backgroundColor: '#ffffff',
+                  style: { color: '#111827' },
+                  pointFormat: '<b>{point.y}</b> Visits'
                 },
 
                 plotOptions: {
-                    column: {
-                        borderRadiusTopLeft: 5,
-                        borderRadiusTopRight: 5,
-                        borderWidth: 0,
-                        dataLabels: {
-                            enabled: true,
-                            style: {
-                                color: '#111827',
-                                textOutline: 'none'
-                            }
-                        }
+                  column: {
+                    borderRadiusTopLeft: 5,
+                    borderRadiusTopRight: 5,
+                    borderWidth: 0,
+                    dataLabels: {
+                      enabled: true,
+                      style: {
+                        color: '#111827',
+                        textOutline: 'none'
+                      }
                     }
+                  }
                 },
 
                 series: [{
-                    name: 'Visits',
-                    colorByPoint: true,
-                    data: [
-                      { name: 'HR', y: 6, color: '#F26522' },       // Orange
-                      { name: 'Sales', y: 10, color: '#17a2b8' },   // Blue
-                      { name: 'Development', y: 4, color: '#28a745' }, // Green
-                      { name: 'Admin', y: 3, color: '#ffc107' }     // Yellow
-                    ]
+                  name: 'Visits',
+                  colorByPoint: true,
+                  data: [
+                    { name: 'HR', y: 6, color: '#F26522' },       // Orange
+                    { name: 'Sales', y: 10, color: '#17a2b8' },   // Blue
+                    { name: 'Development', y: 4, color: '#28a745' }, // Green
+                    { name: 'Admin', y: 3, color: '#ffc107' }     // Yellow
+                  ]
                 }],
 
                 credits: { enabled: false }
-            });
+              });
 
-        }
-    });
+            }
+          });
 </script>

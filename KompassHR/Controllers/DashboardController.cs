@@ -840,12 +840,5 @@ namespace KompassHR.Controllers
             Session["Leave_NotificationCount"] = LeavenotificationList;
             return Json(LeavenotificationList, JsonRequestBehavior.AllowGet);
         }
-
-        #region HolidayList
-        public ActionResult HolidayList()
-        {
-            return View();
-        }
-        #endregion HolidayList
     }
 }
