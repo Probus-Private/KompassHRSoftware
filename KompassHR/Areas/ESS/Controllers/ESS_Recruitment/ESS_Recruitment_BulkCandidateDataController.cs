@@ -138,31 +138,36 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_Recruitment
                     }
 
 
-                    if (Data.DateOfBirth != DateTime.MinValue)
+                    int calculatedAge = 0;
+
+                    try
                     {
-                        try
+                        if (Data.DateOfBirth != DateTime.MinValue)
                         {
                             var birthDate = Data.DateOfBirth;
                             var today = DateTime.Today;
-                            var age = today.Year - birthDate.Year;
 
-                            if (birthDate.Date > today.AddYears(-age)) age--; // Adjust if birthday hasn't occurred yet this year
+                            calculatedAge = today.Year - birthDate.Year;
 
-                            if (age < 18 || age > 58)
+                            if (birthDate > today.AddYears(-calculatedAge))
+                                calculatedAge--;
+
+                            if (calculatedAge < 18 || calculatedAge > 58)
                             {
                                 var Message = $"Candidate must be between 18 and 58 years old. Invalid Birthdate at SrNo {Data.SrNo}";
-                                var Icon = "error";
-                                var rowno = Data.SrNo;
-                                return Json(new { Message, Icon, rowno }, JsonRequestBehavior.AllowGet);
+                                return Json(new { Message, Icon = "error", rowno = Data.SrNo }, JsonRequestBehavior.AllowGet);
                             }
                         }
-                        catch (Exception ex)
+                        else
                         {
-                            var Message = "Error validating Birthdate at SrNo " + Data.SrNo;
-                            var Icon = "error";
-                            var rowno = Data.SrNo;
-                            return Json(new { Message, Icon, rowno }, JsonRequestBehavior.AllowGet);
+                            var Message = $"DOB is required in SrNo {Data.SrNo}";
+                            return Json(new { Message, Icon = "error", rowno = Data.SrNo }, JsonRequestBehavior.AllowGet);
                         }
+                    }
+                    catch (Exception ex)
+                    {
+                        var Message = "Error validating Birthdate at SrNo " + Data.SrNo;
+                        return Json(new { Message, Icon = "error", rowno = Data.SrNo }, JsonRequestBehavior.AllowGet);
                     }
                     if (Data.Age == 0)
                     {
@@ -200,7 +205,7 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_Recruitment
             '{GetCurrectDate}', {Session["ResourceId"]}, '{Data.Salutation}',
             '{Data.CandidateName}', '{Data.MobileNo}', '{Data.AlternateMobileNo}',
             '{Data.EmailId}', '{Convert.ToDateTime(Data.DateOfBirth):yyyy-MM-dd}',
-            {Data.Age}, '{Data.Gender}', '{Data.CurrentCity}', '{Data.MaritalStatus}',
+            {calculatedAge}, '{Data.Gender}', '{Data.CurrentCity}', '{Data.MaritalStatus}',
             '{List_Qualification_Id}', '{Data.SpecificQualification}',
             '{Data.Nationality}', '{Data.FamilyInfo}', {currentlyWorking},
             '{Data.CurrentCompanyName}', '{Data.TotalExperience}', '{Data.RelevantExperience}',
@@ -339,6 +344,22 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_Recruitment
                                 //    HRComment = xlWorkwook.Worksheets.Worksheet(1).Cell(row, 34).GetString()
 
                                 //};
+
+                                DateTime dob = xlWorkwook.Worksheets.Worksheet(1).Cell(row, 7).IsEmpty()
+    ? DateTime.MinValue
+    : xlWorkwook.Worksheets.Worksheet(1).Cell(row, 7).GetDateTime();
+
+                                int age = 0;
+
+                                if (dob != DateTime.MinValue)
+                                {
+                                    var today = DateTime.Today;
+                                    age = today.Year - dob.Year;
+
+                                    if (dob > today.AddYears(-age))
+                                        age--;
+                                }
+
                                 BulkCandidateData BulkInsert = new BulkCandidateData
                                 {
                                     //SrNo = xlWorkwook.Worksheets.Worksheet(1).Cell(row, 1).GetValue<int>(),
@@ -350,7 +371,8 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_Recruitment
                                     Gender = xlWorkwook.Worksheets.Worksheet(1).Cell(row, 6).GetString(),
                                     //DateOfBirth = xlWorkwook.Worksheets.Worksheet(1).Cell(row, 7).GetDateTime(),
                                     DateOfBirth = xlWorkwook.Worksheets.Worksheet(1).Cell(row, 7).IsEmpty() ? DateTime.Now : xlWorkwook.Worksheets.Worksheet(1).Cell(row, 7).GetDateTime(),
-                                    Age = xlWorkwook.Worksheets.Worksheet(1).Cell(row, 8).IsEmpty() ? 18 : xlWorkwook.Worksheets.Worksheet(1).Cell(row, 8).GetValue<int>(),
+                                    //Age = xlWorkwook.Worksheets.Worksheet(1).Cell(row, 8).IsEmpty() ? 18 : xlWorkwook.Worksheets.Worksheet(1).Cell(row, 8).GetValue<int>(),
+                                    Age = age,
                                     CurrentCity = xlWorkwook.Worksheets.Worksheet(1).Cell(row, 9).GetString(),
                                     MaritalStatus = xlWorkwook.Worksheets.Worksheet(1).Cell(row, 10).GetString(),
                                     HighestQualification = xlWorkwook.Worksheets.Worksheet(1).Cell(row, 11).GetString(),

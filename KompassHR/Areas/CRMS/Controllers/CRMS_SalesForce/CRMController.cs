@@ -2650,28 +2650,64 @@ namespace KompassHR.Areas.CRMS.Controllers.CRMS_SalesForce
         {
             if (Session["EmployeeId"] == null)
             {
-                throw new Exception();
+                return Json(new { success = false, message = "Session expired." }, JsonRequestBehavior.AllowGet);
             }
+
+            string cs = Convert.ToString(Session["MyNewConnectionString"]);
+            if (string.IsNullOrWhiteSpace(cs))
+            {
+                return Json(new { success = false, message = "Database session expired." }, JsonRequestBehavior.AllowGet);
+            }
+
             try
             {
+                using (var con = new SqlConnection(cs))
+                {
+                    con.Open();
 
-                //    DapperORM.SetConnection();
-                //{
-                    var GetId = sqlcon.QuerySingle("Select Fid from ACCMAIN WHERE Encrypted_Id='" + Encrypted_Id + "'");
-                   // int Accmain_Fid = GetId.Fid;
-                    int Accmain_Fid = (int)GetId.Fid;
-
-                    param.Add("@query", "Select * from ACCSERVICES WHERE deleted=0 and ACCMAIN_Fid='" + Accmain_Fid + "'");
-                    var CheckService = DapperORM.ReturnList<dynamic>("Sp_QueryExcution", param).ToList();
-
-                    if (CheckService.Count != 0)
+                    using (var tx = con.BeginTransaction())
                     {
+                        var GetId = con.QueryFirstOrDefault(
+                            "Select Fid from ACCMAIN WHERE Encrypted_Id = @Encrypted_Id",
+                            new { Encrypted_Id },
+                            tx);
+
+                        if (GetId == null)
+                        {
+                            tx.Rollback();
+                            return Json(new { success = false, message = "Lead not found." }, JsonRequestBehavior.AllowGet);
+                        }
+
+                        int Accmain_Fid = (int)GetId.Fid;
+
+                        var CheckService = con.Query<dynamic>(
+                            "Select * from ACCSERVICES WHERE deleted = 0 AND ACCMAIN_Fid = @Accmain_Fid",
+                            new { Accmain_Fid },
+                            tx).ToList();
+
+                        if (CheckService.Count == 0)
+                        {
+                            tx.Rollback();
+                            return Json(new { success = false, message = "Stage cannot be changed because there are no associated services." }, JsonRequestBehavior.AllowGet);
+                        }
+
                         if (Stage == "Won")
                         {
-                            sqlcon.Query("update ACCMAIN set MAS_STAGES_FID=5 where Encrypted_Id='" + Encrypted_Id + "'");
-                            sqlcon.Query("update ACCMAIN set Stage='Proposal' where Encrypted_Id='" + Encrypted_Id + "'");
-                            param.Add("@query", "Select * from ACCMAIN WHERE Encrypted_Id='" + Encrypted_Id + "'");
-                            var GetAccInfo = DapperORM.ReturnList<ACCMAIN>("Sp_QueryExcution", param).FirstOrDefault();
+                            con.Execute(
+                                "UPDATE ACCMAIN SET MAS_STAGES_FID = 5, Stage = 'Proposal' WHERE Encrypted_Id = @Encrypted_Id",
+                                new { Encrypted_Id },
+                                tx);
+
+                            var GetAccInfo = con.QueryFirstOrDefault<ACCMAIN>(
+                                "Select * from ACCMAIN WHERE Encrypted_Id = @Encrypted_Id",
+                                new { Encrypted_Id },
+                                tx);
+
+                            if (GetAccInfo == null)
+                            {
+                                tx.Rollback();
+                                return Json(new { success = false, message = "Lead details not found." }, JsonRequestBehavior.AllowGet);
+                            }
 
                             var param3 = new DynamicParameters();
                             param3.Add("@p_process", "Save");
@@ -2680,50 +2716,99 @@ namespace KompassHR.Areas.CRMS.Controllers.CRMS_SalesForce
                             param3.Add("@p_BUCode", GetAccInfo.BUCode);
                             param3.Add("@p_CreatedUpdateBy", Session["EmployeeId"]);
                             param3.Add("@p_MAS_STAGES_FID", GetAccInfo.MAS_STAGES_FID);
-                            param3.Add("@p_MachineName", Dns.GetHostName().ToString());
-                            param3.Add("@p_Mip", Dns.GetHostByName(MachineId).AddressList[0].ToString());
-                            var data = DapperORM.ExecuteReturn("Sp_SUD_ACCSTAGES", param3);
+                            param3.Add("@p_MachineName", Dns.GetHostName());
+                            param3.Add("@p_Mip", Request.UserHostAddress);
 
-                            return Json(new { success = true, redirectUrl = Url.Action("Lead_Dashboard", "CRM") });
+                            con.Execute(
+                                "Sp_SUD_ACCSTAGES",
+                                param3,
+                                tx,
+                                commandType: CommandType.StoredProcedure);
+
+                            tx.Commit();
+
+                            return Json(new
+                            {
+                                success = true,
+                                redirectUrl = Url.Action("Lead_Dashboard", "CRM")
+                            }, JsonRequestBehavior.AllowGet);
                         }
                         else
                         {
+                            var Fid = con.QueryFirstOrDefault<MAS_STAGES>(
+                                "select Fid from MAS_STAGES where Stage = @Stage and origin = 'Lead'",
+                                new { Stage },
+                                tx);
 
-                            sqlcon.Query("update ACCMAIN set Stage='" + Stage + "' where Encrypted_Id='" + Encrypted_Id + "'");
-                            param.Add("@query", "select Fid from MAS_STAGES where Stage='" + Stage + "' and origin='Lead'");
-                            var Fid = DapperORM.ReturnList<MAS_STAGES>("Sp_QueryExcution", param).FirstOrDefault();
+                            if (Fid == null)
+                            {
+                                tx.Rollback();
+                                return Json(new { success = false, message = "Invalid stage." }, JsonRequestBehavior.AllowGet);
+                            }
 
-                            sqlcon.Query("update ACCMAIN set MAS_STAGES_FID='" + Fid.Fid + "' where Encrypted_Id='" + Encrypted_Id + "'");
+                            con.Execute(
+                                "UPDATE ACCMAIN SET Stage = @Stage, MAS_STAGES_FID = @MAS_STAGES_FID WHERE Encrypted_Id = @Encrypted_Id",
+                                new
+                                {
+                                    Stage,
+                                    MAS_STAGES_FID = Fid.Fid,
+                                    Encrypted_Id
+                                },
+                                tx);
 
-                            DynamicParameters param1 = new DynamicParameters();
-                            param1.Add("@query", "Select * from ACCMAIN WHERE Encrypted_Id='" + Encrypted_Id + "'");
-                            var GetAccInfo = DapperORM.ReturnList<ACCMAIN>("Sp_QueryExcution", param1).FirstOrDefault();
+                            var GetAccInfo = con.QueryFirstOrDefault<ACCMAIN>(
+                                "Select * from ACCMAIN WHERE Encrypted_Id = @Encrypted_Id",
+                                new { Encrypted_Id },
+                                tx);
+
+                            if (GetAccInfo == null)
+                            {
+                                tx.Rollback();
+                                return Json(new { success = false, message = "Lead details not found." }, JsonRequestBehavior.AllowGet);
+                            }
 
                             var param3 = new DynamicParameters();
                             param3.Add("@p_process", "Save");
                             param3.Add("@p_Encrypted_Id", GetAccInfo.Encrypted_Id);
-                            param3.Add("p_ACCMAIN_Fid", GetAccInfo.Fid);
+                            param3.Add("@p_ACCMAIN_Fid", GetAccInfo.Fid);
                             param3.Add("@p_BUCode", GetAccInfo.BUCode);
                             param3.Add("@p_CreatedUpdateBy", Session["EmployeeId"]);
                             param3.Add("@p_MAS_STAGES_FID", GetAccInfo.MAS_STAGES_FID);
-                            param3.Add("@p_MachineName", Dns.GetHostName().ToString());
-                            param3.Add("@p_Mip", Dns.GetHostByName(MachineId).AddressList[0].ToString());
-                            var data = DapperORM.ExecuteReturn("Sp_SUD_ACCSTAGES", param3);
+                            param3.Add("@p_MachineName", Dns.GetHostName());
+                            param3.Add("@p_Mip", Request.UserHostAddress);
 
-                            return Json(new { success = true, redirectUrl = Url.Action("Lead_Details", "CRM", new { EncryptedId = Encrypted_Id }) });
+                            con.Execute(
+                                "Sp_SUD_ACCSTAGES",
+                                param3,
+                                tx,
+                                commandType: CommandType.StoredProcedure);
+
+                            tx.Commit();
+
+                            return Json(new
+                            {
+                                success = true,
+                                redirectUrl = Url.Action("Lead_Details", "CRM", new { EncryptedId = Encrypted_Id })
+                            }, JsonRequestBehavior.AllowGet);
                         }
                     }
-                    else
-                    {
-                        return Json(new { success = false, message = "Stage cannot be changed because there are no associated services." });
-                    }
-                //}
+                }
             }
             catch (Exception ex)
             {
-             LoginController.saveAuditEntry(DateTime.Now, Convert.ToInt32(Session["EmployeeId"]), "List", "UpdateLeadStage", "UpdateLeadStage", "Created", "Failed", ex.Message, _clientIp, _clientMachineName);
+                LoginController.saveAuditEntry(
+                    DateTime.Now,
+                    Convert.ToInt32(Session["EmployeeId"]),
+                    "List",
+                    "UpdateLeadStage",
+                    "UpdateLeadStage",
+                    "Created",
+                    "Failed",
+                    ex.Message,
+                    _clientIp,
+                    _clientMachineName);
 
-                return Json(new { success = false, message = "An error occurred while processing your request." });
+                return Json(new { success = false, message = "An error occurred while processing your request." }, JsonRequestBehavior.AllowGet);
             }
         }
 
@@ -3196,72 +3281,147 @@ namespace KompassHR.Areas.CRMS.Controllers.CRMS_SalesForce
             {
                 return RedirectToAction("Login", "Login", new { area = "" });
             }
+
+            string cs = Convert.ToString(Session["MyNewConnectionString"]);
+            if (string.IsNullOrWhiteSpace(cs))
+            {
+                return RedirectToAction("Login", "Login", new { area = "" });
+            }
+
             try
             {
-                var GetId = sqlcon.QuerySingle("Select Fid from ACCMAIN WHERE Encrypted_Id='" + Encrypted_Id + "'");
-                int Accmain_Fid = (int)GetId.Fid;
-
-                param.Add("@query", "Select * from ACCPROPOSAL WHERE deleted=0 and ACCMAIN_Fid='" + Accmain_Fid + "'");
-                var CheckService = DapperORM.ReturnList<dynamic>("Sp_QueryExcution", param).ToList();
-
-                if (CheckService.Count != 0)
+                using (var con = new SqlConnection(cs))
                 {
-                    if (Stage == "Won")
+                    con.Open();
+
+                    using (var tx = con.BeginTransaction())
                     {
+                        var GetId = con.QueryFirstOrDefault(
+                            "Select Fid from ACCMAIN WHERE Encrypted_Id = @Encrypted_Id",
+                            new { Encrypted_Id }, tx);
 
-                        sqlcon.Query("update ACCMAIN set MAS_STAGES_FID=11 where Encrypted_Id='" + Encrypted_Id + "'");
-                        sqlcon.Query("update ACCMAIN set Stage='Won' where Encrypted_Id='" + Encrypted_Id + "'");
-                        param.Add("@query", "Select * from ACCMAIN WHERE Encrypted_Id='" + Encrypted_Id + "'");
-                        var GetAccInfo = DapperORM.ReturnList<ACCMAIN>("Sp_QueryExcution", param).FirstOrDefault();
+                        if (GetId == null)
+                        {
+                            tx.Rollback();
+                            return Json(new { success = false, message = "Record not found." });
+                        }
 
-                        var param3 = new DynamicParameters();
-                        param3.Add("@p_process", "Save");
-                        param3.Add("@p_Encrypted_Id", GetAccInfo.Encrypted_Id);
-                        param3.Add("@P_ACCMAIN_Fid", GetAccInfo.Fid);
-                        param3.Add("@p_BUCode", GetAccInfo.BUCode);
-                        param3.Add("@p_MAS_STAGES_FID", GetAccInfo.MAS_STAGES_FID);
-                        param3.Add("@p_CreatedUpdateBy", Session["EmployeeId"]);
-                        param3.Add("@p_MachineName", Dns.GetHostName().ToString());
-                        param3.Add("@p_Mip", Dns.GetHostByName(MachineId).AddressList[0].ToString());
-                        var data = DapperORM.ExecuteReturn("Sp_SUD_ACCSTAGES", param3);
-                        return Json(new { success = true, redirectUrl = Url.Action("OpportunityList", "CRM") });
+                        int Accmain_Fid = (int)GetId.Fid;
+
+                        var CheckService = con.Query<dynamic>(
+                            "Select * from ACCPROPOSAL WHERE deleted = 0 AND ACCMAIN_Fid = @Accmain_Fid",
+                            new { Accmain_Fid }, tx).ToList();
+
+                        if (CheckService.Count == 0)
+                        {
+                            tx.Rollback();
+                            return Json(new { success = false, message = "Stage cannot be changed because there are no Proposals" });
+                        }
+
+                        if (Stage == "Won")
+                        {
+                            con.Execute(
+                                "update ACCMAIN set MAS_STAGES_FID = 11, Stage = 'Won' where Encrypted_Id = @Encrypted_Id",
+                                new { Encrypted_Id }, tx);
+
+                            var GetAccInfo = con.QueryFirstOrDefault<ACCMAIN>(
+                                "Select * from ACCMAIN WHERE Encrypted_Id = @Encrypted_Id",
+                                new { Encrypted_Id }, tx);
+
+                            var param3 = new DynamicParameters();
+                            param3.Add("@p_process", "Save");
+                            param3.Add("@p_Encrypted_Id", GetAccInfo.Encrypted_Id);
+                            param3.Add("@P_ACCMAIN_Fid", GetAccInfo.Fid);
+                            param3.Add("@p_BUCode", GetAccInfo.BUCode);
+                            param3.Add("@p_MAS_STAGES_FID", GetAccInfo.MAS_STAGES_FID);
+                            param3.Add("@p_CreatedUpdateBy", Session["EmployeeId"]);
+                            param3.Add("@p_MachineName", Dns.GetHostName());
+                            param3.Add("@p_Mip", Request.UserHostAddress);
+
+                            con.Execute("Sp_SUD_ACCSTAGES", param3, tx, commandType: CommandType.StoredProcedure);
+
+                            tx.Commit();
+                            return Json(new { success = true, redirectUrl = Url.Action("OpportunityList", "CRM") });
+                        }
+                        else
+                        {
+                            var Fid = con.QueryFirstOrDefault<MAS_STAGES>(
+                                "select Fid from MAS_STAGES where Stage = @Stage and origin = 'Prospect'",
+                                new { Stage }, tx);
+
+                            if (Fid == null)
+                            {
+                                tx.Rollback();
+                                return Json(new { success = false, message = "Invalid Stage." });
+                            }
+
+                            con.Execute(
+                                "update ACCMAIN set Stage = @Stage, MAS_STAGES_FID = @MAS_STAGES_FID where Encrypted_Id = @Encrypted_Id",
+                                new
+                                {
+                                    Stage,
+                                    MAS_STAGES_FID = Fid.Fid,
+                                    Encrypted_Id
+                                }, tx);
+
+                            var GetAccInfo = con.QueryFirstOrDefault<ACCMAIN>(
+                                "Select * from ACCMAIN WHERE Encrypted_Id = @Encrypted_Id",
+                                new { Encrypted_Id }, tx);
+
+                            var param3 = new DynamicParameters();
+                            param3.Add("@p_process", "Save");
+                            param3.Add("@p_Encrypted_Id", GetAccInfo.Encrypted_Id);
+                            param3.Add("@P_ACCMAIN_Fid", GetAccInfo.Fid);
+                            param3.Add("@p_BUCode", GetAccInfo.BUCode);
+                            param3.Add("@p_MAS_STAGES_FID", GetAccInfo.MAS_STAGES_FID);
+                            param3.Add("@p_CreatedUpdateBy", Session["EmployeeId"]);
+                            param3.Add("@p_MachineName", Dns.GetHostName());
+                            param3.Add("@p_Mip", Request.UserHostAddress);
+
+                            con.Execute("Sp_SUD_ACCSTAGES", param3, tx, commandType: CommandType.StoredProcedure);
+
+                            tx.Commit();
+
+                            LoginController.saveAuditEntry(
+                                DateTime.Now,
+                                Convert.ToInt32(Session["EmployeeId"]),
+                                "List",
+                                "UpdateOpportunityStage",
+                                "UpdateOpportunityStage",
+                                "Created",
+                                "Passed",
+                                "",
+                                _clientIp,
+                                _clientMachineName);
+
+                            return Json(new
+                            {
+                                success = true,
+                                redirectUrl = Url.Action("OpportunityDetails", "CRM", new { EncryptedId = Encrypted_Id })
+                            });
+                        }
                     }
-                    else
-                    {
-                        sqlcon.Query("update ACCMAIN set Stage='" + Stage + "' where Encrypted_Id='" + Encrypted_Id + "'");
-                        param.Add("@query", "select Fid from MAS_STAGES where Stage='" + Stage + "' and origin='Prospect'");
-                        var Fid = DapperORM.ReturnList<MAS_STAGES>("Sp_QueryExcution", param).FirstOrDefault();
-                        sqlcon.Query("update ACCMAIN set MAS_STAGES_FID='" + Fid.Fid + "' where Encrypted_Id='" + Encrypted_Id + "'");
-                        param.Add("@query", "Select * from ACCMAIN WHERE Encrypted_Id='" + Encrypted_Id + "'");
-                        var GetAccInfo = DapperORM.ReturnList<ACCMAIN>("Sp_QueryExcution", param).FirstOrDefault();
-
-                        var param3 = new DynamicParameters();
-                        param3.Add("@p_process", "Save");
-                        param3.Add("@p_Encrypted_Id", GetAccInfo.Encrypted_Id);
-                        param3.Add("@P_ACCMAIN_Fid", GetAccInfo.Fid);
-                        param3.Add("@p_BUCode", GetAccInfo.BUCode);
-                        param3.Add("@p_MAS_STAGES_FID", GetAccInfo.MAS_STAGES_FID);
-                        param3.Add("@p_CreatedUpdateBy", Session["EmployeeId"]);
-                        param3.Add("@p_MachineName", Dns.GetHostName().ToString());
-                        param3.Add("@p_Mip", Dns.GetHostByName(MachineId).AddressList[0].ToString());
-                        var data = DapperORM.ExecuteReturn("Sp_SUD_ACCSTAGES", param3);
-
-                        LoginController.saveAuditEntry(DateTime.Now, Convert.ToInt32(Session["EmployeeId"]), "List", "UpdateOpportunityStage", "UpdateOpportunityStage", "Created", "Passed", "", _clientIp, _clientMachineName);
-                        return Json(new { success = true, redirectUrl = Url.Action("OpportunityDetails", "CRM", new { EncryptedId = Encrypted_Id }) });
-                    }
-                }
-                else
-                {
-                    return Json(new { success = false, message = "Stage cannot be changed because there are no Proposals" });
                 }
             }
             catch (Exception ex)
             {
-                LoginController.saveAuditEntry(DateTime.Now, Convert.ToInt32(Session["EmployeeId"]), "List", "UpdateOpportunityStage", "UpdateOpportunityStage", "Created", "Failed", ex.Message, _clientIp, _clientMachineName);
+                LoginController.saveAuditEntry(
+                    DateTime.Now,
+                    Convert.ToInt32(Session["EmployeeId"]),
+                    "List",
+                    "UpdateOpportunityStage",
+                    "UpdateOpportunityStage",
+                    "Created",
+                    "Failed",
+                    ex.Message,
+                    _clientIp,
+                    _clientMachineName);
 
                 return RedirectToAction("ErrorPage", "Login", new { area = "" });
             }
         }
+
+
 
         public ActionResult SaveProposal(ACCPROPOSAL ACCPROPOSAL, string Acc_EncryptedId, HttpPostedFileBase ProposalFileAttachement)
         {
