@@ -43,7 +43,6 @@ namespace KompassHR.Areas.ESS.Models.ESS_PMS
         public bool IsStandardKRA { get; set; }
         public bool StandardKRAValue { get; set; }
         public int? CompanyObjectiveCreationId { get; set; }
-        public string TargetDirection { get; set; }
 
     }
 }

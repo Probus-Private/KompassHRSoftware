@@ -540,7 +540,6 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_ManpowerAllocation
 
                 foreach (var item in group)
                 {
-
                     int itemCol = 1;
                     ws.Cell(row, itemCol++).Value = item.ManpowerName ?? "-";
                     ws.Cell(row, itemCol - 1).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
@@ -557,11 +556,11 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_ManpowerAllocation
                     ws.Cell(row, itemCol++).Value = item.GAP_PLANT_HC ?? 0;
                     ws.Cell(row, itemCol++).Value = item.GAP_PLANT_MD ?? 0;
                     ws.Cell(row, itemCol++).Value = item.GAP_EXCESS_MD ?? 0;
-                    ws.Cell(row, itemCol++).Value = item.MANPOWER_AGAINST_DISPATCH_QTY_HC ?? 0;
-                    ws.Cell(row, itemCol++).Value = item.MANPOWER_AGAINST_DISPATCH_QTY_MD ?? 0;
-                    ws.Cell(row, itemCol++).Value = item.GAP_DISPATCH_QTY_HC ?? 0;
-                    ws.Cell(row, itemCol++).Value = item.GAP_DISPATCH_QTY_MD ?? 0;
-                    ws.Cell(row, itemCol++).Value = item.GAP_DISPATCH_QTY_EXCESS ?? 0;
+                    ws.Cell(row, itemCol++).Value = 0;
+                    ws.Cell(row, itemCol++).Value = 0;
+                    ws.Cell(row, itemCol++).Value = 0;
+                    ws.Cell(row, itemCol++).Value = 0;
+                    ws.Cell(row, itemCol++).Value = 0;
                     var itemDict = item as IDictionary<string, object>;
                     for (int day = 1; day <= 31; day++)
                     {
@@ -596,11 +595,11 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_ManpowerAllocation
                 ws.Cell(row, totalCol++).Value = group.Sum(x => (double?)x.GAP_PLANT_HC ?? 0);
                 ws.Cell(row, totalCol++).Value = group.Sum(x => (double?)x.GAP_PLANT_MD ?? 0);
                 ws.Cell(row, totalCol++).Value = group.Sum(x => (double?)x.GAP_EXCESS_MD ?? 0);
-                ws.Cell(row, totalCol++).Value = group.Sum(x => (double?)x.MANPOWER_AGAINST_DISPATCH_QTY_HC ?? 0);
-                ws.Cell(row, totalCol++).Value = group.Sum(x => (double?)x.MANPOWER_AGAINST_DISPATCH_QTY_MD ?? 0);
-                ws.Cell(row, totalCol++).Value = group.Sum(x => (double?)x.GAP_DISPATCH_QTY_HC ?? 0); 
-                ws.Cell(row, totalCol++).Value = group.Sum(x => (double?)x.GAP_DISPATCH_QTY_MD ?? 0);
-                ws.Cell(row, totalCol++).Value = group.Sum(x => (double?)x.GAP_DISPATCH_QTY_EXCESS ?? 0);
+                ws.Cell(row, totalCol++).Value = 0;
+                ws.Cell(row, totalCol++).Value = 0;
+                ws.Cell(row, totalCol++).Value = 0;
+                ws.Cell(row, totalCol++).Value = 0;
+                ws.Cell(row, totalCol++).Value = 0;
                 for (int day = 1; day <= 31; day++)
                 {
                     string hcKey = $"A{day}HC";

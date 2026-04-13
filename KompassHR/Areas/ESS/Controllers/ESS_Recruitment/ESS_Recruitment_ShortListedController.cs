@@ -85,10 +85,6 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_Recruitment
                 var ApprovalRemark = DapperORM.ExecuteSP<dynamic>("sp_QueryExcution", paramApprovalRemark).ToList();
                 ViewBag.ApprovalRemarkList = ApprovalRemark;
 
-                DynamicParameters paramBranch = new DynamicParameters();
-                paramBranch.Add("@query", "SELECT BRANCHID as Id,BRANCHNAME as Name FROM MAS_BRANCH WHERE Deactivate=0");
-                var paramBranch1 = DapperORM.ExecuteSP<AllDropDownBind>("sp_QueryExcution", paramBranch).ToList();
-                ViewBag.BranchList = paramBranch1;
 
                 //DynamicParameters paramEmp = new DynamicParameters();
                 //paramEmp.Add("@query", "select EmployeeId as Id,concat(Mas_Employee.EmployeeName,' - ',Mas_Employee.EmployeeNo) as Name from Mas_Employee where EmployeeDepartmentID=" + PositionDetail.DepartmentID + " and ContractorID=1 and Deactivate=0 and Employeeleft=0 order by EmployeeName asc");
@@ -522,11 +518,6 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_Recruitment
                                 param2
                             ).FirstOrDefault();
 
-                DynamicParameters paramBranch = new DynamicParameters();
-                paramBranch.Add("@query", "SELECT BRANCHID as Id,BRANCHNAME as Name FROM MAS_BRANCH WHERE Deactivate=0");
-                var paramBranch1 = DapperORM.ExecuteSP<AllDropDownBind>("sp_QueryExcution", paramBranch).ToList();
-                ViewBag.BranchList = paramBranch1;
-
                 //Interview = DapperORM.ExecuteSP("sp_List_Recruitment_InterviewCandidate", param2);
                 ViewBag.GetInterviewList = Interview;
 
@@ -539,25 +530,5 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_Recruitment
             }
         }
 
-        public JsonResult GetBranchAddress(int branchId)
-        {
-            try
-            {
-                DynamicParameters param = new DynamicParameters();
-               
-                var AddressByBranch1 = "SELECT BranchAddress FROM MAS_BRANCH WHERE Deactivate=0 and BranchId='"+ branchId + "'";
-                var AddressByBranch = DapperORM.DynamicQuerySingle(AddressByBranch1);
-                var BranchAddress = AddressByBranch.BranchAddress;
-
-                return Json(new
-                {
-                    Address = BranchAddress
-                }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception ex)
-            {
-                return Json(null, JsonRequestBehavior.AllowGet);
-            }
-        }
     }
 }

@@ -420,9 +420,6 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_TMS
             var createdBy = Session["EmployeeName"]?.ToString().Replace("'", "''");
             var machineName = Dns.GetHostName().Replace("'", "''");
 
-            var GetId = "select Id from Tool_Module where ModuleName='TMS' and Deactivate=0";
-            var Id = DapperORM.DynamicQuerySingle(GetId);
-
             strBuilder.AppendLine(
                 "UPDATE dbo.TMS_Timesheet SET " +
                 "IsSendForApproval = 1, " +
@@ -445,7 +442,7 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_TMS
                 "FROM Mas_Employee_Reporting " +
                 "WHERE Deactivate = 0 " +
                 "AND ReportingEmployeeID = " + TimesheetEmployeeID + " " +
-                "AND ReportingModuleID = "+ Id.Id + ";"
+                "AND ReportingModuleID = 21;"
             );
 
             string abc = "";

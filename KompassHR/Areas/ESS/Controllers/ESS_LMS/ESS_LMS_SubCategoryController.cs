@@ -63,7 +63,7 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_LMS
 
                     TempData["IsDigitalSignature"] = IsDigitalSignature ?? false;
                     var GetPath = DapperORM.DynamicQuerySingle("Select DocInitialPath from Tool_Documnet_DirectoryPath where DocOrigin='LMS'");
-                    //var FirstPath = GetPath.DocInitialPath + LMSLibraryId + "\\";
+                    var FirstPath = GetPath.DocInitialPath + LMSLibraryId + "\\";
 
                     var DocRead = DapperORM.DynamicQuerySingle("Select * from Tool_LMS_DownloadUpload_URL where DocOrigin='LMSDocRead'");
                     var GetDocRead = DocRead.DownloadUploadURL;

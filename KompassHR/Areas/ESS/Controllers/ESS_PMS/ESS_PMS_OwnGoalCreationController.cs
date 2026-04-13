@@ -246,7 +246,6 @@ WHERE team.Deactivate = 0
                 param.Add("@p_KPICategory", own.KPICategory);
                 param.Add("@p_KPINameId", own.KPINameId);
                 param.Add("@p_AlignWithType", alignWithType);
-                param.Add("@p_TargetDirection", own.TargetDirection);
                 param.Add("@p_Attachment", own.Attachment);
                 param.Add("@p_msg", dbType: DbType.String, direction: ParameterDirection.Output, size: 200);
                 param.Add("@p_Icon", dbType: DbType.String, direction: ParameterDirection.Output, size: 10);

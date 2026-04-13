@@ -51,7 +51,9 @@ namespace KompassHR.Areas.Reports.Controllers.Report_Contractor
         }
 
       #endregion
-        
+
+
+
         #region GetBusinessUnit
         [HttpGet]
         public ActionResult GetBusinessUnit(int CmpId)
@@ -103,82 +105,7 @@ namespace KompassHR.Areas.Reports.Controllers.Report_Contractor
         }
         #endregion
 
-        //#region DownloadExcelFile
-        //public ActionResult DownloadExcelFile(int? CmpId, int? BranchId, int? ContractorId, DateTime InvoiceMonth)
-        //{
-        //    try
-        //    {
-        //        if (Session["EmployeeId"] == null)
-        //        {
-        //            return RedirectToAction("Login", "Login", new { Area = "" });
-        //        }
-        //        var workbook = new XLWorkbook();
-        //        var worksheet = workbook.Worksheets.Add("InvoiceReport");
-
-        //        worksheet.Range(1, 1, 1, 10).Merge();
-        //        worksheet.SheetView.FreezeRows(2);
-        //        DataTable dt = new DataTable();
-        //        List<dynamic> data = new List<dynamic>();
-
-        //        DynamicParameters paramList = new DynamicParameters();
-        //        paramList.Add("@p_ContractorId", ContractorId);
-        //        paramList.Add("@p_InvoiceMonth", InvoiceMonth);
-        //        paramList.Add("@p_CompanyId", CmpId);
-        //        paramList.Add("@p_BranchId", BranchId);
-        //        var GetData = DapperORM.ExecuteSP<dynamic>("sp_Rpt_Contractor_InvoiceReport", paramList).ToList();
-        //        if (GetData.Count == 0)
-        //        {
-        //            byte[] emptyFileContents = new byte[0];
-        //            return File(emptyFileContents, "application/octet-stream", "FileNotFound.txt");
-        //        }
-        //        DapperORM dprObj = new DapperORM();
-        //        dt = dprObj.ConvertToDataTable(GetData);
-        //        worksheet.Cell(2, 1).InsertTable(dt, false);
-        //        int totalRows = worksheet.RowsUsed().Count();
-
-        //        var lastRow = worksheet.Row(totalRows + 1);
-        //        lastRow.Style.Font.Bold = false;
-
-        //        lastRow.Style.Font.FontColor = XLColor.Black;
-        //        lastRow.Style.Font.FontSize = 10;
-        //        var usedRange = worksheet.RangeUsed();
-        //        usedRange.Style.Fill.BackgroundColor = XLColor.White;
-        //        usedRange.Style.Border.TopBorder = XLBorderStyleValues.Thin;
-        //        usedRange.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
-        //        usedRange.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-        //        usedRange.Style.Border.RightBorder = XLBorderStyleValues.Thin;
-        //        usedRange.Style.Font.FontSize = 10;
-        //        usedRange.Style.Font.FontColor = XLColor.Black;
-        //        worksheet.Cell(1, 1).Value = "Invoice Report";
-
-        //        //worksheet.Cell(1, 1).Value = "Late Mark AdjustmentReport Report - (" + Month.ToString("dd/MMM/yyyy") + ")";
-        //        worksheet.Cell(1, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
-        //        worksheet.Cell(1, 1).Style.Font.Bold = true;
-        //        worksheet.Columns().AdjustToContents();
-        //        var headerRange = worksheet.Range(2, 1, 2, dt.Columns.Count);
-        //        headerRange.Style.Fill.BackgroundColor = XLColor.FromArgb(205, 222, 172);
-        //        headerRange.Style.Font.FontSize = 10;
-        //        headerRange.Style.Font.FontColor = XLColor.FromArgb(1, 0, 0);
-        //        headerRange.Style.Font.Bold = true;
-
-        //        using (var stream = new MemoryStream())
-        //        {
-        //            workbook.SaveAs(stream);
-        //            stream.Position = 0;
-
-        //            return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Report.xlsx");
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Session["GetErrorMessage"] = ex.Message;
-        //        return RedirectToAction("ErrorPage", "Login");
-        //    }
-        //}
-        //#endregion
-
-
-        #region Download
+        #region DownloadExcelFile
         public ActionResult DownloadExcelFile(int? CmpId, int? BranchId, int? ContractorId, DateTime InvoiceMonth)
         {
             try
@@ -187,96 +114,61 @@ namespace KompassHR.Areas.Reports.Controllers.Report_Contractor
                 {
                     return RedirectToAction("Login", "Login", new { Area = "" });
                 }
-
                 var workbook = new XLWorkbook();
+                var worksheet = workbook.Worksheets.Add("InvoiceReport");
+
+                worksheet.Range(1, 1, 1, 10).Merge();
+                worksheet.SheetView.FreezeRows(2);
+                DataTable dt = new DataTable();
+                List<dynamic> data = new List<dynamic>();
+
                 DynamicParameters paramList = new DynamicParameters();
                 paramList.Add("@p_ContractorId", ContractorId);
                 paramList.Add("@p_InvoiceMonth", InvoiceMonth);
                 paramList.Add("@p_CompanyId", CmpId);
                 paramList.Add("@p_BranchId", BranchId);
-
                 var GetData = DapperORM.ExecuteSP<dynamic>("sp_Rpt_Contractor_InvoiceReport", paramList).ToList();
-
                 if (GetData.Count == 0)
                 {
-                    return File(new byte[0], "application/octet-stream", "FileNotFound.txt");
+                    byte[] emptyFileContents = new byte[0];
+                    return File(emptyFileContents, "application/octet-stream", "FileNotFound.txt");
                 }
-                IEnumerable<IGrouping<object, dynamic>> grouped;
+                DapperORM dprObj = new DapperORM();
+                dt = dprObj.ConvertToDataTable(GetData);
+                worksheet.Cell(2, 1).InsertTable(dt, false);
+                int totalRows = worksheet.RowsUsed().Count();
 
-                grouped = GetData.GroupBy(x =>
-                {
-                    var dict = (IDictionary<string, object>)x;
+                var lastRow = worksheet.Row(totalRows + 1);
+                lastRow.Style.Font.Bold = false;
 
-                    if (dict.ContainsKey("ContractorName") && dict["ContractorName"] != null)
-                        return dict["ContractorName"].ToString();
+                lastRow.Style.Font.FontColor = XLColor.Black;
+                lastRow.Style.Font.FontSize = 10;
+                var usedRange = worksheet.RangeUsed();
+                usedRange.Style.Fill.BackgroundColor = XLColor.White;
+                usedRange.Style.Border.TopBorder = XLBorderStyleValues.Thin;
+                usedRange.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
+                usedRange.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                usedRange.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+                usedRange.Style.Font.FontSize = 10;
+                usedRange.Style.Font.FontColor = XLColor.Black;
+                worksheet.Cell(1, 1).Value = "Invoice Report";
 
-                    // Fallback to ContractorId
-                    if (dict.ContainsKey("ContractorId"))
-                        return dict["ContractorId"].ToString();
-
-                    return "Unknown";
-                });
-
-
-                // If EmployeeId != 0 → keep only that employee
-                //if (ContractorId != null && ContractorId != 0)
-                //{
-                //    grouped = grouped.Where(g => Convert.ToInt32(g.Key) == ContractorId.Value);
-
-                //}
-
-                foreach (var ContractorGroup in grouped)
-                {
-                    var firstRow = (IDictionary<string, object>)ContractorGroup.First();
-                    string ContractorName = firstRow.ContainsKey("ContractorName") ? firstRow["ContractorName"]?.ToString() : ContractorGroup.Key.ToString();
-
-                    if (string.IsNullOrWhiteSpace(ContractorName))
-                        ContractorName = ContractorGroup.Key.ToString();
-
-                    foreach (char c in System.IO.Path.GetInvalidFileNameChars())
-                        ContractorName = ContractorName.Replace(c.ToString(), "");
-
-                    if (ContractorName.Length > 25)
-                        ContractorName = ContractorName.Substring(0, 25);
-
-                    string sheetName = ContractorName;
-
-                    var worksheet = workbook.Worksheets.Add(sheetName);
-
-                    worksheet.Range(1, 1, 1, 20).Merge();
-                    worksheet.SheetView.FreezeRows(2);
-                    DapperORM dprObj = new DapperORM();
-                    DataTable dt = dprObj.ConvertToDataTable(ContractorGroup.ToList());
-
-                    worksheet.Cell(2, 1).InsertTable(dt, false);
-
-                    var headerRange = worksheet.Range(2, 1, 2, dt.Columns.Count);
-                    headerRange.Style.Fill.BackgroundColor = XLColor.FromArgb(205, 222, 172);
-                    headerRange.Style.Font.Bold = true;
-
-                    worksheet.Cell(1, 1).Value = "Contractor Invoice Report";
-                    worksheet.Cell(1, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
-                    worksheet.Cell(1, 1).Style.Font.Bold = true;
-
-                    var usedRange = worksheet.RangeUsed();
-                    usedRange.Style.Border.TopBorder = XLBorderStyleValues.Thin;
-                    usedRange.Style.Border.BottomBorder = XLBorderStyleValues.Thin;
-                    usedRange.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
-                    usedRange.Style.Border.RightBorder = XLBorderStyleValues.Thin;
-
-                    worksheet.Columns().AdjustToContents();
-                }
+                //worksheet.Cell(1, 1).Value = "Late Mark AdjustmentReport Report - (" + Month.ToString("dd/MMM/yyyy") + ")";
+                worksheet.Cell(1, 1).Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+                worksheet.Cell(1, 1).Style.Font.Bold = true;
+                worksheet.Columns().AdjustToContents();
+                var headerRange = worksheet.Range(2, 1, 2, dt.Columns.Count);
+                headerRange.Style.Fill.BackgroundColor = XLColor.FromArgb(205, 222, 172);
+                headerRange.Style.Font.FontSize = 10;
+                headerRange.Style.Font.FontColor = XLColor.FromArgb(1, 0, 0);
+                headerRange.Style.Font.Bold = true;
 
                 using (var stream = new MemoryStream())
                 {
                     workbook.SaveAs(stream);
                     stream.Position = 0;
 
-                    return File(
-                        stream.ToArray(),
-                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        "KIPLCheckInOut_MultiSheet.xlsx"
-                    );
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Report.xlsx");
                 }
             }
             catch (Exception ex)
@@ -286,8 +178,6 @@ namespace KompassHR.Areas.Reports.Controllers.Report_Contractor
             }
         }
         #endregion
-
-
-
+        
     }
 }
