@@ -556,11 +556,11 @@ namespace KompassHR.Areas.ESS.Controllers.ESS_ManpowerAllocation
                     ws.Cell(row, itemCol++).Value = item.GAP_PLANT_HC ?? 0;
                     ws.Cell(row, itemCol++).Value = item.GAP_PLANT_MD ?? 0;
                     ws.Cell(row, itemCol++).Value = item.GAP_EXCESS_MD ?? 0;
-                    ws.Cell(row, itemCol++).Value = 0;
-                    ws.Cell(row, itemCol++).Value = 0;
-                    ws.Cell(row, itemCol++).Value = 0;
-                    ws.Cell(row, itemCol++).Value = 0;
-                    ws.Cell(row, itemCol++).Value = 0;
+                    ws.Cell(row, itemCol++).Value = item.MANPOWER_AGAINST_DISPATCH_QTY_HC ?? 0;
+                    ws.Cell(row, itemCol++).Value = item.MANPOWER_AGAINST_DISPATCH_QTY_MD ?? 0;
+                    ws.Cell(row, itemCol++).Value = item.GAP_DISPATCH_QTY_HC ?? 0;
+                    ws.Cell(row, itemCol++).Value = item.GAP_DISPATCH_QTY_MD ?? 0;
+                    ws.Cell(row, itemCol++).Value = item.GAP_DISPATCH_QTY_EXCESS_MD ?? 0;
                     var itemDict = item as IDictionary<string, object>;
                     for (int day = 1; day <= 31; day++)
                     {

@@ -68,7 +68,7 @@ namespace KompassHR.Controllers
                     TempData["ErrorMessage"] = "Please check your network connection";
                     return RedirectToAction("ErrorPage", "Login", new { area = "" });
                 }
-                TempData["ErrorMesage"] = "";
+                TempData["ErrorMesage"] = ex.Message;
                 return RedirectToAction("ErrorPage", "Login", new { area = "" });
             }
 
